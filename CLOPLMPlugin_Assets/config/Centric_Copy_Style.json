@@ -1,0 +1,39 @@
+[
+{
+	"id": "1",
+ "node_name": "From Style",
+ "value_type": "string",
+  "display_name": "From Style",
+ "attribute_flags":"21",
+ "required":"true",
+  "restrict_edit": true,
+  "create_only": false,
+ "rest_api_exposed": true,
+ "rest_api_name":"from_style_id"
+},
+{
+	"id": "2",
+ "node_name": "Copy Template",
+ "value_type": "ref",
+  "display_name": "Copy Template",
+ "attribute_flags":"0",
+ "required":"true",
+  "restrict_edit": false,
+  "create_only": false,
+ "rest_api_exposed": true,
+ "rest_api_name":"style_copy_options_id"
+},
+
+ {
+ "id": "7",
+ "node_name": "Style Type",
+ "value_type": "ref",
+  "display_name": "Style Type",
+ "attribute_flags":"20",
+ "required":"false",
+  "restrict_edit": true,
+  "create_only": false,
+ "rest_api_exposed": true,
+ "rest_api_name":"product_type"
+}
+]

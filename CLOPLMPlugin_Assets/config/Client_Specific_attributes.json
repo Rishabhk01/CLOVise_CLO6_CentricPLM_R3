@@ -1,0 +1,37 @@
+﻿
+{
+	"categoryInternalName": "uni_material_sub_type",
+  "colorwayTableAttributes": [
+    "uni2DigitCode"
+  ],
+  "styleTableAttributes": [
+    {
+      "attKey": "uni_fabric",
+      "attName": "Fabric",
+      "attScope": "STYLE",
+      "attType": "enum",
+      "formatKey": "uniFabric"
+    },
+    {
+      "attKey": "uni_sleeve",
+      "attName": "Sleeve",
+      "attScope": "STYLE",
+      "attType": "enum",
+      "formatKey": "uniSleeve"
+    },
+    {
+      "attKey": "uni_length",
+      "attName": "Length",
+      "attScope": "STYLE",
+      "attType": "enum",
+      "formatKey": "uniLength"
+    },
+    {
+      "attKey": "uni_silhouette",
+      "attName": "Silhouette",
+      "attScope": "STYLE",
+      "attType": "enum",
+      "formatKey": "uniSilhouette"
+    }
+  ]
+}

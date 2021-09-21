@@ -1,0 +1,58 @@
+[
+
+ {
+ "id": "3",
+ "node_name": "Season",
+ "value_type": "ref",
+ "display_name": "Season",
+ "attribute_flags":"0",
+ "required":"true",
+ "restrict_edit": false,
+ "rest_api_exposed": true,
+ "rest_api_name":"parent_season"
+},
+ {
+ "id": "4",
+ "node_name": "Brand",
+ "value_type": "ref",
+ "display_name": "Brand",
+ "attribute_flags":"0",
+ "required":"true",
+ "rest_api_exposed": true,
+ "restrict_edit": false,
+ "rest_api_name":"category_1"
+},
+ {
+ "id": "5",
+ "node_name": "Department",
+ "value_type":"ref",
+  "display_name": "Department",
+ "attribute_flags":"0",
+ "required":"true",
+ "rest_api_exposed": true,
+ "restrict_edit": false,
+ "rest_api_name":"category_2"
+},
+ {
+ "id": "6",
+ "node_name": "Collection",
+ "value_type": "ref",
+  "display_name": "Division",
+ "attribute_flags":"0",
+ "required":"true",
+ "rest_api_exposed": true,
+ "restrict_edit": false,
+ "rest_api_name":"collection"
+},
+ {
+ "id": "7",
+ "node_name": "Style Type",
+ "value_type": "ref",
+  "display_name": "Style Type",
+ "attribute_flags":"0",
+ "required":"true",
+ "rest_api_exposed": true,
+ "restrict_edit": false,
+ "rest_api_name":"product_type"
+}
+]

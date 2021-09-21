@@ -1,0 +1,15 @@
+{
+  "CENTRIC_SERVER": {
+    "cloViseVersion": "1.0.101",
+    "companyApiKey": "D0Ft2Z/XZZpDArXbZHEfZEaGf5WnVlKerXOcHxZDhco=",
+    "companyName": "GoVise",
+    "cvLicenceURL": "https://api.clo3d.com",
+    "plmClientVersion": "Not Available",
+    "plmServerUrl": "https://3ddemo.centricsoftware.com"
+  },
+  "availablePLMServers": [
+    "SELECT",
+    "CENTRIC_SERVER"
+  ],
+  "selectedPLMServer": "SELECT"
+}

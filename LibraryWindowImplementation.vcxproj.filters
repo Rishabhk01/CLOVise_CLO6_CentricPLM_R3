@@ -1,0 +1,1037 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="LibraryWindowImplPlugin.cpp" />
+    <ClCompile Include="classes\APIStorage.cpp">
+      <Filter>CloApiData</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\APISearchDialogSample.cpp">
+      <Filter>Ui_SearchDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\APISignInDialogSample.cpp">
+      <Filter>Ui_SignInDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\APIUtility.cpp">
+      <Filter>CloApiCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_APISearchDialogSample.cpp">
+      <Filter>Qt_generated</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_APISignInDialogSample.cpp">
+      <Filter>Qt_generated</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>VS_generated</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>VS_generated</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\PLMSettingsSample.cpp">
+      <Filter>Ui_PLM_Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PLMSettingsSample.cpp">
+      <Filter>Qt_generated</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_CLOFormat.cpp">
+      <Filter>Qt_generated</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\PLMSettingDataSample.cpp">
+      <Filter>Ui_PLM_Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_PLMResource.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\widgets\MVDialog.cpp">
+      <Filter>CloViseStyleWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\widgets\MVGroupBox.cpp">
+      <Filter>CloViseStyleWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_MVGroupBox.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_MVGroupBox.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\widgets\MVGroupFrame.cpp">
+      <Filter>CloViseStyleWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_MVGroupFrame.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_MVGroupFrame.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\widgets\MVOutterFrame.cpp">
+      <Filter>CloViseStyleWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\widgets\MVSubFrame.cpp">
+      <Filter>CloViseStyleWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\widgets\MVSubInnerFrame.cpp">
+      <Filter>CloViseStyleWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\widgets\MVTableWidget.cpp">
+      <Filter>CloViseStyleWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\widgets\MVTitleBar.cpp">
+      <Filter>CloViseStyleWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_MVTitleBar.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_MVTitleBar.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\widgets\MVTreeWidget.cpp">
+      <Filter>CloViseStyleWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\widgets\MVWidget.cpp">
+      <Filter>CloViseStyleWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Authentication\CLOPLMImplementation.cpp">
+      <Filter>CLOVise\PLM\Authentication</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CLOPLMImplementation.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CLOPLMImplementation.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Authentication\CLOPLMSignIn.cpp">
+      <Filter>CLOVise\PLM\Authentication</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CLOPLMSignIn.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CLOPLMSignIn.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Color\PLMColorResults.cpp">
+      <Filter>CLOVise\PLM\Inbound\Color</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_PLMColorResults.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_PLMColorResults.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Color\PLMColorSearch.cpp">
+      <Filter>CLOVise\PLM\Inbound\Color</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_PLMColorSearch.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_PLMColorSearch.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Document\PLMDocumentResults.cpp">
+      <Filter>CLOVise\PLM\Inbound\Document</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_PLMDocumentResults.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_PLMDocumentResults.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Document\PLMDocumentSearch.cpp">
+      <Filter>CLOVise\PLM\Inbound\Document</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_PLMDocumentSearch.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_PLMDocumentSearch.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Material\PLMMaterialResult.cpp">
+      <Filter>CLOVise\PLM\Inbound\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_PLMMaterialResult.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_PLMMaterialResult.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Material\PLMMaterialSearch.cpp">
+      <Filter>CLOVise\PLM\Inbound\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_PLMMaterialSearch.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_PLMMaterialSearch.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Product\PLMProductResults.cpp">
+      <Filter>CLOVise\PLM\Inbound\Product</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_PLMProductResults.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_PLMProductResults.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Product\PLMProductSearch.cpp">
+      <Filter>CLOVise\PLM\Inbound\Product</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_PLMProductSearch.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_PLMProductSearch.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\PublishToPLMData.cpp">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CVTableWidgetItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CVTableWidgetItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Helper\UIHelper\CVTitleBar.cpp">
+      <Filter>CLOVise\PLM\Helper\UIHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CVTitleBar.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CVTitleBar.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Helper\UIHelper\CVWidgetGenerator.cpp">
+      <Filter>CLOVise\PLM\Helper\UIHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Helper\UIHelper\CVDisplayMessageBox.cpp">
+      <Filter>CLOVise\PLM\Helper\UIHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CVDisplayMessageBox.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CVDisplayMessageBox.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Helper\UIHelper\CVHoverDelegate.cpp">
+      <Filter>CLOVise\PLM\Helper\UIHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CVHoverDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CVHoverDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Helper\Util\ComboBoxItem.cpp">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ComboBoxItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ComboBoxItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Helper\Util\Configuration.cpp">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Helper\Util\DataUtility.cpp">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Helper\Util\DirectoryUtil.cpp">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CLOViseSuite.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CLOViseSuite.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\CLOViseSuite\CLOViseSuite.cpp">
+      <Filter>CLOVise\PLM\CLOViseSuite</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Helper\Util\CVLicenseHelper.cpp">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Helper\Util\DataHelper.cpp">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Color\ColorConfig.cpp">
+      <Filter>CLOVise\PLM\Inbound\Color</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Material\MaterialConfig.cpp">
+      <Filter>CLOVise\PLM\Inbound\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Product\ProductConfig.cpp">
+      <Filter>CLOVise\PLM\Inbound\Product</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Document\DocumentConfig.cpp">
+      <Filter>CLOVise\PLM\Inbound\Document</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\CreateProduct.cpp">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateProduct.cpp">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CreateProduct.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_UpdateProduct.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CreateProduct.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_UpdateProduct.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Sample\PLMSampleResult.cpp">
+      <Filter>CLOVise\PLM\Inbound\Sample</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Sample\PLMSampleSearch.cpp">
+      <Filter>CLOVise\PLM\Inbound\Sample</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_PLMSampleSearch.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_PLMSampleSearch.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_PLMSampleResult.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_PLMSampleResult.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\CraeteMaterial\CreateMaterial.cpp">
+      <Filter>CLOVise\PLM\Outbound\CreateMaterial</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CreateMaterial.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CreateMaterial.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\CraeteMaterial\CreateMaterialConfig.cpp">
+      <Filter>CLOVise\PLM\Outbound\CreateMaterial</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Sample\SampleConfig.cpp">
+      <Filter>CLOVise\PLM\Inbound\Sample</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Helper\UIHelper\CVQDateEdit.cpp">
+      <Filter>CLOVise\PLM\Helper\UIHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CVQDateEdit.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CVQDateEdit.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.cpp">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CopyProduct.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CopyProduct.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CustomSpinBox.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Helper\Util\CustomSpinBox.cpp">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CustomSpinBox.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CustomDoubleSpinBox.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CustomDoubleSpinBox.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Helper\Util\CustomDoubleSpinBox.cpp">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\UpdateMaterial\UpdateMaterial.cpp">
+      <Filter>CLOVise\PLM\Outbound\UpdateMaterial</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_UpdateMaterial.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_UpdateMaterial.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\UpdateMaterial\UpdateMaterialConfig.cpp">
+      <Filter>CLOVise\PLM\Outbound\UpdateMaterial</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="LibraryWindowImplPlugin.h" />
+    <ClInclude Include="classes\APICLODataBase.h">
+      <Filter>CloApiData</Filter>
+    </ClInclude>
+    <ClInclude Include="classes\APIStorage.h">
+      <Filter>CloApiData</Filter>
+    </ClInclude>
+    <ClInclude Include="classes\APIDefine.h">
+      <Filter>CloApiCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="classes\APIUtility.h">
+      <Filter>CloApiCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_APISearchDialogSample.h">
+      <Filter>Qt_generated</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_APISignInDialogSample.h">
+      <Filter>Qt_generated</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>VS_generated</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>VS_generated</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_PLMSettingsSample.h">
+      <Filter>Qt_generated</Filter>
+    </ClInclude>
+    <ClInclude Include="classes\PLMSettingDataSample.h">
+      <Filter>Ui_PLM_Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="classes\widgets\MVDialog.h">
+      <Filter>CloViseStyleWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="classes\widgets\MVOutterFrame.h">
+      <Filter>CloViseStyleWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="classes\widgets\MVSubFrame.h">
+      <Filter>CloViseStyleWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="classes\widgets\MVSubInnerFrame.h">
+      <Filter>CloViseStyleWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="classes\widgets\MVTableWidget.h">
+      <Filter>CloViseStyleWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="classes\widgets\MVTreeWidget.h">
+      <Filter>CloViseStyleWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="classes\widgets\MVWidget.h">
+      <Filter>CloViseStyleWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_CLOPLMSignIn.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_PLMColorResults.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_PLMColorSearch.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_PLMDocumentResults.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_PLMDocumentSearch.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_PLMMaterialResult.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_PLMMaterialSearch.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_PLMProductResults.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_PLMProductSearch.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Outbound\PublishToPLM\PublishToPLMData.h">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Helper\UIHelper\CVWidgetGenerator.h">
+      <Filter>CLOVise\PLM\Helper\UIHelper</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Helper\UIHelper\UIHelper.h">
+      <Filter>CLOVise\PLM\Helper\UIHelper</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_CVDisplayMessageBox.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Helper\Util\Configuration.h">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Helper\Util\DataUtility.h">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Helper\Util\Definitions.h">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Helper\Util\DirectoryUtil.h">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Helper\Util\FlexTypeHelper.h">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Helper\Util\FormatHelper.h">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Helper\Util\Helper.h">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Helper\Util\Logger.h">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Helper\Util\RestAPIUtility.h">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Libraries\curl\include\curl\curl.h">
+      <Filter>CLOVise\PLM\Libraries\curl\include\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Libraries\curl\include\curl\curlver.h">
+      <Filter>CLOVise\PLM\Libraries\curl\include\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Libraries\curl\include\curl\easy.h">
+      <Filter>CLOVise\PLM\Libraries\curl\include\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Libraries\curl\include\curl\mprintf.h">
+      <Filter>CLOVise\PLM\Libraries\curl\include\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Libraries\curl\include\curl\multi.h">
+      <Filter>CLOVise\PLM\Libraries\curl\include\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Libraries\curl\include\curl\stdcheaders.h">
+      <Filter>CLOVise\PLM\Libraries\curl\include\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Libraries\curl\include\curl\system.h">
+      <Filter>CLOVise\PLM\Libraries\curl\include\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Libraries\curl\include\curl\typecheck-gcc.h">
+      <Filter>CLOVise\PLM\Libraries\curl\include\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Libraries\curl\include\curl\urlapi.h">
+      <Filter>CLOVise\PLM\Libraries\curl\include\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\CLOViseSuite\CLOViseSuite.h">
+      <Filter>CLOVise\PLM\CLOViseSuite</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Helper\Util\CVLicenseHelper.h">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_CLOViseSuite.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Inbound\Color\ColorConfig.h">
+      <Filter>CLOVise\PLM\Inbound\Color</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Inbound\Material\MaterialConfig.h">
+      <Filter>CLOVise\PLM\Inbound\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Inbound\Product\ProductConfig.h">
+      <Filter>CLOVise\PLM\Inbound\Product</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Inbound\Document\DocumentConfig.h">
+      <Filter>CLOVise\PLM\Inbound\Document</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Helper\Util\CVErrorMessage.h">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_CreateProduct.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_UpdateProduct.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Inbound\Sample\SampleConfig.h">
+      <Filter>CLOVise\PLM\Inbound\Sample</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_PLMSampleResult.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_PLMSampleSearch.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_CreateMaterial.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Outbound\CraeteMaterial\CreateMaterialConfig.h">
+      <Filter>CLOVise\PLM\Outbound\CreateMaterial</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Helper\UIHelper\CVWidgets_export.h">
+      <Filter>CLOVise\PLM\Helper\UIHelper</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_CopyProduct.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_CreateImageIntent.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+	    <ClInclude Include="GeneratedFiles\ui_UpdateImageIntent.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_UpdateMaterial.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Outbound\UpdateMaterial\UpdateMaterialConfig.h">
+      <Filter>CLOVise\PLM\Outbound\UpdateMaterial</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Outbound\PublishToPLM\CreateImageIntent.h">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.h">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="classes\APISearchDialogSample.h">
+      <Filter>Ui_SearchDialog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="classes\APISearchDialogSample.ui">
+      <Filter>Ui_SearchDialog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="classes\APISignInDialogSample.h">
+      <Filter>Ui_SignInDialog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="classes\APISignInDialogSample.ui">
+      <Filter>Ui_SignInDialog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="classes\PLMSettingsSample.h">
+      <Filter>Ui_PLM_Settings</Filter>
+    </CustomBuild>
+    <CustomBuild Include="classes\PLMSettingsSample.ui">
+      <Filter>Ui_PLM_Settings</Filter>
+    </CustomBuild>
+    <CustomBuild Include="classes\CLOFormat.qrc" />
+    <CustomBuild Include="PLMResource.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="classes\widgets\MVGroupBox.h">
+      <Filter>CloViseStyleWidgets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="classes\widgets\MVGroupFrame.h">
+      <Filter>CloViseStyleWidgets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="classes\widgets\MVTitleBar.h">
+      <Filter>CloViseStyleWidgets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Authentication\CLOPLMImplementation.h">
+      <Filter>CLOVise\PLM\Authentication</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Authentication\CLOPLMSignIn.h">
+      <Filter>CLOVise\PLM\Authentication</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Authentication\CLOPLMSignIn.ui">
+      <Filter>CLOVise\PLM\Authentication</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Color\PLMColorResults.h">
+      <Filter>CLOVise\PLM\Inbound\Color</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Color\PLMColorResults.ui">
+      <Filter>CLOVise\PLM\Inbound\Color</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Color\PLMColorSearch.h">
+      <Filter>CLOVise\PLM\Inbound\Color</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Color\PLMColorSearch.ui">
+      <Filter>CLOVise\PLM\Inbound\Color</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Document\PLMDocumentResults.h">
+      <Filter>CLOVise\PLM\Inbound\Document</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Document\PLMDocumentResults.ui">
+      <Filter>CLOVise\PLM\Inbound\Document</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Document\PLMDocumentSearch.h">
+      <Filter>CLOVise\PLM\Inbound\Document</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Document\PLMDocumentSearch.ui">
+      <Filter>CLOVise\PLM\Inbound\Document</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Material\PLMMaterialResult.h">
+      <Filter>CLOVise\PLM\Inbound\Material</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Material\PLMMaterialResult.ui">
+      <Filter>CLOVise\PLM\Inbound\Material</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Material\PLMMaterialSearch.h">
+      <Filter>CLOVise\PLM\Inbound\Material</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Material\PLMMaterialSearch.ui">
+      <Filter>CLOVise\PLM\Inbound\Material</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Product\PLMProductResults.h">
+      <Filter>CLOVise\PLM\Inbound\Product</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Product\PLMProductResults.ui">
+      <Filter>CLOVise\PLM\Inbound\Product</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Product\PLMProductSearch.h">
+      <Filter>CLOVise\PLM\Inbound\Product</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Product\PLMProductSearch.ui">
+      <Filter>CLOVise\PLM\Inbound\Product</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Helper\UIHelper\CVTableWidgetItem.h">
+      <Filter>CLOVise\PLM\Helper\UIHelper</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Helper\UIHelper\CVTitleBar.h">
+      <Filter>CLOVise\PLM\Helper\UIHelper</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Helper\UIHelper\CVDisplayMessageBox.h">
+      <Filter>CLOVise\PLM\Helper\UIHelper</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Helper\UIHelper\CVDisplayMessageBox.ui">
+      <Filter>CLOVise\PLM\Helper\UIHelper</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Helper\UIHelper\CVHoverDelegate.h">
+      <Filter>CLOVise\PLM\Helper\UIHelper</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Helper\Util\ComboBoxItem.h">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\CLOViseSuite\CLOViseSuite.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\CLOViseSuite\CLOViseSuite.ui" />
+    <CustomBuild Include="CLOVise\PLM\Helper\Util\DataHelper.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Helper\Util\CVErrorMessage.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CreateProduct.h">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateProduct.h">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateProduct.ui">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CreateProduct.ui">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Sample\PLMSampleResult.ui">
+      <Filter>CLOVise\PLM\Inbound\Sample</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Sample\PLMSampleSearch.ui">
+      <Filter>CLOVise\PLM\Inbound\Sample</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Sample\PLMSampleSearch.h">
+      <Filter>CLOVise\PLM\Inbound\Sample</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Sample\PLMSampleResult.h">
+      <Filter>CLOVise\PLM\Inbound\Sample</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\CraeteMaterial\CreateMaterial.h">
+      <Filter>CLOVise\PLM\Outbound\CreateMaterial</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\CraeteMaterial\CreateMaterial.ui">
+      <Filter>CLOVise\PLM\Outbound\CreateMaterial</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Helper\UIHelper\CVQDateEdit.h">
+      <Filter>CLOVise\PLM\Helper\UIHelper</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.ui">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Helper\Util\CustomSpinBox.h">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Helper\Util\CustomDoubleSpinBox.h">
+      <Filter>CLOVise\PLM\Helper\Util</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\UpdateMaterial\UpdateMaterial.h">
+      <Filter>CLOVise\PLM\Outbound\UpdateMaterial</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\UpdateMaterial\UpdateMaterial.ui">
+      <Filter>CLOVise\PLM\Outbound\UpdateMaterial</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Ui_SignInDialog">
+      <UniqueIdentifier>{fdef20b5-3d79-4e61-a368-e3f2c6e0b79b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ui_SearchDialog">
+      <UniqueIdentifier>{df831e9f-458b-402a-8927-b4ceabba6dd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CloApiData">
+      <UniqueIdentifier>{58a28b49-1a2e-411c-b858-1594718f221c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CloApiCommon">
+      <UniqueIdentifier>{a31ba145-027b-4270-9cc1-783a1069768d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VS_generated">
+      <UniqueIdentifier>{bd0ac53a-ee00-47a0-ad1e-6b6cd1aab4aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Qt_generated">
+      <UniqueIdentifier>{0d4bbc49-9bf5-434e-b8d9-fcb45728015d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ui_PLM_Settings">
+      <UniqueIdentifier>{d8e720e4-6a77-4901-8918-bb144d78f398}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>moc;h;cpp</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="CloViseStyleWidgets">
+      <UniqueIdentifier>{2f14d4f6-e8e4-42f9-88c3-22dbd89a84c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise">
+      <UniqueIdentifier>{80d7cde8-39af-47ae-938f-bc69b9142254}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM">
+      <UniqueIdentifier>{5298578b-5468-406c-87b6-f822133ec863}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Authentication">
+      <UniqueIdentifier>{306ac7f7-9650-4858-9c55-f87917e795c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Libraries">
+      <UniqueIdentifier>{19ecf267-52d4-45c6-9b7a-3b216d09a9eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Libraries\curl">
+      <UniqueIdentifier>{2c316f1b-f09f-496d-807a-5f942a7b5fed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Libraries\curl\include">
+      <UniqueIdentifier>{6bebc1b8-7738-4a41-858d-f654ab0fc70f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Libraries\curl\include\curl">
+      <UniqueIdentifier>{784a9b5d-3dbe-4636-bab7-131e36c5648f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Libraries\curl\lib">
+      <UniqueIdentifier>{3a59d05b-f093-4cf1-9636-c1f210a00834}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Libraries\curl\lib\release">
+      <UniqueIdentifier>{81b11eed-3d6e-4f56-9fcc-2b5584eb12f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\CLOViseSuite">
+      <UniqueIdentifier>{233e2bd1-8c83-4973-baa1-7b649043095f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Inbound">
+      <UniqueIdentifier>{0b40d388-4ab3-4020-abe3-120f40899080}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Outbound">
+      <UniqueIdentifier>{6eae66cc-af7b-435b-ba40-f28c042639ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Helper">
+      <UniqueIdentifier>{3565c838-9bf4-4390-964e-757a8297f1ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Inbound\Product">
+      <UniqueIdentifier>{c7ef1a1d-e60b-4df7-8aef-b76268ac2754}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Inbound\Material">
+      <UniqueIdentifier>{4212c07f-1d40-44c7-945f-e940bed7bd6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Inbound\Color">
+      <UniqueIdentifier>{dd0442bb-2b0b-4e6b-b8b8-f79a73e12a29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Inbound\Document">
+      <UniqueIdentifier>{636d4483-a724-436a-b621-d036bb42cb0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Outbound\PublishToPLM">
+      <UniqueIdentifier>{e525575f-73e7-4061-b86c-512c150ef07f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Helper\UIHelper">
+      <UniqueIdentifier>{7a54560e-f854-4964-a935-b00468e570ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Helper\Util">
+      <UniqueIdentifier>{96de0fec-2fd5-4d52-b1a4-eebbc6264933}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Inbound\Sample">
+      <UniqueIdentifier>{43ae0755-c01b-4cc0-ae65-7ae3011514ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Outbound\CreateMaterial">
+      <UniqueIdentifier>{4f9567aa-aa81-4fab-a9f8-5b6317b65b93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Outbound\UpdateMaterial">
+      <UniqueIdentifier>{f702f99b-fa7b-446e-8309-32e23808662d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="CLO_PLUGIN\PLM\images\512px-Gnome-window-close.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="CLO_PLUGIN\PLM\images\CI_CLO_Virtual_Fashion_White.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="CLO_PLUGIN\PLM\images\circle-cropped_material.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="CLO_PLUGIN\PLM\images\circle-cropped_product.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="CLO_PLUGIN\PLM\images\clo.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="CLO_PLUGIN\PLM\images\CLO.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="CLO_PLUGIN\PLM\images\clo1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="CLO_PLUGIN\PLM\images\clo-govise-image.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="CLO_PLUGIN\PLM\images\closingle.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="CLO_PLUGIN\PLM\images\color.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="CLO_PLUGIN\PLM\images\colorC.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="CLO_PLUGIN\PLM\images\colorP.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="CLO_PLUGIN\PLM\images\GoVise.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="CLO_PLUGIN\PLM\images\GoViseLogo.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="CLO_PLUGIN\PLM\images\material.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="CLO_PLUGIN\PLM\images\material.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="CLO_PLUGIN\PLM\images\product.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="CLO_PLUGIN\PLM\images\product.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="CLO_PLUGIN\PLM\images\right.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CLO_PLUGIN\PLM\images\icon_add_none.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_add_over.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_back_none.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_back_over.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_cancel_none.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_cancel_over.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_color_none.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_color_over.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_down_none.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_down_over.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_goto_none.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_goto_over.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_ok_none.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_ok_over.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_save_none.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_save_over.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_search_none.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_search_over.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_texture_none.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_texture_over.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_update_none.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\icon_update_over.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\ui_dropbox_disable.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\ui_dropbox_none.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLO_PLUGIN\PLM\images\ui_dropbox_over.svg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CLOVise\PLM\Libraries\curl\include\curl\Makefile.am">
+      <Filter>CLOVise\PLM\Libraries\curl\include\curl</Filter>
+    </None>
+    <None Include="CLOVise\PLM\Libraries\curl\include\curl\Makefile.in">
+      <Filter>CLOVise\PLM\Libraries\curl\include\curl</Filter>
+    </None>
+    <None Include="CLOVise\PLM\CLOViseSuite\CLOViseSuite.ui">
+      <Filter>CLOVise\PLM\CLOViseSuite</Filter>
+    </None>
+    <None Include="CloLibraryAPI_Plugin.pro" />
+    <None Include="CLOVise\PLM\Outbound\PublishToPLM\CreateImageIntent.ui">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </None>
+    <None Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.ui">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="LibraryWindowImplementation.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="CLOVise\PLM\Libraries\curl\lib\release\libcrypto.lib">
+      <Filter>CLOVise\PLM\Libraries\curl\lib\release</Filter>
+    </Library>
+    <Library Include="CLOVise\PLM\Libraries\curl\lib\release\libcurl.lib">
+      <Filter>CLOVise\PLM\Libraries\curl\lib\release</Filter>
+    </Library>
+    <Library Include="CLOVise\PLM\Libraries\curl\lib\release\libssl.lib">
+      <Filter>CLOVise\PLM\Libraries\curl\lib\release</Filter>
+    </Library>
+  </ItemGroup>
+</Project>

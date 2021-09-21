@@ -1,0 +1,222 @@
+{
+  "resultsSupportedAttTypes": [
+    "userList",
+    "boolean",
+    "date",
+    "text",
+    "derivedString",
+    "textArea",
+    "driven",
+    "moaList",
+    "choice",
+    "float",
+    "sequence",
+    "constant",
+    "integer",
+    "currency",
+    "object_ref",
+    "object_ref_list"
+  ],
+  "maxUploadFileSizeLimit": "500",
+  "userAccessPermissions": [
+    "hasReadAccess",
+    "hasCreateAccess",
+    "hasModifyAccess",
+    "hasDeleteAccess"
+  ],
+  "hierarchy": {
+    "typeName": "Style",
+    "subType": [
+      {
+        "typeName": "Style\\Solid",
+        "subType": [],
+        "typeDisplayName": "Style Solid"
+      },
+      {
+        "typeName": "Style\\Custom Style",
+        "subType": [],
+        "typeDisplayName": "Custom Style"
+      },
+      {
+        "typeName": "Style\\Print and Pattern",
+        "subType": [],
+        "typeDisplayName": "Print and Pattern"
+      },
+      {
+        "typeName": "Style\\Washes",
+        "subType": [],
+        "typeDisplayName": "Washes"
+      }
+    ],
+    "typeDisplayName": "Style"
+  },
+  "availableImagePageResolutionOptions": [
+    "640x480",
+    "720x480",
+    "720x576"
+  ],
+  "3dModelType": "Style",
+  "supportedAttTypes": [
+    "userList",
+    "boolean",
+    "date",
+    "text",
+    "derivedString",
+    "textArea",
+    "driven",
+    "moaList",
+    "choice",
+    "float",
+    "sequence",
+    "constant",
+    "integer",
+    "currency"
+  ],
+  "modifySupportedAttTypes": [
+    "userList",
+    "boolean",
+    "date",
+    "text",
+    "derivedString",
+    "textArea",
+    "driven",
+    "moaList",
+    "choice",
+    "float",
+    "sequence",
+    "constant",
+    "integer",
+    "currency"
+  ],
+  "attScopes": [],
+  "productIdKeyExist": false,
+  "availableImagePageNoOfImagesOptions": [
+    "1",
+    "2",
+    "4",
+    "6",
+    "9"
+  ],
+  "turnTableImageResolution": "640x480",
+  "fieldsList": [
+    {
+      "typeName": "Style",
+      "attributes": [
+        {
+          "attKey": "node_name",
+          "attType": "text",
+          "attScope": "STYLE",
+          "isAttUpdatable": true,
+          "isAttRequired": false,
+          "attDecimalFigures": 0,
+          "attCurrencyCode": null,
+          "enumList": [],
+          "attDefaultValue": null,
+          "attSearchDefaultValue": null,
+          "userList": [],
+          "sortKey": 0,
+          "isAttInSearchResults": true,
+          "attName": "Style",
+          "isAttSearchable": true,
+          "attObjectLevel": null,
+          "isAttEnabled": true,
+          "isAttSettable": true,
+          "url": "",
+          "rest_api_exposed": true,
+          "isMultiselectable": false
+        },
+        {
+          "attKey": "code",
+          "attType": "text",
+          "attScope": "STYLE",
+          "isAttUpdatable": true,
+          "isAttRequired": false,
+          "attDecimalFigures": 0,
+          "attCurrencyCode": null,
+          "enumList": [],
+          "attDefaultValue": null,
+          "attSearchDefaultValue": null,
+          "userList": [],
+          "sortKey": 3.2,
+          "isAttInSearchResults": false,
+          "attName": "Code",
+          "isAttSearchable": true,
+          "attObjectLevel": null,
+          "isAttEnabled": true,
+          "isAttSettable": true,
+          "url": "",
+          "rest_api_exposed": true,
+          "isMultiselectable": false
+        },
+        {
+          "attKey": "description",
+          "attType": "text",
+          "attScope": "MATERIAL",
+          "isAttUpdatable": true,
+          "isAttRequired": false,
+          "attDecimalFigures": 0,
+          "attCurrencyCode": null,
+          "enumList": [],
+          "attDefaultValue": null,
+          "attSearchDefaultValue": null,
+          "userList": [],
+          "sortKey": 12.1,
+          "isAttInSearchResults": true,
+          "attName": "Description",
+          "isAttSearchable": true,
+          "attObjectLevel": null,
+          "isAttEnabled": true,
+          "isAttSettable": true,
+          "url": "",
+          "rest_api_exposed": true,
+          "isMultiselectable": false
+        },
+        {
+          "attCurrencyCode": null,
+          "attDecimalFigures": 0,
+          "attDefaultValue": null,
+          "attKey": "parent_season",
+          "attName": "Season",
+          "attObjectLevel": null,
+          "attScope": "STYLE",
+          "attSearchDefaultValue": null,
+          "attType": "ref",
+          "enumList": [],
+          "isAttEnabled": true,
+          "isAttInSearchResults": true,
+          "isAttRequired": false,
+          "isAttSearchable": true,
+          "isAttSettable": true,
+          "isAttUpdatable": true,
+          "isMultiselectable": false,
+          "url": "/csi-requesthandler/api/v2/seasons",
+          "rest_api_exposed": true,
+          "userList": []
+        },
+        {
+          "attCurrencyCode": null,
+          "attDecimalFigures": 0,
+          "attDefaultValue": null,
+          "attKey": "collection",
+          "attName": "Division",
+          "attObjectLevel": null,
+          "attScope": "STYLE",
+          "attSearchDefaultValue": null,
+          "attType": "ref",
+          "enumList": [],
+          "isAttEnabled": true,
+          "isAttInSearchResults": true,
+          "isAttRequired": false,
+          "isAttSearchable": true,
+          "isAttSettable": true,
+          "isAttUpdatable": true,
+          "isMultiselectable": true,
+          "rest_api_exposed": true,
+          "url": "/csi-requesthandler/api/v2/collections",
+          "userList": []
+        }
+      ]
+    }
+  ],
+  "noOfTurnTableImages": "12"
+}

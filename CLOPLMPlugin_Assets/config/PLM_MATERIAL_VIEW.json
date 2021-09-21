@@ -1,0 +1,96 @@
+  {
+    "availableViews": [
+      "All PLM Materials"
+    ],
+    "defaultView": "",
+    "typeName": "Material",
+    "viewsList": [
+      {
+        "defaultView": false,
+        "fieldsList": [
+          {
+            "attCurrencyCode": null,
+            "attDecimalFigures": 0,
+            "attDefaultValue": null,
+            "attKey": "node_name",
+            "attName": "Material Name",
+            "attObjectLevel": null,
+            "attScope": "MATERIAL",
+            "attSearchDefaultValue": null,
+            "attType": "text",
+            "enumList": [],
+            "isAttEnabled": true,
+            "isAttInSearchResults": true,
+            "isAttRequired": true,
+            "isAttSearchable": true,
+            "isAttSettable": true,
+            "isAttUpdatable": true,
+			"rest_api_exposed": true,
+            "userList": []
+          },
+          {
+            "attCurrencyCode": null,
+            "attDecimalFigures": 0,
+            "attDefaultValue": null,
+            "attKey": "code",
+            "attName": "Code",
+            "attObjectLevel": null,
+            "attScope": "MATERIAL",
+            "attSearchDefaultValue": null,
+            "attType": "text",
+            "enumList": [],
+            "isAttEnabled": true,
+            "isAttInSearchResults": true,
+            "isAttRequired": false,
+            "isAttSearchable": true,
+            "isAttSettable": true,
+            "isAttUpdatable": true,
+			"rest_api_exposed": true,
+            "userList": []
+          },
+          {
+            "attCurrencyCode": null,
+            "attDecimalFigures": 0,
+            "attDefaultValue": null,
+            "attKey": "description",
+            "attName": "Description",
+            "attObjectLevel": null,
+            "attScope": "MATERIAL",
+            "attSearchDefaultValue": null,
+            "attType": "textArea",
+            "enumList": [],
+            "isAttEnabled": true,
+            "isAttInSearchResults": true,
+            "isAttRequired": false,
+            "isAttSearchable": true,
+            "isAttSettable": true,
+            "isAttUpdatable": true,
+			"rest_api_exposed": true,
+            "userList": []
+          },
+		  {
+            "attCurrencyCode": null,
+            "attDecimalFigures": 0,
+            "attDefaultValue": null,
+            "attKey": "material_type",
+            "attName": "Material Type",
+            "attObjectLevel": null,
+            "attScope": "MATERIAL",
+            "attSearchDefaultValue": null,
+            "attType": "text",
+            "enumList": [],
+            "isAttEnabled": true,
+            "isAttInSearchResults": true,
+            "isAttRequired": false,
+            "isAttSearchable": true,
+            "isAttSettable": true,
+            "isAttUpdatable": true,
+			"rest_api_exposed": true,
+            "userList": []
+          }
+        ],
+        "viewId": "333792",
+        "viewName": "All PLM Materials"
+      }
+    ]
+  }

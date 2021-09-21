@@ -1,0 +1,33 @@
+{
+  "closeDialoguePostDownload": "true",
+  "debugLoggerEnabled": "false",
+  "errorLoggerEnabled": "true",
+  "restAPILoggerEnabled": "false",
+  "excludedPreviewFields": [
+    "Object Id",
+    "Object Name",
+    "Object Status",
+    "documentId",
+    "objectId",
+    "objectName",
+    "objectStatus",
+    "productObjectId"
+  ],
+  "infoLoggerEnabled": "false",
+  "loggerEnabled": "true",
+  "maximumLogFileSize": "10",
+  "perfomanceLoggerEnabled": "true",
+  "progressBarCloseTimer": "500",
+  "resultsPerPageOptions": [
+    "10",
+    "25",
+    "100"
+  ],
+  "byPassLicenceCheck": true,
+  "selectedImagePageNoOfImages": "6",
+  "selectedResultsPerPage": "25",
+  "maximumMaterialSearchResults":"100",
+  "maximumStyleSearchResults":"50",
+  "maximumColorSearchResults":"200",
+  "maximuRefAttributeValues":"1000"
+}
