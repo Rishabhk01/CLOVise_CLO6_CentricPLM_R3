@@ -1723,10 +1723,11 @@ namespace CLOVise
 		string colorSpecId;
 		string downloadedPLMColorwayName;
 		ComboBoxItem* comboColorwayItem = new ComboBoxItem();
-		comboColorwayItem->setStyleSheet("QComboBox{max-height: 25px; min-width: 100px;}");
+		comboColorwayItem->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		comboColorwayItem->setFocusPolicy(Qt::StrongFocus);
 		comboColorwayItem->addItems(_colorwayNamesList);
 		comboColorwayItem->setProperty("Id", QString::fromStdString(_objectId));
+		ui_colorwayTable->setColumnWidth(CLO_COLORWAY_COLUMN, 140);
 		if (m_downloadedColorway)
 		{
 			comboColorwayItem->setProperty("IsDownloadedColorway", "1");
