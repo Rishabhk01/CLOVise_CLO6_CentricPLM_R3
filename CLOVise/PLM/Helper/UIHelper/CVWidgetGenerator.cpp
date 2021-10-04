@@ -1368,10 +1368,10 @@ void CVWidgetGenerator::CreateSearchCriteriaWidget(QTreeWidget* _searchTree_1, Q
 */
 void CVWidgetGenerator::CreateViewComboBoxOnSearch(QComboBox* _viewCB, json _viewJSON, string _selectedTypeName, int _selectedViewIdx)
 {
-	Logger::Info("CVWidgetGenerator::CreateViewComboBoxAndPopulateViews() - Start");
+	Logger::Info("CVWidgetGenerator::CreateViewComboBoxOnSearch() - Start");
 	CreateViewComboBoxOnSearch(_viewCB, _viewJSON, _selectedTypeName);
 	_viewCB->setCurrentIndex(_selectedViewIdx);
-	Logger::Info("CVWidgetGenerator::CreateViewComboBoxAndPopulateViews() - End");
+	Logger::Info("CVWidgetGenerator::CreateViewComboBoxOnSearch() - End");
 }
 
 /*

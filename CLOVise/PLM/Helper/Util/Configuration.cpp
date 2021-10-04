@@ -1437,6 +1437,16 @@ bool Configuration::GetIsUpdateColorClicked()
 	 m_UpdateColorClicked = _isClicked;
 }
 
+ bool Configuration::GetIsUpdatePrintClicked()
+ {
+	 return m_UpdatePrintClicked;
+ }
+
+ void Configuration::SetIsUpdatePrintClicked(bool _isClicked)
+ {
+	 m_UpdatePrintClicked = _isClicked;
+ }
+
  bool Configuration::GetIsNewStyleDownloaded()
  {
 	 return m_StyleDownloaded;

@@ -32,6 +32,10 @@
 #include "CLOVise/PLM/Inbound/Color/PLMColorResults.h"
 #include "CLOVise/PLM/Inbound/Color/ColorConfig.h"
 
+#include "CLOVise/PLM/Inbound/Print/PLMPrintSearch.h"
+#include "CLOVise/PLM/Inbound/Print/PLMPrintResults.h"
+#include "CLOVise/PLM/Inbound/Print/PrintConfig.h"
+
 #include "CLOVise/PLM/Inbound/Material/PLMMaterialSearch.h"
 #include "CLOVise/PLM/Inbound/Material/MaterialConfig.h"
 #include "CLOVise/PLM/Inbound/Material/PLMMaterialResult.h"
@@ -130,9 +134,11 @@ namespace CLOVise
 		ui_searchProduct->setText(QString::fromStdString(Configuration::GetInstance()->GetLocalizedStyleClassName()));
 		ui_searchMaterial->setText(QString::fromStdString(Configuration::GetInstance()->GetLocalizedMaterialClassName()));
 		ui_searchColor->setText(QString::fromStdString(Configuration::GetInstance()->GetLocalizedColorClassName()));
+		ui_searchPrint->setText("Print");
 
 		CVWidgetGenerator::SetButtonProperty(ui_searchMaterial, FABRIC_HOVER_ICON_PATH, SEARCH_TOOLTIP, CLOVISESUITE_BUTTON_STYLE);
 		CVWidgetGenerator::SetButtonProperty(ui_searchColor, COLOR_HOVER_ICON_PATH, SEARCH_TOOLTIP, CLOVISESUITE_BUTTON_STYLE);
+		CVWidgetGenerator::SetButtonProperty(ui_searchPrint, PRINT_HOVER_ICON_PATH, SEARCH_TOOLTIP, CLOVISESUITE_BUTTON_STYLE);
 		//CVWidgetGenerator::SetButtonProperty(ui_searchDocument, DOCUMENT_HOVER_ICON_PATH, SEARCH_TOOLTIP, CLOVISESUITE_BUTTON_STYLE);
 		CVWidgetGenerator::SetButtonProperty(ui_searchProduct, PRODUCT_HOVER_ICON_PATH, SEARCH_TOOLTIP, CLOVISESUITE_BUTTON_STYLE);
 		CVWidgetGenerator::SetButtonProperty(ui_createProductButton, ADD_HOVER_ICON_PATH, CREATE_TOOLTIP, CLOVISESUITE_BUTTON_STYLE);
@@ -463,6 +469,46 @@ namespace CLOVise
 			wstring wstr(msg, msg + strlen(msg));
 			UTILITY_API->DisplayMessageBoxW(wstr);
 			Logger::Error("DesignSuite -> Color Exception - " + string(msg));
+			this->show();
+		}
+	}
+
+	void CLOViseSuite::ExecutePrintModule()
+	{
+		this->hide();
+		try
+		{
+				
+				if (!PrintConfig::GetInstance()->GetIsModelExecuted())
+					PrintConfig::GetInstance()->InitializePrintData();
+				
+				PLMPrintSearch::GetInstance()->setModal(true);
+				UIHelper::ClearAllFieldsForSearch(PLMPrintSearch::GetInstance()->GetTreewidget(0));
+				UIHelper::ClearAllFieldsForSearch(PLMPrintSearch::GetInstance()->GetTreewidget(1));
+				PLMPrintSearch::GetInstance()->exec();
+				PrintConfig::GetInstance()->SetIsModelExecuted(true);
+			
+		}
+		catch (string msg)
+		{
+			UTILITY_API->DeleteProgressBar(true);
+			Logger::Error("DesignSuite -> Print Exception - " + msg);
+			UTILITY_API->DisplayMessageBox(msg);
+			this->show();
+		}
+		catch (exception & e)
+		{
+			UTILITY_API->DeleteProgressBar(true);
+			Logger::Error("DesignSuite -> Print Exception - " + string(e.what()));
+			UTILITY_API->DisplayMessageBox(string(e.what()));
+			this->show();
+		}
+		catch (const char* msg)
+		{
+			UTILITY_API->DeleteProgressBar(true);
+			wstring wstr(msg, msg + strlen(msg));
+			UTILITY_API->DisplayMessageBoxW(wstr);
+			Logger::Error("DesignSuite -> Print Exception - " + string(msg));
 			this->show();
 		}
 	}
@@ -987,6 +1033,21 @@ namespace CLOVise
 	}
 
 	/*
+	* Description - ClickedSearchPrints() for execute the functionality, when the click of Color button.
+	* Clear all fields items in the ColorSearch UI.
+	* Parameter -
+	* Exception - exception, Char *
+	* Return -
+	*/
+	void CLOViseSuite::onClickedSearchPrints()
+	{
+		Logger::Info("DesignSuite -> Initialize ColorSearch-> Start");
+		Configuration::GetInstance()->SetCurrentScreen(PRINT_SEARCH_CLICKED);
+		//Configuration::GetInstance()->SetIsUpdateColorClicked(false);
+		ExecutePrintModule();
+		Logger::Info("DesignSuite -> Initialize ColorSearch-> Start");
+	}
+	/*
 	* Description - ClickedSearchSamples() for execute the functionality, when the click of Sample button.
 	* Clear all fields items in the ColorSearch UI.
 	* Parameter -
@@ -1229,6 +1290,7 @@ namespace CLOVise
 			QObject::connect(ui_searchMaterial, SIGNAL(clicked()), this, SLOT(onMaterialSearch()));
 			QObject::connect(ui_searchProduct, SIGNAL(clicked()), this, SLOT(onClickedSearchProd()));
 			QObject::connect(ui_searchColor, SIGNAL(clicked()), this, SLOT(onClickedSearchColors()));
+			QObject::connect(ui_searchPrint, SIGNAL(clicked()), this, SLOT(onClickedSearchPrints()));
 			//QObject::connect(ui_searchDocument, SIGNAL(clicked()), this, SLOT(onClickedSearchDocument()));
 			//QObject::connect(PublishProduct, SIGNAL(clicked()), this, SLOT(onClickedPublishToPLM()));
 			QObject::connect(ui_createProductButton, SIGNAL(clicked()), this, SLOT(onClickedCreateProduct()));
@@ -1245,6 +1307,7 @@ namespace CLOVise
 			QObject::disconnect(ui_searchMaterial, SIGNAL(clicked()), this, SLOT(onMaterialSearch()));
 			QObject::disconnect(ui_searchProduct, SIGNAL(clicked()), this, SLOT(onClickedSearchProd()));
 			QObject::disconnect(ui_searchColor, SIGNAL(clicked()), this, SLOT(onClickedSearchColors()));
+			QObject::disconnect(ui_searchPrint, SIGNAL(clicked()), this, SLOT(onClickedSearchPrints()));
 			//QObject::disconnect(ui_searchDocument, SIGNAL(clicked()), this, SLOT(onClickedSearchDocument()));
 			//QObject::disconnect(PublishProduct, SIGNAL(clicked()), this, SLOT(onClickedPublishToPLM()));
 			QObject::disconnect(ui_createProductButton, SIGNAL(clicked()), this, SLOT(onClickedCreateProduct()));

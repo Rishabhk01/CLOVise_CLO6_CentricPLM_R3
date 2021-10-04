@@ -21,7 +21,7 @@
 
 using namespace std;
 
-enum currentScreenSelected { COLOR_SEARCH_CLICKED, SEARCH_PRODUCT_CLICKED, COPY_PRODUCT_CLICKED, CREATE_PRODUCT_CLICKED, UPDATE_PRODUCT_CLICKED, CREATE_MATERIAL_CLICKED, SEARCH_MATERIAL_CLICKED, UPDATE_MATERIAL_CLICKED};
+enum currentScreenSelected {PRINT_SEARCH_CLICKED, COLOR_SEARCH_CLICKED, SEARCH_PRODUCT_CLICKED, COPY_PRODUCT_CLICKED, CREATE_PRODUCT_CLICKED, UPDATE_PRODUCT_CLICKED, CREATE_MATERIAL_CLICKED, SEARCH_MATERIAL_CLICKED, UPDATE_MATERIAL_CLICKED};
 const QString PLM_NAME = "Centric 8";
 
 #define FRONT_VIEW 0
@@ -72,6 +72,7 @@ const QString POWERED_BY_IMAGE_WHITE_PATH = ":/CLOVise/PLM/Images/img_bi_white_p
 
 const QString FABRIC_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_fabric_over.svg";
 const QString COLOR_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_color_over.svg";
+const QString PRINT_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_print_over.svg";
 const QString DOCUMENT_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_3d_over.svg";
 const QString PRODUCT_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_product_over.svg";
 const QString PUBLISH_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_goto_over.svg";
@@ -165,6 +166,7 @@ const string USER_FULL_NAME_KEY = "fullName";
 const string MAX_STYLE_SEARCH_LIMIT = "maximumStyleSearchResults";
 const string MAX_MATERIAL_SEARCH_LIMIT = "maximumMaterialSearchResults";
 const string MAX_COLOR_SEARCH_LIMIT = "maximumColorSearchResults";
+const string MAX_PRINT_SEARCH_LIMIT = "maximumPrintSearchResults";
 const string MAX_REF_ATT_SEARCH_LIMIT = "maximuRefAttributeValues";
 
 /* PLM search functionality Constants End. */
@@ -374,6 +376,15 @@ const string COLOR_SEARCH_ACTIVITY = "FIND_COLOR";
 const string COLOR_SWATCH_NAME = "PLM Solid Colors";
 const QString RGB_TOOLTIP_KEY = "RGB Value: ";
 
+/*PLMPrint */
+const string PLM_PRINT_FILE_NAME = "PLM_PRINT_SEARCH.json";
+const string PLM_PRINT_RESULT_FILE = "PLM_PRINT_RESULTS.json";
+const string PLM_PRINT_VIEW_FILE = "PLM_PRINT_VIEW.json";
+const string PRINT_ROOT_TYPE = "Print";
+const string PRINT_MODULE = "Print";
+const string PRINT_SEARCH_ACTIVITY = "FIND_PRINT";
+
+
 /*PLMMaterial */
 const string PLMMATERIAL_FILE_NAME = "PLMMaterialFilter.json";
 const string PLM_MATERIAL_SEARCH_FILE_NAME = "PLM_MATERIAL_SEARCH.json";
@@ -571,8 +582,10 @@ const QString SIDE_MENU_TRIM_ID = "TRIM";
 const QString SIDE_MENU_COLOR_ID = "COLOR";
 const QString SIDE_MENU_PRODUCT_ID = "PRODUCT";
 const QString SIDE_MENU_MATERIAL_ID = "MATERIAL";
+const QString SIDE_MENU_PRINT_ID = "PRINT";
 const QString MATERIAL_DATA_ID_KEY = "Material ";
 const QString COLOR_DATA_ID_KEY = "Color ";
+const QString PRINT_DATA_ID_KEY = "Print & Designs ";
 const QString PRODUCT_DATA_ID_KEY = "Product ";
 const QString FABRIC_DATA_ID_KEY = "Fabric";
 const QString DOCUMENT_DATA_ID_KEY = "Document";

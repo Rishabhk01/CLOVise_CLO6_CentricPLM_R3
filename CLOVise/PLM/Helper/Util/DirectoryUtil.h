@@ -27,6 +27,7 @@ public:
 	static const string GetStyleAttachmentDirectory();
 	static const string GetTrimAssetsDirectory();
 	static const string GetColorsAssetsDirectory();
+	static const string GetPrintAssetsDirectory();
 	static const string GetPLMPluginDirectory();
 	static const string GetLogFilePath();
 	static const string GetCLOPLMPluginConfigJson();

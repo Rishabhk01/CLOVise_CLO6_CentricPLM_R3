@@ -47,6 +47,7 @@ namespace CLOVise {
 		bool ValidateUpdateMaterial();
 		bool ValidateUpdateProduct();
 		void ExecuteColorModule();
+		void ExecutePrintModule();
 		void ExecuteMaterialModule();
 		//void ExecuteDocumentModule();
 		//void ExecuteSampleModule();
@@ -79,5 +80,6 @@ namespace CLOVise {
 		//void onClickedSearchSamples();
 		void onClickedCopyProduct();
 		//void onClickedSubmitSample();
+		void onClickedSearchPrints();
 	};
 }
