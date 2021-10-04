@@ -417,30 +417,27 @@ namespace CLOVise
 		this->hide();
 		try
 		{
-			//GenericPlugin::Destroy();
-			//GenericPlugin::GetInstance()->exec();
 			if (IsModuleExecutable("Color")) 
 			{
-				//PLMColorSearch::Destroy();
-				//RESTAPI::SetProgressBarData(18, "Loading Color Search", true);
-				//ColorConfig::GetInstance()->GetColorFieldsJSON();
-				//ColorConfig::GetInstance()->GetColorConfigJSON();
+				int isFromConstructor = false;
 				if (!ColorConfig::GetInstance()->GetIsModelExecuted())
-					ColorConfig::GetInstance()->InitializeColorData();
-				/*if (ColorConfig::GetInstance()->GetIsModelExecuted())
 				{
-					RESTAPI::SetProgressBarData(20, "Loading Color Search", true);
-					UTILITY_API->SetProgress("Loading Color Search", 50);
-				}*/
+					ColorConfig::GetInstance()->InitializeColorData();
+					isFromConstructor = true;
+				}
+				else
+					PLMColorSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
+
+				if (ColorConfig::GetInstance()->m_colorLoggedOut && isFromConstructor)
+				{
+					ColorConfig::GetInstance()->m_colorLoggedOut = false;
+					PLMColorSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
+				}				
 				PLMColorSearch::GetInstance()->setModal(true);
-				/*if (ColorConfig::GetInstance()->GetIsModelExecuted())
-					UTILITY_API->SetProgress("Loading Color Search", 100);*/
-				UIHelper::ClearAllFieldsForSearch(PLMColorSearch::GetInstance()->GetTreewidget(0));
-				UIHelper::ClearAllFieldsForSearch(PLMColorSearch::GetInstance()->GetTreewidget(1));
+				
+				UTILITY_API->DeleteProgressBar(true);
 				PLMColorSearch::GetInstance()->exec();
-				//RESTAPI::SetProgressBarData(0, "", false);
 				ColorConfig::GetInstance()->SetIsModelExecuted(true);
-				//ColorConfig::GetInstance()->isModelExecuted = true;
 			}
 		}
 		catch (string msg)
@@ -475,7 +472,7 @@ namespace CLOVise
 			auto startTime = std::chrono::high_resolution_clock::now();
 			if (IsModuleExecutable("Material"))
 			{
-				
+				int isFromConstructor = false;
 				Configuration::GetInstance()->SetProgressBarProgress(0);
 				UTILITY_API->CreateProgressBar();
 				Configuration::GetInstance()->SetProgressBarProgress(qrand() % 101);
@@ -484,10 +481,18 @@ namespace CLOVise
 				if (!MaterialConfig::GetInstance()->GetIsModelExecuted())
 				{
 					MaterialConfig::GetInstance()->InitializeMaterialData();
+					isFromConstructor = true;
+				}
+				else
+					PLMMaterialSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
+
+				if (MaterialConfig::GetInstance()->m_materialLoggedOut && isFromConstructor)
+				{
+					MaterialConfig::GetInstance()->m_materialLoggedOut = false;
+					PLMMaterialSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
 				}
 				MaterialConfig::GetInstance()->SetIsRadioButton(false);				
-				PLMMaterialSearch::GetInstance()->setModal(true);
-				PLMMaterialSearch::GetInstance()->ClearAllFields();
+				PLMMaterialSearch::GetInstance()->setModal(true);				
 				UTILITY_API->DeleteProgressBar(true);
 				PLMMaterialSearch::GetInstance()->exec();
 				auto finishTime = std::chrono::high_resolution_clock::now();
@@ -642,11 +647,18 @@ namespace CLOVise
 				{
 					CreateProduct::GetInstance()->GetUpdatedColorwayNames();
 				}
-				CreateProduct::GetInstance()->addCreateProductDetailsWidgetData();
 				CreateProduct::GetInstance()->setModal(true);
 				//if (PublishToPLMData::GetInstance()->isModelExecuted)
 				//	UTILITY_API->SetProgress("Loading Create Product to PLM", 100);				
 				UTILITY_API->DeleteProgressBar(true);
+				
+				if (PublishToPLMData::GetInstance()->m_createProductLoggedOut)
+				{
+					PublishToPLMData::GetInstance()->m_createProductLoggedOut = false;
+					CreateProduct::GetInstance()->DrawCriteriaWidget(true);
+				}
+				if (PublishToPLMData::GetInstance()->GetIsModelExecuted())
+					CreateProduct::GetInstance()->DrawCriteriaWidget(false);
 				CreateProduct::GetInstance()->exec();
 				//UTILITY_API->DeleteProgressBar(true);
 				PublishToPLMData::GetInstance()->SetIsModelExecuted(true);
@@ -738,32 +750,29 @@ namespace CLOVise
 		{
 			if (IsModuleExecutable("CreateMaterial"))
 			{
-
-				/*if (CreateMaterialConfig::GetInstance()->isModelExecuted)
-				{*/
+				int isFromConstructor = false;
 				Configuration::GetInstance()->SetProgressBarProgress(0);
 				UTILITY_API->CreateProgressBar();
 				RESTAPI::SetProgressBarData(20, "Loading Create " + Configuration::GetInstance()->GetLocalizedMaterialClassName() + "..", true);
 				UTILITY_API->SetProgress("Loading Create " + Configuration::GetInstance()->GetLocalizedMaterialClassName() + "..", (qrand() % 101));
-				//}
-				//CreateMaterial::Destroy();
+				
 				if (!CreateMaterialConfig::GetInstance()->GetIsModelExecuted())
-				
+				{
 					MaterialConfig::GetInstance()->GetMaterialConfigJSON();
-					CreateMaterial::GetInstance()->setModal(true);
+					isFromConstructor = true;
+				}
+				else
+					CreateMaterial::GetInstance()->DrawCriteriaWidget(isFromConstructor);
 
-				
-				//if (CreateMaterialConfig::GetInstance()->isModelExecuted)
-				//UTILITY_API->SetProgress("Loading Create Material to PLM", 100);
+				if (CreateMaterialConfig::GetInstance()->m_createMaterialLoggedOut && isFromConstructor)
+				{
+					CreateMaterialConfig::GetInstance()->m_createMaterialLoggedOut = false;
+					CreateMaterial::GetInstance()->DrawCriteriaWidget(isFromConstructor);
+				}
+				CreateMaterial::GetInstance()->setModal(true);
 				UTILITY_API->DeleteProgressBar(true);
-				//if (!CreateMaterial::GetInstance()->m_isSaveClicked)
-				//{
-				//	//UIHelper::ClearAllFieldsForSearch(CreateMaterial::GetInstance()->GetTreewidget(0));
-				//	//UIHelper::ClearAllFieldsForSearch(CreateMaterial::GetInstance()->GetTreewidget(1));
-				//}
 				CreateMaterial::GetInstance()->exec();
 				CreateMaterialConfig::GetInstance()->SetIsModelExecuted(true);
-				//CreateMaterialConfig::GetInstance()->isModelExecuted = true;
 			}
 		}
 		catch (string msg)
@@ -821,10 +830,9 @@ namespace CLOVise
 					MaterialConfig::GetInstance()->SetIsRadioButton(true);
 					Configuration::GetInstance()->SetCurrentScreen(UPDATE_MATERIAL_CLICKED);
 
-					PLMMaterialSearch::GetInstance()->setModal(true);
+					PLMMaterialSearch::GetInstance()->setModal(true);					
+					PLMMaterialSearch::GetInstance()->DrawSearchWidget(false);
 					UTILITY_API->DeleteProgressBar(true);
-					//UIHelper::ClearAllFieldsForSearch(PLMMaterialSearch::GetInstance()->GetTreewidget(0));
-					//UIHelper::ClearAllFieldsForSearch(PLMMaterialSearch::GetInstance()->GetTreewidget(1));
 					PLMMaterialSearch::GetInstance()->exec();
 				}
 			}
@@ -921,13 +929,24 @@ namespace CLOVise
 				//{
 					//UpdateProduct::GetInstance()->Destroy();
 				//}
-				
+				bool isFromConstructor = false;
 				Configuration::GetInstance()->SetProgressBarProgress(0);
 				UTILITY_API->CreateProgressBar();
 				Configuration::GetInstance()->SetProgressBarProgress(qrand() % 101);
 				RESTAPI::SetProgressBarData(20, "Loading " + Configuration::GetInstance()->GetLocalizedStyleClassName() + " Search", true);
 				if (!ProductConfig::GetInstance()->GetIsModelExecuted())
+				{
 					ProductConfig::GetInstance()->InitializeProductData();
+					isFromConstructor = true;
+				}
+				else
+					PLMProductSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
+
+				if (ProductConfig::GetInstance()->m_productlLoggedOut && isFromConstructor)
+				{
+					ProductConfig::GetInstance()->m_productlLoggedOut = false;
+					PLMProductSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
+				}
 				ProductConfig::GetInstance()->m_isShow3DAttWidget = true;
 				/*	if (ProductConfig::GetInstance()->isModelExecuted)
 					{*/
@@ -935,7 +954,7 @@ namespace CLOVise
 					//UTILITY_API->SetProgress("Loading Style Search", (qrand() % 101));
 					//}
 				PLMProductSearch::GetInstance()->setModal(true);
-				PLMProductSearch::GetInstance()->ClearAllFields();
+				//PLMProductSearch::GetInstance()->ClearAllFields();
 				//UIHelper::ClearAllFieldsForSearch(PLMProductSearch::GetInstance()->GetTreewidget(0));
 				//UIHelper::ClearAllFieldsForSearch(PLMProductSearch::GetInstance()->GetTreewidget(1));
 				UTILITY_API->DeleteProgressBar(true);
@@ -1133,6 +1152,7 @@ namespace CLOVise
 	void CLOViseSuite::onClickedLogout()
 	{
 		bool loggedOut = false;
+		Logger::Info("CLOViseSuite::onClickedLogout -> Start");
 		try {
 			if (CVLicenseHelper::GetInstance()->ValidateCVLicenseLogOut(CLOPLMSignIn::GetInstance()->GetID().toStdString()))
 			{
@@ -1143,24 +1163,22 @@ namespace CLOVise
 				Configuration::GetInstance()->SetPLMVersion("Not Available");
 				PLMSignin::Destroy();
 				CLOPLMSignIn::Destroy();
+				Logger::Info("DesignSuite -> CLOPLMSignIn -> after");
+				ColorConfig::GetInstance()->ResetColorConfig();
+				Logger::Info("DesignSuite -> ResetColorConfig -> after");
+				MaterialConfig::GetInstance()->ResetMaterialConfig();
+				Logger::Info("DesignSuite -> ResetMaterialConfig -> after");
+				CreateMaterialConfig::GetInstance()->ResetCreateConfig();
+				Logger::Info("DesignSuite -> ResetCreateConfig -> after");
+				ProductConfig::GetInstance()->ResetProductConfig();
+				Logger::Info("DesignSuite -> ResetColorConfig -> after");
 
-				//PLMColorSearch::Destroy();
-				PLMColorResults::GetInstance()->Destroy();
-				ColorConfig::Destroy();
-
-				MaterialConfig::Destroy();
-				//PLMMaterialSearch::Destroy();
-				CreateMaterial::Destroy();
-				PLMMaterialResult::Destroy();
-				CreateMaterialConfig::Destroy();
-
-				PLMProductResults::Destroy();
-				CreateProduct::Destroy();
+				Logger::Info("DesignSuite -> CreateProduct -> after");
 				//CopyProduct::Destroy();
 				//UpdateProduct::GetInstance()->Destroy();
-				ProductConfig::Destroy();
-				PublishToPLMData::Destroy();
-
+				
+				PublishToPLMData::GetInstance()->ResetPublishData();
+				Logger::Info("DesignSuite -> ResetPublishData -> after");
 				/*ColorConfig::Destroy();
 				PLMDocumentSearch::Destroy();
 				PLMDocumentResults::Destroy();
@@ -1169,19 +1187,20 @@ namespace CLOVise
 				PLMSampleResult::Destroy();
 				SampleConfig::Destroy();
 				CreateProduct::Destroy();
-				PublishToPLMData::Destroy();
+				PublishToPLMData::Destroy();*/
 				if (FormatHelper::HasContent(UTILITY_API->GetProjectName()) && DEFAULT_3DMODEL_NAME.find(UTILITY_API->GetProjectName()) == string::npos)
 				{
 					string currentProjectPath = UTILITY_API->GetProjectFilePath();
 					string currentProjectName = UTILITY_API->GetProjectName();
 					UIHelper::Rename3DWindowTitle(currentProjectPath, currentProjectName, "");
-				}*/
+				}
 				UTILITY_API->DeleteProgressBar(false);
 				CVDisplayMessageBox DownloadDialogObject;
 				DownloadDialogObject.DisplyMessage("Logged-out Successfully.");
 				DownloadDialogObject.setModal(true);
 				DownloadDialogObject.exec();
 				Logger::Logger("DesignSuite -> Logged-out Successfully.");
+				Logger::Info("CLOViseSuite::onClickedLogout -> End");
 				Destroy();
 			}
 		}

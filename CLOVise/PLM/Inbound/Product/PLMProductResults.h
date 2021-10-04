@@ -38,7 +38,6 @@ namespace CLOVise
 
 	public:
 		static PLMProductResults* GetInstance();
-		static void Destroy();
 		//void setDataFromResponse(json _resultJson);
 
 		void DownloadClicked();
@@ -53,6 +52,8 @@ namespace CLOVise
 		void ClickedPreviousButton();
 		void TableRadioButtonSelected();
 		//void IconRadioButtonSelected();
+		void DrawResultWidget(bool _isFromConstructor);
+
 		QPushButton *m_downloadButton;
 	private:
 		

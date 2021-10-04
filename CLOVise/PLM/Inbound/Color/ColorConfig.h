@@ -28,9 +28,9 @@ class ColorConfig
 		bool m_isModelExecuted = false;
 		int m_selectedViewIdx;
 		bool m_isDateEditPresent = false;
-
+		int m_sortedColumnNumber;
+		bool m_colorLoggedOut = false;
 		static ColorConfig* GetInstance();
-		static void	Destroy();
 		json m_colorFieldsJson = json::object();
 
 		void InitializeColorData();
@@ -74,6 +74,7 @@ class ColorConfig
 		int GetResultsCount();
 		json GetColorConfigJSONFromFile();
 		string GetMaximumLimitForColorResult();
+		void ResetColorConfig();
 
 
 	private:

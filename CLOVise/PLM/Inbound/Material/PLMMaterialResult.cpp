@@ -40,16 +40,7 @@ namespace CLOVise
 			_instance = new PLMMaterialResult();
 		return _instance;
 	}
-
-	void PLMMaterialResult::Destroy()
-	{
-		if (_instance)
-		{
-			//delete _instance;
-			_instance = NULL;
-		}
-	}
-
+	
 	PLMMaterialResult::PLMMaterialResult(QWidget* parent)
 		: MVDialog(parent)
 	{
@@ -140,53 +131,20 @@ namespace CLOVise
 			resultTable->setPalette(pal);
 			iconTable = new QListWidget();
 			ui_resultTableLayout->addWidget(resultTable);
-			//setDataFromResponse(MaterialConfig::GetInstance()->GetSearchCriteriaJSON());
-			m_materialResults = MaterialConfig::GetInstance()->GetMaterialResultsSON();
-			m_typename= MaterialConfig::GetInstance()->GetTypename();
-			//m_maxResultsCount= MaterialConfig::GetInstance()->GetMaxResultCount();
-			m_resultsCount= MaterialConfig::GetInstance()->GetResultsCount();
-			/*if (m_resultsCount > m_maxResultsCount)
-				throw "Maximum results limit exceeded. Please refine your search.";*/
-			CVWidgetGenerator::PopulateValuesOnResultsUI(nextButton, m_noOfResultLabel, totalPageLabel, m_perPageResultComboBox, Configuration::GetInstance()->GetResultsPerPage(), m_resultsCount);
-			resultTable->setEnabled(false);
-			m_tabViewButton->setEnabled(false);
-
-			if (MaterialConfig::GetInstance()->GetIsRadioButton()) {
-				m_deSelectAllButton->hide();
-				//CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, m_materialResults, MaterialConfig::GetInstance()->GetMaterialViewJSON(), "Material Image", m_typename, true, MaterialConfig::GetInstance()->GetSelectedViewIdx(), MaterialConfig::GetInstance()->GetAttScopes(), true, false);
-				CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_materialResults, MaterialConfig::GetInstance()->GetMaterialViewJSON(), IMAGE_DISPLAY_NAME, m_typename, true, MaterialConfig::GetInstance()->GetSelectedViewIdx(), MaterialConfig::GetInstance()->GetAttScopes(), true, false, MaterialConfig::GetInstance()->GetMaterialViewJSON());
-			}
-			else {
-				m_deSelectAllButton->show();
-				CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_materialResults, MaterialConfig::GetInstance()->GetMaterialViewJSON(), IMAGE_DISPLAY_NAME, m_typename, true, MaterialConfig::GetInstance()->GetSelectedViewIdx(), MaterialConfig::GetInstance()->GetAttScopes(), false, false, MaterialConfig::GetInstance()->GetMaterialViewJSON());
-				//CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, m_materialResults, MaterialConfig::GetInstance()->GetMaterialViewJSON(), "Material Image", m_typename, true, MaterialConfig::GetInstance()->GetSelectedViewIdx(), MaterialConfig::GetInstance()->GetAttScopes(), false, false);
-			}
-			CVWidgetGenerator::UpdateTableAndIconRows(resultTable, currPageLabel, m_perPageResultComboBox, m_resultsCount, false);
-			CVWidgetGenerator::UpdateTableAndIconRows(iconTable, currPageLabel, m_perPageResultComboBox, m_resultsCount);
-			setHeaderToolTip();
-			resultTable->setEnabled(true);
-			connectSignalSlots(true);
-			if (MaterialConfig::GetInstance()->GetIsRadioButton()) {
-				AddConnectorForRadioButton();
-			}
-			else {
-				AddConnectorForCheckbox();
-			}
+			DrawResultWidget(true);
+			connectSignalSlots(true);			
 			RESTAPI::SetProgressBarData(0, "", false);
 		}
 		catch (string msg)
 		{
-			Destroy();
 			throw msg;
 		}
 		catch (exception& e)
 		{
-			Destroy();
 			throw e;
 		}
 		catch (const char* msg)
 		{
-			Destroy();
 			throw msg;
 		}
 		Logger::Info("PLMMaterialResult -> Constructor() -> End");
@@ -195,7 +153,7 @@ namespace CLOVise
 
 	PLMMaterialResult::~PLMMaterialResult()
 	{
-		Destroy();
+
 	}
 
 	/*
@@ -453,10 +411,8 @@ namespace CLOVise
 		CLOVise::PLMMaterialSearch::GetInstance()->setModal(true);
 		RESTAPI::SetProgressBarData(0, "", false);
 		CLOVise::PLMMaterialSearch::GetInstance()->show();
-		//PLMMaterialResult::Destroy();
 		
 		Logger::Info("PLMMaterialResult -> backButtonClicked() -> End");
-		Destroy();
 	}
 
 	/*
@@ -752,18 +708,21 @@ namespace CLOVise
 		Logger::Info("PLMMaterialResult -> horizontalHeaderClicked() -> Start");
 		Logger::Debug("Column.." + to_string(_column));
 		if (_column == CHECKBOX_COLUMN || _column == IMAGE_COLUMN)
+		{
 			resultTable->setSortingEnabled(false);
+			resultTable->horizontalHeader()->setSortIndicatorShown(false);
+		}
 		else
 		{
 			resultTable->setSortingEnabled(true);
+			resultTable->horizontalHeader()->setSortIndicatorShown(true);
 			m_isResultTableSorted = true;
-			if (MaterialConfig::GetInstance()->GetIsRadioButton()) {
+			if (MaterialConfig::GetInstance()->GetIsRadioButton()) 
 				AddConnectorForRadioButton();
-			}
-			else {
+			else
 				AddConnectorForCheckbox();
-			}
-			CVWidgetGenerator::UpdateTableAndIconRows(resultTable, currPageLabel, m_perPageResultComboBox, m_resultsCount, true);
+
+			CVWidgetGenerator::UpdateTableAndIconRows(resultTable, currPageLabel, m_perPageResultComboBox, m_resultsCount, false);
 		}
 		Logger::Info("PLMMaterialResult -> horizontalHeaderClicked() -> End");
 	}
@@ -877,16 +836,15 @@ namespace CLOVise
 					RESTAPI::SetProgressBarData(20, "Loading Update Material..", true);
 					UTILITY_API->SetProgress("Loading Update Material..", (qrand() % 101));
 					MaterialConfig::GetInstance()->InitializeMaterialData();
+					UpdateMaterial::GetInstance()->UpdateMaterialWidget(false);
 					UpdateMaterial::GetInstance()->setModal(true);
+					UTILITY_API->DeleteProgressBar(true);
 					UpdateMaterial::GetInstance()->exec();
 				}
 				if (Configuration::GetInstance()->GetCloseResultsDialogue())
 				{
 					this->close();
-					//PLMMaterialSearch::Destroy();
-					UIHelper::ClearAllFieldsForSearch(PLMMaterialSearch::GetInstance()->GetTreewidget(0));
-					UIHelper::ClearAllFieldsForSearch(PLMMaterialSearch::GetInstance()->GetTreewidget(1));
-					this->Destroy();
+					PLMMaterialSearch::GetInstance()->DrawSearchWidget(false);
 				}
 				else
 				{
@@ -904,9 +862,7 @@ namespace CLOVise
 			if (Configuration::GetInstance()->GetCloseResultsDialogue() && rowsSelected)
 			{
 				this->close();
-				UIHelper::ClearAllFieldsForSearch(PLMMaterialSearch::GetInstance()->GetTreewidget(0));
-				UIHelper::ClearAllFieldsForSearch(PLMMaterialSearch::GetInstance()->GetTreewidget(1));
-				this->Destroy();
+				PLMMaterialSearch::GetInstance()->DrawSearchWidget(false);
 			}
 			else
 			{
@@ -923,9 +879,7 @@ namespace CLOVise
 			if (Configuration::GetInstance()->GetCloseResultsDialogue() && rowsSelected)
 			{
 				this->close();
-				UIHelper::ClearAllFieldsForSearch(PLMMaterialSearch::GetInstance()->GetTreewidget(0));
-				UIHelper::ClearAllFieldsForSearch(PLMMaterialSearch::GetInstance()->GetTreewidget(1));
-				this->Destroy();
+				PLMMaterialSearch::GetInstance()->DrawSearchWidget(false);
 			}
 			else
 			{
@@ -943,9 +897,7 @@ namespace CLOVise
 			if (Configuration::GetInstance()->GetCloseResultsDialogue() && rowsSelected)
 			{
 				this->close();
-				UIHelper::ClearAllFieldsForSearch(PLMMaterialSearch::GetInstance()->GetTreewidget(0));
-				UIHelper::ClearAllFieldsForSearch(PLMMaterialSearch::GetInstance()->GetTreewidget(1));
-				this->Destroy();
+				PLMMaterialSearch::GetInstance()->DrawSearchWidget(false);
 			}
 			else
 			{
@@ -954,5 +906,40 @@ namespace CLOVise
 			}
 		}
 		Logger::Info("PLMMaterialResult -> downloadColorResult() -> End");
+	}
+
+	void PLMMaterialResult::DrawResultWidget(bool _isFromConstructor)
+	{
+		Logger::Info("PLMMaterialResult -> DrawResultWidget() -> Start");
+		m_materialResults = MaterialConfig::GetInstance()->GetMaterialResultsSON();
+		m_typename = MaterialConfig::GetInstance()->GetTypename();
+		m_resultsCount = MaterialConfig::GetInstance()->GetResultsCount();
+		resultTable->clearContents();
+		CVWidgetGenerator::PopulateValuesOnResultsUI(nextButton, m_noOfResultLabel, totalPageLabel, m_perPageResultComboBox, Configuration::GetInstance()->GetResultsPerPage(), m_resultsCount);
+		resultTable->setEnabled(false);
+		m_tabViewButton->setEnabled(false);
+		if (MaterialConfig::GetInstance()->GetIsRadioButton())
+		{
+			m_deSelectAllButton->hide();
+			CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_materialResults, MaterialConfig::GetInstance()->GetMaterialViewJSON(), IMAGE_DISPLAY_NAME, m_typename, true, MaterialConfig::GetInstance()->GetSelectedViewIdx(), MaterialConfig::GetInstance()->GetAttScopes(), true, false, MaterialConfig::GetInstance()->GetMaterialViewJSON());
+		}
+		else 
+		{
+			m_deSelectAllButton->show();
+			CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_materialResults, MaterialConfig::GetInstance()->GetMaterialViewJSON(), IMAGE_DISPLAY_NAME, m_typename, true, MaterialConfig::GetInstance()->GetSelectedViewIdx(), MaterialConfig::GetInstance()->GetAttScopes(), false, false, MaterialConfig::GetInstance()->GetMaterialViewJSON());
+		}
+		CVWidgetGenerator::UpdateTableAndIconRows(resultTable, currPageLabel, m_perPageResultComboBox, m_resultsCount, _isFromConstructor);
+		CVWidgetGenerator::UpdateTableAndIconRows(iconTable, currPageLabel, m_perPageResultComboBox, m_resultsCount);
+		setHeaderToolTip();
+		resultTable->setEnabled(true);
+		m_totalSelected.clear();
+		m_iconsSelected.clear();
+		horizontalHeaderClicked(MaterialConfig::GetInstance()->m_sortedColumnNumber);
+		if (MaterialConfig::GetInstance()->GetIsRadioButton())
+			AddConnectorForRadioButton();
+		else
+			AddConnectorForCheckbox();
+		m_downloadButton->setText("Download");
+		Logger::Info("PLMMaterialResult -> DrawResultWidget() -> End");
 	}
 }

@@ -35,8 +35,14 @@ namespace CLOVise
 
 	public:
 		static PLMMaterialResult* GetInstance();
-		static void Destroy();
 		//void setDataFromResponse(json _resultJson);
+
+		json m_materialResults = json::array();
+		string m_typename = "";
+		int m_maxResultsCount = 0;
+		int m_resultsCount = 0;
+		bool m_isUpdateMaterialClicked = false;
+
 		void updateTableForTabView();
 		void updateTableForIconView();
 		void DownloadMaterialResult();
@@ -51,11 +57,7 @@ namespace CLOVise
 		void IconCheckBoxSelected();
 		void TableRadioButtonSelected();
 		
-		json m_materialResults = json::array();
-		string m_typename = "";
-		int m_maxResultsCount = 0;
-		int m_resultsCount = 0;
-		bool m_isUpdateMaterialClicked = false;
+		void DrawResultWidget(bool _isFromConstructor);
 
 	private:
 

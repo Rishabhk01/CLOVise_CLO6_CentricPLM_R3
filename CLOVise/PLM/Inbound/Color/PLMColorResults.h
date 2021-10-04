@@ -34,7 +34,6 @@ namespace CLOVise
 
 	public:
 		static PLMColorResults* GetInstance();
-		static void Destroy();
 		void setDataFromResponse(json _resultJson);
 		void updateTableForTabView();
 		void updateTableForIconView();
@@ -48,9 +47,7 @@ namespace CLOVise
 		void ClickedNextButton();
 		void ClickedPreviousButton();
 		void TableCheckBoxSelected();
-		//void IconCheckBoxSelected();
-		//json DownloadResults(QStringList _downloadIdList, string _module, json _previewjsonarray);
-
+		void DrawResultWidget(bool _isFromConstructor);
 	private:
 		 
 		PLMColorResults(QWidget* parent = nullptr);

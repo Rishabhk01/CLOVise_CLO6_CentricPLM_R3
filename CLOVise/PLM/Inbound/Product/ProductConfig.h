@@ -28,11 +28,11 @@ public:
 	int m_selectedViewIdx;
 	bool m_isDateEditPresent = false;
 	bool m_isShow3DAttWidget = false;
-
+	int m_sortedColumnNumber;
+	bool m_productlLoggedOut = false;
 	json m_productFieldsJson = json::object();
 
 	static ProductConfig* GetInstance();
-	static void	Destroy();
 	void InitializeProductData();
 	
 	//void SetProductConfigJSON(string _module, string _rootType, bool _initDepedentJsons);
@@ -56,6 +56,7 @@ public:
 	map<string, string> GetAttributeIdAndValueMap(string _restApi);
 	void GetAttributeDisplayNames(json& _materialResults);
 	string GetDisplayName(map<string, string> _map, string _Id);
+	void ResetProductConfig();
 
 	json m_seasonValuesJson;
 	json GetProductConfigJSON();

@@ -1279,11 +1279,10 @@ namespace CLOVise
 		ColorConfig::GetInstance()->InitializeColorData();
 
 		//ColorConfig::GetInstance()->GetColorConfigJSON();
-		UIHelper::ClearAllFieldsForSearch(PLMColorSearch::GetInstance()->GetTreewidget(0));
-		UIHelper::ClearAllFieldsForSearch(PLMColorSearch::GetInstance()->GetTreewidget(1));
 		PLMColorSearch::GetInstance()->setModal(true);
 		//m_isColorwayHasAccess = true;
 		//PLMColorSearch::GetInstance()->ClearAllFields();
+		PLMColorSearch::GetInstance()->DrawSearchWidget(false);
 		UTILITY_API->DeleteProgressBar(true);
 		PLMColorSearch::GetInstance()->exec();
 		RESTAPI::SetProgressBarData(0, "", false);
@@ -1723,10 +1722,11 @@ namespace CLOVise
 		string colorSpecId;
 		string downloadedPLMColorwayName;
 		ComboBoxItem* comboColorwayItem = new ComboBoxItem();
-		comboColorwayItem->setStyleSheet("QComboBox{max-height: 25px; min-width: 100px;}");
+		comboColorwayItem->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		comboColorwayItem->setFocusPolicy(Qt::StrongFocus);
 		comboColorwayItem->addItems(_colorwayNamesList);
 		comboColorwayItem->setProperty("Id", QString::fromStdString(_objectId));
+		ui_colorwayTable->setColumnWidth(CLO_COLORWAY_COLUMN, 140);
 		if (m_downloadedColorway)
 		{
 			comboColorwayItem->setProperty("IsDownloadedColorway", "1");
@@ -2702,7 +2702,7 @@ namespace CLOVise
 								string labelId;
 								if (colorwayIterator->first == "No Colorway(Default)")
 								{
-
+									Logger::Debug("UpdateProduct -> LinkImagesToColorways () labels:" + colorwayIterator->second.viewLabelMap[i][labelIterator].toStdString());
 									it = m_styleImageLabelsMap.find(colorwayIterator->second.viewLabelMap[i][labelIterator]);
 									if (it != m_styleImageLabelsMap.end())
 										labelId = it->second.toStdString();
@@ -2710,6 +2710,7 @@ namespace CLOVise
 								}
 								else
 								{
+									Logger::Debug("UpdateProduct -> LinkImagesToColorways () labels:" + colorwayIterator->second.viewLabelMap[i][labelIterator].toStdString());
 									it = m_colorwayImageLabelsMap.find(colorwayIterator->second.viewLabelMap[i][labelIterator]);
 									if (it != m_colorwayImageLabelsMap.end())
 										labelId = it->second.toStdString();
@@ -3294,7 +3295,15 @@ namespace CLOVise
 			map<string, QStringList>::iterator it;
 			std::map<QString, QString>::iterator imageLabelMapIterator;
 			map<string, UpdateImageIntent::ColorwayViews> ::iterator mapIterator;
+			Logger::Debug("UpdateProduct -> drawColorwayImageList() -> 6");
 
+			m_colorwayImageLabelsMap = UIHelper::GetImageLabels("Colorway");
+			Configuration::GetInstance()->SetColorwayImageLabels(m_colorwayImageLabelsMap);
+
+			m_styleImageLabelsMap = UIHelper::GetImageLabels("Style");
+			Configuration::GetInstance()->SetStyleImageLabels(m_styleImageLabelsMap);
+
+			Logger::Debug("UpdateProduct -> drawColorwayImageList() -> 7");
 			json attachmentjson = json::parse(attachmentResponse);
 			Logger::Debug("UpdateProduct -> drawColorwayImageList() -> 4");
 			UTILITY_API->SetProgress("Loading colorway images.", (qrand() % 101));
@@ -3316,7 +3325,7 @@ namespace CLOVise
 						FillNonCloImageMap(imageJson, id);
 					}
 				}
-				FillImageIntentIdAndLabeMap(imageJson);
+				FillImageIntentIdAndLabeMap(imageJson, _module);
 			}
 			Logger::Debug("UpdateProduct -> drawColorwayImageList() -> attachmentjson" + to_string(attachmentjson));
 			json imageJson;
@@ -3330,18 +3339,11 @@ namespace CLOVise
 
 				if (colorwayId.compare(QString::fromStdString(_id)) == 0)
 				{
-					FillImageIntentIdAndLabeMap(imageJson);
+					FillImageIntentIdAndLabeMap(imageJson, _module);
 					break;
 				}
 			}
-			Logger::Debug("UpdateProduct -> drawColorwayImageList() -> 6");
-			m_colorwayImageLabelsMap = UIHelper::GetImageLabels("Colorway");
-			Configuration::GetInstance()->SetColorwayImageLabels(m_colorwayImageLabelsMap);
-
-			m_styleImageLabelsMap = UIHelper::GetImageLabels("Style");
-			Configuration::GetInstance()->SetStyleImageLabels(m_styleImageLabelsMap);
-
-			Logger::Debug("UpdateProduct -> drawColorwayImageList() -> 7");
+			
 			UpdateImageIntent::ColorwayViews colorwayView;
 			QStringList nonCloImageIdsList;
 			for (int attachmenAarrayCount = 0; attachmenAarrayCount < attachmentjson.size(); attachmenAarrayCount++)
@@ -3814,12 +3816,18 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 
 	}
 
-	void UpdateProduct::FillImageIntentIdAndLabeMap(json _imageJson)
+	void UpdateProduct::FillImageIntentIdAndLabeMap(json _imageJson, string _module)
 	{
 		Logger::Debug("UpdateProduct -> FillImageIntentIdAndLabeMap() -> Start ");
 		Logger::Debug("UpdateProduct -> FillImageIntentIdAndLabeMap()  " + to_string(_imageJson));
 		QStringList ImageIdlist;
 		map<string, QStringList>::iterator it;
+		map<QString, QString>::iterator itr;
+		std::map<QString, QString> imageLabelsMap;
+		if (_module == "style")
+			imageLabelsMap = m_styleImageLabelsMap;
+		else
+			imageLabelsMap = m_colorwayImageLabelsMap;
 		for (auto& itrValues : _imageJson.items())
 		{
 			QString value = QString::fromStdString(itrValues.value());
@@ -3843,7 +3851,19 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 			else
 				ImageIdlist.append(value);
 
-			list.append(key);
+
+			auto result = std::find_if(imageLabelsMap.begin(), imageLabelsMap.end(),[key](const auto& mo) {return mo.second == key; });
+
+			//getting key based on value 
+			if (result != imageLabelsMap.end())
+			{
+				Logger::Debug("UpdateProduct -> FillImageIntentIdAndLabeMap() -> label: " + result->first.toStdString());
+				list.append(result->first);
+			}	
+			if (key == "default")
+			{
+				list.append(key);
+			}
 
 			m_imageIntentIdAndLabeMap.insert(make_pair(value.toStdString(), list));
 

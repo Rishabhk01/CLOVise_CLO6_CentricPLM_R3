@@ -28,15 +28,6 @@ PublishToPLMData* PublishToPLMData::GetInstance()
 	return _instance;
 }
 
-void  PublishToPLMData::Destroy()
-{
-	if (_instance)
-	{
-		delete _instance;
-		_instance = NULL;
-	}
-}
-
 /*
 * Description - SetDocumentConfigJSON() method used to set document configuration json.
 * Parameter -  string, string, bool.
@@ -159,11 +150,29 @@ string PublishToPLMData::Get3DModelType()
 void PublishToPLMData::SetDocumentFieldsJSON(string _fieldsJsonKey)
 {
 	Logger::Info("PublishToPLMData -> SetDocumentFieldsJSON() start");
-	
+
+	try
+	{
 		string documentFieldsStr = "";
 		GetDocumentConfigJSON();
 		//documentFieldsStr = Helper::GetJSONValue<string>(GetDocumentConfigJSON(), _fieldsJsonKey, false);
-		//m_documentFieldsJson = json::parse(documentFieldsStr);	
+		//m_documentFieldsJson = json::parse(documentFieldsStr);
+	}
+	catch (string msg)
+	{
+		Logger::Error("PublishToPLMData -> SetDocumentFieldsJSON Exception :: " + msg);
+		throw msg;
+	}
+	catch (exception& e)
+	{
+		Logger::Error("PublishToPLMData -> SetDocumentFieldsJSON Exception :: " + string(e.what()));
+		throw e;
+	}
+	catch (const char* msg)
+	{
+		Logger::Error("PublishToPLMData -> SetDocumentFieldsJSON Exception :: " + string(msg));
+		throw msg;
+	}
 	Logger::Info("PublishToPLMData -> SetDocumentFieldsJSON() end");
 	
 }
@@ -777,4 +786,27 @@ void PublishToPLMData::SetIsCreateNewDocument(bool _isNewDocument)
 bool PublishToPLMData::GetIsCreateNewDocument()
 {
 	return m_createNewDocument;
+}
+
+/*
+* Description - ResetPublishData() method is reset the publish data.
+* Parameter -
+* Exception -
+* Return -
+*/
+void PublishToPLMData::ResetPublishData()
+{
+	SetActiveProductId(BLANK);
+	SetActiveProductObjectId(BLANK);
+	SetActiveProductName(BLANK);
+	SetActiveProductStatus(BLANK);
+	SetIsProductOverridden(false);
+	SetActive3DModelMetaData(json::object());
+	Set3DModelObjectId(BLANK);
+	SetDateFlag(false);
+	SetIsCreateNewDocument(false);
+	SetUpdateStyleCacheData(json::object());
+	SetLatestRevision(BLANK);
+	SetIsModelExecuted(false);
+	
 }

@@ -38,7 +38,6 @@ namespace CLOVise
 
 	public:
 		static CreateImageIntent* GetInstance();
-		static void	Destroy();
 		int m_imageQueueTableRowCount;
 		MVTableWidget *m_imageQueueTable;
 		/*void AddColorwayDetails(json _downloadJson);

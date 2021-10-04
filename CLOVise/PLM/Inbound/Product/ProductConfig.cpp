@@ -32,14 +32,6 @@ ProductConfig* ProductConfig::GetInstance()
 	}
 	return _instance;
 }
-void  ProductConfig::Destroy()
-{
-	if (_instance)
-	{
-		delete _instance;
-		_instance = NULL;
-	}
-}
 
 /*
 * Description - SetProductConfigJSON() method used to cache the Product configuration json from rest/file.
@@ -1403,4 +1395,23 @@ void ProductConfig::SetMaximumLimitForStyleResult()
 string ProductConfig::GetMaximumLimitForStyleResult()
 {
 	return m_maxStyleResultsLimit;
+}
+
+/*
+* Description - ResetProductConfig() is to set view json as empty.
+* Parameter -
+* Exception -
+* Return -
+*/
+void ProductConfig::ResetProductConfig()
+{
+	Logger::Info("INFO::ProductConfig: ResetProductConfig()-> Start");
+	m_productConfigJson = nullptr;
+	m_productFieldsJson = nullptr;
+	m_isModelExecuted = false;
+	m_sortedColumnNumber = 0;
+	SetIsModelExecuted(m_isModelExecuted);
+	m_productlLoggedOut = true;
+	PublishToPLMData::GetInstance()->m_createProductLoggedOut = true;
+	Logger::Info("INFO::ProductConfig: ResetProductConfig()-> End");
 }

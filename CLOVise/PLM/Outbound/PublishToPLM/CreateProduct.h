@@ -37,7 +37,6 @@ namespace CLOVise
 
 	public:
 		static CreateProduct* GetInstance();
-		static void	Destroy();
 		void AddColorwayDetails();
 		void ClearAllFields(QTreeWidget* _documentPushToPLMTree);
 		//void SetColorwayDetails(QStringList _downloadIdList, string _module, json _jsonarray);
@@ -49,7 +48,7 @@ namespace CLOVise
 		void UploadStyleThumbnail(string _productId);
 		void GetUpdatedColorwayNames();
 		bool UpdateColorInColorways(QStringList _downloadIdList, json _jsonarray);
-		void addCreateProductDetailsWidgetData();
+		void DrawCriteriaWidget(bool _isFromConstructor);
 		struct ColorwayViews
 		{
 			string viewUploadId[4];
@@ -63,7 +62,7 @@ namespace CLOVise
 		CreateProduct(QWidget* parent = nullptr);
 		virtual ~CreateProduct();
 
-		
+		void addCreateProductDetailsWidgetData();
 		void drawCriteriaWidget(json _documentJson, QTreeWidget* _documentPushToPLMTree_1, QTreeWidget* _documentPushToPLMTree_2, json _metadataJson);
 		void drawWidget(json _feildsJson, QTreeWidget* m_TreeWidget, int _start, int _end);
 		json collectCriteriaFields(QTreeWidget* _documentPushToPLMTree_1, QTreeWidget* _documentPushToPLMTree_2);

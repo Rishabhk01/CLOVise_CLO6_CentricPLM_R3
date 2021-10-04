@@ -36,7 +36,7 @@ namespace CLOVise
 
 	public:
 		static UpdateMaterial* GetInstance();
-		static void	Destroy();
+		void UpdateMaterialWidget(bool _isFromConstructor);
 
 	private:
 		UpdateMaterial(QWidget* parent = nullptr);
