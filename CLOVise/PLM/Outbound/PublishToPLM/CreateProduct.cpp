@@ -2666,6 +2666,13 @@ namespace CLOVise
 		Logger::Info("CreateProduct -> horizontalHeaderClicked() -> End");
 	}
 
+	/*
+	* Description - DrawCriteriaWidget() method is create/reset the create widget.
+	* Parameter - bool
+	* Exception -
+	* Return -
+	*/
+
 	void CreateProduct::DrawCriteriaWidget(bool _isFromConstructor)
 	{
 		Logger::Info("CreateProduct -> DrawCriteriaWidget() -> Start");
@@ -2724,5 +2731,6 @@ namespace CLOVise
 			ui_tabWidget->setCurrentIndex(0);
 			m_totalCountLabel->setText("Total count: 0");
 		}
+		Logger::Info("CreateProduct -> DrawCriteriaWidget() -> End");
 	}
 }

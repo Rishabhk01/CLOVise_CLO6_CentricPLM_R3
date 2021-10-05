@@ -1552,7 +1552,13 @@ namespace CLOVise
 		}
 		Logger::Info("CreateMaterial:: clearDependentFields() -> End");
 	}
-
+	
+	/*
+	* Description - DrawCriteriaWidget() method is create/reset the create widget.
+	* Parameter - bool
+	* Exception -
+	* Return -
+	*/
 	void CreateMaterial::DrawCriteriaWidget(bool _isFromConstructor)
 	{
 		Logger::Info("CreateMaterial:: DrawCriteriaWidget() -> Start");

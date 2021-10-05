@@ -1362,6 +1362,12 @@ namespace CLOVise
 		}
 	}
 
+	/*
+	* Description - DrawResultWidget() method is create/reset the result widget.
+	* Parameter - bool
+	* Exception -
+	* Return -
+	*/
 	void PLMProductResults::DrawResultWidget(bool _isFromConstructor)
 	{
 		Logger::Info("PLMProductResults -> DrawResultWidget() -> Start");

@@ -3284,18 +3284,15 @@ namespace CLOVise
 				attachmentResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::STYLE_ENDPOINT_API + "/" + _id + "/images?skip=0&limit=1000", APPLICATION_JSON_TYPE, "");
 			Logger::Debug("UpdateProduct -> drawColorwayImageList() -> attachmentResponse" + attachmentResponse);
 
-			Logger::Debug("UpdateProduct -> drawColorwayImageList() -> 1");
 			if (FormatHelper::HasError(attachmentResponse))
 			{
 				Helper::GetCentricErrorMessage(attachmentResponse);
 				throw runtime_error(attachmentResponse);
 			}
-			Logger::Debug("UpdateProduct -> drawColorwayImageList() -> 2");
 			m_colorwayImageList->setEnabled(true);
 			map<string, QStringList>::iterator it;
 			std::map<QString, QString>::iterator imageLabelMapIterator;
 			map<string, UpdateImageIntent::ColorwayViews> ::iterator mapIterator;
-			Logger::Debug("UpdateProduct -> drawColorwayImageList() -> 6");
 
 			m_colorwayImageLabelsMap = UIHelper::GetImageLabels("Colorway");
 			Configuration::GetInstance()->SetColorwayImageLabels(m_colorwayImageLabelsMap);
@@ -3303,13 +3300,10 @@ namespace CLOVise
 			m_styleImageLabelsMap = UIHelper::GetImageLabels("Style");
 			Configuration::GetInstance()->SetStyleImageLabels(m_styleImageLabelsMap);
 
-			Logger::Debug("UpdateProduct -> drawColorwayImageList() -> 7");
 			json attachmentjson = json::parse(attachmentResponse);
-			Logger::Debug("UpdateProduct -> drawColorwayImageList() -> 4");
 			UTILITY_API->SetProgress("Loading colorway images.", (qrand() % 101));
 			if (_module == "style")
 			{
-				Logger::Debug("UpdateProduct -> drawColorwayImageList() ============================================");
 				string imageJsonStr = Helper::GetJSONValue<string>(m_downloadedStyleJson, "images", false);
 				json imageJson = json::parse(imageJsonStr);
 				for (int attachmenJsonCount = 0; attachmenJsonCount < attachmentjson.size(); attachmenJsonCount++)

@@ -1398,7 +1398,7 @@ string ProductConfig::GetMaximumLimitForStyleResult()
 }
 
 /*
-* Description - ResetProductConfig() is to set view json as empty.
+* Description - ResetProductConfig() is to set basic need jsons and some other attributs as default value.
 * Parameter -
 * Exception -
 * Return -

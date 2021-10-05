@@ -908,6 +908,12 @@ namespace CLOVise
 		Logger::Info("PLMMaterialResult -> downloadColorResult() -> End");
 	}
 
+	/*
+	* Description - DrawResultWidget() method is create/reset the result widget.
+	* Parameter - bool
+	* Exception -
+	* Return -
+	*/
 	void PLMMaterialResult::DrawResultWidget(bool _isFromConstructor)
 	{
 		Logger::Info("PLMMaterialResult -> DrawResultWidget() -> Start");

@@ -753,7 +753,7 @@ namespace CLOVise
 				m_searchTreeWidget_2->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; outline: 0;}""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
 
 				/*if (!m_searchTreeWidget_2->isHidden())
-					this->setMinimumSize(850, 650);*/
+					this->setMinimumSize(850, 650);*/ // this commented because, when two widget apear on the searchtable one widget overon anothere widget.
 			//if (!ColorConfig::GetInstance()->GetDateFlag())
 				m_dateResetButton->hide();
 			/*else
@@ -883,7 +883,7 @@ namespace CLOVise
 
 	/*
 	* Description - DrawSearchWidget() method is create/reset the search widget.
-	* Parameter -
+	* Parameter - bool
 	* Exception -
 	* Return -
 	*/

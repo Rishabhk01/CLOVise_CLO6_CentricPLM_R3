@@ -1257,10 +1257,10 @@ namespace CLOVise
 	}
 
 	/*
-	* Description - UpdateMaterialWidget() method used to get latest revision of the document
-	* Parameter - _materialId
-	* Exception - using throw if anything gets fail.
-	* Return - string
+	* Description - UpdateMaterialWidget() method used to rset/create update widget.
+	* Parameter - bool
+	* Exception - 
+	* Return - 
 	*/
 	void UpdateMaterial::UpdateMaterialWidget(bool _isFromConstructor)
 	{

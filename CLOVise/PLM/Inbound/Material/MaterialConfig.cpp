@@ -1099,7 +1099,7 @@ bool MaterialConfig::GetIsSaveAndCloseClicked()
 }
 
  /*
-* Description - ResetMaterialConfig() 
+* Description - ResetMaterialConfig() is to set basic need jsons and some other attributs as default value.
 * Parameter -
 * Exception -
 * Return -

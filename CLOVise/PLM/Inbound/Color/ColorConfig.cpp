@@ -873,7 +873,7 @@ string ColorConfig::GetMaximumLimitForColorResult()
 }
 
 /*
-* Description - ResetColorConfig() is to set view json as empty.
+* Description - ResetColorConfig() is to set basic need jsons and some other attributs as default value.
 * Parameter -
 * Exception -
 * Return -
