@@ -1562,10 +1562,14 @@ namespace CLOVise
 	void CreateMaterial::DrawCriteriaWidget(bool _isFromConstructor)
 	{
 		Logger::Info("CreateMaterial:: DrawCriteriaWidget() -> Start");
-		if(_isFromConstructor)
-		addCreateMaterialDetailsWidgetData();
+		if (_isFromConstructor)
+		{
+			m_CreateMaterialTreeWidget_1->clear();
+			m_CreateMaterialTreeWidget_2->clear();
+			addCreateMaterialDetailsWidgetData();
+		}
 
-		else if (!CreateMaterialConfig::GetInstance()->GetIsSaveAndCloseClicked())
+		if (!CreateMaterialConfig::GetInstance()->GetIsSaveAndCloseClicked())
 		{
 			m_attachmentsList->clear();
 			ClearAllFields(m_CreateMaterialTreeWidget_1);

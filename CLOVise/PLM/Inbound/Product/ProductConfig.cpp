@@ -1413,5 +1413,7 @@ void ProductConfig::ResetProductConfig()
 	SetIsModelExecuted(m_isModelExecuted);
 	m_productlLoggedOut = true;
 	PublishToPLMData::GetInstance()->m_createProductLoggedOut = true;
+	json configJson = nullptr;
+	PublishToPLMData::GetInstance()->SetActive3DModelMetaData(configJson);
 	Logger::Info("INFO::ProductConfig: ResetProductConfig()-> End");
 }

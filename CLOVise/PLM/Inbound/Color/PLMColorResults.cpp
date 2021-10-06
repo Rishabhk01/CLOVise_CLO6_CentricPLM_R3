@@ -1036,7 +1036,7 @@ namespace CLOVise
 		m_typename = ColorConfig::GetInstance()->GetTypename();
 		m_maxResultsCount = ColorConfig::GetInstance()->GetMaxResultCount();
 		m_resultsCount = ColorConfig::GetInstance()->GetResultsCount();
-		resultTable->clearContents();
+		resultTable->clear();
 		CVWidgetGenerator::PopulateValuesOnResultsUI(nextButton, m_noOfResultLabel, totalPageLabel, m_perPageResultComboBox, Configuration::GetInstance()->GetResultsPerPage(), m_resultsCount);
 		resultTable->setEnabled(false);
 		m_tabViewButton->setEnabled(false);

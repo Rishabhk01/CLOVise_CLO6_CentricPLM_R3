@@ -28,6 +28,7 @@ class PublishToPLMData
 		bool m_isModelExecuted = false;
 		bool m_isDateEditPresent = false;
 		bool m_createProductLoggedOut = false;
+		bool m_isSaveClicked = false;
 
 		static PublishToPLMData* GetInstance();
 		

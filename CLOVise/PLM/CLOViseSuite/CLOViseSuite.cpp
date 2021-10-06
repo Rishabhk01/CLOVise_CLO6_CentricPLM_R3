@@ -648,17 +648,18 @@ namespace CLOVise
 					CreateProduct::GetInstance()->GetUpdatedColorwayNames();
 				}
 				CreateProduct::GetInstance()->setModal(true);
+				CreateProduct::GetInstance()->addCreateProductDetailsWidgetData();
 				//if (PublishToPLMData::GetInstance()->isModelExecuted)
 				//	UTILITY_API->SetProgress("Loading Create Product to PLM", 100);				
 				UTILITY_API->DeleteProgressBar(true);
 				
-				if (PublishToPLMData::GetInstance()->m_createProductLoggedOut)
+				/*if (PublishToPLMData::GetInstance()->m_createProductLoggedOut)
 				{
 					PublishToPLMData::GetInstance()->m_createProductLoggedOut = false;
 					CreateProduct::GetInstance()->DrawCriteriaWidget(true);
 				}
 				if (PublishToPLMData::GetInstance()->GetIsModelExecuted())
-					CreateProduct::GetInstance()->DrawCriteriaWidget(false);
+					CreateProduct::GetInstance()->DrawCriteriaWidget(false);*///implemented for destroy issue.
 				CreateProduct::GetInstance()->exec();
 				//UTILITY_API->DeleteProgressBar(true);
 				PublishToPLMData::GetInstance()->SetIsModelExecuted(true);
@@ -1171,8 +1172,8 @@ namespace CLOVise
 				CreateMaterialConfig::GetInstance()->ResetCreateConfig();
 				Logger::Info("DesignSuite -> ResetCreateConfig -> after");
 				ProductConfig::GetInstance()->ResetProductConfig();
-				Logger::Info("DesignSuite -> ResetColorConfig -> after");
-
+				Logger::Info("DesignSuite -> ResetProductConfig -> after");
+				//CreateProduct::GetInstance()->ResetCreateProductData(); //implemented for cdestroy issue. 
 				Logger::Info("DesignSuite -> CreateProduct -> after");
 				//CopyProduct::Destroy();
 				//UpdateProduct::GetInstance()->Destroy();
@@ -1188,6 +1189,7 @@ namespace CLOVise
 				SampleConfig::Destroy();
 				CreateProduct::Destroy();
 				PublishToPLMData::Destroy();*/
+				CreateProduct::Destroy(); //uncommented because of destroy issue not fixed.
 				if (FormatHelper::HasContent(UTILITY_API->GetProjectName()) && DEFAULT_3DMODEL_NAME.find(UTILITY_API->GetProjectName()) == string::npos)
 				{
 					string currentProjectPath = UTILITY_API->GetProjectFilePath();

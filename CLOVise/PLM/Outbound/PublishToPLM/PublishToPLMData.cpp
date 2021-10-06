@@ -808,5 +808,6 @@ void PublishToPLMData::ResetPublishData()
 	SetUpdateStyleCacheData(json::object());
 	SetLatestRevision(BLANK);
 	SetIsModelExecuted(false);
-	
+	m_documentFieldsJson = nullptr;
+	m_isSaveClicked = false;
 }
