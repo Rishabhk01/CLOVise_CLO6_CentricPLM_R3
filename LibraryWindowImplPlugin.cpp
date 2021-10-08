@@ -537,7 +537,7 @@ namespace CLOAPI
 		product.itemName = "Product";
 		itemList.push_back(product);
 
-		//plm color
+		//plm print Design
 		CLOAPISample::LibraryAPIItem print;
 		print.itemID = "PRINT";
 		print.itemType = "FOLDER";

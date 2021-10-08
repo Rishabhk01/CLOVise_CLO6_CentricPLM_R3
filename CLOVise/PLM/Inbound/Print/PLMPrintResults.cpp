@@ -877,10 +877,10 @@ namespace CLOVise
 			case CREATE_PRODUCT_CLICKED:
 			{
 				Logger::Debug("PLMPrintResults -> PrintResultTableDownload_clicked() -> CreateProduct::GetInstance()");
-				RESTAPI::SetProgressBarData(30, "Adding Prints", true);
-				UTILITY_API->SetProgress("Adding Prints", (qrand() % 101));
+				RESTAPI::SetProgressBarData(30, "Adding Print Design Colors", true);
+				UTILITY_API->SetProgress("Adding Print Design Colors", (qrand() % 101));
 
-				RESTAPI::SetProgressBarData(14, "Adding Prints", true);
+				RESTAPI::SetProgressBarData(14, "Adding Print Design Colors", true);
 				if (Configuration::GetInstance()->GetIsUpdatePrintClicked())
 					returnValue = CreateProduct::GetInstance()->UpdateColorInColorways(m_totalSelected, m_printResults);
 
@@ -904,10 +904,10 @@ namespace CLOVise
 			case UPDATE_PRODUCT_CLICKED:
 			{
 				Logger::Debug("PLMPrintResults -> colorResultTableDownload_clicked() -> CreateProduct::GetInstance()");
-				RESTAPI::SetProgressBarData(30, "Adding Colors", true);
-				UTILITY_API->SetProgress("Adding Colors", (qrand() % 101));
+				RESTAPI::SetProgressBarData(30, "Adding Print Design Colors", true);
+				UTILITY_API->SetProgress("Adding Print Design Colors", (qrand() % 101));
 
-				RESTAPI::SetProgressBarData(14, "Adding Colors", true);
+				RESTAPI::SetProgressBarData(14, "Adding Print Design Colors", true);
 				if (Configuration::GetInstance()->GetIsUpdatePrintClicked())
 					returnValue = UpdateProduct::GetInstance()->UpdateColorInColorways(m_totalSelected, m_printResults);
 				else

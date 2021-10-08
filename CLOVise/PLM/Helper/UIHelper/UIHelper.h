@@ -1747,7 +1747,7 @@ namespace UIHelper
 			}
 			else
 			{
-				/*imageResultJson = json::parse(resultResponse);
+				imageResultJson = json::parse(resultResponse);
 				string defaultThumbnailId = Helper::GetJSONValue<string>(imageResultJson, DEFAULT_IMAGE_KEY, true);
 				json imagesJeson = Helper::GetJSONParsedValue<string>(imageResultJson, "images", false);
 				for (int imagesJsonCount = 0; imagesJsonCount < imagesJeson.size(); imagesJsonCount++)
@@ -1761,8 +1761,8 @@ namespace UIHelper
 						thumbnailUrl = Helper::FindAndReplace(thumbnailUrl, "%s", thumbnailId);
 						break;
 					}
-				}*/
-				thumbnailUrl = "https://3ddevelop.centricsoftware.com/csi-requesthandler/RequestHandler?Module=Publisher&Operation=GetDirect&URL=cf%3A%2F%2Ffv%2F332437";
+				}
+				//thumbnailUrl = "https://3ddevelop.centricsoftware.com/csi-requesthandler/RequestHandler?Module=Publisher&Operation=GetDirect&URL=cf%3A%2F%2Ffv%2F332437";
 
 			}
 		return thumbnailUrl;
@@ -2340,9 +2340,6 @@ namespace UIHelper
 				{
 					QTreeWidgetItem* topLevel = new QTreeWidgetItem();  // Creating new TreeWidgetItem
 					_treeWidget->addTopLevelItem(topLevel);
-					Logger::Debug("Attribute name==========" + attributeName);
-					Logger::Debug("attributeKey============" + attributeKey);
-					Logger::Debug("attributeType============" + attributeType);
 					if (isInteger)
 					{			// Adding ToplevelItem
 						//UTILITY_API->DisplayMessageBox("isInteger::" + to_string(isInteger));
