@@ -28,9 +28,10 @@ class PrintConfig
 		bool m_isModelExecuted = false;
 		int m_selectedViewIdx;
 		bool m_isDateEditPresent = false;
-
+		int m_sortedColumnNumber;
+		bool m_printLoggedOut = false;
 		static PrintConfig* GetInstance();
-		static void	Destroy();
+		
 		json m_printFieldsJson = json::object();
 
 		void InitializePrintData();
@@ -74,6 +75,7 @@ class PrintConfig
 		int GetResultsCount();
 		json GetPrintConfigJSONFromFile();
 		string GetMaximumLimitForPrintResult();
+		void ResetPrintConfig();
 
 
 	private:

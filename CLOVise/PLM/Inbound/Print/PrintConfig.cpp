@@ -29,14 +29,6 @@ PrintConfig* PrintConfig::GetInstance()
 	}
 	return _instance;
 }
-void  PrintConfig::Destroy()
-{
-	if (_instance)
-	{
-		delete _instance;
-		_instance = NULL;
-	}
-}
 
 /*
 * Description - SetColorConfigJSON() method used to get the configuration data from server/file.
@@ -857,11 +849,11 @@ void PrintConfig::InitializePrintData()
 	SetMaximumLimitForPrintResult();
 	RESTAPI::SetProgressBarData(Configuration::GetInstance()->GetProgressBarProgress(), "Loading Print Search", true);
 	GetPrintConfigJSON();
-	Logger::Info("PrintConfig::InitializeColorData() End..");
+	Logger::Info("PrintConfig::InitializePrinData() End..");
 }
 
 /*
-* Description - SetMaximumLimitForColorResult() method used to set the maximum limit for Color Results in search response.
+* Description - SetMaximumLimitForPrintResult() method used to set the maximum limit for Print Results in search response.
 * Parameter -
 * Exception -
 * Return -
@@ -872,7 +864,7 @@ void PrintConfig::SetMaximumLimitForPrintResult()
 }
 
 /*
-* Description - GetMaximumLimitForColorResult() method used to get the maximum limit for Color Results in search response.
+* Description - GetMaximumLimitForPrintResult() method used to get the maximum limit for Print Results in search response.
 * Parameter -
 * Exception -
 * Return - 
@@ -880,4 +872,24 @@ void PrintConfig::SetMaximumLimitForPrintResult()
 string PrintConfig::GetMaximumLimitForPrintResult()
 {
 	return m_maxPrintResultsLimit;
+}
+
+
+/*
+* Description - ResetPrintConfig() is to set view json as empty.
+* Parameter -
+* Exception -
+* Return -
+*/
+void PrintConfig::ResetPrintConfig()
+{
+	Logger::Info("INFO::PrintConfig: ResetPrintConfig()-> Start");
+	m_PrintConfigJson = nullptr;
+	m_printFieldsJson = nullptr;
+	m_isModelExecuted = false;
+	m_sortedColumnNumber = 0;
+	m_attScopes.clear();
+	SetIsModelExecuted(m_isModelExecuted);
+	m_printLoggedOut = true;
+	Logger::Info("INFO::PrintConfig: ResetPrintConfig()-> End");
 }

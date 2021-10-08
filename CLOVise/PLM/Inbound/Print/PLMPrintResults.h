@@ -34,7 +34,6 @@ namespace CLOVise
 
 	public:
 		static PLMPrintResults* GetInstance();
-		static void Destroy();
 		void setDataFromResponse(json _resultJson);
 		void updateTableForTabView();
 		void updateTableForIconView();
@@ -48,6 +47,7 @@ namespace CLOVise
 		void ClickedNextButton();
 		void ClickedPreviousButton();
 		void TableCheckBoxSelected();
+		void DrawResultWidget(bool _isFromConstructor);
 		//void IconCheckBoxSelected();
 		//json DownloadResults(QStringList _downloadIdList, string _module, json _previewjsonarray);
 

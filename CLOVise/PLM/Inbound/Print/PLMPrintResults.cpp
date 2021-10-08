@@ -41,19 +41,7 @@ namespace CLOVise
 			_instance = new PLMPrintResults();
 		return _instance;
 	}
-	void PLMPrintResults::Destroy()
-	{
-		Logger::Info("PLMPrintResults -> Destroy() -> Start");
-		if (_instance  != NULL)
-		{
-			_instance->setParent(nullptr);
-			//delete _instance;
-			_instance = NULL;
-		}
-		Logger::Info("PLMPrintResults -> Destroy() -> End");
-	}
 	
-
 	PLMPrintResults::PLMPrintResults(QWidget* parent)
 		: MVDialog(parent)
 	{
@@ -155,17 +143,7 @@ namespace CLOVise
 			
 			ui_buttonLayout->insertWidget(5, m_downloadButton);
 
-			if (Configuration::GetInstance()->GetCurrentScreen() == PRINT_SEARCH_CLICKED)
-			{
-				m_downloadButton->setText("Download");
-				m_downloadButton->setIcon(QIcon(QString(DOWNLOAD_HOVER_ICON_PATH)));
-			}
-			else
-			{
-
-				m_downloadButton->setText("Add");
-				m_downloadButton->setIcon(QIcon(QString(ADD_HOVER_ICON_PATH)));
-			}
+			
 			//ui_buttonLayout->insertSpacerItem(6, horizontalSpacer_4);
 
 			//label_3->setStyleSheet(HEADER_STYLE);
@@ -205,33 +183,10 @@ namespace CLOVise
 			resultTable->setPalette(pal);
 			iconTable = new QListWidget();
 			ui_resultTableLayout->addWidget(resultTable);
+			DrawResultWidget(true);
 			//setDataFromResponse(ColorConfig::GetInstance()->GetSearchCriteriaJSON());
-			m_printResults = PrintConfig::GetInstance()->GetPrintResultsSON();
-			m_typename= PrintConfig::GetInstance()->GetTypename();
-			m_maxResultsCount= PrintConfig::GetInstance()->GetMaxResultCount();
-			m_resultsCount= PrintConfig::GetInstance()->GetResultsCount();
-			/*if (m_resultsCount > m_maxResultsCount)
-				throw "Maximum results limit exceeded. Please refine your search.";*/
-			CVWidgetGenerator::PopulateValuesOnResultsUI(nextButton, m_noOfResultLabel, totalPageLabel, m_perPageResultComboBox, Configuration::GetInstance()->GetResultsPerPage(), m_resultsCount);
-			resultTable->setEnabled(false);
-			m_tabViewButton->setEnabled(false);
-			if(Configuration::GetInstance()->GetIsUpdatePrintClicked())
-			{
-				CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_printResults, PrintConfig::GetInstance()->GetPrintViewJSON(), IMAGE_DISPLAY_NAME, m_typename, true, PrintConfig::GetInstance()->GetSelectedViewIdx(), PrintConfig::GetInstance()->GetAttScopes(), true, false, PrintConfig::GetInstance()->GetPrintViewJSON());
-				m_selectAllButton->hide();
-				m_deSelectAllButton->hide();
-			}
-			else
-			CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_printResults, PrintConfig::GetInstance()->GetPrintViewJSON(), IMAGE_DISPLAY_NAME, m_typename, true, PrintConfig::GetInstance()->GetSelectedViewIdx(), PrintConfig::GetInstance()->GetAttScopes(), false, false, PrintConfig::GetInstance()->GetPrintViewJSON());
 		
-			CVWidgetGenerator::UpdateTableAndIconRows(resultTable, currPageLabel, m_perPageResultComboBox, m_resultsCount, false);
-			//CVWidgetGenerator::UpdateTableAndIconRows(iconTable, currPageLabel, m_perPageResultComboBox, m_resultsCount);
-			setHeaderToolTip();
-			resultTable->setEnabled(true);
 			connectSignalSlots(true);
-			
-
-			AddConnectorForCheckbox();
 
 			RESTAPI::SetProgressBarData(0, "", false);
 		}
@@ -1022,6 +977,45 @@ namespace CLOVise
 				this->show();
 			}
 		}
-		Logger::Info("PLMPrintResults -> downloadColorResult() -> End");
+		Logger::Info("PLMPrintResults -> downloadPrintResult() -> End");
+	}
+
+	void PLMPrintResults::DrawResultWidget(bool _isFromConstructor)
+	{
+		Logger::Info("PLMPrintResults -> DrawResultWidget() -> Start");		
+		m_totalSelected.clear();
+		m_printResults = PrintConfig::GetInstance()->GetPrintResultsSON();
+		m_typename = PrintConfig::GetInstance()->GetTypename();
+		m_maxResultsCount = PrintConfig::GetInstance()->GetMaxResultCount();
+		m_resultsCount = PrintConfig::GetInstance()->GetResultsCount();
+		resultTable->clearContents();
+		CVWidgetGenerator::PopulateValuesOnResultsUI(nextButton, m_noOfResultLabel, totalPageLabel, m_perPageResultComboBox, Configuration::GetInstance()->GetResultsPerPage(), m_resultsCount);
+		resultTable->setEnabled(false);
+		m_tabViewButton->setEnabled(false);
+		if (Configuration::GetInstance()->GetIsUpdatePrintClicked())
+		{
+			CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_printResults, PrintConfig::GetInstance()->GetPrintViewJSON(), "Color Image", m_typename, true, PrintConfig::GetInstance()->GetSelectedViewIdx(), PrintConfig::GetInstance()->GetAttScopes(), true, false, PrintConfig::GetInstance()->GetPrintViewJSON());
+			m_selectAllButton->hide();
+			m_deSelectAllButton->hide();
+		}
+		else
+			CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_printResults, PrintConfig::GetInstance()->GetPrintViewJSON(), "Color Image", m_typename, true, PrintConfig::GetInstance()->GetSelectedViewIdx(), PrintConfig::GetInstance()->GetAttScopes(), false, false, PrintConfig::GetInstance()->GetPrintViewJSON());
+
+		CVWidgetGenerator::UpdateTableAndIconRows(resultTable, currPageLabel, m_perPageResultComboBox, m_resultsCount, _isFromConstructor);
+		setHeaderToolTip();
+		resultTable->setEnabled(true);
+		AddConnectorForCheckbox();
+		if (Configuration::GetInstance()->GetCurrentScreen() == PRINT_SEARCH_CLICKED)
+		{
+			m_downloadButton->setText("Download");
+			m_downloadButton->setIcon(QIcon(QString(DOWNLOAD_HOVER_ICON_PATH)));
+		}
+		else
+		{
+			m_downloadButton->setText("Add");
+			m_downloadButton->setIcon(QIcon(QString(ADD_HOVER_ICON_PATH)));
+		}
+		horizontalHeaderClicked(PrintConfig::GetInstance()->m_sortedColumnNumber);
+		Logger::Info("PLMPrintResults -> DrawResultWidget() -> End");
 	}
 }

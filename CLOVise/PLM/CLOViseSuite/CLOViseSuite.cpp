@@ -238,6 +238,10 @@ namespace CLOVise
 	{
 		return true;
 	}
+	bool CLOViseSuite::ValidatePrintSearch()
+	{
+		return true;
+	}
 	/*bool CLOViseSuite::ValidateSampleSearch()
 	{
 		bool isSampleValidated = false;
@@ -415,6 +419,9 @@ namespace CLOVise
 		if (_module == "UpdateMaterial")
 			validate = ValidateUpdateMaterial();
 
+		if (_module == "Print")
+			validate = ValidatePrintSearch();
+
 		return validate;
 	}
 
@@ -476,14 +483,28 @@ namespace CLOVise
 		try
 		{
 				
+			if (IsModuleExecutable("Print"))
+			{
+				int isFromConstructor = false;
+
 				if (!PrintConfig::GetInstance()->GetIsModelExecuted())
+				{
 					PrintConfig::GetInstance()->InitializePrintData();
-				
+					isFromConstructor = true;
+				}
+				else
+					PLMPrintSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
+				if (PrintConfig::GetInstance()->m_printLoggedOut && isFromConstructor)
+				{
+					PrintConfig::GetInstance()->m_printLoggedOut = false;
+					PLMPrintSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
+				}
 				PLMPrintSearch::GetInstance()->setModal(true);
-				UIHelper::ClearAllFieldsForSearch(PLMPrintSearch::GetInstance()->GetTreewidget(0));
-				UIHelper::ClearAllFieldsForSearch(PLMPrintSearch::GetInstance()->GetTreewidget(1));
+
+				UTILITY_API->DeleteProgressBar(true);
 				PLMPrintSearch::GetInstance()->exec();
 				PrintConfig::GetInstance()->SetIsModelExecuted(true);
+			}
 			
 		}
 		catch (string msg)
@@ -1227,6 +1248,7 @@ namespace CLOVise
 				CLOPLMSignIn::Destroy();
 				Logger::Info("DesignSuite -> CLOPLMSignIn -> after");
 				ColorConfig::GetInstance()->ResetColorConfig();
+				PrintConfig::GetInstance()->ResetPrintConfig();
 				Logger::Info("DesignSuite -> ResetColorConfig -> after");
 				MaterialConfig::GetInstance()->ResetMaterialConfig();
 				Logger::Info("DesignSuite -> ResetMaterialConfig -> after");

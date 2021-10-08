@@ -46,6 +46,7 @@ namespace CLOVise {
 		bool ValidateCopyProduct();
 		bool ValidateUpdateMaterial();
 		bool ValidateUpdateProduct();
+		bool ValidatePrintSearch();
 		void ExecuteColorModule();
 		void ExecutePrintModule();
 		void ExecuteMaterialModule();

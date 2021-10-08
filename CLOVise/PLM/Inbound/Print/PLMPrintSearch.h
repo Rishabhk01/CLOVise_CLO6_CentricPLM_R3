@@ -37,7 +37,6 @@ namespace CLOVise
 		int m_selectedViewIdx;
 
 		static PLMPrintSearch* GetInstance();
-		//static void Destroy();
 		void HideHirarchy(bool _hide);
 		void ClickedSubmitButton();
 		void ClickedBackButton();
@@ -46,6 +45,7 @@ namespace CLOVise
 		void CheckBoxChecked(bool _checked);
 		void TreeNodeClicked(QTreeWidgetItem* _item, int _column);
 		void ResetDateEditWidget();
+		void DrawSearchWidget(bool _isFromConstructor);
 		QTreeWidget* GetTreewidget(int _index);
 
 	private:

@@ -139,16 +139,10 @@ namespace CLOVise
 		m_hierarchyTreeWidget->setSortingEnabled(true);
 		m_hierarchyTreeWidget->sortByColumn(0, Qt::AscendingOrder);
 		m_hierarchyTreeWidget->setFocusPolicy(Qt::NoFocus);*/
-
 		onHideHirarchy(false);
+		DrawSearchWidget(true);
 		//CVWidgetGenerator::CreateViewComboBoxOnSearch(m_viewComboBox, ColorConfig::GetInstance()->GetColorViewJSON(), selectType.toStdString());
-		selectType = QString::fromStdString(PRINT_ROOT_TYPE);
-		if (PrintConfig::GetInstance()->GetIsModelExecuted())
-		{
-			Configuration::GetInstance()->SetProgressBarProgress(RESTAPI::SetProgressBarProgress(Configuration::GetInstance()->GetProgressBarProgress(), 8, "Loading Print Design Color Search..."));
-		}
-		drawSearchUI(selectType, false, BLANK);
-
+		
 		connectSignalSlots(true);
 
 		m_seasonLabel->hide();
@@ -392,8 +386,6 @@ namespace CLOVise
 				CLOVise::CLOViseSuite::GetInstance()->setModal(true);
 				CLOViseSuite::GetInstance()->show();
 			}
-			UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_1);
-			UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_2);
 		}
 
 		//PLMColorSearch::Destroy();
@@ -436,12 +428,16 @@ namespace CLOVise
 			//..... need to implement result related funtionalities.
 			UTILITY_API->CreateProgressBar();
 			RESTAPI::SetProgressBarData(15, "Searching Print Design Color...", true);
-			UTILITY_API->SetProgress("Searching Print Design Color...", (qrand() % 101));
-			PLMPrintResults::Destroy();
+			UTILITY_API->SetProgress("Searching Print Design Color...", (qrand() % 101));			
 			PrintConfig::GetInstance()->SetDataFromResponse(PrintConfig::GetInstance()->GetSearchCriteriaJSON());
 			PLMPrintResults::GetInstance()->setModal(true);
-			PLMPrintResults::GetInstance()->exec();
+			if (PrintConfig::GetInstance()->GetIsModelExecuted() || Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED || Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED)
+			{
+				PLMPrintResults::GetInstance()->currPageLabel->setText("1");
+				PLMPrintResults::GetInstance()->DrawResultWidget(false);
+			}			
 			RESTAPI::SetProgressBarData(0, "", false);
+			PLMPrintResults::GetInstance()->exec();
 		}
 		catch (string msg)
 		{
@@ -753,8 +749,8 @@ namespace CLOVise
 				m_searchTreeWidget_2->setSelectionMode(QAbstractItemView::NoSelection);
 				m_searchTreeWidget_2->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; outline: 0;}""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
 
-				if (!m_searchTreeWidget_2->isHidden())
-					this->setMinimumSize(850, 650);
+				/*if (!m_searchTreeWidget_2->isHidden())
+					this->setMinimumSize(850, 650);*/
 			//if (!ColorConfig::GetInstance()->GetDateFlag())
 				m_dateResetButton->hide();
 			/*else
@@ -862,10 +858,7 @@ namespace CLOVise
 	* Return -
 	*/
 	void PLMPrintSearch::reject()
-	{
-		UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_1);
-		UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_2);
-		
+	{		
 		this->accept();
 	}
 
@@ -883,5 +876,31 @@ namespace CLOVise
 			return m_searchTreeWidget_2;
 
 		return m_searchTreeWidget_1;
+	}
+
+	/*
+	* Description - DrawSearchWidget() method is create/reset the search widget.
+	* Parameter -
+	* Exception -
+	* Return -
+	*/
+	void PLMPrintSearch::DrawSearchWidget(bool _isFromConstructor)
+	{
+		Logger::Info("PLMPrintSearch -> DrawSearchWidget() -> Start");
+		if (!_isFromConstructor)
+		{
+			UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_1);
+			UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_2);
+		}
+		else
+		{
+			selectType = QString::fromStdString(PRINT_ROOT_TYPE);
+			if (PrintConfig::GetInstance()->GetIsModelExecuted())
+			{
+				Configuration::GetInstance()->SetProgressBarProgress(RESTAPI::SetProgressBarProgress(Configuration::GetInstance()->GetProgressBarProgress(), 8, "Loading Print Design Color Search..."));
+			}
+			drawSearchUI(selectType, false, BLANK);
+		}
+		Logger::Info("PLMPrintSearch -> DrawSearchWidget() -> End");
 	}
 }
