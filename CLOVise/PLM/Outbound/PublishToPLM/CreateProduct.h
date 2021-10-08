@@ -49,6 +49,7 @@ namespace CLOVise
 		void UploadStyleThumbnail(string _productId);
 		void GetUpdatedColorwayNames();
 		bool UpdateColorInColorways(QStringList _downloadIdList, json _jsonarray);
+		//void DrawCriteriaWidget(bool _isFromConstructor);
 		void addCreateProductDetailsWidgetData();
 		struct ColorwayViews
 		{
@@ -59,6 +60,8 @@ namespace CLOVise
 		MVTableWidget *ui_colorwayTable;
 		int m_selectedRow;
 		QStringList m_colorSpecList;
+
+		void ResetCreateProductData();
 	private:
 		CreateProduct(QWidget* parent = nullptr);
 		virtual ~CreateProduct();
@@ -133,7 +136,7 @@ namespace CLOVise
 		QStringList m_localAttributesList;
 		QStringList m_plmAttributesList;
 
-		bool m_isSaveClicked;
+		
 		bool m_addClicked;
 		map<string, string > m_seasonNameIdMap;
 		map<string, string> m_brandNameIdMap;

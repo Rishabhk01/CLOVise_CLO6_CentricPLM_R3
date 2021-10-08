@@ -47,6 +47,7 @@ namespace CLOVise
 		void ResetDateEditWidget();
 		void ClearAllFields();
 		QTreeWidget* GetTreewidget(int _index);
+		void DrawSearchWidget(bool _isFromConstructor);
 
 	private:
 		

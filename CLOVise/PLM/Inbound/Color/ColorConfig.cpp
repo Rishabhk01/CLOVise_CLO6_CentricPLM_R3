@@ -29,14 +29,6 @@ ColorConfig* ColorConfig::GetInstance()
 	}
 	return _instance;
 }
-void  ColorConfig::Destroy()
-{
-	if (_instance)
-	{
-		delete _instance;
-		_instance = NULL;
-	}
-}
 
 /*
 * Description - SetColorConfigJSON() method used to get the configuration data from server/file.
@@ -878,4 +870,23 @@ void ColorConfig::SetMaximumLimitForColorResult()
 string ColorConfig::GetMaximumLimitForColorResult()
 {
 	return m_maxColorResultsLimit;
+}
+
+/*
+* Description - ResetColorConfig() is to set basic need jsons and some other attributs as default value.
+* Parameter -
+* Exception -
+* Return -
+*/
+void ColorConfig::ResetColorConfig()
+{
+	Logger::Info("INFO::ColorConfig: ResetColorConfig()-> Start");
+	m_ColorConfigJson = nullptr;
+	m_colorFieldsJson = nullptr;
+	m_isModelExecuted = false; 
+	m_sortedColumnNumber = 0;
+	m_attScopes.clear();
+	SetIsModelExecuted(m_isModelExecuted);
+	m_colorLoggedOut = true;
+	Logger::Info("INFO::ColorConfig: ResetColorConfig()-> End");
 }

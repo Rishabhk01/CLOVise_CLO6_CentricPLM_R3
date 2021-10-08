@@ -119,16 +119,9 @@ namespace CLOVise
 		m_hierarchyTreeWidget->sortByColumn(0, Qt::AscendingOrder);
 		m_hierarchyTreeWidget->setFocusPolicy(Qt::NoFocus);*/
 
-		//onHideHirarchy(false);
-		
+		onHideHirarchy(false);
+		DrawSearchWidget(true);
 		//CVWidgetGenerator::CreateViewComboBoxOnSearch(m_viewComboBox, ProductConfig::GetInstance()->GetProductViewJSON(), selectType.toStdString());
-		selectType = QString::fromStdString(STYLE_ROOT_TYPE);
-		if (ProductConfig::GetInstance()->GetIsModelExecuted())
-		{
-			Configuration::GetInstance()->SetProgressBarProgress(RESTAPI::SetProgressBarProgress(Configuration::GetInstance()->GetProgressBarProgress(), 8, "Loading "+ Configuration::GetInstance()->GetLocalizedStyleClassName() +" Search"));
-		}
-		drawSearchUI(selectType, false, BLANK);
-
 		connectSignalSlots(true);
 
 		m_seasonLabel->hide();
@@ -351,8 +344,6 @@ namespace CLOVise
 	{
 		Logger::Info("PLMProductSearch -> ClickedBackButton() -> Start");
 		this->hide();
-		UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_1);
-		UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_2);
 		CLOVise::CLOViseSuite::GetInstance()->setModal(true);
 		CLOViseSuite::GetInstance()->show();
 		
@@ -391,12 +382,17 @@ namespace CLOVise
 			UTILITY_API->CreateProgressBar();
 			RESTAPI::SetProgressBarData(10, "Searching "+ Configuration::GetInstance()->GetLocalizedStyleClassName() +"..", true);
 			//UTILITY_API->SetProgress("Searching style", (qrand() % 101));
-			PLMProductResults::Destroy();
-			if (Configuration::GetInstance()->GetCurrentScreen() == COPY_PRODUCT_CLICKED) {
-				ProductConfig::GetInstance()->m_isShow3DAttWidget = false;
-			}
 			ProductConfig::GetInstance()->SetDataFromResponse(ProductConfig::GetInstance()->GetSearchCriteriaJSON());
 			PLMProductResults::GetInstance()->setModal(true);
+			if (ProductConfig::GetInstance()->GetIsModelExecuted())
+			{
+				PLMProductResults::GetInstance()->currPageLabel->setText("1");
+				PLMProductResults::GetInstance()->DrawResultWidget(false);
+			}
+			if (Configuration::GetInstance()->GetCurrentScreen() == COPY_PRODUCT_CLICKED)
+			{
+				ProductConfig::GetInstance()->m_isShow3DAttWidget = false;
+			}						
 			PLMProductResults::GetInstance()->exec();
 			RESTAPI::SetProgressBarData(0, "", false);
 			Logger::Info("PLMProductSearch -> ClickedSubmitButton() -> end");
@@ -705,8 +701,8 @@ namespace CLOVise
 			m_searchTreeWidget_2->setSelectionMode(QAbstractItemView::NoSelection);
 			m_searchTreeWidget_2->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; padding-top: 10px; outline: 0; }""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
 
-			if (!m_searchTreeWidget_2->isHidden())
-				this->setMinimumSize(850, 650);
+			/*if (!m_searchTreeWidget_2->isHidden())
+				this->setMinimumSize(850, 650);*/ // this commented because, when two widget apear on the searchtable one widget overon anothere widget.
 
 			for (int index = 0; index < m_searchTreeWidget_1->topLevelItemCount(); ++index)
 			{
@@ -986,8 +982,6 @@ namespace CLOVise
 	*/
 	void PLMProductSearch::reject()
 	{
-		UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_1);
-		UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_2);
 		this->accept();
 	}
 
@@ -1005,5 +999,29 @@ namespace CLOVise
 			return m_searchTreeWidget_2;
 
 		return m_searchTreeWidget_1;
+	}
+
+	/*
+	* Description - DrawSearchWidget() method is create/reset the search widget.
+	* Parameter - bool
+	* Exception -
+	* Return -
+	*/
+	void PLMProductSearch::DrawSearchWidget(bool _isFromConstructor)
+	{
+		if (!_isFromConstructor)
+		{
+			ClearAllFields();
+		}
+		else
+		{
+			//onHideHirarchy(false);
+			selectType = QString::fromStdString(STYLE_ROOT_TYPE);
+			if (ProductConfig::GetInstance()->GetIsModelExecuted())
+			{
+				Configuration::GetInstance()->SetProgressBarProgress(RESTAPI::SetProgressBarProgress(Configuration::GetInstance()->GetProgressBarProgress(), 8, "Loading " + Configuration::GetInstance()->GetLocalizedStyleClassName() + " Search"));
+			}
+			drawSearchUI(selectType, false, BLANK);
+		}
 	}
 }

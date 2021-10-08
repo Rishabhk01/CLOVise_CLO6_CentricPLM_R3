@@ -141,15 +141,8 @@ namespace CLOVise
 		m_hierarchyTreeWidget->setSortingEnabled(true);
 		m_hierarchyTreeWidget->sortByColumn(0, Qt::AscendingOrder);
 		m_hierarchyTreeWidget->setFocusPolicy(Qt::NoFocus);*/
-
 		onHideHirarchy(false);
-		//CVWidgetGenerator::CreateViewComboBoxOnSearch(m_viewComboBox, ColorConfig::GetInstance()->GetColorViewJSON(), selectType.toStdString());
-		selectType = QString::fromStdString(COLOR_ROOT_TYPE);
-		if (ColorConfig::GetInstance()->GetIsModelExecuted())
-		{
-			Configuration::GetInstance()->SetProgressBarProgress(RESTAPI::SetProgressBarProgress(Configuration::GetInstance()->GetProgressBarProgress(), 8, "Loading "+ Configuration::GetInstance()->GetLocalizedColorClassName() +" Search"));
-		}
-		drawSearchUI(selectType, false, BLANK);
+		DrawSearchWidget(true);
 
 		connectSignalSlots(true);
 
@@ -395,8 +388,6 @@ namespace CLOVise
 				CLOVise::CLOViseSuite::GetInstance()->setModal(true);
 				CLOViseSuite::GetInstance()->show();
 			}
-			UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_1);
-			UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_2);
 		}
 
 		//PLMColorSearch::Destroy();
@@ -437,11 +428,15 @@ namespace CLOVise
 			UTILITY_API->CreateProgressBar();
 			RESTAPI::SetProgressBarData(15, "Searching "+ Configuration::GetInstance()->GetLocalizedColorClassName(), true);
 			UTILITY_API->SetProgress("Searching " + Configuration::GetInstance()->GetLocalizedColorClassName(), (qrand() % 101));
-			PLMColorResults::Destroy();
 			ColorConfig::GetInstance()->SetDataFromResponse(ColorConfig::GetInstance()->GetSearchCriteriaJSON());
 			PLMColorResults::GetInstance()->setModal(true);
-			PLMColorResults::GetInstance()->exec();
+			if (ColorConfig::GetInstance()->GetIsModelExecuted() || Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED || Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED)
+			{
+				PLMColorResults::GetInstance()->currPageLabel->setText("1");
+				PLMColorResults::GetInstance()->DrawResultWidget(false);
+			}
 			RESTAPI::SetProgressBarData(0, "", false);
+			PLMColorResults::GetInstance()->exec();
 		}
 		catch (string msg)
 		{
@@ -757,8 +752,8 @@ namespace CLOVise
 				m_searchTreeWidget_2->setSelectionMode(QAbstractItemView::NoSelection);
 				m_searchTreeWidget_2->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; outline: 0;}""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
 
-				if (!m_searchTreeWidget_2->isHidden())
-					this->setMinimumSize(850, 650);
+				/*if (!m_searchTreeWidget_2->isHidden())
+					this->setMinimumSize(850, 650);*/ // this commented because, when two widget apear on the searchtable one widget overon anothere widget.
 			//if (!ColorConfig::GetInstance()->GetDateFlag())
 				m_dateResetButton->hide();
 			/*else
@@ -866,10 +861,7 @@ namespace CLOVise
 	* Return -
 	*/
 	void PLMColorSearch::reject()
-	{
-		UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_1);
-		UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_2);
-		
+	{		
 		this->accept();
 	}
 
@@ -887,5 +879,31 @@ namespace CLOVise
 			return m_searchTreeWidget_2;
 
 		return m_searchTreeWidget_1;
+	}
+
+	/*
+	* Description - DrawSearchWidget() method is create/reset the search widget.
+	* Parameter - bool
+	* Exception -
+	* Return -
+	*/
+	void PLMColorSearch::DrawSearchWidget(bool _isFromConstructor)
+	{
+		Logger::Info("PLMColorSearch -> DrawSearchWidget() -> Start");
+		if(!_isFromConstructor)
+		{
+			UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_1);
+			UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_2);
+		}
+		else
+		{
+			selectType = QString::fromStdString(COLOR_ROOT_TYPE);
+			if (ColorConfig::GetInstance()->GetIsModelExecuted())
+			{
+				Configuration::GetInstance()->SetProgressBarProgress(RESTAPI::SetProgressBarProgress(Configuration::GetInstance()->GetProgressBarProgress(), 8, "Loading " + Configuration::GetInstance()->GetLocalizedColorClassName() + " Search"));
+			}
+			drawSearchUI(selectType, false, BLANK);
+		}
+		Logger::Info("PLMColorSearch -> DrawSearchWidget() -> End");
 	}
 }

@@ -27,23 +27,28 @@ class CreateMaterialConfig
 	public:
 		bool m_isModelExecuted = false;
 		bool m_isDateEditPresent = false;
+		bool m_createMaterialLoggedOut = false;
 
 		static CreateMaterialConfig* GetInstance();
-		static void	Destroy();
 
 		void Set3DModelType(string _key);
 		void SetCreateMaterialConfigJSON(string _module, string _rootType, bool _initDepedentJsons);
 		void SetDocumentFieldsJSON(string _fieldsJsonKey);
 		void SetDateFlag(bool _isDateEditPresent);
 		void SetMaxUploadFileSize(string _key);
+		void SetIsSaveAndCloseClicked(bool _isSaveClicked);
+		void SetIsModelExecuted(bool _isModelExecuted);
 
 		json GetCreateMaterialConfigJSON();
 		string Get3DModelType();
 		json GetDocumentFieldsJSON();
 		bool GetDateFlag();
 		int GetMaxUploadFileSize();
-		void SetIsModelExecuted(bool _isModelExecuted);
 		bool GetIsModelExecuted();
+		bool GetIsSaveAndCloseClicked();
+
+
+		void ResetCreateConfig();
 
 	private:
 		static CreateMaterialConfig* _instance; // zero initialized by default
@@ -54,4 +59,5 @@ class CreateMaterialConfig
 		string m_selectedNoOfImagePage = BLANK;
 		bool m_productIdKeyExists = false;
 		int m_maxZPRJUploadFileSize = 0;
+		bool m_isSaveAndCloseClicked = false;
 };

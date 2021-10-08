@@ -41,18 +41,6 @@ namespace CLOVise
 			_instance = new PLMColorResults();
 		return _instance;
 	}
-	void PLMColorResults::Destroy()
-	{
-		Logger::Info("PLMColorResults -> Destroy() -> Start");
-		if (_instance  != NULL)
-		{
-			_instance->setParent(nullptr);
-			//delete _instance;
-			_instance = NULL;
-		}
-		Logger::Info("PLMColorResults -> Destroy() -> End");
-	}
-	
 
 	PLMColorResults::PLMColorResults(QWidget* parent)
 		: MVDialog(parent)
@@ -154,18 +142,7 @@ namespace CLOVise
 			m_downloadButton->setFocusPolicy(Qt::StrongFocus);
 			
 			ui_buttonLayout->insertWidget(5, m_downloadButton);
-
-			if (Configuration::GetInstance()->GetCurrentScreen() == COLOR_SEARCH_CLICKED)
-			{
-				m_downloadButton->setText("Download");
-				m_downloadButton->setIcon(QIcon(QString(DOWNLOAD_HOVER_ICON_PATH)));
-			}
-			else
-			{
-
-				m_downloadButton->setText("Add");
-				m_downloadButton->setIcon(QIcon(QString(ADD_HOVER_ICON_PATH)));
-			}
+			
 			//ui_buttonLayout->insertSpacerItem(6, horizontalSpacer_4);
 
 			//label_3->setStyleSheet(HEADER_STYLE);
@@ -206,33 +183,8 @@ namespace CLOVise
 			iconTable = new QListWidget();
 			ui_resultTableLayout->addWidget(resultTable);
 			//setDataFromResponse(ColorConfig::GetInstance()->GetSearchCriteriaJSON());
-			m_colorResults = ColorConfig::GetInstance()->GetColorResultsSON();
-			m_typename= ColorConfig::GetInstance()->GetTypename();
-			m_maxResultsCount= ColorConfig::GetInstance()->GetMaxResultCount();
-			m_resultsCount= ColorConfig::GetInstance()->GetResultsCount();
-			/*if (m_resultsCount > m_maxResultsCount)
-				throw "Maximum results limit exceeded. Please refine your search.";*/
-			CVWidgetGenerator::PopulateValuesOnResultsUI(nextButton, m_noOfResultLabel, totalPageLabel, m_perPageResultComboBox, Configuration::GetInstance()->GetResultsPerPage(), m_resultsCount);
-			resultTable->setEnabled(false);
-			m_tabViewButton->setEnabled(false);
-			if(Configuration::GetInstance()->GetIsUpdateColorClicked())
-			{
-				CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_colorResults, ColorConfig::GetInstance()->GetColorViewJSON(), IMAGE_DISPLAY_NAME, m_typename, true, ColorConfig::GetInstance()->GetSelectedViewIdx(), ColorConfig::GetInstance()->GetAttScopes(), true, false, ColorConfig::GetInstance()->GetColorViewJSON());
-				m_selectAllButton->hide();
-				m_deSelectAllButton->hide();
-			}
-			else
-			CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_colorResults, ColorConfig::GetInstance()->GetColorViewJSON(), IMAGE_DISPLAY_NAME, m_typename, true, ColorConfig::GetInstance()->GetSelectedViewIdx(), ColorConfig::GetInstance()->GetAttScopes(), false, false, ColorConfig::GetInstance()->GetColorViewJSON());
-		
-			CVWidgetGenerator::UpdateTableAndIconRows(resultTable, currPageLabel, m_perPageResultComboBox, m_resultsCount, false);
-			//CVWidgetGenerator::UpdateTableAndIconRows(iconTable, currPageLabel, m_perPageResultComboBox, m_resultsCount);
-			setHeaderToolTip();
-			resultTable->setEnabled(true);
+			DrawResultWidget(true);
 			connectSignalSlots(true);
-			
-
-			AddConnectorForCheckbox();
-
 			RESTAPI::SetProgressBarData(0, "", false);
 		}
 		catch (string msg)
@@ -826,13 +778,17 @@ namespace CLOVise
 		Logger::Info("ColorResultTable -> horizontalHeaderClicked() -> Start");
 		Logger::Debug("Column.." + to_string(_column));
 		if (_column == CHECKBOX_COLUMN || _column == IMAGE_COLUMN)
+		{
 			resultTable->setSortingEnabled(false);
+			resultTable->horizontalHeader()->setSortIndicatorShown(false);
+		}
 		else
 		{
 			resultTable->setSortingEnabled(true);
+			resultTable->horizontalHeader()->setSortIndicatorShown(true);
 			m_isResultTableSorted = true;
 			AddConnectorForCheckbox();
-			CVWidgetGenerator::UpdateTableAndIconRows(resultTable, currPageLabel, m_perPageResultComboBox, m_resultsCount, true);
+			CVWidgetGenerator::UpdateTableAndIconRows(resultTable, currPageLabel, m_perPageResultComboBox, m_resultsCount, false);
 		}
 		Logger::Info("ColorResultTable -> horizontalHeaderClicked() -> End");
 	}
@@ -1065,5 +1021,50 @@ namespace CLOVise
 			}
 		}
 		Logger::Info("PLMColorResults -> downloadColorResult() -> End");
+	}
+
+	/*
+	* Description - DrawResultWidget() method is create/reset the result widget.
+	* Parameter - bool
+	* Exception - 
+	* Return -
+	*/
+	void PLMColorResults::DrawResultWidget(bool _isFromConstructor)
+	{
+		Logger::Info("PLMColorResults -> DrawResultWidget() -> Start");
+		m_colorResults = ColorConfig::GetInstance()->GetColorResultsSON();
+		m_typename = ColorConfig::GetInstance()->GetTypename();
+		m_maxResultsCount = ColorConfig::GetInstance()->GetMaxResultCount();
+		m_resultsCount = ColorConfig::GetInstance()->GetResultsCount();
+		resultTable->clear();
+		CVWidgetGenerator::PopulateValuesOnResultsUI(nextButton, m_noOfResultLabel, totalPageLabel, m_perPageResultComboBox, Configuration::GetInstance()->GetResultsPerPage(), m_resultsCount);
+		resultTable->setEnabled(false);
+		m_tabViewButton->setEnabled(false);
+		if (Configuration::GetInstance()->GetIsUpdateColorClicked())
+		{
+			CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_colorResults, ColorConfig::GetInstance()->GetColorViewJSON(), "Color Image", m_typename, true, ColorConfig::GetInstance()->GetSelectedViewIdx(), ColorConfig::GetInstance()->GetAttScopes(), true, false, ColorConfig::GetInstance()->GetColorViewJSON());
+			m_selectAllButton->hide();
+			m_deSelectAllButton->hide();
+		}
+		else
+			CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_colorResults, ColorConfig::GetInstance()->GetColorViewJSON(), "Color Image", m_typename, true, ColorConfig::GetInstance()->GetSelectedViewIdx(), ColorConfig::GetInstance()->GetAttScopes(), false, false, ColorConfig::GetInstance()->GetColorViewJSON());
+
+		CVWidgetGenerator::UpdateTableAndIconRows(resultTable, currPageLabel, m_perPageResultComboBox, m_resultsCount, _isFromConstructor);
+		setHeaderToolTip();
+		resultTable->setEnabled(true);
+		AddConnectorForCheckbox();
+		if (Configuration::GetInstance()->GetCurrentScreen() == COLOR_SEARCH_CLICKED)
+		{
+			m_downloadButton->setText("Download");
+			m_downloadButton->setIcon(QIcon(QString(DOWNLOAD_HOVER_ICON_PATH)));
+		}
+		else
+		{
+			m_downloadButton->setText("Add");
+			m_downloadButton->setIcon(QIcon(QString(ADD_HOVER_ICON_PATH)));
+		}
+		m_totalSelected.clear();
+		horizontalHeaderClicked(ColorConfig::GetInstance()->m_sortedColumnNumber);
+		Logger::Info("PLMColorResults -> DrawResultWidget() -> End");
 	}
 }

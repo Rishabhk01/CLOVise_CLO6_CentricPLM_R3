@@ -132,7 +132,7 @@ namespace CLOVise
 
 		QSpacerItem *horizontalSpacer = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Fixed);
 		m_colorwayRowcount = -1;
-		m_isSaveClicked = false;
+		PublishToPLMData::GetInstance()->m_isSaveClicked = false;
 		m_addClicked = false;
 		m_collectionId = "";
 
@@ -219,12 +219,13 @@ namespace CLOVise
 		m_ImageIntentList->setItemAlignment(Qt::AlignCenter);
 		connectSignalSlots(true);
 		m_ImageIntentList->setMouseTracking(false);
+		//DrawCriteriaWidget(true);//impleted for destroy 
 		json columnNamejson = json::array();
 		string columnsNames = DirectoryUtil::GetPLMPluginDirectory() + "ColorwayTableColumns.json";//Reading Columns from json
 		json jsonvalue = Helper::ReadJSONFile(columnsNames);
 		string colorwayTableColumns = Helper::GetJSONValue<string>(jsonvalue, "colorwayTableFieldList", false);
 		columnNamejson = json::parse(colorwayTableColumns);
-		
+
 		for (int index = 0; index < columnNamejson.size(); index++)
 		{
 			string columnname = Helper::GetJSONParsedValue<int>(columnNamejson, index, false);
@@ -336,7 +337,7 @@ namespace CLOVise
 	{
 		Logger::Debug("CreateProduct onBackButtonClicked() Start....");
 		ui_tabWidget->setStyleSheet(" QTabWidget::pane { border: none; color: #FFFFFF; font-size: 10px; background-color: #262628; }""QTabBar::tab { width: 100px; padding: 2px; }""QTabBar::tab:selected { border: none; color: #FFFFFF; background-color: \"" + DEFAULT_TAB_BG_COLOR + "\"; }""QTabBar::tab:!selected { color:#FFFFFF; background-color:\"" + SELECTED_TAB_BG_COLOR + "\"; }");
-		if (!m_isSaveClicked)
+		if (!PublishToPLMData::GetInstance()->m_isSaveClicked)
 		{
 			ClearAllFields(m_createProductTreeWidget_1);
 			ClearAllFields(m_createProductTreeWidget_2);
@@ -510,6 +511,8 @@ namespace CLOVise
 		bool attRequired = Helper::IsValueTrue((Helper::GetJSONValue<string>(_attJson, ATTRIBUTE_REQUIRED_KEY, true)));
 		if (!FormatHelper::HasContent(_attValue))
 			_attValue = BLANK;*/
+		try
+		{
 			Logger::Logger("_feildsJson=============== " + to_string(_feildsJson));
 			json enumJson = json::object();
 			json attEnumsJson = json::array();
@@ -727,7 +730,21 @@ namespace CLOVise
 					m_TreeWidget->setItemWidget(topLevel, 1, LineEdit);
 					Logger::Debug("Create product drawWidget() string  End....");
 				}
-			}		
+			}
+		}
+		catch (string msg)
+		{
+			Logger::Error("Create product drawWidget() Exception - " + msg);
+		}
+		catch (exception & e)
+		{
+			Logger::Error("Create product drawWidget() Exception - " + string(e.what()));
+		}
+		catch (const char* msg)
+		{
+			wstring wstr(msg, msg + strlen(msg));
+			Logger::Error("Create product drawWidget() Exception - " + string(msg));
+		}
 		Logger::Debug("Create product drawWidget() end....");
 	}
 
@@ -1441,11 +1458,13 @@ namespace CLOVise
 		ui_colorwayTable->setColumnWidth(UPDATE_BTN_COLUMN, 120);
 
 		ComboBoxItem* comboColorwayItem = new ComboBoxItem();
-		comboColorwayItem->setStyleSheet("QComboBox{max-height: 25px; min-width: 100px;}");
+		comboColorwayItem->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		comboColorwayItem->setFocusPolicy(Qt::StrongFocus);
 		comboColorwayItem->addItems(_colorwayNamesList);
-		comboColorwayItem->setProperty("Id", QString::fromStdString(_objectId));		
+		comboColorwayItem->setProperty("Id", QString::fromStdString(_objectId));
+		ui_colorwayTable->setColumnWidth(CLO_COLORWAY_COLUMN, 140);
 		pWidget = CVWidgetGenerator::InsertWidgetInCenter(comboColorwayItem);
+		ui_colorwayTable->setColumnWidth(CLO_COLORWAY_COLUMN, 140);
 		
 		//comboColorwayItem->clear();
 		//comboColorwayItem->addItems(_colorwayNamesList);
@@ -1576,7 +1595,7 @@ namespace CLOVise
 
 
 
-		m_isSaveClicked = true;
+		PublishToPLMData::GetInstance()->m_isSaveClicked = true;
 
 		GetUpdatedColorwayNames();
 		//if (ExtractAllUIValues())
@@ -2549,8 +2568,7 @@ namespace CLOVise
 		Logger::Debug("CreateProduct -> reject -> Start");
 
 		ui_tabWidget->setStyleSheet(" QTabWidget::pane { border: none; color: #FFFFFF; font-size: 10px; background-color: #262628; }""QTabBar::tab { width: 100px; padding: 2px; }""QTabBar::tab:selected { border: none; color: #FFFFFF; background-color: \"" + DEFAULT_TAB_BG_COLOR + "\"; }""QTabBar::tab:!selected { color:#FFFFFF; background-color:\"" + SELECTED_TAB_BG_COLOR + "\"; }");
-		
-		if (!m_isSaveClicked)
+		if (!PublishToPLMData::GetInstance()->m_isSaveClicked)
 		{
 			ClearAllFields(m_createProductTreeWidget_1);
 			ClearAllFields(m_createProductTreeWidget_2);
@@ -2566,7 +2584,6 @@ namespace CLOVise
 			m_totalCountLabel->setText("Total count: 0");
 
 		}
-
 		this->accept();
 		/*if (!m_isSaveClicked)*/
 			//CreateProduct::Destroy();
@@ -2593,10 +2610,9 @@ namespace CLOVise
 			m_currentColorSpec = colorSpecId;
 
 		ColorConfig::GetInstance()->InitializeColorData();
-		UIHelper::ClearAllFieldsForSearch(PLMColorSearch::GetInstance()->GetTreewidget(0));
-		UIHelper::ClearAllFieldsForSearch(PLMColorSearch::GetInstance()->GetTreewidget(1));
 		PLMColorSearch::GetInstance()->setModal(true);
 		UTILITY_API->DeleteProgressBar(true);
+		PLMColorSearch::GetInstance()->DrawSearchWidget(false);
 		PLMColorSearch::GetInstance()->exec();
 		RESTAPI::SetProgressBarData(0, "", false);
 
@@ -2717,5 +2733,94 @@ namespace CLOVise
 		Logger::Info("CreateProduct -> horizontalHeaderClicked() -> End");
 	}
 
-	
+	/*
+	* Description - DrawCriteriaWidget() method is create/reset the create widget.
+	* Parameter - bool
+	* Exception -
+	* Return -
+	*/
+
+	//void CreateProduct::DrawCriteriaWidget(bool _isFromConstructor)
+	//{
+	//	Logger::Info("CreateProduct -> DrawCriteriaWidget() -> Start");		
+	//	if (_isFromConstructor)
+	//	{			
+	//		Logger::Info("CreateProduct -> DrawCriteriaWidget() -> Start1");
+	//		m_createProductTreeWidget_1->clear();
+	//		m_createProductTreeWidget_2->clear();
+	//		m_ColorwayTableColumnNames.clear();
+	//		json columnNamejson = json::array();
+	//		string columnsNames = DirectoryUtil::GetPLMPluginDirectory() + "ColorwayTableColumns.json";//Reading Columns from json
+	//		json jsonvalue = Helper::ReadJSONFile(columnsNames);
+	//		Logger::Info("CreateProduct -> DrawCriteriaWidget() -> Start2");
+	//		string colorwayTableColumns = Helper::GetJSONValue<string>(jsonvalue, "colorwayTableFieldList", false);
+	//		columnNamejson = json::parse(colorwayTableColumns);
+	//		Logger::Info("CreateProduct -> DrawCriteriaWidget() -> Start3");
+	//		for (int index = 0; index < columnNamejson.size(); index++)
+	//		{
+	//			string columnname = Helper::GetJSONParsedValue<int>(columnNamejson, index, false);
+	//			m_ColorwayTableColumnNames.insert(index, QString::fromStdString(columnname));
+	//		}
+	//		Logger::Info("CreateProduct -> DrawCriteriaWidget() -> Start4");
+	//		ui_colorwayTable->setColumnCount(m_ColorwayTableColumnNames.size());
+	//		ui_colorwayTable->setHorizontalHeaderLabels(m_ColorwayTableColumnNames);
+	//		//ui_colorwayTable->hideColumn(SELECT_COLUMN);
+	//		addCreateProductDetailsWidgetData();
+	//		Logger::Info("CreateProduct -> DrawCriteriaWidget() -> Start5");
+	//		m_colorwayImageLabelsMap = UIHelper::GetImageLabels("Colorway");
+	//		Configuration::GetInstance()->SetColorwayImageLabels(m_colorwayImageLabelsMap);
+	//		Logger::Info("CreateProduct -> DrawCriteriaWidget() -> Start6");
+
+	//		m_styleImageLabelsMap = UIHelper::GetImageLabels("Style");
+	//		Configuration::GetInstance()->SetStyleImageLabels(m_styleImageLabelsMap);
+	//		Logger::Info("CreateProduct -> DrawCriteriaWidget() -> Start7");
+	//		m_clientSpecificJson = Configuration::GetInstance()->GetClientSpecificJson();
+	//		Logger::Debug("Create product constructor() m_clientSpecificJson...." + to_string(m_clientSpecificJson));
+	//		string attTypesStr = "";
+	//		json attTypesArray = Helper::GetJSONParsedValue<string>(m_clientSpecificJson, "colorwayTableAttributes", false);
+	//		string attName = "";
+	//		Logger::Info("CreateProduct -> DrawCriteriaWidget() -> Start8");
+	//		ui_colorwayTable->hideColumn(UNI_2_DIGIT_CODE_COLUMN);
+	//		for (int i = 0; i < attTypesArray.size(); i++)
+	//		{
+	//			attName = Helper::GetJSONValue<int>(attTypesArray, i, true);
+	//			Logger::Debug("Create product constructor() attName...." + attName);
+	//			m_digiCodeNamesMap = UIHelper::GetEnumValues(attName, m_digiCodeValue, nullptr);
+	//			ui_colorwayTable->showColumn(UNI_2_DIGIT_CODE_COLUMN);
+	//			m_2DigiCodeActive = true;
+	//		}
+	//		Logger::Info("CreateProduct -> DrawCriteriaWidget() -> Start9");
+	//	}
+	//	if (!PublishToPLMData::GetInstance()->m_isSaveClicked)
+	//	{
+	//		Logger::Info("CreateProduct -> DrawCriteriaWidget() -> Start10");
+	//		//ResetCreateProductData();
+	//		Logger::Info("CreateProduct -> DrawCriteriaWidget() -> Start11");
+	//	}
+	//	Logger::Info("CreateProduct -> DrawCriteriaWidget() -> End");
+	//}
+
+	/*
+	* Description - ResetPublishData() method is reset/cleare the create widget data.
+	* Parameter -
+	* Exception -
+	* Return -
+	*/
+	void CreateProduct::ResetCreateProductData()
+	{
+		Logger::Info("CreateProduct -> ResetCreateProductData() -> Start");
+		ClearAllFields(m_createProductTreeWidget_1);
+		ClearAllFields(m_createProductTreeWidget_2);
+		ui_colorwayTable->clear();
+		ui_colorwayTable->clearContents();
+		ui_colorwayTable->setRowCount(0);
+		m_colorwayRowcount = 0;
+		ui_colorwayTable->hide();
+		CreateImageIntent::GetInstance()->ClearAllFields();
+		m_ImageIntentList->clear();
+		m_colorSpecList.clear();
+		ui_tabWidget->setCurrentIndex(0);
+		m_totalCountLabel->setText("Total count: 0");
+		Logger::Info("CreateProduct -> ResetCreateProductData() -> End");
+	}
 }

@@ -70,14 +70,6 @@ namespace CLOVise
 		return _instance;
 	}
 
-	void UpdateMaterial::Destroy()
-	{
-		if (_instance) {
-			//delete _instance;
-			_instance = NULL;
-		}
-	}
-
 	UpdateMaterial::UpdateMaterial(QWidget* parent) : MVDialog(parent)
 	{
 		setupUi(this);
@@ -103,8 +95,6 @@ namespace CLOVise
 		m_attachmentTab = nullptr;
 		m_attachmentNameLabel = nullptr;
 		m_SaveAndCloseButton = nullptr;
-
-		m_isSaveClicked = false;
 
 		m_UpdateMaterialTreeWidget_1 = CVWidgetGenerator::CreatePublishTreeWidget("QTreeWidget { background-color: #262628; border: 1px solid #000;}""QTreeWidget::item { padding :5px; height: 20px; color: #FFFFFF; font-face: ArialMT; font-size: 10px; width: 90px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; border: none;}""QTreeWidget::item:hover{background-color: #262628;}", true);
 		m_UpdateMaterialTreeWidget_1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -196,8 +186,7 @@ namespace CLOVise
 		ui_buttonsLayout->insertWidget(4, m_publishButton);
 
 		connectSignalSlots(true);
-		m_downloadedMaterialJson = MaterialConfig::GetInstance()->GetUpdateMaterialCacheData();
-		addUpdateMaterialDetailsWidgetData();
+		UpdateMaterialWidget(true);
 
 		Logger::Debug("UpdateMaterial -> constructor() end....");
 		RESTAPI::SetProgressBarData(0, "", false);
@@ -260,20 +249,8 @@ namespace CLOVise
 
 		Logger::Info("UpdateMaterial -> backButtonClicked() -> Start");
 		this->hide();
-		if (!m_isSaveClicked)
-		{
-			m_attachmentsList->clear();
-			ClearAllFields(m_UpdateMaterialTreeWidget_1);
-			ClearAllFields(m_UpdateMaterialTreeWidget_2);
-			m_tabWidget->setCurrentIndex(0);
-			m_zfabFilePath.clear();
-		}
 		CLOVise::CLOViseSuite::GetInstance()->setModal(true);
 		CLOViseSuite::GetInstance()->show();
-		UIHelper::ClearAllFieldsForSearch(PLMMaterialSearch::GetInstance()->GetTreewidget(0));
-		UIHelper::ClearAllFieldsForSearch(PLMMaterialSearch::GetInstance()->GetTreewidget(1));
-		if (!m_isSaveClicked)
-			UpdateMaterial::Destroy();
 		Logger::Info("UpdateMaterial -> backButtonClicked() -> End");
 	}
 	/*
@@ -715,7 +692,6 @@ namespace CLOVise
 				DownloadDialogObject.setModal(true);
 				DownloadDialogObject.exec();
 				MaterialConfig::GetInstance()->SetIsSaveAndCloseClicked(false);
-				this->Destroy();
 			}
 		}
 		catch (exception& e)
@@ -798,7 +774,7 @@ namespace CLOVise
 			postField += "CLO3D";
 			postField += "\r\n";
 			postField += "------WebKitFormBoundary7MA4YWxkTrZu0gW--";
-			Logger::Debug("Create product getPublishRequestParameter(string _path, string _imageName) end....");
+			Logger::Debug("Update material getPublishRequestParameter(string _path, string _imageName) end....");
 		}
 		else
 		{
@@ -1112,17 +1088,7 @@ namespace CLOVise
 	void UpdateMaterial::reject()
 	{
 		Logger::Info("UpdateMaterial -> reject() -> Start");
-		if (m_isSaveClicked == false)
-		{
-			m_attachmentsList->clear();
-			//ClearAllFields();
-			m_tabWidget->setCurrentIndex(0);
-			m_zfabFilePath.clear();
-		}
-		RESTAPI::SetProgressBarData(0, "", false);
 		this->accept();
-		if (!m_isSaveClicked)
-			UpdateMaterial::Destroy();
 		Logger::Info("UpdateMaterial -> reject() -> End");
 	}
 
@@ -1235,9 +1201,8 @@ namespace CLOVise
 	void UpdateMaterial::onSaveAndCloseClicked()
 	{
 		Logger::Info("UpdateMaterial -> onSaveAndCloseClicked() -> Start");
-		m_isSaveClicked = true;
-		MaterialConfig::GetInstance()->SetIsSaveAndCloseClicked(m_isSaveClicked);
-		{
+		MaterialConfig::GetInstance()->SetIsSaveAndCloseClicked(true);
+		{ 
 			m_tabWidget->setCurrentIndex(0);
 			this->hide();
 			if (UTILITY_API)
@@ -1289,6 +1254,35 @@ namespace CLOVise
 		}
 		Logger::Info("UpdateMaterial -> getLatestVersionOfDocument -> end");
 		return latestRevision;
+	}
+
+	/*
+	* Description - UpdateMaterialWidget() method used to rset/create update widget.
+	* Parameter - bool
+	* Exception - 
+	* Return - 
+	*/
+	void UpdateMaterial::UpdateMaterialWidget(bool _isFromConstructor)
+	{
+		Logger::Info("UpdateMaterial -> UpdateMaterialWidget -> Start");
+		if (_isFromConstructor)
+		{
+			m_downloadedMaterialJson = MaterialConfig::GetInstance()->GetUpdateMaterialCacheData();
+			addUpdateMaterialDetailsWidgetData();
+		}
+		else if (!MaterialConfig::GetInstance()->GetIsSaveAndCloseClicked())
+		{
+			m_attachmentsList->clear();
+			m_UpdateMaterialTreeWidget_1->clear();
+			m_UpdateMaterialTreeWidget_2->clear();
+			m_tabWidget->setCurrentIndex(0);
+			m_zfabFilePath.clear();
+			m_downloadedMaterialJson = MaterialConfig::GetInstance()->GetUpdateMaterialCacheData();
+			addUpdateMaterialDetailsWidgetData();
+		}
+		PLMMaterialSearch::GetInstance()->DrawSearchWidget(false);
+
+		Logger::Info("UpdateMaterial -> UpdateMaterialWidget -> End");
 	}
 }
 

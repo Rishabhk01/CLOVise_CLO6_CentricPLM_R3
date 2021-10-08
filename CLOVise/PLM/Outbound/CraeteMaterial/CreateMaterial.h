@@ -37,11 +37,11 @@ namespace CLOVise
 
 	public:
 		static CreateMaterial* GetInstance();
-		static void	Destroy();
 		QTreeWidget* GetTreewidget(int _index);
 		void ClearAllFields(QTreeWidget* _documentPushToPLMTree);
 
 		bool m_isSaveClicked;
+		void DrawCriteriaWidget(bool _isFromConstructor);
 
 	private:
 		CreateMaterial(QWidget* parent = nullptr);

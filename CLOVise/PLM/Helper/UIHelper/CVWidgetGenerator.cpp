@@ -46,14 +46,6 @@ CVWidgetGenerator* CVWidgetGenerator::GetInstance()
 	}
 	return _instance;
 }
-void  CVWidgetGenerator::Destroy()
-{
-	if (_instance)
-	{
-		delete _instance;
-		_instance = NULL;
-	}
-}
 
 /*
 * Description - CreateCVMultiListWidget() method used to create CV multi list widget.
@@ -2110,13 +2102,11 @@ QTableWidgetItem* CVWidgetGenerator::CreateTableWidgetItem(string _dispValue)
 * Exception -
 * Return -
 */
-void CVWidgetGenerator::UpdateTableAndIconRows(MVTableWidget* _resultTable, QLabel* _currPageLabel, QComboBox* _resultPerPageComboBox, int _resultsCount, bool _isSortEnabled)
+void CVWidgetGenerator::UpdateTableAndIconRows(MVTableWidget* _resultTable, QLabel* _currPageLabel, QComboBox* _resultPerPageComboBox, int _resultsCount, bool _isFromConstructor)
 {
 	Logger::Info("CVWidgetGenerator::UpdateTableAndIconRows() - Start");
 	int currentPage = _currPageLabel->text().toInt();
 	int resultsPerPage = _resultPerPageComboBox->currentText().toInt();
-
-	_resultTable->horizontalHeader()->setMinimumHeight(HORIZONTAL_HEADER_HEIGHT);
 
 	for (int i = 0; i < _resultsCount; i++)
 	{
@@ -2125,22 +2115,21 @@ void CVWidgetGenerator::UpdateTableAndIconRows(MVTableWidget* _resultTable, QLab
 		else
 			_resultTable->setRowHidden(i, true);
 	}
-	int tableWidth = _resultTable->width();
-	int columnWidth = tableWidth / (_resultTable->columnCount() - 2);
-	for (int i = 0; i < _resultTable->columnCount(); i++)
+	if (_isFromConstructor)
 	{
-		if (i == 0)
+		_resultTable->horizontalHeader()->setMinimumHeight(HORIZONTAL_HEADER_HEIGHT);
+		int tableWidth = _resultTable->width();
+		int columnWidth = tableWidth / (_resultTable->columnCount() - 2);
+		for (int i = 0; i < _resultTable->columnCount(); i++)
 		{
-			_resultTable->setColumnWidth(i, 50);
+			if (i == 0)
+				_resultTable->setColumnWidth(i, 50);
+			else if (i > 1)
+				_resultTable->setColumnWidth(i, columnWidth);
 		}
-		else if (!_isSortEnabled && i > 1 )
-		{
-			_resultTable->setColumnWidth(i, columnWidth);
-		}
+		_resultTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+		_resultTable->horizontalHeader()->setDefaultAlignment(Qt::AlignCenter | Qt::Alignment(Qt::TextWordWrap));
 	}
-
-	_resultTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
-	_resultTable->horizontalHeader()->setDefaultAlignment(Qt::AlignCenter | Qt::Alignment(Qt::TextWordWrap));
 	Logger::Info("CVWidgetGenerator::UpdateTableAndIconRows() - End");
 }
 

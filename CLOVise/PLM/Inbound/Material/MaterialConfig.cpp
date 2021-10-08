@@ -1097,3 +1097,22 @@ bool MaterialConfig::GetIsSaveAndCloseClicked()
 {
 	return m_materialCategoryEnumId;
 }
+
+ /*
+* Description - ResetMaterialConfig() is to set basic need jsons and some other attributs as default value.
+* Parameter -
+* Exception -
+* Return -
+*/
+ void MaterialConfig::ResetMaterialConfig()
+ {
+	 Logger::Info("INFO::MaterialConfig: ResetMaterialConfig()-> Start");
+	 m_materialConfigJson = nullptr;
+	 m_materialFieldsJson = nullptr;
+	 m_isModelExecuted = false;
+	 m_sortedColumnNumber = 0;
+	 SetIsSaveAndCloseClicked(false);
+	 SetIsModelExecuted(m_isModelExecuted);
+	 m_materialLoggedOut = true;
+	 Logger::Info("INFO::MaterialConfig: ResetMaterialConfig()-> End");
+ }

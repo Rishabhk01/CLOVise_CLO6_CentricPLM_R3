@@ -33,7 +33,6 @@ class CVWidgetGenerator
 {
 public:
 	static CVWidgetGenerator* GetInstance();
-	static void	Destroy();
 
 	static QListWidget* CreateCVMultiListWidget(QListWidget* _listWidget, QString _dispVal, QString _dispKey, QString _dispList);
 

@@ -75,14 +75,6 @@ namespace CLOVise
 		return _instance;
 	}
 
-	void CreateImageIntent::Destroy()
-	{
-		if (_instance) {
-			delete _instance;
-			_instance = NULL;
-		}
-	}
-
 	CreateImageIntent::CreateImageIntent(QWidget* parent) : MVDialog(parent)
 	{
 		setupUi(this);

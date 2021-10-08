@@ -53,7 +53,7 @@ namespace CLOVise
 		void GetcolorwayDetails();
 		bool GetIsSaveClicked();
 		
-		void FillImageIntentIdAndLabeMap(json _imageJson);
+		void FillImageIntentIdAndLabeMap(json _imageJson, string _module);
 		void FillNonCloImageMap(json _imageJson,string _id);
 		void FillNonCloColorwayImageMap(json _imageJson, string _imageId, QString _colorwayId);
 		struct ColorwayViews
@@ -79,6 +79,7 @@ namespace CLOVise
 		MVTableWidget *ui_colorwayTable;
 		std::map<QString, QString> m_colorwayImageLabelsMap;
 		std::map<QString, QStringList> m_nonCloStyleImageLabelsMap;
+		std::map<QString, QString> m_styleNodeNamedisplayNameMap;
 		std::map<QString, map<QString, QStringList>>m_nonCloColorWayImageLabelsMap;
 		map<QString, QStringList > m_nonCloColorwayImagesMap;
 		std::map<QString, QString> m_styleImageLabelsMap;
