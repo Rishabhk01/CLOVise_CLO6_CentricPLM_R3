@@ -53,7 +53,7 @@ PrintConfig* PrintConfig::GetInstance()
 
 void PrintConfig::SetPrintConfigJSONFromFile(string _module, string _rootType, bool _initDepedentJsons)
 {
-	Logger::Info("PrintConfig -> SetPrintConfigJSON() start");
+	Logger::Info("PrintConfig -> SetPrintConfigJSON() Start");
    m_PrintConfigJson =	DataHelper::GetInstance()->SetConfigJSON( _module,  _rootType,  _initDepedentJsons, PLM_PRINT_FILE_NAME);
    Logger::Info("PrintConfig -> SetPrintConfigJSON() End");
 }
@@ -66,7 +66,7 @@ void PrintConfig::SetPrintConfigJSONFromFile(string _module, string _rootType, b
 */
 json PrintConfig::GetPrintConfigJSON()
 {
-	Logger::Info("PrintConfig -> GetPrintConfigJSON() start");
+	Logger::Info("PrintConfig -> GetPrintConfigJSON() Start");
 
 	if (m_printFieldsJson == nullptr || m_printFieldsJson.empty())
 		SetPrintConfigJSON();
@@ -83,7 +83,7 @@ json PrintConfig::GetPrintConfigJSON()
 */
 json PrintConfig::GetPrintConfigJSONFromFile()
 {
-	Logger::Info("PrintConfig -> GetPrintConfigJSON() start");
+	Logger::Info("PrintConfig -> GetPrintConfigJSON() Start");
 
 	if (m_PrintConfigJson == nullptr || m_PrintConfigJson.empty())
 		SetPrintConfigJSONFromFile(PRINT_MODULE, PRINT_ROOT_TYPE, false);
@@ -100,12 +100,12 @@ json PrintConfig::GetPrintConfigJSONFromFile()
 */
 json PrintConfig::GetPrintHierarchyJSON()
 {
-	Logger::Info("PrintConfig -> GetPrintHierarchyJSON() start");
+	Logger::Info("PrintConfig -> GetPrintHierarchyJSON() Start");
 
 	if (m_PrintHierarchyJson == nullptr || m_PrintHierarchyJson.empty())
 		m_PrintHierarchyJson = DataHelper::GetInstance()->SetJson(HIERARCHY_JSON_KEY, m_PrintConfigJson);
 
-	Logger::Info("PrintConfig -> GetPrintHierarchyJSON() end");
+	Logger::Info("PrintConfig -> GetPrintHierarchyJSON() End");
 
 	return m_PrintHierarchyJson;
 }
@@ -118,11 +118,11 @@ json PrintConfig::GetPrintHierarchyJSON()
 */
 QStringList PrintConfig::GetAttScopes()
 {
-	Logger::Info("PrintConfig -> GetAttScopes() start");
+	Logger::Info("PrintConfig -> GetAttScopes() Start");
 
 	if (m_attScopes.empty())
 		DataHelper::GetInstance()->SetAttScopes(m_PrintConfigJson, ATTSCOPE_JSON_KEY, m_attScopes);
-	Logger::Info("PrintConfig -> GetAttScopes() end");
+	Logger::Info("PrintConfig -> GetAttScopes() End");
 
 	return m_attScopes;
 }
@@ -152,7 +152,7 @@ json PrintConfig::GetPrintFieldsJSON()
 */
 void PrintConfig::SetPrintPresetJSON(string _presetJsonKey)
 {
-	Logger::Info("PrintConfig -> SetPrintPresetJSON() start");
+	Logger::Info("PrintConfig -> SetPrintPresetJSON() Start");
 
 	try
 	{
@@ -170,7 +170,7 @@ void PrintConfig::SetPrintPresetJSON(string _presetJsonKey)
 		Logger::Error("PrintConfig -> SetPrintPresetJSON Exception :: " + string(msg));
 		throw msg;
 	}
-	Logger::Info("PrintConfig -> SetPrintPresetJSON() end");
+	Logger::Info("PrintConfig -> SetPrintPresetJSON() End");
 
 }
 
@@ -183,7 +183,9 @@ void PrintConfig::SetPrintPresetJSON(string _presetJsonKey)
 
 void PrintConfig::SetPrintFilterJSON(string _module, string _rootType, string _activity)
 {
+	Logger::Info("PrintConfig -> SetPrintFilterJSON() Start");
 	m_PrintFilterJson = DataHelper::GetInstance()->SetFilterJSON(_module, _rootType, _activity, PLM_COLOR_FILTER_FILE);
+	Logger::Info("PrintConfig -> SetPrintFilterJSON() End");
 }
 
 /*
@@ -194,11 +196,11 @@ void PrintConfig::SetPrintFilterJSON(string _module, string _rootType, string _a
 */
 json PrintConfig::GetPrintFilterJSON()
 {
-	Logger::Info("PrintConfig -> GetPrintFilterJSON() start");
+	Logger::Info("PrintConfig -> GetPrintFilterJSON() Start");
 
 	if (m_PrintFilterJson == nullptr || m_PrintFilterJson.empty())
 		SetPrintFilterJSON(PRINT_MODULE, PRINT_ROOT_TYPE, PRINT_SEARCH_ACTIVITY);
-	Logger::Info("PrintConfig -> GetPrintFilterJSON() end");
+	Logger::Info("PrintConfig -> GetPrintFilterJSON() End");
 
 	return m_PrintFilterJson;
 }
@@ -211,7 +213,11 @@ json PrintConfig::GetPrintFilterJSON()
 */
 void PrintConfig::SetPrintViewJSON(string _module, string _rootType, string _activity)
 {
+	Logger::Info("PrintConfig -> SetPrintViewJSON() Start");
+
 	m_PrintViewJson = DataHelper::GetInstance()->SetViewJSON(_module, _rootType, _activity, PLM_PRINT_VIEW_FILE);
+
+	Logger::Info("PrintConfig -> SetPrintViewJSON() End");
 }
 
 /*
@@ -222,11 +228,12 @@ void PrintConfig::SetPrintViewJSON(string _module, string _rootType, string _act
 */
 json PrintConfig::GetPrintViewJSON()
 {
-	Logger::Info("PrintConfig -> GetPrintViewJSON() start");
+	Logger::Info("PrintConfig -> GetPrintViewJSON() Start");
 
 	if (m_PrintViewJson == nullptr || m_PrintViewJson.empty())
 		SetPrintViewJSON(PRINT_MODULE, PRINT_ROOT_TYPE, PRINT_SEARCH_ACTIVITY);
-	Logger::Info("PrintConfig -> GetPrintViewJSON() end");
+
+	Logger::Info("PrintConfig -> GetPrintViewJSON() End");
 
 	return m_PrintViewJson;
 }
@@ -239,13 +246,13 @@ json PrintConfig::GetPrintViewJSON()
 */
 json PrintConfig::GetSeasonPaletteJSON(bool _refresh)
 {
-	Logger::Info("PrintConfig -> GetSeasonPaletteJSON() start");
+	Logger::Info("PrintConfig -> GetSeasonPaletteJSON() Start");
 
 	if (_refresh)
 	{
 		m_paletteJson = DataHelper::GetInstance()->SetSeasonPaletteJSON(PLM_COLOR_PALETTE_FILE);
 	}
-	Logger::Info("PrintConfig -> GetSeasonPaletteJSON() end");
+	Logger::Info("PrintConfig -> GetSeasonPaletteJSON() End");
 
 	return m_paletteJson;
 }
@@ -271,7 +278,9 @@ void PrintConfig::SetSelectedViewIdx(int _selectedViewIdx)
 */
 int PrintConfig::GetSelectedViewIdx()
 {
+	Logger::Info("PrintConfig -> GetSelectedViewIdx() Start");
 	return m_selectedViewIdx;
+	Logger::Info("PrintConfig -> GetSelectedViewIdx() End");
 }
 
 /*
@@ -295,7 +304,9 @@ void PrintConfig::SetSearchCriteriaJSON(json _criteria)
 */
 json PrintConfig::GetSearchCriteriaJSON()
 {
+	Logger::Info("PrintConfig -> GetSearchCriteriaJSON() Start");
 	return m_searchCriteriaJson;
+	Logger::Info("PrintConfig -> GetSearchCriteriaJSON() End");
 }
 
 /*
@@ -306,7 +317,9 @@ json PrintConfig::GetSearchCriteriaJSON()
 */
 void PrintConfig::SetDateFlag(bool _isDateEditPresent)
 {
+	Logger::Info("PrintConfig -> SetDateFlag() Start");
 	m_isDateEditPresent = _isDateEditPresent;
+	Logger::Info("PrintConfig -> SetDateFlag() End");
 }
 
 /*
@@ -317,12 +330,14 @@ void PrintConfig::SetDateFlag(bool _isDateEditPresent)
 */
 bool PrintConfig::GetDateFlag()
 {
+	Logger::Info("PrintConfig -> GetDateFlag() start");
 	return m_isDateEditPresent;
+	Logger::Info("PrintConfig -> GetDateFlag() End");
 }
 
 void  PrintConfig::UpdateResultJson()
 {
-	//UTILITY_API->DisplayMessageBox("m_materialResults.size()" + to_string(m_materialResults.size()));
+	Logger::Info("PrintConfig -> UpdateResultJson() Start");
 	try
 	{
 		for (int printResultsjsonCount = 0; printResultsjsonCount < m_printResults.size(); printResultsjsonCount++)
@@ -330,21 +345,11 @@ void  PrintConfig::UpdateResultJson()
 			json fieldsJson = Helper::GetJSONParsedValue<int>(m_printResults, printResultsjsonCount, false);
 			string objectName = Helper::GetJSONValue<string>(fieldsJson, NODE_NAME_KEY, true);
 			string objectId = Helper::GetJSONValue<string>(fieldsJson, "id", true);
-			/*string colorType = Helper::GetJSONValue<string>(fieldsJson, "product_type", true);
-			string colorTypeResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::MATERIAL_TYPE_SEARCH_API + "/", APPLICATION_JSON_TYPE, colorType);
-			if (FormatHelper::HasError(colorTypeResponse))
-			{
-				throw runtime_error(colorTypeResponse);
-			}
-			json colorTypeResponseJson = json::parse(colorTypeResponse);
-			colorType = Helper::GetJSONValue<string>(colorTypeResponseJson, NODE_NAME_KEY, true);*/
-			//UTILITY_API->DisplayMessageBox("materialType::" + materialType);
 			fieldsJson[OBJECT_NAME_KEY] = objectName;
 			fieldsJson[OBJECT_ID_KEY] = objectId;
-			//fieldsJson["material_type"] = colorType;
-			//fieldsJson["thumbnail"] = GetThumbnailUrl(objectId);
 			m_printResults[printResultsjsonCount] = fieldsJson;
 		}
+		Logger::Info("PrintConfig -> UpdateResultJson() End");
 	}
 	catch (string msg)
 	{
@@ -364,15 +369,18 @@ void  PrintConfig::UpdateResultJson()
 
 void  PrintConfig::UpdateResultJson(json& _listjson)
 {
+	Logger::Info("PrintConfig -> UpdateResultJson() Start");
 		string objectName = Helper::GetJSONValue<string>(_listjson, NODE_NAME_KEY, true);
 		string objectId = Helper::GetJSONValue<string>(_listjson, "id", true);
 		_listjson[OBJECT_NAME_KEY] = objectName;
 		_listjson[OBJECT_ID_KEY] = objectId;
+		Logger::Info("PrintConfig -> UpdateResultJson() End");
 
 }
 
 string PrintConfig::GetThumbnailUrl(string _objectId)
 {
+	Logger::Info("PrintConfig -> GetThumbnailUrl() Start");
 	string thumbnailUrl;
 	try 
 	{
@@ -411,10 +419,13 @@ string PrintConfig::GetThumbnailUrl(string _objectId)
 		Logger::Error("PrintConfig->GetThumbnailUrl() Exception - " + string(msg));
 	}
 	return thumbnailUrl;
+
+	Logger::Info("PrintConfig -> GetThumbnailUrl() End");
 }
 
 void PrintConfig::GetEnumlistJson(string _restApi, json& _attributeJson)
 {
+	Logger::Info("PrintConfig -> GetEnumlistJson() Start");
 	try
 	{
 		json enumList;
@@ -447,10 +458,12 @@ void PrintConfig::GetEnumlistJson(string _restApi, json& _attributeJson)
 		wstring wstr(msg, msg + strlen(msg));
 		Logger::Error(" PrintConfig->GetEnumlistJson() Exception - " + string(msg));
 	}
+	Logger::Info("PrintConfig -> GetEnumlistJson() End");
 }
 
 void PrintConfig::ConvertToo(string& _convertValue, bool _isLower)
 {
+	Logger::Info("PrintConfig -> ConvertToo() Start");
 	string value;
 	string space = " ";
 	string underscore = "_";
@@ -505,10 +518,12 @@ void PrintConfig::ConvertToo(string& _convertValue, bool _isLower)
 		wstring wstr(msg, msg + strlen(msg));
 		Logger::Error("PrintConfig->ConvertToo() Exception - " + string(msg));
 	}
+	Logger::Info("PrintConfig -> ConvertToo() End");
 }
 
 void PrintConfig::SetPrintConfigJSON()
 {
+	Logger::Info("PrintConfig -> SetPrintConfigJSON() Start");
 	try
 	{
 		auto startTime = std::chrono::high_resolution_clock::now();
@@ -524,10 +539,10 @@ void PrintConfig::SetPrintConfigJSON()
 		}
 		json initialConfigJson = json::parse(initialConfigJsonString);
 		string formDefinition = Helper::GetJSONValue<string>(initialConfigJson[0], CREATE_DEFINITION_KEY, true);
-		Logger::Debug("formDefinition============" + formDefinition);
+		Logger::Debug("formDefinition :: " + formDefinition);
 		auto FormDefinitionsApiStartTime = std::chrono::high_resolution_clock::now();
 		string fieldsconfigJsonString = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ATT_DEFINITION_API + formDefinition + RESTAPI::SEARCH_ATT_DEFINITION_ADDITIONAL_API, APPLICATION_JSON_TYPE, "");
-		Logger::Debug("fieldsconfigJsonString============" + fieldsconfigJsonString);
+		Logger::Debug("fieldsconfigJsonString :: " + fieldsconfigJsonString);
 		auto FormDefinitionsApiFinishTime = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> FormDefinitionsApiTotalDuration = FormDefinitionsApiFinishTime - FormDefinitionsApiStartTime;
 		Logger::perfomance(PERFOMANCE_KEY + "Create Form Definitions API :: " + to_string(FormDefinitionsApiTotalDuration.count()));
@@ -544,29 +559,32 @@ void PrintConfig::SetPrintConfigJSON()
 
 	catch (string msg)
 	{
-		Logger::Error("PrintConfig::SetMaterialConfigJSON() Exception - " + msg);
+		Logger::Error("PrintConfig::SetPrintConfigJSON() Exception - " + msg);
 		throw msg;
 		//UTILITY_API->DisplayMessageBox(msg);
 	}
 	catch (exception& e)
 	{
 
-		Logger::Error("PrintConfig::SetMaterialConfigJSON() Exception - " + string(e.what()));
+		Logger::Error("PrintConfig::SetPrintConfigJSON() Exception - " + string(e.what()));
 		throw e.what();
 		//UTILITY_API->DisplayMessageBox(e.what());
 	}
 	catch (const char* msg)
 	{
 
-		Logger::Error("PrintConfig::SetMaterialConfigJSON() Exception - " + string(msg));
+		Logger::Error("PrintConfig::SetPrintConfigJSON() Exception - " + string(msg));
 		throw msg;
 		//UTILITY_API->DisplayMessageBox(msg);
 	}
+	Logger::Info("PrintConfig -> SetPrintConfigJSON() End");
 	
 }
 
 void PrintConfig::createFieldsJson(string& _fieldsJsonStringResponse, json& _defaultFieldsJson)
 {
+	Logger::Info("PrintConfig -> createFieldsJson() Start");
+
 	json fieldsJsonResponse = json::parse(_fieldsJsonStringResponse);
 	string attValue;
 	string attType;
@@ -581,7 +599,6 @@ void PrintConfig::createFieldsJson(string& _fieldsJsonStringResponse, json& _def
 	int fieldsJsonCount = 0;
 	try
 	{
-		Logger::Debug("fieldsJsonResponse.size()====="+ to_string(fieldsJsonResponse.size()));
 		for (fieldsJsonCount; fieldsJsonCount < fieldsJsonResponse.size(); fieldsJsonCount++)
 		{
 			json fieldsAttJson;
@@ -591,7 +608,6 @@ void PrintConfig::createFieldsJson(string& _fieldsJsonStringResponse, json& _def
 			attType = Helper::GetJSONValue<string>(feildsvaluesJson, VALUE_TYPE_KEY, true);
 			isAttEnable = Helper::GetJSONValue<string>(feildsvaluesJson, ENABLED_KEY, true);
 			attValue = Helper::GetJSONValue<string>(feildsvaluesJson, DISPLAY_NAME_KEY, true);
-			Logger::Debug("attValue=======" + attValue);
 			attApiExposed = Helper::GetJSONValue<string>(feildsvaluesJson, ATTRIBUTE_REST_API_EXPOSED, true);
 			
 			if (attType != REF_ATT_TYPE_KEY && attType != REFLIST_ATT_TYPE_KEY)
@@ -666,8 +682,7 @@ void PrintConfig::createFieldsJson(string& _fieldsJsonStringResponse, json& _def
 		throw msg;
 	}
 
-
-	//UTILITY_API->DisplayMessageBox("m_printFieldsJson::" + to_string(m_printFieldsJson));
+	Logger::Info("PrintConfig -> createFieldsJson() End");
 }
 
 void PrintConfig::SetDataFromResponse(json _param)
@@ -710,10 +725,10 @@ void PrintConfig::SetDataFromResponse(json _param)
 			resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_PRINT_DESIGN_API + "/" + matLibValue + "/elements?", APPLICATION_JSON_TYPE, parameter + "&limit="+ PrintConfig::GetInstance()->GetMaximumLimitForColorResult());
 		}
 		else {*/
-		Logger::Debug("Print parameter==============================" + parameter);
+		
 			auto startTime = std::chrono::high_resolution_clock::now();
 			resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_PRINT_DESIGN_COLOR_API + "?", APPLICATION_JSON_TYPE, parameter + "&limit=" + PrintConfig::GetInstance()->GetMaximumLimitForPrintResult());
-			Logger::Debug("Print response==============================" + resultResponse);
+			Logger::Debug("Print response ::" + resultResponse);
 			auto finishTime = std::chrono::high_resolution_clock::now();
 			std::chrono::duration<double> totalDuration = finishTime - startTime;
 			Logger::perfomance(PERFOMANCE_KEY + "Search Results API :: " + to_string(totalDuration.count()));
@@ -737,30 +752,23 @@ void PrintConfig::SetDataFromResponse(json _param)
 		for (int i = 0; i < printResults.size(); i++)
 		{
 			string resultListStr = Helper::GetJSONValue<int>(printResults, i, false);
-			json resultListJson = json::parse(resultListStr);/*
-			string rgbValue = Helper::GetJSONValue<string>(resultListJson, "color_specification", true);
-			if (rgbValue == "centric%3A" || !FormatHelper::HasContent(rgbValue))
-				continue; */
+			json resultListJson = json::parse(resultListStr);
 		
 	        PrintConfig::GetInstance()->UpdateResultJson(resultListJson);
 			m_printResults.push_back(resultListJson);
 		}
 		string resultsCount = to_string(m_printResults.size());
-		Logger::Debug("updatedJson::=============" + to_string(m_printResults));
-		/*if (stoi(resultsCount) <= 0)
-			throw "No valid results found.";*/
+		
 		if (stoi(resultsCount) > 0)
 		{
 			m_resultsCount = stoi(resultsCount);
-			// Helper::GetJSONValue<string>(m_materialResults[0], TYPENAME_KEY, true);
-			//UTILITY_API->DisplayMessageBox("m_typename::" + m_typename);
 		}
 		else
 		{
 			m_resultsCount = 0;
 		}
 		m_typename = "Print";
-		string maxResultsLimit;//= Helper::GetJSONValue<string>(m_materialResults, "maxResultsLimit", true);
+		string maxResultsLimit;
 		if (FormatHelper::HasContent(maxResultsLimit))
 		{
 			m_maxResultsCount = stoi(maxResultsLimit);
@@ -789,6 +797,7 @@ void PrintConfig::SetDataFromResponse(json _param)
 		Logger::Error("PrintConfig -> SetDataFromResponse Exception :: " + string(msg));
 		throw msg;
 	}
+	Logger::Info("PrintConfig -> setDataFromResponse() -> End");
 }
 
 json PrintConfig::GetPrintResultsSON()
@@ -827,7 +836,9 @@ int PrintConfig::GetResultsCount()
 */
 bool PrintConfig::GetIsModelExecuted()
 {
+	Logger::Info("PrintConfig -> GetIsModelExecuted() -> Start");
 	return m_isModelExecuted;
+	Logger::Info("PrintConfig -> GetIsModelExecuted() -> End");
 }
 
 /*
@@ -838,18 +849,20 @@ bool PrintConfig::GetIsModelExecuted()
 */
 void PrintConfig::SetIsModelExecuted(bool _isModelExecuted)
 {
+	Logger::Info("PrintConfig -> SetIsModelExecuted() -> Start");
 	m_isModelExecuted = _isModelExecuted;
+	Logger::Info("PrintConfig -> SetIsModelExecuted() -> End");
 }
 
 void PrintConfig::InitializePrintData()
 {
-	Logger::Info("PrintConfig::InitializePrintData() Started..");
+	Logger::Info("PrintConfig -> InitializePrintData() Started..");
 	Configuration::GetInstance()->SetProgressBarProgress(0);
 	Configuration::GetInstance()->SetProgressBarProgress(qrand() % 101);
 	SetMaximumLimitForPrintResult();
 	RESTAPI::SetProgressBarData(Configuration::GetInstance()->GetProgressBarProgress(), "Loading Print Search", true);
 	GetPrintConfigJSON();
-	Logger::Info("PrintConfig::InitializePrinData() End..");
+	Logger::Info("PrintConfig -> InitializePrinData() End..");
 }
 
 /*
@@ -860,7 +873,9 @@ void PrintConfig::InitializePrintData()
 */
 void PrintConfig::SetMaximumLimitForPrintResult()
 {
+	Logger::Info("PrintConfig -> SetMaximumLimitForPrintResult() Start");
 	m_maxPrintResultsLimit = Helper::GetJSONValue<string>(Configuration::GetInstance()->GetPLMPluginConfigJSON(), MAX_PRINT_SEARCH_LIMIT, true);
+	Logger::Info("PrintConfig -> SetMaximumLimitForPrintResult() End");
 }
 
 /*
@@ -871,7 +886,9 @@ void PrintConfig::SetMaximumLimitForPrintResult()
 */
 string PrintConfig::GetMaximumLimitForPrintResult()
 {
+	Logger::Info("PrintConfig -> GetMaximumLimitForPrintResult() Start");
 	return m_maxPrintResultsLimit;
+	Logger::Info("PrintConfig -> GetMaximumLimitForPrintResult() End");
 }
 
 

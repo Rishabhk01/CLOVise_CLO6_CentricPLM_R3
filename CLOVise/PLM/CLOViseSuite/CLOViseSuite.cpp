@@ -1082,11 +1082,11 @@ namespace CLOVise
 	*/
 	void CLOViseSuite::onClickedSearchPrints()
 	{
-		Logger::Info("DesignSuite -> Initialize ColorSearch-> Start");
+		Logger::Info("DesignSuite -> onClickedSearchPrints() -> Start");
 		Configuration::GetInstance()->SetCurrentScreen(PRINT_SEARCH_CLICKED);
 		//Configuration::GetInstance()->SetIsUpdateColorClicked(false);
 		ExecutePrintModule();
-		Logger::Info("DesignSuite -> Initialize ColorSearch-> Start");
+		Logger::Info("DesignSuite -> onClickedSearchPrints() -> Start");
 	}
 	/*
 	* Description - ClickedSearchSamples() for execute the functionality, when the click of Sample button.

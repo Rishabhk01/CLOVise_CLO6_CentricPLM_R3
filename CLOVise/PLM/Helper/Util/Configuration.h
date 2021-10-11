@@ -80,7 +80,7 @@ public:
 	string GetMaximumLimitForRefAttValue();
 	int GetCurrentScreen();
 	bool GetIsUpdateColorClicked();
-	bool GetIsUpdatePrintClicked();
+	bool GetIsPrintSearchClicked();
 	bool GetIsNewStyleDownloaded();
 	string GetLocalizedStyleClassName();
 	string GetLocalizedMaterialClassName();
@@ -129,7 +129,7 @@ public:
 	void SetStyleImageLabels(std::map<QString, QString> _styleImageLabelsMap);
 	void SetMaximumLimitForRefAttValue();
 	void SetIsUpdateColorClicked(bool _flag);
-	void SetIsUpdatePrintClicked(bool _flag);
+	void SetIsPrintSearchClicked(bool _flag);
 	void SetIsNewStyleDownloaded(bool _flag);
 	void SetLocalizedStyleClassName(string _styleClassName);
 	void SetLocalizedMaterialClassName(string _materialClassName);
@@ -180,7 +180,7 @@ private:
 	string m_UserFullName = "";
 	bool m_RestAPILogEnabled = false;
 	bool m_UpdateColorClicked = false;
-	bool m_UpdatePrintClicked = false;
+	bool m_isPrintSearchClicked = false;
 	bool m_StyleDownloaded = false;
 	string m_styleClassName = "";
 	string m_materialClassName = "";

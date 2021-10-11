@@ -301,7 +301,7 @@ namespace CLOVise
 		for (int row = 0; row < resultTable->rowCount(); row++) 
 		{
 			QWidget* qWidget = resultTable->cellWidget(row, 0); //to select multiple rows
-			if (Configuration::GetInstance()->GetIsUpdatePrintClicked())
+			if (Configuration::GetInstance()->GetIsPrintSearchClicked())
 			{
 				tempRadioButton = qobject_cast<QRadioButton*>(qWidget);
 				QObject::connect(tempRadioButton, SIGNAL(clicked()), this, SLOT(TableRadioButtonSelected()));
@@ -836,7 +836,7 @@ namespace CLOVise
 				UTILITY_API->SetProgress("Adding Print Design Colors", (qrand() % 101));
 
 				RESTAPI::SetProgressBarData(14, "Adding Print Design Colors", true);
-				if (Configuration::GetInstance()->GetIsUpdatePrintClicked())
+				if (Configuration::GetInstance()->GetIsPrintSearchClicked())
 					returnValue = CreateProduct::GetInstance()->UpdateColorInColorways(m_totalSelected, m_printResults);
 
 				if (returnValue)
@@ -863,7 +863,7 @@ namespace CLOVise
 				UTILITY_API->SetProgress("Adding Print Design Colors", (qrand() % 101));
 
 				RESTAPI::SetProgressBarData(14, "Adding Print Design Colors", true);
-				if (Configuration::GetInstance()->GetIsUpdatePrintClicked())
+				if (Configuration::GetInstance()->GetIsPrintSearchClicked())
 					returnValue = UpdateProduct::GetInstance()->UpdateColorInColorways(m_totalSelected, m_printResults);
 				else
 				{
@@ -920,7 +920,7 @@ namespace CLOVise
 				}
 				else
 				{
-					if (!Configuration::GetInstance()->GetIsUpdatePrintClicked())
+					if (!Configuration::GetInstance()->GetIsPrintSearchClicked())
 					onClickedDeselectAllButton();
 					this->show();
 				}
@@ -939,7 +939,7 @@ namespace CLOVise
 			}
 			else
 			{
-				if (!Configuration::GetInstance()->GetIsUpdatePrintClicked())
+				if (!Configuration::GetInstance()->GetIsPrintSearchClicked())
 				onClickedDeselectAllButton();
 				this->show();
 			}
@@ -955,7 +955,7 @@ namespace CLOVise
 			}
 			else
 			{
-				if (!Configuration::GetInstance()->GetIsUpdatePrintClicked())
+				if (!Configuration::GetInstance()->GetIsPrintSearchClicked())
 				onClickedDeselectAllButton();
 				this->show();
 			}
@@ -972,7 +972,7 @@ namespace CLOVise
 			}
 			else
 			{
-				if (!Configuration::GetInstance()->GetIsUpdatePrintClicked())
+				if (!Configuration::GetInstance()->GetIsPrintSearchClicked())
 				onClickedDeselectAllButton();
 				this->show();
 			}
@@ -992,7 +992,7 @@ namespace CLOVise
 		CVWidgetGenerator::PopulateValuesOnResultsUI(nextButton, m_noOfResultLabel, totalPageLabel, m_perPageResultComboBox, Configuration::GetInstance()->GetResultsPerPage(), m_resultsCount);
 		resultTable->setEnabled(false);
 		m_tabViewButton->setEnabled(false);
-		if (Configuration::GetInstance()->GetIsUpdatePrintClicked())
+		if (Configuration::GetInstance()->GetIsPrintSearchClicked())
 		{
 			CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_printResults, PrintConfig::GetInstance()->GetPrintViewJSON(), "Color Image", m_typename, true, PrintConfig::GetInstance()->GetSelectedViewIdx(), PrintConfig::GetInstance()->GetAttScopes(), true, false, PrintConfig::GetInstance()->GetPrintViewJSON());
 			m_selectAllButton->hide();
