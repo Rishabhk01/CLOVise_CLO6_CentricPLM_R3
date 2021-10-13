@@ -431,6 +431,7 @@ namespace CLOVise
 				if (ColorConfig::GetInstance()->m_colorLoggedOut && isFromConstructor)
 				{
 					ColorConfig::GetInstance()->m_colorLoggedOut = false;
+					ColorConfig::GetInstance()->m_resultAfterLogout = true;
 					PLMColorSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
 				}				
 				PLMColorSearch::GetInstance()->setModal(true);

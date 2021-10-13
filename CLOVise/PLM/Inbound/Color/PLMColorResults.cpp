@@ -1037,6 +1037,7 @@ namespace CLOVise
 		m_maxResultsCount = ColorConfig::GetInstance()->GetMaxResultCount();
 		m_resultsCount = ColorConfig::GetInstance()->GetResultsCount();
 		resultTable->clear();
+		m_totalSelected.clear();
 		CVWidgetGenerator::PopulateValuesOnResultsUI(nextButton, m_noOfResultLabel, totalPageLabel, m_perPageResultComboBox, Configuration::GetInstance()->GetResultsPerPage(), m_resultsCount);
 		resultTable->setEnabled(false);
 		m_tabViewButton->setEnabled(false);
@@ -1062,8 +1063,7 @@ namespace CLOVise
 		{
 			m_downloadButton->setText("Add");
 			m_downloadButton->setIcon(QIcon(QString(ADD_HOVER_ICON_PATH)));
-		}
-		m_totalSelected.clear();
+		}		
 		horizontalHeaderClicked(ColorConfig::GetInstance()->m_sortedColumnNumber);
 		Logger::Info("PLMColorResults -> DrawResultWidget() -> End");
 	}

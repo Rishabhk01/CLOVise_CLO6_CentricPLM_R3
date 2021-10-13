@@ -51,16 +51,16 @@ namespace CLOVise
 		/*if(!ColorConfig::GetInstance()->isModelExecuted)
 			RESTAPI::SetProgressBarData(18, "Loading Color Search", true);*/
 		setupUi(this);
-		QString windowTitle = PLM_NAME + " PLM " + QString::fromStdString(Configuration::GetInstance()->GetLocalizedColorClassName()) + " Search Criteria ";
-		this->setWindowTitle(windowTitle);
+		/*QString windowTitle = PLM_NAME + " PLM " + QString::fromStdString(Configuration::GetInstance()->GetLocalizedColorClassName()) + " Search Criteria ";
+		this->setWindowTitle(windowTitle);*/
 		/*this->setWindowTitle("PLM Color Search Criteria");*/
 
 #ifdef __APPLE__
 		this->setWindowFlags(Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
 #else
 		this->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
-        m_pTitleBar = new MVTitleBar(windowTitle, this);
-        layout()->setMenuBar(m_pTitleBar);
+       /* m_pTitleBar = new MVTitleBar(windowTitle, this);
+        layout()->setMenuBar(m_pTitleBar);*/
 #endif // !__APPLE__
 		m_hierarchyTreeWidget = nullptr;
 		m_searchTreeWidget_1  = nullptr;
@@ -105,7 +105,8 @@ namespace CLOVise
 		m_seasonLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 		m_paletteLabel = CVWidgetGenerator::CreateLabel("Palette", QString::fromStdString(BLANK), HEADER_STYLE, true);
 		m_paletteLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-		QLabel* searchCriteriaLabel = CVWidgetGenerator::CreateLabel("Search Criteria", QString::fromStdString(BLANK), HEADER_STYLE, true);
+		searchCriteriaLabel = CVWidgetGenerator::CreateLabel("Search Criteria", QString::fromStdString(BLANK), FONT_STYLE, true);
+		searchCriteriaLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		QLabel* quickSearchHeaderLabel = CVWidgetGenerator::CreateLabel("Quick Search Criteria", QString::fromStdString(BLANK), HEADER_STYLE, true);
 		quickSearchHeaderLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 		QLabel* quickSearchLabel = CVWidgetGenerator::CreateLabel("Quick Search", QString::fromStdString(BLANK), HEADER_STYLE, true);
@@ -418,25 +419,85 @@ namespace CLOVise
 		Logger::Info("PLMColorSearch -> ClickedSubmitButton() -> Start");
 		try
 		{
-			collectSearchUIFields();
-			UIHelper::ValidateForValidParams(m_searchCriteriaJson, COLOR_MODULE);
-			ColorConfig::GetInstance()->SetSelectedViewIdx(m_viewComboBox->currentIndex());
-			ColorConfig::GetInstance()->SetSearchCriteriaJSON(m_searchCriteriaJson);
-			this->hide();
-			//tmporarilry clearing Results object
-			//..... need to implement result related funtionalities.
-			UTILITY_API->CreateProgressBar();
-			RESTAPI::SetProgressBarData(15, "Searching "+ Configuration::GetInstance()->GetLocalizedColorClassName(), true);
-			UTILITY_API->SetProgress("Searching " + Configuration::GetInstance()->GetLocalizedColorClassName(), (qrand() % 101));
-			ColorConfig::GetInstance()->SetDataFromResponse(ColorConfig::GetInstance()->GetSearchCriteriaJSON());
-			PLMColorResults::GetInstance()->setModal(true);
-			if (ColorConfig::GetInstance()->GetIsModelExecuted() || Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED || Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED)
+			if ((Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED && !ColorConfig::GetInstance()->m_isSearchColor) || (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED && !ColorConfig::GetInstance()->m_isSearchColor))
 			{
-				PLMColorResults::GetInstance()->currPageLabel->setText("1");
-				PLMColorResults::GetInstance()->DrawResultWidget(false);
+				//bool rowsSelected = true;
+				bool returnValue = false;
+				//need implementation
+				m_createCriteriaJson[ATTRIBUTES_KEY] = UIHelper::CollectSearchCriteriaFields(m_searchTreeWidget_1, m_searchTreeWidget_2);
+				UIHelper::ValidateForValidParams(m_createCriteriaJson, COLOR_MODULE);
+				this->hide();
+				RESTAPI::SetProgressBarData(30, "Adding Colors", true);
+				UTILITY_API->SetProgress("Adding Colors", (qrand() % 101));
+
+				RESTAPI::SetProgressBarData(14, "Adding Colors", true);
+				ColorConfig::GetInstance()->SetDataFromResponse(m_createCriteriaJson);
+				//rest call
+				//string response = RESTAPI::PostRestCall(to_string(m_createCriteriaJson), Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::CREATE_COLOR_API, "content-type: application/json;");
+				//UTILITY_API->DisplayMessageBox("created restcall's response::  " + response);
+				Logger::Debug("PLMColorResults -> colorResultTableDownload_clicked() -> CreateProduct::GetInstance()");				
+				if (Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED)
+				{
+					returnValue = CreateProduct::GetInstance()->UpdateColorInColorways(ColorConfig::GetInstance()->createdColorId, ColorConfig::GetInstance()->GetColorResultsSON());
+					if (returnValue)
+					{
+						Logger::Debug("PLMColorResults -> void onDownloadClicked TRue");
+						RESTAPI::SetProgressBarData(0, "", false);
+						CreateProduct::GetInstance()->setModal(true);
+						CreateProduct::GetInstance()->show();
+					}
+					else
+					{
+						Logger::Debug("PLMColorResults -> void onDownloadClicked False");
+						RESTAPI::SetProgressBarData(0, "", false);
+						UTILITY_API->DisplayMessageBox(Configuration::GetInstance()->GetLocalizedColorClassName() + " Specification must be unique");
+						this->show();
+					}
+				}
+				else if (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED)
+				{
+					returnValue = UpdateProduct::GetInstance()->UpdateColorInColorways(ColorConfig::GetInstance()->createdColorId, ColorConfig::GetInstance()->GetColorResultsSON());
+					if (returnValue)
+					{
+						Logger::Debug("PLMColorResults -> void onDownloadClicked TRue");
+						RESTAPI::SetProgressBarData(0, "", false);
+						UpdateProduct::GetInstance()->setModal(true);
+						UpdateProduct::GetInstance()->show();
+					}
+					else
+					{
+						Logger::Debug("PLMColorResults -> void onDownloadClicked False");
+						RESTAPI::SetProgressBarData(0, "", false);
+						UTILITY_API->DisplayMessageBox(Configuration::GetInstance()->GetLocalizedColorClassName() + " Specification must be unique");
+						this->show();
+					}
+				}				
+				Logger::Debug("PLMColorResults -> colorResultTableDownload_clicked() -> CreateProduct::GetInstance() returnValue::"+to_string(returnValue));
+				
 			}
-			RESTAPI::SetProgressBarData(0, "", false);
-			PLMColorResults::GetInstance()->exec();
+			else
+			{
+				collectSearchUIFields();
+				UIHelper::ValidateForValidParams(m_searchCriteriaJson, COLOR_MODULE);
+				ColorConfig::GetInstance()->SetSelectedViewIdx(m_viewComboBox->currentIndex());
+				ColorConfig::GetInstance()->SetSearchCriteriaJSON(m_searchCriteriaJson);
+				this->hide();
+				//tmporarilry clearing Results object
+				//..... need to implement result related funtionalities.
+				UTILITY_API->CreateProgressBar();
+				RESTAPI::SetProgressBarData(15, "Searching " + Configuration::GetInstance()->GetLocalizedColorClassName(), true);
+				UTILITY_API->SetProgress("Searching " + Configuration::GetInstance()->GetLocalizedColorClassName(), (qrand() % 101));
+				ColorConfig::GetInstance()->SetDataFromResponse(ColorConfig::GetInstance()->GetSearchCriteriaJSON());
+				PLMColorResults::GetInstance()->setModal(true);
+				if (ColorConfig::GetInstance()->GetIsModelExecuted() || ColorConfig::GetInstance()->m_resultAfterLogout)
+				{
+					PLMColorResults::GetInstance()->currPageLabel->setText("1");
+					PLMColorResults::GetInstance()->DrawResultWidget(false);
+					ColorConfig::GetInstance()->m_resultAfterLogout = false;
+				}
+				RESTAPI::SetProgressBarData(0, "", false);
+				PLMColorResults::GetInstance()->exec();
+			}
 		}
 		catch (string msg)
 		{
@@ -494,7 +555,7 @@ namespace CLOVise
 				UTILITY_API->CreateProgressBar();
 				UTILITY_API->SetProgress("Loading", (qrand() % 101));
 			}
-			drawSearchUI(selectType, false, _item.toStdString());
+			drawSearchUI(selectType, false, _item.toStdString(), ColorConfig::GetInstance()->GetColorFieldsJSON());
 			if (!m_hierarchyLoading) {
 				UTILITY_API->DeleteProgressBar(false);
 				this->show();
@@ -677,7 +738,7 @@ namespace CLOVise
 				selectType = _item->data(1, Qt::UserRole).toString();
 				UTILITY_API->SetProgress("Loading", (qrand() % 101));
 				CVWidgetGenerator::CreateViewComboBoxOnSearch(m_viewComboBox, ColorConfig::GetInstance()->GetColorViewJSON(), selectType.toStdString());
-				drawSearchUI(selectType, false, BLANK);
+				drawSearchUI(selectType, false, BLANK, ColorConfig::GetInstance()->GetColorFieldsJSON());
 				m_hierarchyLoading = false;
 				UTILITY_API->DeleteProgressBar(true);
 				this->show();
@@ -724,7 +785,7 @@ namespace CLOVise
 	* Exception - exception, Char *
 	* Return -
 	*/
-	void PLMColorSearch::drawSearchUI(QString _selectType, bool _drawFilter, string _selectedFilter)
+	void PLMColorSearch::drawSearchUI(QString _selectType, bool _drawFilter, string _selectedFilter, json _fieldsJson)
 	{		
 		Logger::Info("PLMColorSearch -> drawSearchUI() -> Start");
 		try
@@ -735,7 +796,7 @@ namespace CLOVise
 			{	*/	
 			/*if (ColorConfig::GetInstance()->GetIsModelExecuted())
 				Configuration::GetInstance()->SetProgressBarProgress(RESTAPI::SetProgressBarProgress(Configuration::GetInstance()->GetProgressBarProgress(), 10, "Loading Color Search"));*/
-				FlexTypeHelper::DrawDefaultSearchCriteriaWidget(ColorConfig::GetInstance()->GetColorFieldsJSON(), _selectType.toStdString(), m_searchTreeWidget_1, m_searchTreeWidget_2, attScops);
+				FlexTypeHelper::DrawDefaultSearchCriteriaWidget(_fieldsJson, _selectType.toStdString(), m_searchTreeWidget_1, m_searchTreeWidget_2, attScops);
 		  //}
 				m_searchTreeWidget_1->setColumnCount(2);
 				m_searchTreeWidget_1->setHeaderHidden(true);
@@ -866,6 +927,53 @@ namespace CLOVise
 	}
 
 	/*
+	* Description - ShowHeader() method is for show the header lable or combobox.
+	* Parameter -  
+	* Exception -
+	* Return -
+	*/
+	void PLMColorSearch::CreateColorSpecWidget()
+	{
+		Logger::Info("INFO::PLMColorSearch -> SetCriteriaHeader() -> Start");
+		//drawSearchUI(selectType, false, BLANK);
+		if ((Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED && !ColorConfig::GetInstance()->m_isSearchColor) || (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED && !ColorConfig::GetInstance()->m_isSearchColor))
+		{
+			QString windowTitle = PLM_NAME + " PLM " + QString::fromStdString(Configuration::GetInstance()->GetLocalizedColorClassName()) + "Spec Creation";
+			this->setWindowTitle(windowTitle);
+			m_pTitleBar = new MVTitleBar(windowTitle, this);
+			layout()->setMenuBar(m_pTitleBar);
+			string colorspecName = "Color SpecCreation";
+			searchCriteriaLabel->setText(QString::fromStdString(colorspecName));
+			Logger::Info("PLMColorSearch -> ShowHeader() -> 2");
+			ColorConfig::GetInstance()->SetDateFlag(false);
+			QStringList attScops = ColorConfig::GetInstance()->GetAttScopes();
+			m_searchTreeWidget_1->clear();
+			m_searchTreeWidget_2->clear();
+			//FlexTypeHelper::DrawDefaultSearchCriteriaWidget(ColorConfig::GetInstance()->GetPLMConfigJson(), BLANK, m_searchTreeWidget_1, m_searchTreeWidget_2, attScops);
+			Logger::Logger("create config json" + to_string(ColorConfig::GetInstance()->GetPLMConfigJson()));
+			drawSearchUI(selectType, false, BLANK, ColorConfig::GetInstance()->GetPLMConfigJson());
+			m_searchButton->setText("Save");
+			m_searchButton->setIcon(QIcon(SAVE_HOVER_ICON_PATH));
+			m_searchButton->setToolTip("Save");
+		}
+		else
+		{
+			QString windowTitle = PLM_NAME + " PLM " + QString::fromStdString(Configuration::GetInstance()->GetLocalizedColorClassName()) + " Search Criteria ";
+			this->setWindowTitle(windowTitle);
+			m_pTitleBar = new MVTitleBar(windowTitle, this);
+			layout()->setMenuBar(m_pTitleBar);
+			selectType = QString::fromStdString(COLOR_ROOT_TYPE);
+			m_searchTreeWidget_1->clear();
+			m_searchTreeWidget_2->clear();
+			Logger::Logger("search config json" + to_string(ColorConfig::GetInstance()->GetColorFieldsJSON()));
+			drawSearchUI(selectType, false, BLANK, ColorConfig::GetInstance()->GetColorFieldsJSON());
+			searchCriteriaLabel->setText("Search Criteria");
+			m_searchButton->setText("Search");
+			m_searchButton->setIcon(QIcon(SEARCH_HOVER_ICON_PATH));
+			m_searchButton->setToolTip("Search");
+		}
+	}
+	/*
 	* Description - GetTreewidget() method is for pass a treeWidget.
 	* Parameter - int 
 	* Exception -
@@ -898,11 +1006,12 @@ namespace CLOVise
 		else
 		{
 			selectType = QString::fromStdString(COLOR_ROOT_TYPE);
-			if (ColorConfig::GetInstance()->GetIsModelExecuted())
+			CreateColorSpecWidget();
+			/*if (ColorConfig::GetInstance()->GetIsModelExecuted())
 			{
 				Configuration::GetInstance()->SetProgressBarProgress(RESTAPI::SetProgressBarProgress(Configuration::GetInstance()->GetProgressBarProgress(), 8, "Loading " + Configuration::GetInstance()->GetLocalizedColorClassName() + " Search"));
 			}
-			drawSearchUI(selectType, false, BLANK);
+			drawSearchUI(selectType, false, BLANK, ColorConfig::GetInstance()->GetColorFieldsJSON());*/
 		}
 		Logger::Info("PLMColorSearch -> DrawSearchWidget() -> End");
 	}

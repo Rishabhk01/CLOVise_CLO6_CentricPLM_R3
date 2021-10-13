@@ -604,4 +604,6 @@ const string UPDATE_MATERIAL = "Update Material";
 const string CREATE_MATERIAL = "Create Material";
 const string DOCUMENT_NAME = "docName";
 const string ATT_RESTRICT_EDIT = "restrict_edit";
+const string ALLOW_CREATE_COLOR = "allow_create_color_spec_on_colorway";
+const string REFER_DEFAULT_IMAGE_ON_COLOR = "reference_default_image_on_colorway_create";
 const QStringList MATERIAL_FILTER_LIST{ ".zfab", ".zsd", ".zpl", ".zpac", ".zsp", ".btn", ".bth", ".obj", ".sst" };
