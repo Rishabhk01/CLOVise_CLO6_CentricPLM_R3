@@ -1,0 +1,97 @@
+  {
+    "availableViews": [
+      "All PLM Color"
+    ],
+    "defaultView": "",
+    "typeName": "Print",
+    "viewsList": [
+      {
+        "defaultView": false,
+        "fieldsList": [
+          {
+            "attCurrencyCode": null,
+            "attDecimalFigures": 0,
+            "attDefaultValue": null,
+            "attKey": "node_name",
+            "attName": "Node Name",
+            "attObjectLevel": null,
+            "attScope": "PRINT",
+            "attSearchDefaultValue": null,
+            "attType": "text",
+            "enumList": [],
+            "isAttEnabled": true,
+            "isAttInSearchResults": true,
+            "isAttRequired": true,
+            "isAttSearchable": true,
+            "isAttSettable": true,
+            "isAttUpdatable": true,
+			"rest_api_exposed": true,
+            "userList": []
+          },
+          {
+            "attCurrencyCode": null,
+            "attDecimalFigures": 0,
+            "attDefaultValue": null,
+            "attKey": "code",
+            "attName": "Code",
+            "attObjectLevel": null,
+            "attScope": "PRINT",
+            "attSearchDefaultValue": null,
+            "attType": "text",
+            "enumList": [],
+            "isAttEnabled": true,
+            "isAttInSearchResults": true,
+            "isAttRequired": false,
+            "isAttSearchable": true,
+            "isAttSettable": true,
+            "isAttUpdatable": true,
+			"rest_api_exposed": true,
+            "userList": []
+          },
+          {
+            "attCurrencyCode": null,
+            "attDecimalFigures": 0,
+            "attDefaultValue": null,
+            "attKey": "description",
+            "attName": "Description",
+            "attObjectLevel": null,
+            "attScope": "PRINT",
+            "attSearchDefaultValue": null,
+            "attType": "textArea",
+            "enumList": [],
+            "isAttEnabled": true,
+            "isAttInSearchResults": true,
+            "isAttRequired": false,
+            "isAttSearchable": true,
+            "isAttSettable": true,
+            "isAttUpdatable": true,
+			"rest_api_exposed": true,
+            "userList": []
+          },
+		  {
+            "attCurrencyCode": null,
+            "attDecimalFigures": 0,
+            "attDefaultValue": null,
+            "attKey": "print_designs",
+            "attName": "Print Design",
+            "attObjectLevel": null,
+            "attScope": "PRINT",
+            "attSearchDefaultValue": null,
+            "attType": "ref",
+            "enumList": [],
+            "isAttEnabled": true,
+            "isAttInSearchResults": true,
+            "isAttRequired": false,
+            "isAttSearchable": true,
+            "isAttSettable": true,
+            "isAttUpdatable": true,
+			"rest_api_exposed": true,
+            "userList": []
+          }
+		 
+        ],
+        "viewId": "333792",
+        "viewName": "All PLM Color"
+      }
+    ]
+  }

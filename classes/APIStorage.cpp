@@ -90,6 +90,12 @@ namespace CLOAPISample
 			GetFilePathWithID(m_ProductAPIItemList[i]->itemID, filePath);
 			m_ProductAPIItemList[i]->filesize = getFileSize(filePath);
 		}
+		for (size_t i = 0; i < m_PrintAPIItemList.size(); ++i)
+		{
+			QString filePath;
+			GetFilePathWithID(m_PrintAPIItemList[i]->itemID, filePath);
+			m_PrintAPIItemList[i]->filesize = getFileSize(filePath);
+		}
 	}	
 	
 	unsigned int APIStorage::getFileSize(const QString& filePath)
@@ -154,6 +160,13 @@ namespace CLOAPISample
 		else if (searchKeyValues[META_DATA_KEY_0_DATA_TYPE].toString().compare("PRODUCT", Qt::CaseInsensitive) == 0)
 		{
 			for (auto it : m_ProductAPIItemList)
+			{
+				searchResult.push_back(*it);
+			}
+		}
+		else if (searchKeyValues[META_DATA_KEY_0_DATA_TYPE].toString().compare("PRINT", Qt::CaseInsensitive) == 0)
+		{
+			for (auto it : m_PrintAPIItemList)
 			{
 				searchResult.push_back(*it);
 			}
@@ -241,6 +254,19 @@ namespace CLOAPISample
 				if (m_ProductAPIItemList[i]->itemID.compare(itemId, Qt::CaseInsensitive) == 0)
 				{
 					result = *m_ProductAPIItemList[i];
+					returnValue = true;
+					break;
+				}
+			}
+		}
+		if (returnValue == false)
+		{
+			Logger::Debug("m_printAPIitemList:" + to_string(m_PrintAPIItemList.size()));
+			for (size_t i = 0; i < m_PrintAPIItemList.size(); ++i)
+			{
+				if (m_PrintAPIItemList[i]->itemID.compare(itemId, Qt::CaseInsensitive) == 0)
+				{
+					result = *m_PrintAPIItemList[i];
 					returnValue = true;
 					break;
 				}
@@ -883,6 +909,8 @@ namespace CLOAPISample
 			generateAPIItemListForPLMColor(assetPath + "color/", _itemDataType);
 		if (_itemDataType == SIDE_MENU_TRIM_ID)
 			generateAPIItemListForPLMTrims(assetPath + "trim/", _itemDataType);
+		if (_itemDataType == SIDE_MENU_PRINT_ID)
+			generateAPIItemListForPLMPrints(assetPath + "print/", _itemDataType);
 	}
 	void APIStorage::generateAPIItemListForPLMColor(string _directoryPath, QString _itemDataType)
 	{
@@ -934,6 +962,69 @@ namespace CLOAPISample
 			}
 		}
 	}
+
+	void APIStorage::generateAPIItemListForPLMPrints(string _directoryPath, QString _itemDataType)
+	{
+		{
+			Logger::Logger("APIStorage generateAPIItemListForPLMMaterial start");
+			_directoryPath = Helper::FindAndReplace(_directoryPath, LEFT_DOUBLE_SLASH, WRIGHT_SINGLE_SLASH);
+			QDir dir(QString::fromStdString(_directoryPath));
+			QFileInfoList fileList = dir.entryInfoList(QDir::Files, QDir::Time);
+			m_PrintAPIItemList.clear();
+			for (int fileListCount = 0; fileListCount < fileList.size(); fileListCount++)
+			{
+				QString filePath = fileList.at(fileListCount).filePath();
+				QString fileName = fileList.at(fileListCount).fileName();
+				QString fileCreationDateTime = fileList.at(fileListCount).lastModified().toString(Qt::ISODate);
+
+				if (COLOR_SUPPORTING_LIST.contains(QString::fromStdString(Helper::GetFileExtension(fileName.toStdString())), Qt::CaseInsensitive))
+				{
+					string metadataStr = UTILITY_API->GetAPIMetaData(filePath.toStdString());
+					string objectId = "";
+					LibraryAPIItem* setItem = new LibraryAPIItem();
+
+					if (FormatHelper::HasContent(metadataStr))
+					{
+						json metadataJson = json::parse(metadataStr);
+						string objectId = Helper::GetJSONValue<string>(metadataJson, OBJECT_ID, true);
+						for (const auto& itrValues : metadataJson.items())
+						{
+							string value = itrValues.value();
+							if (value == "null")
+								value = "";
+							if (!Configuration::GetInstance()->GetExcludedPreviewFields().contains(QString::fromStdString(itrValues.key())))
+							{
+								setItem->metaData[QString::fromStdString(itrValues.key())] = QString::fromStdString(value);
+							}
+						}
+					}
+
+					if (!FormatHelper::HasContent(objectId))
+					{
+						objectId = Helper::GetFileNameWithOutExtension(fileName.toStdString());
+					}
+					setItem->itemID = QString::fromStdString(objectId);
+					float fileSize = (float)Helper::GetFileSize(filePath.toStdString());
+					setItem->metaData[META_DATA_KEY_0_DATA_TYPE] = _itemDataType;
+					//setItem->metaData[PRINT_DATA_ID_KEY + META_DATA_KEY_1_DATA_TYPE] = PRINT_DATA_ID_KEY;
+					//setItem->itemID = QString::fromStdString(Helper::GetFileNameWithOutExtension(fileName.toStdString()));
+					setItem->itemName = fileName;
+					setItem->sampleItemData.itemPath = filePath;
+					setItem->sampleItemData.iconThumbnailPath = filePath;
+					setItem->sampleItemData.previewThumbnailPath = filePath;
+					setItem->filesize = fileSize;
+					setItem->dateTime = fileCreationDateTime;
+
+					if (!Helper::CheckFileExist(fileName, setItem))
+					{
+						m_PrintAPIItemList.push_back(setItem);
+					}
+				}
+			}
+			Logger::Logger("APIStorage generateAPIItemListForPLMPrints-> end");
+		}
+	}
+
 
 	void APIStorage::generateAPIItemListForPLMProduct(string _directoryPath, QString _itemDataType)
 	{

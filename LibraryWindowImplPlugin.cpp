@@ -361,7 +361,7 @@ namespace CLOAPI
 						else
 							return UTILITY_API->GetThumbnailInCLOFile(filePath.toStdString(), 0, sizeInByte); // for CLO file format which contains only one thumnail 
 					}
-				}
+				}				
 				else if (UTILITY_API->IsReadableImageFormat(filePath.toStdString()))							// for common type of images which can be displayed in Library Windows, CLO software
 				{
 					return FileLoadViaString(filePath, sizeInByte);
@@ -537,12 +537,12 @@ namespace CLOAPI
 		product.itemName = "Product";
 		itemList.push_back(product);
 
-		//plm color
-		/*CLOAPISample::LibraryAPIItem color;
-		color.itemID = "COLOR";
-		color.itemType = "FOLDER";
-		color.itemName = "Prints & Patterns";
-		itemList.push_back(color);*/
+		//plm print Design
+		CLOAPISample::LibraryAPIItem print;
+		print.itemID = "PRINT";
+		print.itemType = "FOLDER";
+		print.itemName = "Print Design Color";
+		itemList.push_back(print);
 
 		//PLM item
 		CLOAPISample::LibraryAPIItem plm;

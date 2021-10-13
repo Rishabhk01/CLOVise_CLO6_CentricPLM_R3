@@ -1007,6 +1007,11 @@ namespace UIHelper
 									filePath = DirectoryUtil::GetStyleAttachmentDirectory();
 								filePath = filePath + attachmentName;
 							}
+							else if (_module == PRINT_MODULE)
+							{
+								if (COLOR_SUPPORTING_LIST.contains(QString::fromStdString(fileExt), Qt::CaseInsensitive))
+									filePath = DirectoryUtil::GetPrintAssetsDirectory();
+							}
 							else
 							{
 								faildesObjects.push_back(QString::fromStdString(objectName));
@@ -1135,15 +1140,15 @@ namespace UIHelper
 					string type = Helper::GetJSONValue<string>(fieldsJson, "material_type", true);
 					string description = Helper::GetJSONValue<string>(fieldsJson, "description", true);
 					//_previewjsonarray[ResultsjsonCount] = fieldsJson;
-					json searchArrayFields;
-					searchArrayFields["objectId"] = objectId;
-					searchArrayFields[OBJECT_NAME_KEY] = objectName;
-					searchArrayFields["Name"] = objectName;
-					searchArrayFields["Code"] = code;
-					if (_module != COLOR_MODULE)
-						searchArrayFields["Type"] = type;
-					searchArrayFields["Description"] = description;
-					searchArray["SearchResults"][i] = searchArrayFields;
+					json searchArrayFields;	
+						searchArrayFields["objectId"] = objectId;
+						searchArrayFields[OBJECT_NAME_KEY] = objectName;
+						searchArrayFields["Name"] = objectName;
+						searchArrayFields["Code"] = code;
+						if (_module != COLOR_MODULE && _module!=PRINT_MODULE)
+							searchArrayFields["Type"] = type;
+						searchArrayFields["Description"] = description;
+						searchArray["SearchResults"][i] = searchArrayFields;
 					if (_module != COLOR_MODULE)
 					{
 						//auto startTime = std::chrono::high_resolution_clock::now();
@@ -1214,6 +1219,30 @@ namespace UIHelper
 							{
 								string latestRevisionId = Helper::GetJSONValue<string>(attachmentCountJson, "latest_revision", true);
 								json revisionDetailsJson = Helper::GetJSONParsedValue<string>(attachmentCountJson, "revision_details", false);
+								Logger::Debug("revisionDetailsJson::" + to_string(revisionDetailsJson));
+								for (int revisionCount = 0; revisionCount < revisionDetailsJson.size(); revisionCount++)
+								{
+									if (latestRevisionId != Helper::GetJSONValue<string>(revisionDetailsJson[revisionCount], "id", true))
+										continue;
+									string latestVersionAttId = Helper::GetJSONValue<string>(revisionDetailsJson[revisionCount], "file", true);
+									latestVersionAttName = Helper::GetJSONValue<string>(revisionDetailsJson[revisionCount], "file_name", true);
+
+									latestVersionAttUrl = Helper::GetJSONValue<string>(revisionDetailsJson[revisionCount], "_url_base_template", true);
+									
+									latestVersionAttUrl = Helper::FindAndReplace(latestVersionAttUrl, "%s", latestVersionAttId);
+
+									//latestVersionAttUrl = latestVersionAttUrl + latestVersionAttId;
+									Logger::Debug("latestVersionAttName::" + latestVersionAttName + "::latestVersionAttId::" + latestVersionAttId + "  ::latestVersionAttUrl::" + latestVersionAttUrl);
+									documentId = latestRevisionId;
+									break;
+								}
+								break;
+							}
+							
+							else
+							{
+								string latestRevisionId = Helper::GetJSONValue<string>(attachmentCountJson, "latest_revision", true);
+								json revisionDetailsJson = Helper::GetJSONParsedValue<string>(attachmentCountJson, "revision_details", false);
 								Logger::Logger("revisionDetailsJson::" + to_string(revisionDetailsJson));
 								for (int revisionCount = 0; revisionCount < revisionDetailsJson.size(); revisionCount++)
 								{
@@ -1223,7 +1252,7 @@ namespace UIHelper
 									latestVersionAttName = Helper::GetJSONValue<string>(revisionDetailsJson[revisionCount], "file_name", true);
 
 									latestVersionAttUrl = Helper::GetJSONValue<string>(revisionDetailsJson[revisionCount], "_url_base_template", true);
-
+									
 									latestVersionAttUrl = Helper::FindAndReplace(latestVersionAttUrl, "%s", latestVersionAttId);
 
 									//latestVersionAttUrl = latestVersionAttUrl + latestVersionAttId;
@@ -1733,8 +1762,8 @@ namespace UIHelper
 						break;
 					}
 				}
-					
-					
+				//thumbnailUrl = "https://3ddevelop.centricsoftware.com/csi-requesthandler/RequestHandler?Module=Publisher&Operation=GetDirect&URL=cf%3A%2F%2Ffv%2F332437";
+
 			}
 		return thumbnailUrl;
 	}
@@ -2311,9 +2340,6 @@ namespace UIHelper
 				{
 					QTreeWidgetItem* topLevel = new QTreeWidgetItem();  // Creating new TreeWidgetItem
 					_treeWidget->addTopLevelItem(topLevel);
-					Logger::Debug("Attribute name==========" + attributeName);
-					Logger::Debug("attributeKey============" + attributeKey);
-					Logger::Debug("attributeType============" + attributeType);
 					if (isInteger)
 					{			// Adding ToplevelItem
 						//UTILITY_API->DisplayMessageBox("isInteger::" + to_string(isInteger));

@@ -95,6 +95,11 @@ namespace RESTAPI
 	const string CREATE_COLOR_API = "/csi-requesthandler/api/v2/color_specifications";
 	/*Centric color specification rest calls end	*/
 
+	/*Centric Print Design Color rest calls start	*/
+	const string SEARCH_PRINT_DESIGN_API = "/csi-requesthandler/api/v2/print_designs";
+	const string SEARCH_PRINT_DESIGN_COLOR_API = "/csi-requesthandler/api/v2/print_design_colors";
+	/*Centric Print Design Color rest calls end	*/
+
 	/*Centric rest calls end	*/
 
 	/*publish module endpoints */

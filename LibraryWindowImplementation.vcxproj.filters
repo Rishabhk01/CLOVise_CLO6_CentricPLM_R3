@@ -362,6 +362,45 @@
     <ClCompile Include="CLOVise\PLM\Outbound\UpdateMaterial\UpdateMaterialConfig.cpp">
       <Filter>CLOVise\PLM\Outbound\UpdateMaterial</Filter>
     </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\CreateImageIntent.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_UpdateImageIntent.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CreateImageIntent.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CreateImageIntent.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_UpdateImageIntent.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Print\PLMPrintResults.cpp">
+      <Filter>CLOVise\PLM\Inbound\Print</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_PLMPrintResults.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_PLMPrintResults.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Print\PLMPrintSearch.cpp">
+      <Filter>CLOVise\PLM\Inbound\Print</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_PLMPrintSearch.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_PLMPrintSearch.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Print\PrintConfig.cpp">
+      <Filter>CLOVise\PLM\Inbound\Print</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LibraryWindowImplPlugin.h" />
@@ -566,7 +605,7 @@
     <ClInclude Include="GeneratedFiles\ui_CreateImageIntent.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-	    <ClInclude Include="GeneratedFiles\ui_UpdateImageIntent.h">
+    <ClInclude Include="GeneratedFiles\ui_UpdateImageIntent.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_UpdateMaterial.h">
@@ -575,11 +614,14 @@
     <ClInclude Include="CLOVise\PLM\Outbound\UpdateMaterial\UpdateMaterialConfig.h">
       <Filter>CLOVise\PLM\Outbound\UpdateMaterial</Filter>
     </ClInclude>
-    <ClInclude Include="CLOVise\PLM\Outbound\PublishToPLM\CreateImageIntent.h">
-      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    <ClInclude Include="GeneratedFiles\ui_PLMPrintResults.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.h">
-      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    <ClInclude Include="GeneratedFiles\ui_PLMPrintSearch.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Inbound\Print\PrintConfig.h">
+      <Filter>CLOVise\PLM\Inbound\Print</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -762,6 +804,29 @@
     <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
       <Filter>Generated Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CreateImageIntent.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CreateImageIntent.ui" />
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.ui" />
+    <CustomBuild Include="CLOVise\PLM\Inbound\Print\PLMPrintResults.h">
+      <Filter>CLOVise\PLM\Inbound\Print</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Print\PLMPrintResults.ui">
+      <Filter>CLOVise\PLM\Inbound\Print</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Print\PLMPrintSearch.h">
+      <Filter>CLOVise\PLM\Inbound\Print</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Print\PLMPrintSearch.ui">
+      <Filter>CLOVise\PLM\Inbound\Print</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Ui_SignInDialog">
@@ -866,6 +931,9 @@
     </Filter>
     <Filter Include="CLOVise\PLM\Outbound\UpdateMaterial">
       <UniqueIdentifier>{f702f99b-fa7b-446e-8309-32e23808662d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Inbound\Print">
+      <UniqueIdentifier>{56da6e43-0acb-4951-ba80-1ee478e6ed09}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1013,12 +1081,6 @@
       <Filter>CLOVise\PLM\CLOViseSuite</Filter>
     </None>
     <None Include="CloLibraryAPI_Plugin.pro" />
-    <None Include="CLOVise\PLM\Outbound\PublishToPLM\CreateImageIntent.ui">
-      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
-    </None>
-    <None Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.ui">
-      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LibraryWindowImplementation.rc" />
