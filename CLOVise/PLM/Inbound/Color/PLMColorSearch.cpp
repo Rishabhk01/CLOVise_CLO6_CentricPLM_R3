@@ -421,9 +421,7 @@ namespace CLOVise
 		{
 			if ((Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED && !ColorConfig::GetInstance()->m_isSearchColor) || (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED && !ColorConfig::GetInstance()->m_isSearchColor))
 			{
-				//bool rowsSelected = true;
 				bool returnValue = false;
-				//need implementation
 				m_createCriteriaJson[ATTRIBUTES_KEY] = UIHelper::CollectSearchCriteriaFields(m_searchTreeWidget_1, m_searchTreeWidget_2);
 				UIHelper::ValidateForValidParams(m_createCriteriaJson, COLOR_MODULE);
 				this->hide();
@@ -432,9 +430,6 @@ namespace CLOVise
 
 				RESTAPI::SetProgressBarData(14, "Adding Colors", true);
 				ColorConfig::GetInstance()->SetDataFromResponse(m_createCriteriaJson);
-				//rest call
-				//string response = RESTAPI::PostRestCall(to_string(m_createCriteriaJson), Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::CREATE_COLOR_API, "content-type: application/json;");
-				//UTILITY_API->DisplayMessageBox("created restcall's response::  " + response);
 				Logger::Debug("PLMColorResults -> colorResultTableDownload_clicked() -> CreateProduct::GetInstance()");				
 				if (Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED)
 				{
@@ -935,7 +930,6 @@ namespace CLOVise
 	void PLMColorSearch::CreateColorSpecWidget()
 	{
 		Logger::Info("INFO::PLMColorSearch -> SetCriteriaHeader() -> Start");
-		//drawSearchUI(selectType, false, BLANK);
 		if ((Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED && !ColorConfig::GetInstance()->m_isSearchColor) || (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED && !ColorConfig::GetInstance()->m_isSearchColor))
 		{
 			QString windowTitle = PLM_NAME + " PLM " + QString::fromStdString(Configuration::GetInstance()->GetLocalizedColorClassName()) + "Spec Creation";
@@ -944,13 +938,10 @@ namespace CLOVise
 			layout()->setMenuBar(m_pTitleBar);
 			string colorspecName = "Color SpecCreation";
 			searchCriteriaLabel->setText(QString::fromStdString(colorspecName));
-			Logger::Info("PLMColorSearch -> ShowHeader() -> 2");
 			ColorConfig::GetInstance()->SetDateFlag(false);
 			QStringList attScops = ColorConfig::GetInstance()->GetAttScopes();
 			m_searchTreeWidget_1->clear();
 			m_searchTreeWidget_2->clear();
-			//FlexTypeHelper::DrawDefaultSearchCriteriaWidget(ColorConfig::GetInstance()->GetPLMConfigJson(), BLANK, m_searchTreeWidget_1, m_searchTreeWidget_2, attScops);
-			Logger::Logger("create config json" + to_string(ColorConfig::GetInstance()->GetPLMConfigJson()));
 			drawSearchUI(selectType, false, BLANK, ColorConfig::GetInstance()->GetPLMConfigJson());
 			m_searchButton->setText("Save");
 			m_searchButton->setIcon(QIcon(SAVE_HOVER_ICON_PATH));
@@ -965,7 +956,6 @@ namespace CLOVise
 			selectType = QString::fromStdString(COLOR_ROOT_TYPE);
 			m_searchTreeWidget_1->clear();
 			m_searchTreeWidget_2->clear();
-			Logger::Logger("search config json" + to_string(ColorConfig::GetInstance()->GetColorFieldsJSON()));
 			drawSearchUI(selectType, false, BLANK, ColorConfig::GetInstance()->GetColorFieldsJSON());
 			searchCriteriaLabel->setText("Search Criteria");
 			m_searchButton->setText("Search");

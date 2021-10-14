@@ -1819,7 +1819,6 @@ namespace CLOVise
 					}
 				}
 				string isreferDefauleImage = sender()->property(REFER_DEFAULT_IMAGE_ON_COLOR.c_str()).toString().toStdString();
-
 			}
 			else if (!_item.isEmpty())
 			{

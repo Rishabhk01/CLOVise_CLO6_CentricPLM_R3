@@ -718,7 +718,6 @@ namespace CLOVise
 					for (int i = 0; i < responseJson.size(); i++)
 					{
 						attJson = Helper::GetJSONParsedValue<int>(responseJson, i, false);;///use new method
-						Logger::Debug("UpdateProduct drawWidget() attJson:**************************** " + to_string(attJson));
 						attName = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_NAME, true);
 						Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON attName: " + attName);
 						attId = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_ID, true);
@@ -731,14 +730,11 @@ namespace CLOVise
 							
 							if (attributeName == "Style Type" && attDefaultValue == QString::fromStdString(attId))
 							{
-								Logger::Logger("before set the value for m_isCreateColorSpec:: " + to_string(m_isCreateColorSpec));
-								Logger::Logger("default value::0" + attDefaultValue.toStdString()+" ::attId::"+ attId);
 								string allowCreateColor = Helper::GetJSONValue<string>(attJson, ALLOW_CREATE_COLOR, true);
 								if (allowCreateColor == "true")
 									m_isCreateColorSpec = true;
 								else
 									m_isCreateColorSpec = false;
-								Logger::Logger("after set the value for m_isCreateColorSpec:: " + to_string(m_isCreateColorSpec));
 							}
 						}
 						comboBox->setProperty(attName.c_str(), QString::fromStdString(attId));
@@ -1725,21 +1721,13 @@ namespace CLOVise
 			ui_colorwayTable->setRowCount(m_colorwayRowcount);
 			ui_colorwayTable->insertRow(m_colorwayRowcount);
 		}
-		QPushButton* updateColorButton = CVWidgetGenerator::CreatePushButton("Update Color", "", "Update Color", PUSH_BUTTON_STYLE, 30, true);
-
-		//pWidget = CVWidgetGenerator::InsertWidgetInCenter(updateColorButton);	
-		
-		/*ui_colorwayTable->setCellWidget(_count + m_colorwayRowcount, CHECKBOX_COLUMN, pWidget);
-		ui_colorwayTable->setColumnWidth(CHECKBOX_COLUMN, 120);*/
-		/////
-		
+		QPushButton* updateColorButton = CVWidgetGenerator::CreatePushButton("Update Color", "", "Update Color", PUSH_BUTTON_STYLE, 30, true);	
 		QPushButton* ColorCreateButton = new QPushButton();
 		ColorCreateButton->setStyleSheet("QPushButton{max-height: 20px; max-width: 10px;}");
 		ColorCreateButton->setMaximumWidth(10);
 		ColorCreateButton->setProperty(("row"), _count);
 		QAction* colorSpecAction = new QAction(tr("Create ColorSpec"), this);
 		colorSpecAction->setProperty(("row"), _count);
-		Logger::Logger("set the value for action using m_isCreateColorSpec:: " + to_string(m_isCreateColorSpec));
 		colorSpecAction->setEnabled(m_isCreateColorSpec);
 		QAction* printAction = new QAction(tr("Search Prints"), this);
 		printAction->setEnabled(false);
@@ -1763,7 +1751,6 @@ namespace CLOVise
 			connect(colorSpecAction, SIGNAL(triggered()), m_createActionSignalMapper, SLOT(map()));
 			m_createActionSignalMapper->setMapping(colorSpecAction, m_colorwayRowcount);
 		}
-		////////
 		ui_colorwayTable->setCellWidget(_count + m_colorwayRowcount, CHECKBOX_COLUMN, pWidget);
 		ui_colorwayTable->setColumnWidth(CHECKBOX_COLUMN, 200);
 		string defaultDescption;
@@ -1782,8 +1769,6 @@ namespace CLOVise
 			comboColorwayItem->setProperty("colorwayId", QString::fromStdString(_colorwayId));
 			colorSpecId = Helper::GetJSONValue<string>(_colorwayJson, "color_specification", true);
 			comboColorwayItem->setProperty("Id", QString::fromStdString(colorSpecId));
-
-			//UTILITY_API->DisplayMessageBox("createProduct -> AddRows() m_downloadedColorwayJson::" + to_string(_colorwayJson));
 			defaultPLMColorwayName = Helper::GetJSONValue<string>(_colorwayJson, "uni_2_digit_code", true);
 			defaultDescption = Helper::GetJSONValue<string>(_colorwayJson, "description", true);
 			downloadedPLMColorwayName = Helper::GetJSONValue<string>(_colorwayJson, "node_name", true);
@@ -1801,7 +1786,6 @@ namespace CLOVise
 			comboColorwayItem->setProperty("NewColorway", QString::fromStdString(to_string(m_colorwayRowcount)));
 			m_NewlyAddedColorway.append(QString::fromStdString(to_string(m_colorwayRowcount)));
 		}
-
 		pWidget = CVWidgetGenerator::InsertWidgetInCenter(comboColorwayItem);
 		ui_colorwayTable->setCellWidget(_count + m_colorwayRowcount, CLO_COLORWAY_COLUMN, pWidget);
 		QObject::connect(comboColorwayItem, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(OnHandleColorwayNameComboBox(const QString&)));
@@ -1809,7 +1793,6 @@ namespace CLOVise
 		ui_colorwayTable->setIconSize(iconSize);
 		ui_colorwayTable->setWordWrap(true);
 
-		///////////////////
 		QLineEdit* lineEditItem = new QLineEdit();
 		lineEditItem->setStyleSheet(LINEEDIT_STYLE);
 		lineEditItem->setText("");
@@ -1818,13 +1801,9 @@ namespace CLOVise
 		lineEditItem->setProperty("row", _count + m_colorwayRowcount);
 		lineEditItem->setProperty("Edited", true);
 		connect(lineEditItem, SIGNAL(editingFinished()), this, SLOT(OnplmColorwayNameEntered()));
-		////////////////
-
-
-
+		
 		QTableWidgetItem* iconItem = new QTableWidgetItem;
 		iconItem->setSizeHint(iconSize);
-
 
 		Logger::Debug("colorRGB:: " + _rgbValue);
 
@@ -1893,7 +1872,6 @@ namespace CLOVise
 		if (m_downloadedColorway)
 		{
 			string defaultDisplayname = uni2digiCodes->property(defaultPLMColorwayName.c_str()).toString().toStdString();
-			//UTILITY_API->DisplayMessageBox("defaultDisplayname" + defaultDisplayname);
 			indexOfSelectedString = uni2digiCodes->findText(QString::fromStdString(defaultDisplayname));
 		}
 		else
@@ -1935,7 +1913,6 @@ namespace CLOVise
 		Configuration::GetInstance()->SetIsUpdateColorClicked(true);
 		m_currentColorSpec = BLANK;
 		m_selectedRow = i;
-		//UTILITY_API->DisplayMessageBox(to_string(m_SelectedRow));
 		QComboBox *colorwayNameCombo = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(m_selectedRow, CLO_COLORWAY_COLUMN)->children().last());
 		string colorSpecId = colorwayNameCombo->property("Id").toString().toStdString();
 		if (!colorSpecId.empty())
@@ -1943,15 +1920,6 @@ namespace CLOVise
 		ColorConfig::GetInstance()->m_mode = "Create";
 		ColorConfig::GetInstance()->m_isSearchColor = false;
 		onAddColorwaysClicked();
-
-		/*this->hide();
-		ColorConfig::GetInstance()->InitializeColorData();
-		ColorConfig::GetInstance()->m_isSearchColor = false;
-		PLMColorSearch::GetInstance()->setModal(true);
-		PLMColorSearch::GetInstance()->DrawSearchWidget(true);
-		UTILITY_API->DeleteProgressBar(true);
-		RESTAPI::SetProgressBarData(0, "", false);
-		PLMColorSearch::GetInstance()->exec();*/
 		Logger::Info("INFO::UpdateProduct -> OnCreateColorSpecClicked() -> Start");
 	}
 
