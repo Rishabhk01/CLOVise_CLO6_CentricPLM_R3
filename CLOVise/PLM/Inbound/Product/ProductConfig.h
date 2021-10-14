@@ -30,6 +30,7 @@ public:
 	bool m_isShow3DAttWidget = false;
 	int m_sortedColumnNumber;
 	bool m_productlLoggedOut = false;
+	bool m_resultAfterLogout = false;
 	json m_productFieldsJson = json::object();
 
 	static ProductConfig* GetInstance();

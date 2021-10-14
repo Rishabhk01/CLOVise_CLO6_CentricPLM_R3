@@ -873,7 +873,7 @@ void ColorConfig::InitializeColorData()
 	Configuration::GetInstance()->SetProgressBarProgress(0);
 	Configuration::GetInstance()->SetProgressBarProgress(qrand() % 101);
 	SetMaximumLimitForColorResult();
-	RESTAPI::SetProgressBarData(Configuration::GetInstance()->GetProgressBarProgress(), "Loading Color Search", true);
+	RESTAPI::SetProgressBarData(Configuration::GetInstance()->GetProgressBarProgress(), "Loading Color "+m_mode, true);
 	GetColorConfigJSON();
 	Logger::Info("ColorConfig::InitializeColorData() End..");
 }

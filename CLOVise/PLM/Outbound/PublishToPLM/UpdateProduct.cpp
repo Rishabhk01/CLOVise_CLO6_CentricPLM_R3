@@ -1940,7 +1940,7 @@ namespace CLOVise
 		string colorSpecId = colorwayNameCombo->property("Id").toString().toStdString();
 		if (!colorSpecId.empty())
 			m_currentColorSpec = colorSpecId;
-		
+		ColorConfig::GetInstance()->m_mode = "Create";
 		ColorConfig::GetInstance()->m_isSearchColor = false;
 		onAddColorwaysClicked();
 
@@ -3161,6 +3161,7 @@ namespace CLOVise
 		string colorSpecId = colorwayNameCombo->property("Id").toString().toStdString();
 		if (!colorSpecId.empty())
 			m_currentColorSpec = colorSpecId;
+		ColorConfig::GetInstance()->m_mode = "Search";
 		ColorConfig::GetInstance()->m_isSearchColor = true;
 		onAddColorwaysClicked();
 

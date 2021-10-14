@@ -668,10 +668,8 @@ namespace CLOVise
 							//m_styleTypeNameIdMap.insert(make_pair(attName, attId));
 							comboBox->setProperty(attName.c_str(), QString::fromStdString(attId));
 							string allowCreateColor = Helper::GetJSONValue<string>(attJson, ALLOW_CREATE_COLOR, true);
-							Logger::Logger("allowCreateColor:value:" + allowCreateColor);
 							comboBox->setProperty((attName+ALLOW_CREATE_COLOR).c_str(), QString::fromStdString(allowCreateColor));
 							string defaultImage = Helper::GetJSONValue<string>(attJson, REFER_DEFAULT_IMAGE_ON_COLOR, true);
-							Logger::Logger("defaultImage:value:" + defaultImage);
 							comboBox->setProperty((attName + REFER_DEFAULT_IMAGE_ON_COLOR).c_str(), QString::fromStdString(defaultImage));
 						}
 					}
@@ -1610,6 +1608,7 @@ namespace CLOVise
 			m_currentColorSpec = colorSpecId;
 
 		this->hide();
+		ColorConfig::GetInstance()->m_mode = "Creacte";
 		ColorConfig::GetInstance()->InitializeColorData();
 		ColorConfig::GetInstance()->m_isSearchColor = false;		
 		PLMColorSearch::GetInstance()->setModal(true);
@@ -1673,7 +1672,7 @@ namespace CLOVise
 		{
 			if (m_selectedStyleTypeIndex <= 0)
 			{
-				UTILITY_API->DisplayMessageBox("Please input the Style Type in the Overview tab to add colorways");
+				UTILITY_API->DisplayMessageBox("Please select the Style Type in the Overview tab to add colorways");
 				ui_tabWidget->setCurrentIndex(0);
 			}
 			else
@@ -1789,7 +1788,6 @@ namespace CLOVise
 				Logger::Debug("CreateProduct -> OnHandleDropDownValue() senderSignalIndex: "+ to_string(comboBox->currentIndex()));
 				m_selectedStyleTypeIndex = comboBox->currentIndex();
 				string isAllowCreatColor = sender()->property((_item.toStdString() + ALLOW_CREATE_COLOR).c_str()).toString().toStdString();
-				Logger::Logger("isAllowCreatColor::" + isAllowCreatColor);
 				if (isAllowCreatColor == "true")
 					m_isCreateColorSpec = true;
 				else
@@ -2710,7 +2708,7 @@ namespace CLOVise
 		string colorSpecId = colorwayNameCombo->property("Id").toString().toStdString();
 		if (!colorSpecId.empty())
 			m_currentColorSpec = colorSpecId;
-
+		ColorConfig::GetInstance()->m_mode = "Search";
 		ColorConfig::GetInstance()->InitializeColorData();
 		ColorConfig::GetInstance()->m_isSearchColor = true;
 		PLMColorSearch::GetInstance()->setModal(true);
@@ -2735,50 +2733,36 @@ namespace CLOVise
 
 		if (!m_currentColorSpec.empty())
 			m_colorSpecList.removeOne(QString::fromStdString(m_currentColorSpec));
-		Logger::Logger("m_colorSpecList:: after remove");
 		for (int rowCount = 0; rowCount < _jsonarray.size(); rowCount++)
 		{
 			json attachmentsJson = Helper::GetJSONParsedValue<int>(_jsonarray, rowCount, false);
 			attId = Helper::GetJSONValue<string>(attachmentsJson, ATTRIBUTE_ID, true);
-			Logger::Logger("attId:: after"+ attId);
-			Logger::Logger("attId:: after attachmentsJson"+ to_string(attachmentsJson));
 			if (_downloadIdList.contains(QString::fromStdString(attId)))
 			{
 				if (m_colorSpecList.contains(QString::fromStdString(attId)))
 					return false;
 				else
-					m_colorSpecList.append(QString::fromStdString(attId));
-				Logger::Logger("attId:: after m_colorSpecList if " + to_string(attachmentsJson));				
+					m_colorSpecList.append(QString::fromStdString(attId));				
 				attId = Helper::GetJSONValue<string>(attachmentsJson, ATTRIBUTE_ID, true);
-				Logger::Logger("m_colorSpecList:: after remove1");
 				objectName = Helper::GetJSONValue<string>(attachmentsJson, ATTRIBUTE_NAME, true);
-				Logger::Logger("m_colorSpecList:: after remove2 objectName::"+ objectName);
 				pantone = Helper::GetJSONValue<string>(attachmentsJson, PANTONE_KEY, true);
-				Logger::Logger("m_colorSpecList:: after remove3::"+pantone);
 				rgbValue = Helper::GetJSONValue<string>(attachmentsJson, RGB_VALUE_KEY, true);
-				Logger::Logger("m_colorSpecList:: after remove4 rgbValue::"+ rgbValue);
 				objectCode = Helper::GetJSONValue<string>(attachmentsJson, CODE_KEY, true);
-				Logger::Logger("m_colorSpecList:: after remove5 objectCode::"+ objectCode);
 				break;
 			}
 		}
-		Logger::Logger("m_colorSpecList:: after forloop"+ to_string(m_selectedRow));
 		ui_colorwayTable->item(m_selectedRow, COLOR_NAME_COLUMN)->setText(QString::fromStdString(objectName));
 		ui_colorwayTable->item(m_selectedRow, COLOR_CODE_COLUMN)->setText(QString::fromStdString(objectCode));
 		ui_colorwayTable->item(m_selectedRow, PANTONE_CODE_COLUMN)->setText(QString::fromStdString(pantone));
 		QComboBox *colorwayName1 = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(m_selectedRow, CLO_COLORWAY_COLUMN)->children().last());
-		Logger::Logger("m_colorSpecList:: after colorwayName1" );
 		colorwayName1->setProperty("Id", attId.c_str());
-		Logger::Logger("m_colorSpecList:: after colorwayName1 property");
 		QTableWidgetItem* iconItem = new QTableWidgetItem;
 		QSize iconSize(40, 40);
 		iconItem->setSizeHint(iconSize);
 		QStringList listRGB;
-		Logger::Logger("m_colorSpecList:: before rgb value....");
 		rgbValue = Helper::FindAndReplace(rgbValue, "(", "");
 		rgbValue = Helper::FindAndReplace(rgbValue, ")", "");
 		rgbValue = Helper::FindAndReplace(rgbValue, " ", "");
-		Logger::Logger("m_colorSpecList:: after colorwayName1 rgbValue::"+ rgbValue);
 		if (FormatHelper::HasContent(rgbValue))
 		{
 			QStringList listRGB;
@@ -2796,11 +2780,8 @@ namespace CLOVise
 			label->setPixmap(QPixmap(pixmap));
 			QWidget *pWidget = nullptr;
 			pWidget = CVWidgetGenerator::InsertWidgetInCenter(label);
-			Logger::Logger("m_colorSpecList:: after colorwayName1 pWidget::" + rgbValue);
 			ui_colorwayTable->setCellWidget(m_selectedRow, COLOR_CHIP_COLUMN, pWidget);
-			Logger::Logger("m_colorSpecList:: after colorwayName1 setCellWidget::" + rgbValue);
 		}
-		Logger::Logger("m_colorSpecList:: after colorwayName1 out side of if condition.::" + rgbValue);
 		Configuration::GetInstance()->SetIsUpdateColorClicked(false);
 		Logger::Debug("CreateProduct -> UpdateColorInColorways () End");
 		return true;

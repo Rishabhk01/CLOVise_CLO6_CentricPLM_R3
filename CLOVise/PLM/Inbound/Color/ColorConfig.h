@@ -35,6 +35,7 @@ class ColorConfig
 		json m_colorFieldsJson = json::object();
 		bool m_isSearchColor = true;
 		QStringList createdColorId;
+		string m_mode;
 		void InitializeColorData();
 		//void SetColorConfigJSON(string _module, string _rootType, bool _initDepedentJsons);
 		void SetColorConfigJSON();
