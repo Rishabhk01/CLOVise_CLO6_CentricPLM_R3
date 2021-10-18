@@ -163,8 +163,8 @@ namespace CLOVise
 		bool m_2DigiCodeActive;
 		QLineEdit* m_plmColowayName;
 		bool m_isCreateColorSpec = false;
-		int  m_selectedStyleTypeIndex=0;
-		int  m_prevSelectedStyleTypeIndex;
+		int  m_selectedStyleTypeIndex = 0;
+		int  m_prevSelectedStyleTypeIndex = 0;
 
 	private slots:
 		void onBackButtonClicked();

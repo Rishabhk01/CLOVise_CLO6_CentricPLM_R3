@@ -2910,4 +2910,32 @@ namespace UIHelper
 		}
 		Logger::Info("Helper -> GetLocalizedClassNames() -> End");
 	}
+
+	/*
+	* Description - GetButtonWidgetFromCell()  method used to get the button widget from the cell.
+	* Parameter -QTableWidget, int, int, int.
+	* Exception -
+	* Return - QPushButton
+	*/
+	inline QPushButton* GetButtonWidgetFromCell(QTableWidget* _table, int _row, int _col,int _index)
+	{
+		Logger::Info("INFO::Helper -> getButtonWidgetFromCell() -> Start");
+		QPushButton* button = nullptr;
+
+		if (QWidget* widget = _table->cellWidget(_row, _col))
+		{
+			if (QLayout* layout = widget->layout())
+			{
+				if (QLayoutItem* layoutItem = layout->itemAt(_index))
+				{
+					if (QWidgetItem* widgetItem = dynamic_cast<QWidgetItem*>(layoutItem))
+					{
+						button = qobject_cast<QPushButton*>(widgetItem->widget());
+					}
+				}
+			}
+		}
+		Logger::Info("INFO::Helper -> getButtonWidgetFromCell() -> End");
+		return button;
+	}
 }

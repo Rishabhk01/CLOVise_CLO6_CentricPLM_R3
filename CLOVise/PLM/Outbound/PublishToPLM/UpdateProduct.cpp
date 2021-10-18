@@ -1560,8 +1560,17 @@ namespace CLOVise
 						{
 							for (int i = 0; i < ui_colorwayTable->rowCount(); i++)
 							{
-								QPushButton *colorButoon = static_cast<QPushButton*>(ui_colorwayTable->cellWidget(i, CHECKBOX_COLUMN)->children().last());
-								m_updateColorButtonSignalMapper->setMapping(colorButoon, i);
+								QPushButton *colorButoon = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, 0);
+								if (colorButoon)
+									m_updateColorButtonSignalMapper->setMapping(colorButoon, i);
+								QPushButton *CreateButoon = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, 1);
+								if (CreateButoon)
+								{
+									QList<QAction*> actions;
+									actions = CreateButoon->menu()->actions();
+									m_createActionSignalMapper->setMapping(actions.at(0), i);
+
+								}
 							}
 						}
 						if (m_deleteSignalMapper != nullptr)

@@ -922,7 +922,7 @@ namespace CLOVise
 	}
 
 	/*
-	* Description - ShowHeader() method is for show the header lable or combobox.
+	* Description - CreateColorSpecWidget() method is for recreate the widget data and the naming changes.
 	* Parameter -  
 	* Exception -
 	* Return -
@@ -997,11 +997,6 @@ namespace CLOVise
 		{
 			selectType = QString::fromStdString(COLOR_ROOT_TYPE);
 			CreateColorSpecWidget();
-			/*if (ColorConfig::GetInstance()->GetIsModelExecuted())
-			{
-				Configuration::GetInstance()->SetProgressBarProgress(RESTAPI::SetProgressBarProgress(Configuration::GetInstance()->GetProgressBarProgress(), 8, "Loading " + Configuration::GetInstance()->GetLocalizedColorClassName() + " Search"));
-			}
-			drawSearchUI(selectType, false, BLANK, ColorConfig::GetInstance()->GetColorFieldsJSON());*/
 		}
 		Logger::Info("PLMColorSearch -> DrawSearchWidget() -> End");
 	}

@@ -1253,8 +1253,16 @@ namespace CLOVise
 						{
 							for (int i = 0; i < ui_colorwayTable->rowCount(); i++)
 							{
-								QPushButton *colorButoon = static_cast<QPushButton*>(ui_colorwayTable->cellWidget(i, UPDATE_BTN_COLUMN)->children().last());
-								m_buttonSignalMapper->setMapping(colorButoon, i);
+								QPushButton *colorButoon = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, 0);
+								if (colorButoon)
+									m_buttonSignalMapper->setMapping(colorButoon, i);
+								QPushButton *CreateButoon=UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, 1);
+								if (CreateButoon)
+								{
+									QList<QAction*> actions;
+									actions = CreateButoon->menu()->actions();
+									m_createActionSignalMapper->setMapping(actions.at(0), i);
+								}
 							}
 						}
 						QStringList selectedIndexs;
@@ -1590,11 +1598,17 @@ namespace CLOVise
 		Logger::Debug("createProduct -> AddRows() -> End");
 	}
 
-	void CreateProduct::OnCreateColorSpecClicked(int i)
+	/*
+	* Description - OnCreateColorSpecClicked() method is the slot for calling the create widget.
+	* Parameter - bool
+	* Exception -
+	* Return -
+	*/
+	void CreateProduct::OnCreateColorSpecClicked(int _i)
 	{	
 		Logger::Info("INFO::createProduct -> OnCreateColorSpecClicked() -> Start");
 		Configuration::GetInstance()->SetIsUpdateColorClicked(true);
-		m_selectedRow = i;
+		m_selectedRow = _i;
 		m_currentColorSpec = BLANK;
 		this->hide();
 
