@@ -30,9 +30,12 @@ class ColorConfig
 		bool m_isDateEditPresent = false;
 		int m_sortedColumnNumber;
 		bool m_colorLoggedOut = false;
+		bool m_resultAfterLogout = false;
 		static ColorConfig* GetInstance();
 		json m_colorFieldsJson = json::object();
-
+		bool m_isSearchColor = true;
+		QStringList createdColorId;
+		string m_mode;
 		void InitializeColorData();
 		//void SetColorConfigJSON(string _module, string _rootType, bool _initDepedentJsons);
 		void SetColorConfigJSON();
@@ -74,6 +77,7 @@ class ColorConfig
 		int GetResultsCount();
 		json GetColorConfigJSONFromFile();
 		string GetMaximumLimitForColorResult();
+		json GetPLMConfigJson();
 		void ResetColorConfig();
 
 
@@ -87,6 +91,7 @@ class ColorConfig
 		json m_ColorViewJson = json::object();
 		json m_paletteJson = json::object();
 		json m_searchCriteriaJson = json::object();
+		json m_PLMConfigJson = json::object();
 		QStringList m_attScopes;
 		string m_maxColorResultsLimit;
 

@@ -369,7 +369,7 @@ void  ColorConfig::UpdateResultJson(json& _listjson)
 		string objectId = Helper::GetJSONValue<string>(_listjson, "id", true);
 		_listjson[OBJECT_NAME_KEY] = objectName;
 		_listjson[OBJECT_ID_KEY] = objectId;
-
+		createdColorId << QString::fromStdString(objectId);
 }
 
 string ColorConfig::GetThumbnailUrl(string _objectId)
@@ -620,6 +620,8 @@ void ColorConfig::createFieldsJson(string& _fieldsJsonStringResponse, json& _def
 			}
 		}
 		//UTILITY_API->DisplayMessageBox("after default loop.." + to_string(fieldsJsonCount));
+		if (m_isSearchColor)
+		{
 		json defaultFieldsList = Helper::GetJSONParsedValue<string>(_defaultFieldsJson, FIELDLIST_JSON_KEY, false);
 		for (size_t defaultFeildsListCount = 0; defaultFeildsListCount < defaultFieldsList.size(); defaultFeildsListCount++)
 		{
@@ -647,6 +649,13 @@ void ColorConfig::createFieldsJson(string& _fieldsJsonStringResponse, json& _def
 		}
 		fieldsListjson[0] = fieldsJson;
 		m_colorFieldsJson = fieldsListjson;
+		}
+		else
+		{
+			fieldsListjson[0] = fieldsJson;
+			m_PLMConfigJson = fieldsListjson;
+		}
+		
 	}
 	catch (string msg)
 	{
@@ -680,43 +689,56 @@ void ColorConfig::SetDataFromResponse(json _param)
 		string parameter = "";
 		string matLibValue = "";
 		bool isLibrarySearch = false;
-		json attributesJson = Helper::GetJSONParsedValue<string>(_param, ATTRIBUTES_KEY, false);
-		for (int attributesJsonCount = 0; attributesJsonCount < attributesJson.size(); attributesJsonCount++)
-		{
-			string attKey = Helper::GetJSONParsedValue<string>(attributesJson[attributesJsonCount], ATTRIBUTE_KEY, false);
-			string attType = Helper::GetJSONParsedValue<string>(attributesJson[attributesJsonCount], ATTRIBUTE_TYPE_KEY, false);
-			string attValue = Helper::GetJSONParsedValue<string>(attributesJson[attributesJsonCount], ATTRIBUTE_VALUE_KEY, false);
-			if (attKey == "lib_color_specifications") {
-				matLibValue = attValue;
-				isLibrarySearch = true;
-				continue;
-			}
-			if (FormatHelper::HasContent(attValue))
-			{
-				if (FormatHelper::HasContent(parameter))
-					parameter = parameter + "&";
-
-				if (attType == TEXT_ATT_TYPE_KEY || attType == STRING_ATT_TYPE_KEY)
-					parameter = parameter + attKey + ":wcm=" + attValue;
-				else
-					parameter = parameter + attKey + "=" + attValue;
-
-			}
-		}
-		//UTILITY_API->DisplayMessageBox(parameter);
 		string resultResponse = "";
-		if (isLibrarySearch) {
-			resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::COLOR_SEARCH_API_LIB + "/" + matLibValue + "/elements?", APPLICATION_JSON_TYPE, parameter + "&limit="+ ColorConfig::GetInstance()->GetMaximumLimitForColorResult());
+		json attributesJson = Helper::GetJSONParsedValue<string>(_param, ATTRIBUTES_KEY, false);
+		if (!m_isSearchColor)
+		{
+			json createParam;
+			for (int attributesJsonCount = 0; attributesJsonCount < attributesJson.size(); attributesJsonCount++)
+			{
+				string attKey = Helper::GetJSONParsedValue<string>(attributesJson[attributesJsonCount], ATTRIBUTE_KEY, false);
+				string attValue = Helper::GetJSONParsedValue<string>(attributesJson[attributesJsonCount], ATTRIBUTE_VALUE_KEY, false);
+				createParam[attKey] = attValue;
+			}
+			resultResponse = RESTAPI::PostRestCall(to_string(createParam), Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::CREATE_COLOR_API, "content-type: application/json;");
 		}
-		else {
-			auto startTime = std::chrono::high_resolution_clock::now();
-			resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_COLOR_API + "?", APPLICATION_JSON_TYPE, parameter + "&limit=" + ColorConfig::GetInstance()->GetMaximumLimitForColorResult());
-			auto finishTime = std::chrono::high_resolution_clock::now();
-			std::chrono::duration<double> totalDuration = finishTime - startTime;
-			Logger::perfomance(PERFOMANCE_KEY + "Search Results API :: " + to_string(totalDuration.count()));
+		else
+		{
+			for (int attributesJsonCount = 0; attributesJsonCount < attributesJson.size(); attributesJsonCount++)
+			{
+				string attKey = Helper::GetJSONParsedValue<string>(attributesJson[attributesJsonCount], ATTRIBUTE_KEY, false);
+				string attType = Helper::GetJSONParsedValue<string>(attributesJson[attributesJsonCount], ATTRIBUTE_TYPE_KEY, false);
+				string attValue = Helper::GetJSONParsedValue<string>(attributesJson[attributesJsonCount], ATTRIBUTE_VALUE_KEY, false);
+				if (attKey == "lib_color_specifications") {
+					matLibValue = attValue;
+					isLibrarySearch = true;
+					continue;
+				}
+				if (FormatHelper::HasContent(attValue))
+				{
+					if (FormatHelper::HasContent(parameter))
+						parameter = parameter + "&";
+
+					if (attType == TEXT_ATT_TYPE_KEY || attType == STRING_ATT_TYPE_KEY)
+						parameter = parameter + attKey + ":wcm=" + attValue;
+					else
+						parameter = parameter + attKey + "=" + attValue;
+
+				}
+			}
+			if (isLibrarySearch) {
+				resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::COLOR_SEARCH_API_LIB + "/" + matLibValue + "/elements?", APPLICATION_JSON_TYPE, parameter + "&limit=" + ColorConfig::GetInstance()->GetMaximumLimitForColorResult());
+			}
+			else {
+				auto startTime = std::chrono::high_resolution_clock::now();
+				resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_COLOR_API + "?", APPLICATION_JSON_TYPE, parameter + "&limit=" + ColorConfig::GetInstance()->GetMaximumLimitForColorResult());
+				auto finishTime = std::chrono::high_resolution_clock::now();
+				std::chrono::duration<double> totalDuration = finishTime - startTime;
+				Logger::perfomance(PERFOMANCE_KEY + "Search Results API :: " + to_string(totalDuration.count()));
+			}
+			
 		}
 		Logger::RestAPIDebug("resultResponse main::" + resultResponse);
-
 		if (!FormatHelper::HasContent(resultResponse))
 		{
 			throw "Unable to fetch results. Please try again or Contact your System Administrator.";
@@ -729,8 +751,14 @@ void ColorConfig::SetDataFromResponse(json _param)
 		}
 		json colorResults = json::array();
 		if (FormatHelper::HasContent(resultResponse))
-			colorResults = json::parse(resultResponse);
+		{
+			if (!m_isSearchColor)
+				colorResults[0] = json::parse(resultResponse);
+			else
+				colorResults = json::parse(resultResponse);
+		}		
 		m_colorResults.clear();
+		createdColorId.clear();
 		Logger::Logger("ColorResults.size()::" + to_string(colorResults.size()));
 		for (int i = 0; i < colorResults.size(); i++)
 		{
@@ -845,7 +873,7 @@ void ColorConfig::InitializeColorData()
 	Configuration::GetInstance()->SetProgressBarProgress(0);
 	Configuration::GetInstance()->SetProgressBarProgress(qrand() % 101);
 	SetMaximumLimitForColorResult();
-	RESTAPI::SetProgressBarData(Configuration::GetInstance()->GetProgressBarProgress(), "Loading Color Search", true);
+	RESTAPI::SetProgressBarData(Configuration::GetInstance()->GetProgressBarProgress(), "Loading Color "+m_mode, true);
 	GetColorConfigJSON();
 	Logger::Info("ColorConfig::InitializeColorData() End..");
 }
@@ -872,6 +900,12 @@ string ColorConfig::GetMaximumLimitForColorResult()
 	return m_maxColorResultsLimit;
 }
 
+json ColorConfig::GetPLMConfigJson()
+{
+	if (m_PLMConfigJson == nullptr || m_PLMConfigJson.empty())
+		SetColorConfigJSON();
+	return m_PLMConfigJson;
+}
 /*
 * Description - ResetColorConfig() is to set basic need jsons and some other attributs as default value.
 * Parameter -

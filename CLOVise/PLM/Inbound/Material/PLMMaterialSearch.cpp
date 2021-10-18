@@ -373,10 +373,11 @@ namespace CLOVise
 			Logger::Debug("preparing the response value ended..."); 
 			
 			PLMMaterialResult::GetInstance()->setModal(true);
-			if (MaterialConfig::GetInstance()->GetIsModelExecuted() || Configuration::GetInstance()->GetCurrentScreen() == UPDATE_MATERIAL_CLICKED)
+			if (MaterialConfig::GetInstance()->GetIsModelExecuted() || Configuration::GetInstance()->GetCurrentScreen() == UPDATE_MATERIAL_CLICKED || MaterialConfig::GetInstance()->m_resultAfterLogout)
 			{
 				PLMMaterialResult::GetInstance()->currPageLabel->setText("1");
 				PLMMaterialResult::GetInstance()->DrawResultWidget(false);
+				MaterialConfig::GetInstance()->m_resultAfterLogout = false;
 			}
 			RESTAPI::SetProgressBarData(0, "", false);
 			PLMMaterialResult::GetInstance()->exec();			

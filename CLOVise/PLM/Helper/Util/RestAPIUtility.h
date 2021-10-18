@@ -92,6 +92,7 @@ namespace RESTAPI
 	
 	/*Centric color specification rest calls start	*/
 	const string SEARCH_COLOR_API = "/csi-requesthandler/api/v2/color_specifications";
+	const string CREATE_COLOR_API = "/csi-requesthandler/api/v2/color_specifications";
 	/*Centric color specification rest calls end	*/
 
 	/*Centric Print Design Color rest calls start	*/
@@ -582,6 +583,7 @@ namespace RESTAPI
 		}
 		return response;
 	}
+
 	static string DeleteRestCall(string _data, string _api, string _contentType)
 	{
 		CURLcode res;

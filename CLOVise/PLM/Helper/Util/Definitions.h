@@ -30,6 +30,7 @@ const QString PLM_NAME = "Centric 8";
 #define LEFT_VIEW 3
 
 #define STARTING_INDEX 0
+#define FIRST_INDEX 1
 #define DIVISION_FACTOR 2
 
 //Colorway table columns
@@ -448,6 +449,7 @@ const int VERTICAL_HEADER = 80;
 const int HORIZONTAL_HEADER_HEIGHT = 30;
 const int COLORWAY_HORIZONTAL_HEADER_HEIGHT = 50;
 const int HORIZONTAL_HEADER_WIDTH = 100;
+const int COLUMN_SIZE = 200;
 const QString TOOLTIP_STYLE = "QToolTip{ color: #46C8FF; background-color: #33414D; border: 1px #000000; }";
 const QString PREVIOUS_BUTTON_STYLE = "#previousButton { qproperty-icon: none; image: url(:/CLOVise/PLM/Images/previous_none.svg); } #previousButton:hover { image: url(:/CLOVise/PLM/Images/previous_over.svg); }""QToolTip{ color: #46C8FF; background-color: #33414D; border: 1px #000000; }";
 const QString NEXT_BUTTON_STYLE = "#nextButton { qproperty-icon: none; image: url(:/CLOVise/PLM/Images/next_none.svg); } #nextButton:hover { image: url(:/CLOVise/PLM/Images/next_over.svg); }""QToolTip{ color: #46C8FF; background-color: #33414D; border: 1px #000000; }";
@@ -617,4 +619,6 @@ const string UPDATE_MATERIAL = "Update Material";
 const string CREATE_MATERIAL = "Create Material";
 const string DOCUMENT_NAME = "docName";
 const string ATT_RESTRICT_EDIT = "restrict_edit";
+const string ALLOW_CREATE_COLOR = "allow_create_color_spec_on_colorway";
+const string REFER_DEFAULT_IMAGE_ON_COLOR = "reference_default_image_on_colorway_create";
 const QStringList MATERIAL_FILTER_LIST{ ".zfab", ".zsd", ".zpl", ".zpac", ".zsp", ".btn", ".bth", ".obj", ".sst" };

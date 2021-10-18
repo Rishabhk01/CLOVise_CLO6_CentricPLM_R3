@@ -112,6 +112,8 @@ namespace CLOVise
 		m_updateColorButtonSignalMapper = new QSignalMapper();
 		m_editButtonSignalMapper = new QSignalMapper();
 		m_deleteSignalMapper = new QSignalMapper();
+		m_createActionSignalMapper = new QSignalMapper();
+		m_printActionSignalMapper = new QSignalMapper();
 		m_updateProductTreeWidget_1 = CVWidgetGenerator::CreatePublishTreeWidget("QTreeWidget { background-color: #262628; border: 1px solid #000;}""QTreeWidget::item { padding :5px; height: 20px; color: #FFFFFF; font-face: ArialMT; font-size: 10px; width: 90px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; border: none;}""QTreeWidget::item:hover{background-color: #262628;}", true);
 		m_updateProductTreeWidget_1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 		m_updateProductTreeWidget_2 = CVWidgetGenerator::CreatePublishTreeWidget("QTreeWidget { background-color: #262628; border: 1px solid #000;}""QTreeWidget::item { padding :5px; height: 20px; color: #FFFFFF; font-face: ArialMT; font-size: 10px; width: 90px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; border: none;}""QTreeWidget::item:hover{background-color: #262628;}", true);
@@ -336,6 +338,7 @@ namespace CLOVise
 			QObject::connect(ui_tabWidget, SIGNAL(currentChanged(int)), this, SLOT(onTabClicked(int)));
 			QObject::connect(ui_colorwayTable, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(onContextMenuClicked(const QPoint&)));
 			QObject::connect(m_updateColorButtonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickUpdateColorButton(int)));
+			QObject::connect(m_createActionSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnCreateColorSpecClicked(int)));
 			QObject::connect(m_editButtonSignalMapper, SIGNAL(mapped(int)), this, SLOT(onImageIntentsTableEditButtonClicked(int)));
 			QObject::connect(m_deleteSignalMapper, SIGNAL(mapped(int)), this, SLOT(onImageIntentsTableDeleteButtonClicked(int)));
 			//QObject::connect(ui_hideButton, SIGNAL(clicked(bool)), this, SLOT(onHideButtonClicked(bool)));
@@ -355,6 +358,7 @@ namespace CLOVise
 			QObject::disconnect(m_addImageIntentButton, SIGNAL(clicked()), this, SLOT(onAddImageIntentClicked()));
 			QObject::disconnect(ui_tabWidget, SIGNAL(currentChanged(int)), this, SLOT(onTabClicked(int)));
 			QObject::disconnect(m_updateColorButtonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickUpdateColorButton(int)));
+			QObject::disconnect(m_createActionSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnCreateColorSpecClicked(int)));
 			QObject::disconnect(m_editButtonSignalMapper, SIGNAL(mapped(int)), this, SLOT(onImageIntentsTableEditButtonClicked(int)));
 			QObject::disconnect(m_deleteSignalMapper, SIGNAL(mapped(int)), this, SLOT(onImageIntentsTableDeleteButtonClicked(int)));
 			//QObject::disconnect(ui_hideButton, SIGNAL(clicked(bool)), this, SLOT(onHideButtonClicked(bool)));
@@ -422,8 +426,7 @@ namespace CLOVise
 		m_isSaveClicked = false;
 		m_downloadedColorwayIdMap.clear();
 		m_downloadedStyleJson = PublishToPLMData::GetInstance()->GetUpdateStyleCacheData();
-		Logger::Debug("Update product m_downloadedStyleJson.." + to_string(m_downloadedStyleJson));
-		GetcolorwayDetails();
+		Logger::Debug("Update product m_downloadedStyleJson.." + to_string(m_downloadedStyleJson));		
 		fieldsJsonArray = PublishToPLMData::GetInstance()->GetDocumentFieldsJSON();
 		Logger::Debug("UpdateProduct add3DModelDetailsWidgetData() 1....");
 		//QStringList emptylist;
@@ -456,7 +459,7 @@ namespace CLOVise
 			}
 		}
 		drawCriteriaWidget(mergedJsonArray, m_updateProductTreeWidget_1, m_updateProductTreeWidget_2, PublishToPLMData::GetInstance()->GetActive3DModelMetaData());
-
+		GetcolorwayDetails();
 		m_updateProductTreeWidget_1->setColumnCount(2);
 		m_updateProductTreeWidget_1->setHeaderHidden(true);
 		m_updateProductTreeWidget_1->setWordWrap(true);
@@ -711,6 +714,7 @@ namespace CLOVise
 					}
 
 					Logger::Debug("UpdateProduct drawWidget() attributeName:**************************** " + attributeName);
+					
 					for (int i = 0; i < responseJson.size(); i++)
 					{
 						attJson = Helper::GetJSONParsedValue<int>(responseJson, i, false);;///use new method
@@ -721,6 +725,18 @@ namespace CLOVise
 						valueList.append(QString::fromStdString(attName));
 						m_seasonNameIdMap.insert(make_pair(attName, attId));
 						//m_styleTypeNameIdMap.insert(make_pair(attName, attId));
+						if (FormatHelper::HasContent(attDefaultValue.toStdString()))
+						{
+							
+							if (attributeName == "Style Type" && attDefaultValue == QString::fromStdString(attId))
+							{
+								string allowCreateColor = Helper::GetJSONValue<string>(attJson, ALLOW_CREATE_COLOR, true);
+								if (allowCreateColor == "true")
+									m_isCreateColorSpec = true;
+								else
+									m_isCreateColorSpec = false;
+							}
+						}
 						comboBox->setProperty(attName.c_str(), QString::fromStdString(attId));
 						comboBox->setProperty(attId.c_str(), QString::fromStdString(attName));
 					}
@@ -1282,7 +1298,7 @@ namespace CLOVise
 		PLMColorSearch::GetInstance()->setModal(true);
 		//m_isColorwayHasAccess = true;
 		//PLMColorSearch::GetInstance()->ClearAllFields();
-		PLMColorSearch::GetInstance()->DrawSearchWidget(false);
+		PLMColorSearch::GetInstance()->DrawSearchWidget(true);
 		UTILITY_API->DeleteProgressBar(true);
 		PLMColorSearch::GetInstance()->exec();
 		RESTAPI::SetProgressBarData(0, "", false);
@@ -1435,7 +1451,7 @@ namespace CLOVise
 			for (int index = 0; index < headerlist.count(); index++)
 			{
 				if (index == CHECKBOX_COLUMN)
-					ui_colorwayTable->setColumnWidth(index, 120);
+					ui_colorwayTable->setColumnWidth(index, COLUMN_SIZE);
 				else if (index == CLO_COLORWAY_COLUMN || index == UNI_2_DIGIT_CODE_COLUMN)
 				{
 					ui_colorwayTable->resizeColumnToContents(1);
@@ -1544,8 +1560,20 @@ namespace CLOVise
 						{
 							for (int i = 0; i < ui_colorwayTable->rowCount(); i++)
 							{
-								QPushButton *colorButoon = static_cast<QPushButton*>(ui_colorwayTable->cellWidget(i, CHECKBOX_COLUMN)->children().last());
-								m_updateColorButtonSignalMapper->setMapping(colorButoon, i);
+								QPushButton *colorButoon = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, 0);
+								if (colorButoon)
+									m_updateColorButtonSignalMapper->setMapping(colorButoon, i);
+								if (m_updateColorButtonSignalMapper != nullptr)
+								{
+									QPushButton *CreateButoon = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, 1);
+									if (CreateButoon)
+									{
+										QList<QAction*> actions;
+										actions = CreateButoon->menu()->actions();
+										m_createActionSignalMapper->setMapping(actions.at(0), i);
+
+									}
+								}
 							}
 						}
 						if (m_deleteSignalMapper != nullptr)
@@ -1698,25 +1726,45 @@ namespace CLOVise
 
 		Logger::Debug("UpdateProduct -> AddRows() -> Start");
 		QWidget *pWidget = nullptr;
+		QWidget *newQWidget = new QWidget();
 		if (!m_downloadedColorway)
 		{
 			m_colorwayRowcount = ui_colorwayTable->rowCount();
 			ui_colorwayTable->setRowCount(m_colorwayRowcount);
 			ui_colorwayTable->insertRow(m_colorwayRowcount);
 		}
-		QPushButton* updateColorButton = CVWidgetGenerator::CreatePushButton("Update Color", "", "Update Color", PUSH_BUTTON_STYLE, 30, true);
-		pWidget = CVWidgetGenerator::InsertWidgetInCenter(updateColorButton);
-
+		QPushButton* updateColorButton = CVWidgetGenerator::CreatePushButton("Update Color", "", "Update Color", PUSH_BUTTON_STYLE, 30, true);	
+		QPushButton* ColorCreateButton = new QPushButton();
+		ColorCreateButton->setStyleSheet("QPushButton{max-height: 20px; max-width: 10px;}");
+		ColorCreateButton->setMaximumWidth(10);
+		ColorCreateButton->setProperty(("row"), _count);
+		QAction* colorSpecAction = new QAction(tr("Create ColorSpec"), this);
+		colorSpecAction->setProperty(("row"), _count);
+		colorSpecAction->setEnabled(m_isCreateColorSpec);
+		QAction* printAction = new QAction(tr("Search Prints"), this);
+		printAction->setEnabled(false);
+		QMenu* menu = new QMenu(ColorCreateButton);
+		menu->addAction(colorSpecAction);
+		menu->addAction(printAction);
+		ColorCreateButton->setMenu(menu);
+		QHBoxLayout* pLayout = new QHBoxLayout(newQWidget);
+		pLayout->insertWidget(0, updateColorButton);
+		pLayout->insertWidget(1, ColorCreateButton);
+		pLayout->setSpacing(0);
+		newQWidget->setLayout(pLayout);
+		pWidget = CVWidgetGenerator::InsertWidgetInCenter(newQWidget);
 		if (m_updateColorButtonSignalMapper != nullptr)
 		{
 			connect(updateColorButton, SIGNAL(clicked()), m_updateColorButtonSignalMapper, SLOT(map()));
 			m_updateColorButtonSignalMapper->setMapping(updateColorButton, _count + m_colorwayRowcount);
 		}
-
-
+		if (m_createActionSignalMapper != nullptr)
+		{
+			connect(colorSpecAction, SIGNAL(triggered()), m_createActionSignalMapper, SLOT(map()));
+			m_createActionSignalMapper->setMapping(colorSpecAction, m_colorwayRowcount);
+		}
 		ui_colorwayTable->setCellWidget(_count + m_colorwayRowcount, CHECKBOX_COLUMN, pWidget);
-		ui_colorwayTable->setColumnWidth(CHECKBOX_COLUMN, 120);
-
+		ui_colorwayTable->setColumnWidth(CHECKBOX_COLUMN, COLUMN_SIZE);
 		string defaultDescption;
 		string defaultPLMColorwayName;
 		string colorSpecId;
@@ -1733,8 +1781,6 @@ namespace CLOVise
 			comboColorwayItem->setProperty("colorwayId", QString::fromStdString(_colorwayId));
 			colorSpecId = Helper::GetJSONValue<string>(_colorwayJson, "color_specification", true);
 			comboColorwayItem->setProperty("Id", QString::fromStdString(colorSpecId));
-
-			//UTILITY_API->DisplayMessageBox("createProduct -> AddRows() m_downloadedColorwayJson::" + to_string(_colorwayJson));
 			defaultPLMColorwayName = Helper::GetJSONValue<string>(_colorwayJson, "uni_2_digit_code", true);
 			defaultDescption = Helper::GetJSONValue<string>(_colorwayJson, "description", true);
 			downloadedPLMColorwayName = Helper::GetJSONValue<string>(_colorwayJson, "node_name", true);
@@ -1752,7 +1798,6 @@ namespace CLOVise
 			comboColorwayItem->setProperty("NewColorway", QString::fromStdString(to_string(m_colorwayRowcount)));
 			m_NewlyAddedColorway.append(QString::fromStdString(to_string(m_colorwayRowcount)));
 		}
-
 		pWidget = CVWidgetGenerator::InsertWidgetInCenter(comboColorwayItem);
 		ui_colorwayTable->setCellWidget(_count + m_colorwayRowcount, CLO_COLORWAY_COLUMN, pWidget);
 		QObject::connect(comboColorwayItem, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(OnHandleColorwayNameComboBox(const QString&)));
@@ -1760,7 +1805,6 @@ namespace CLOVise
 		ui_colorwayTable->setIconSize(iconSize);
 		ui_colorwayTable->setWordWrap(true);
 
-		///////////////////
 		QLineEdit* lineEditItem = new QLineEdit();
 		lineEditItem->setStyleSheet(LINEEDIT_STYLE);
 		lineEditItem->setText("");
@@ -1769,13 +1813,9 @@ namespace CLOVise
 		lineEditItem->setProperty("row", _count + m_colorwayRowcount);
 		lineEditItem->setProperty("Edited", true);
 		connect(lineEditItem, SIGNAL(editingFinished()), this, SLOT(OnplmColorwayNameEntered()));
-		////////////////
-
-
-
+		
 		QTableWidgetItem* iconItem = new QTableWidgetItem;
 		iconItem->setSizeHint(iconSize);
-
 
 		Logger::Debug("colorRGB:: " + _rgbValue);
 
@@ -1844,7 +1884,6 @@ namespace CLOVise
 		if (m_downloadedColorway)
 		{
 			string defaultDisplayname = uni2digiCodes->property(defaultPLMColorwayName.c_str()).toString().toStdString();
-			//UTILITY_API->DisplayMessageBox("defaultDisplayname" + defaultDisplayname);
 			indexOfSelectedString = uni2digiCodes->findText(QString::fromStdString(defaultDisplayname));
 		}
 		else
@@ -1878,6 +1917,28 @@ namespace CLOVise
 
 
 		Logger::Debug("UpdateProduct -> AddRows() -> End");
+	}
+
+	/*
+	* Description - OnCreateColorSpecClicked() method is the slot for calling the create widget.
+	* Parameter - int
+	* Exception -
+	* Return -
+	*/
+	void UpdateProduct::OnCreateColorSpecClicked(int _selectedRow)
+	{
+		Logger::Info("INFO::UpdateProduct -> OnCreateColorSpecClicked() -> Start");
+		Configuration::GetInstance()->SetIsUpdateColorClicked(true);
+		m_currentColorSpec = BLANK;
+		m_selectedRow = _selectedRow;
+		QComboBox *colorwayNameCombo = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(m_selectedRow, CLO_COLORWAY_COLUMN)->children().last());
+		string colorSpecId = colorwayNameCombo->property("Id").toString().toStdString();
+		if (!colorSpecId.empty())
+			m_currentColorSpec = colorSpecId;
+		ColorConfig::GetInstance()->m_mode = "Create";
+		ColorConfig::GetInstance()->m_isSearchColor = false;
+		onAddColorwaysClicked();
+		Logger::Info("INFO::UpdateProduct -> OnCreateColorSpecClicked() -> Start");
 	}
 
 	void UpdateProduct::OnplmColorwayNameEntered()
@@ -3086,6 +3147,8 @@ namespace CLOVise
 		string colorSpecId = colorwayNameCombo->property("Id").toString().toStdString();
 		if (!colorSpecId.empty())
 			m_currentColorSpec = colorSpecId;
+		ColorConfig::GetInstance()->m_mode = "Search";
+		ColorConfig::GetInstance()->m_isSearchColor = true;
 		onAddColorwaysClicked();
 
 
@@ -3233,7 +3296,7 @@ namespace CLOVise
 		for (int index = 0; index < headerlist.count(); index++)
 		{
 			if (index == CHECKBOX_COLUMN)
-				ui_colorwayTable->setColumnWidth(index, 30);
+				ui_colorwayTable->setColumnWidth(index, COLUMN_SIZE);
 			else if (index == CLO_COLORWAY_COLUMN || index == UNI_2_DIGIT_CODE_COLUMN)
 			{
 				ui_colorwayTable->resizeColumnToContents(1);

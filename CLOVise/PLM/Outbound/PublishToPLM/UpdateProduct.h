@@ -89,6 +89,8 @@ namespace CLOVise
 		QSignalMapper *m_updateColorButtonSignalMapper;
 		QSignalMapper *m_editButtonSignalMapper;
 		QSignalMapper *m_deleteSignalMapper;
+		QSignalMapper *m_createActionSignalMapper;
+		QSignalMapper *m_printActionSignalMapper;
 
 		int m_selectedRow;
 		QStringList m_colorSpecList;
@@ -177,7 +179,7 @@ namespace CLOVise
 		bool m_downloadedColorway;
 		json m_downloadedColorwayJson;
 		int m_colorwayRowcount;
-
+		bool m_isCreateColorSpec = false;
 		QStringList m_modifiedColorwayNames;
 		QStringList m_selectedColorwayNames;
 		bool m_isSaveClicked;
@@ -227,5 +229,6 @@ namespace CLOVise
 		void OnplmColorwayNameEntered();
 		void onImageIntentsTableHorizontalHeaderClicked(int column);
 		void onColorwayTableHorizontalHeaderClicked(int column);
+		void OnCreateColorSpecClicked(int _row);
 	};
 }

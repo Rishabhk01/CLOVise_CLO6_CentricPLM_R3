@@ -433,6 +433,7 @@ namespace CLOVise
 			if (IsModuleExecutable("Color")) 
 			{
 				int isFromConstructor = false;
+				ColorConfig::GetInstance()->m_mode = "Search";
 				if (!ColorConfig::GetInstance()->GetIsModelExecuted())
 				{
 					ColorConfig::GetInstance()->InitializeColorData();
@@ -444,6 +445,7 @@ namespace CLOVise
 				if (ColorConfig::GetInstance()->m_colorLoggedOut && isFromConstructor)
 				{
 					ColorConfig::GetInstance()->m_colorLoggedOut = false;
+					ColorConfig::GetInstance()->m_resultAfterLogout = true;
 					PLMColorSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
 				}				
 				PLMColorSearch::GetInstance()->setModal(true);
@@ -497,6 +499,7 @@ namespace CLOVise
 				if (PrintConfig::GetInstance()->m_printLoggedOut && isFromConstructor)
 				{
 					PrintConfig::GetInstance()->m_printLoggedOut = false;
+					//PrintConfig::GetInstance()->m_resultAfterLogout = true; need to update the implementation
 					PLMPrintSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
 				}
 				PLMPrintSearch::GetInstance()->setModal(true);
@@ -556,6 +559,7 @@ namespace CLOVise
 				if (MaterialConfig::GetInstance()->m_materialLoggedOut && isFromConstructor)
 				{
 					MaterialConfig::GetInstance()->m_materialLoggedOut = false;
+					MaterialConfig::GetInstance()->m_resultAfterLogout = true;
 					PLMMaterialSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
 				}
 				MaterialConfig::GetInstance()->SetIsRadioButton(false);				
@@ -1013,6 +1017,7 @@ namespace CLOVise
 				if (ProductConfig::GetInstance()->m_productlLoggedOut && isFromConstructor)
 				{
 					ProductConfig::GetInstance()->m_productlLoggedOut = false;
+					ProductConfig::GetInstance()->m_resultAfterLogout = true;
 					PLMProductSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
 				}
 				ProductConfig::GetInstance()->m_isShow3DAttWidget = true;

@@ -155,11 +155,16 @@ namespace CLOVise
 		QLabel* m_totalCountLabel;
 		json m_creatProductFieldsJson = json::object();
 		QSignalMapper *m_buttonSignalMapper;
+		QSignalMapper *m_createActionSignalMapper;
+		QSignalMapper *m_printActionSignalMapper;
 		QStringList m_ColorwayTableColumnNames;
 		string m_currentColorSpec;
 		json m_clientSpecificJson;
 		bool m_2DigiCodeActive;
 		QLineEdit* m_plmColowayName;
+		bool m_isCreateColorSpec = false;
+		int  m_selectedStyleTypeIndex = 0;
+		int  m_prevSelectedStyleTypeIndex = 0;
 
 	private slots:
 		void onBackButtonClicked();
@@ -174,6 +179,7 @@ namespace CLOVise
 		void OnUni2CodeSelected(const QString& _str);
 		void OnplmColorwayNameEntered();
 		void onHorizontalHeaderClicked(int column);
+		void OnCreateColorSpecClicked(int _row);
 
 	};
 }
