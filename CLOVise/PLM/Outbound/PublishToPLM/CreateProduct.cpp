@@ -1193,7 +1193,7 @@ namespace CLOVise
 		for (int index = 0; index < headerlist.count(); index++)
 		{
 			if (index == CHECKBOX_COLUMN)
-				ui_colorwayTable->setColumnWidth(index, 200);
+				ui_colorwayTable->setColumnWidth(index, COLUMN_SIZE);
 				//ui_colorwayTable->resizeColumnToContents(1);
 			else if (index == CLO_COLORWAY_COLUMN || index == UNI_2_DIGIT_CODE_COLUMN)
 			{
@@ -1253,15 +1253,18 @@ namespace CLOVise
 						{
 							for (int i = 0; i < ui_colorwayTable->rowCount(); i++)
 							{
-								QPushButton *colorButoon = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, 0);
+								QPushButton *colorButoon = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, STARTING_INDEX);
 								if (colorButoon)
 									m_buttonSignalMapper->setMapping(colorButoon, i);
-								QPushButton *CreateButoon=UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, 1);
-								if (CreateButoon)
+								if (m_createActionSignalMapper != nullptr)
 								{
-									QList<QAction*> actions;
-									actions = CreateButoon->menu()->actions();
-									m_createActionSignalMapper->setMapping(actions.at(0), i);
+									QPushButton *CreateButoon = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, FIRST_INDEX);
+									if (CreateButoon)
+									{
+										QList<QAction*> actions;
+										actions = CreateButoon->menu()->actions();
+										m_createActionSignalMapper->setMapping(actions.at(0), i);
+									}
 								}
 							}
 						}
@@ -1493,7 +1496,7 @@ namespace CLOVise
 			m_createActionSignalMapper->setMapping(colorSpecAction, m_colorwayRowcount);
 		}
 		ui_colorwayTable->setCellWidget(m_colorwayRowcount, UPDATE_BTN_COLUMN, pWidget);
-		ui_colorwayTable->setColumnWidth(UPDATE_BTN_COLUMN, 200);
+		ui_colorwayTable->setColumnWidth(UPDATE_BTN_COLUMN, COLUMN_SIZE);
 		ComboBoxItem* comboColorwayItem = new ComboBoxItem();
 		comboColorwayItem->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		comboColorwayItem->setFocusPolicy(Qt::StrongFocus);
@@ -1600,15 +1603,15 @@ namespace CLOVise
 
 	/*
 	* Description - OnCreateColorSpecClicked() method is the slot for calling the create widget.
-	* Parameter - bool
+	* Parameter - int
 	* Exception -
 	* Return -
 	*/
-	void CreateProduct::OnCreateColorSpecClicked(int _i)
+	void CreateProduct::OnCreateColorSpecClicked(int _SelectedRow)
 	{	
 		Logger::Info("INFO::createProduct -> OnCreateColorSpecClicked() -> Start");
 		Configuration::GetInstance()->SetIsUpdateColorClicked(true);
-		m_selectedRow = _i;
+		m_selectedRow = _SelectedRow;
 		m_currentColorSpec = BLANK;
 		this->hide();
 

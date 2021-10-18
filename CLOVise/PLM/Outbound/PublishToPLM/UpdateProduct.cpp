@@ -1451,7 +1451,7 @@ namespace CLOVise
 			for (int index = 0; index < headerlist.count(); index++)
 			{
 				if (index == CHECKBOX_COLUMN)
-					ui_colorwayTable->setColumnWidth(index, 200);
+					ui_colorwayTable->setColumnWidth(index, COLUMN_SIZE);
 				else if (index == CLO_COLORWAY_COLUMN || index == UNI_2_DIGIT_CODE_COLUMN)
 				{
 					ui_colorwayTable->resizeColumnToContents(1);
@@ -1563,13 +1563,16 @@ namespace CLOVise
 								QPushButton *colorButoon = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, 0);
 								if (colorButoon)
 									m_updateColorButtonSignalMapper->setMapping(colorButoon, i);
-								QPushButton *CreateButoon = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, 1);
-								if (CreateButoon)
+								if (m_updateColorButtonSignalMapper != nullptr)
 								{
-									QList<QAction*> actions;
-									actions = CreateButoon->menu()->actions();
-									m_createActionSignalMapper->setMapping(actions.at(0), i);
+									QPushButton *CreateButoon = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, 1);
+									if (CreateButoon)
+									{
+										QList<QAction*> actions;
+										actions = CreateButoon->menu()->actions();
+										m_createActionSignalMapper->setMapping(actions.at(0), i);
 
+									}
 								}
 							}
 						}
@@ -1761,7 +1764,7 @@ namespace CLOVise
 			m_createActionSignalMapper->setMapping(colorSpecAction, m_colorwayRowcount);
 		}
 		ui_colorwayTable->setCellWidget(_count + m_colorwayRowcount, CHECKBOX_COLUMN, pWidget);
-		ui_colorwayTable->setColumnWidth(CHECKBOX_COLUMN, 200);
+		ui_colorwayTable->setColumnWidth(CHECKBOX_COLUMN, COLUMN_SIZE);
 		string defaultDescption;
 		string defaultPLMColorwayName;
 		string colorSpecId;
@@ -1916,12 +1919,18 @@ namespace CLOVise
 		Logger::Debug("UpdateProduct -> AddRows() -> End");
 	}
 
-	void UpdateProduct::OnCreateColorSpecClicked(int i)
+	/*
+	* Description - OnCreateColorSpecClicked() method is the slot for calling the create widget.
+	* Parameter - int
+	* Exception -
+	* Return -
+	*/
+	void UpdateProduct::OnCreateColorSpecClicked(int _selectedRow)
 	{
 		Logger::Info("INFO::UpdateProduct -> OnCreateColorSpecClicked() -> Start");
 		Configuration::GetInstance()->SetIsUpdateColorClicked(true);
 		m_currentColorSpec = BLANK;
-		m_selectedRow = i;
+		m_selectedRow = _selectedRow;
 		QComboBox *colorwayNameCombo = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(m_selectedRow, CLO_COLORWAY_COLUMN)->children().last());
 		string colorSpecId = colorwayNameCombo->property("Id").toString().toStdString();
 		if (!colorSpecId.empty())
@@ -3287,7 +3296,7 @@ namespace CLOVise
 		for (int index = 0; index < headerlist.count(); index++)
 		{
 			if (index == CHECKBOX_COLUMN)
-				ui_colorwayTable->setColumnWidth(index, 200);
+				ui_colorwayTable->setColumnWidth(index, COLUMN_SIZE);
 			else if (index == CLO_COLORWAY_COLUMN || index == UNI_2_DIGIT_CODE_COLUMN)
 			{
 				ui_colorwayTable->resizeColumnToContents(1);
