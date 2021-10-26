@@ -230,5 +230,6 @@ namespace CLOVise
 		void onImageIntentsTableHorizontalHeaderClicked(int column);
 		void onColorwayTableHorizontalHeaderClicked(int column);
 		void OnCreateColorSpecClicked(int _row);
+		void OnSearchPrintClicked(int _row);
 	};
 }

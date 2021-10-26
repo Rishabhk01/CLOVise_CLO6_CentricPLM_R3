@@ -879,7 +879,7 @@ namespace CLOVise
 				{
 					Logger::Debug("PLMColorResults -> void onDownloadClicked False");
 					RESTAPI::SetProgressBarData(0, "", false);
-					UTILITY_API->DisplayMessageBox("The Color Specification must be unique");
+					UTILITY_API->DisplayMessageBox("The print design color Specification must be unique");
 					this->show();
 				}
 			}

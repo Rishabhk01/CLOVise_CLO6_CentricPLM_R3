@@ -57,7 +57,9 @@ using namespace zipper;
 #include "CLOVise/PLM/CLOViseSuite/CLOViseSuite.h"
 #include "CLOVise/PLM/Helper/UIHelper/CVHoverDelegate.h"
 #include "CLOVise/PLM/Inbound/Color/PLMColorSearch.h"
+#include "CLOVise/PLM/Inbound/Print/PLMPrintSearch.h"
 #include "CLOVise/PLM/Inbound/Color/ColorConfig.h"
+#include "CLOVise/PLM/Inbound/Print/PrintConfig.h"
 #include "CLOVise/PLM/Outbound/PublishToPLM/CreateImageIntent.h"
 
 using namespace std;
@@ -312,7 +314,7 @@ namespace CLOVise
 			QObject::connect(ui_colorwayTable, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(onContextMenuClicked(const QPoint&)));
 			QObject::connect(m_buttonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickAddColorButton(int)));
 			QObject::connect(m_createActionSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnCreateColorSpecClicked(int)));
-			//QObject::connect(m_printActionSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnCreateColorSpecClicked(int))); need to implement
+			QObject::connect(m_printActionSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnSearchPrintClicked(int)));
 			QObject::connect(ui_colorwayTable->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(onHorizontalHeaderClicked(int)));
 
 
@@ -328,7 +330,7 @@ namespace CLOVise
 			QObject::disconnect(ui_tabWidget, SIGNAL(currentChanged(int)), this, SLOT(onTabClicked(int)));
 			QObject::disconnect(m_buttonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickAddColorButton(int)));
 			QObject::disconnect(m_createActionSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnCreateColorSpecClicked(int)));
-			//QObject::disconnect(m_printActionSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnCreateColorSpecClicked(int))); need to implement
+			QObject::disconnect(m_printActionSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnSearchPrintClicked(int)));
 			QObject::disconnect(ui_colorwayTable->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(onHorizontalHeaderClicked(int)));
 		}
 	}
@@ -1256,14 +1258,23 @@ namespace CLOVise
 								QPushButton *colorButoon = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, STARTING_INDEX);
 								if (colorButoon)
 									m_buttonSignalMapper->setMapping(colorButoon, i);
+								QPushButton *CreateButoon = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, FIRST_INDEX);
 								if (m_createActionSignalMapper != nullptr)
-								{
-									QPushButton *CreateButoon = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, FIRST_INDEX);
+								{									
 									if (CreateButoon)
 									{
 										QList<QAction*> actions;
 										actions = CreateButoon->menu()->actions();
-										m_createActionSignalMapper->setMapping(actions.at(0), i);
+										m_createActionSignalMapper->setMapping(actions.at(STARTING_INDEX), i);
+									}
+								}
+								if (m_printActionSignalMapper != nullptr)
+								{
+									if (CreateButoon)
+									{
+										QList<QAction*> actions;
+										actions = CreateButoon->menu()->actions();
+										m_createActionSignalMapper->setMapping(actions.at(FIRST_INDEX), i);
 									}
 								}
 							}
@@ -1471,10 +1482,9 @@ namespace CLOVise
 		ColorCreateButton->setMaximumWidth(10);
 		ColorCreateButton->setProperty(("row"), _count);
 		QAction* colorSpecAction = new QAction(tr("Create ColorSpec"), this);
-		colorSpecAction->setProperty(("row"), _count);
 		colorSpecAction->setEnabled(m_isCreateColorSpec);
 		QAction* printAction = new QAction(tr("Search Prints"), this);
-		printAction->setEnabled(false);
+		printAction->setEnabled(true);
 		QMenu* menu = new QMenu(ColorCreateButton);
 		menu->addAction(colorSpecAction);
 		menu->addAction(printAction);
@@ -1494,6 +1504,11 @@ namespace CLOVise
 		{
 			connect(colorSpecAction, SIGNAL(triggered()), m_createActionSignalMapper, SLOT(map()));
 			m_createActionSignalMapper->setMapping(colorSpecAction, m_colorwayRowcount);
+		}
+		if (m_printActionSignalMapper != nullptr)
+		{
+			connect(printAction, SIGNAL(triggered()), m_printActionSignalMapper, SLOT(map()));
+			m_printActionSignalMapper->setMapping(printAction, m_colorwayRowcount);
 		}
 		ui_colorwayTable->setCellWidget(m_colorwayRowcount, UPDATE_BTN_COLUMN, pWidget);
 		ui_colorwayTable->setColumnWidth(UPDATE_BTN_COLUMN, COLUMN_SIZE);
@@ -1602,7 +1617,7 @@ namespace CLOVise
 	}
 
 	/*
-	* Description - OnCreateColorSpecClicked() method is the slot for calling the create widget.
+	* Description - OnCreateColorSpecClicked() method is the slot for calling the search print widget.
 	* Parameter - int
 	* Exception -
 	* Return -
@@ -1634,6 +1649,44 @@ namespace CLOVise
 		PLMColorSearch::GetInstance()->exec();
 		RESTAPI::SetProgressBarData(0, "", false);
 		Logger::Info("INFO::createProduct -> OnCreateColorSpecClicked() -> Start");
+	}
+
+	/*
+	* Description - OnSearchPrintClicked() method is the slot for calling the search print widget.
+	* Parameter - int
+	* Exception -
+	* Return -
+	*/
+	void CreateProduct::OnSearchPrintClicked(int _SelectedRow)
+	{	
+		Logger::Info("INFO::createProduct -> OnSearchPrintClicked() -> Start");
+		Configuration::GetInstance()->SetIsPrintSearchClicked(true);
+		m_selectedRow = _SelectedRow;
+		m_currentColorSpec = BLANK;
+		this->hide();
+
+		if (ui_colorwayTable->rowCount() != 0)
+		{
+			GetUpdatedColorwayNames();
+		}
+		QComboBox *colorwayNameCombo = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(m_selectedRow, CLO_COLORWAY_COLUMN)->children().last());
+		string colorSpecId = colorwayNameCombo->property("Id").toString().toStdString();
+		if (!colorSpecId.empty())
+			m_currentColorSpec = colorSpecId;
+
+		this->hide();
+		if (!PrintConfig::GetInstance()->GetIsModelExecuted())
+			PrintConfig::GetInstance()->InitializePrintData();
+		PLMPrintSearch::GetInstance()->setModal(true);
+		if (!PrintConfig::GetInstance()->GetIsModelExecuted())
+			PLMPrintSearch::GetInstance()->DrawSearchWidget(true);
+		else 
+			PLMPrintSearch::GetInstance()->DrawSearchWidget(false);
+		UTILITY_API->DeleteProgressBar(true);
+		PLMPrintSearch::GetInstance()->exec();
+		RESTAPI::SetProgressBarData(0, "", false);
+		PrintConfig::GetInstance()->SetIsModelExecuted(true);
+		Logger::Info("INFO::createProduct -> OnSearchPrintClicked() -> Start");
 	}
 
 	void CreateProduct::OnplmColorwayNameEntered()
@@ -2746,6 +2799,7 @@ namespace CLOVise
 		string rgbValue;
 		string objectCode;
 		string attId;
+		string DefaultImageId;
 
 		if (!m_currentColorSpec.empty())
 			m_colorSpecList.removeOne(QString::fromStdString(m_currentColorSpec));
@@ -2764,9 +2818,13 @@ namespace CLOVise
 				pantone = Helper::GetJSONValue<string>(attachmentsJson, PANTONE_KEY, true);
 				rgbValue = Helper::GetJSONValue<string>(attachmentsJson, RGB_VALUE_KEY, true);
 				objectCode = Helper::GetJSONValue<string>(attachmentsJson, CODE_KEY, true);
+				json imageJson = Helper::GetJSONParsedValue<string>(attachmentsJson, IMAGES_JSON, false);
+				DefaultImageId = Helper::GetJSONValue<string>(imageJson, BLANK, true);
 				break;
 			}
 		}
+		if (!FormatHelper::HasContent(pantone))
+			pantone = BLANK;
 		ui_colorwayTable->item(m_selectedRow, COLOR_NAME_COLUMN)->setText(QString::fromStdString(objectName));
 		ui_colorwayTable->item(m_selectedRow, COLOR_CODE_COLUMN)->setText(QString::fromStdString(objectCode));
 		ui_colorwayTable->item(m_selectedRow, PANTONE_CODE_COLUMN)->setText(QString::fromStdString(pantone));
@@ -2779,6 +2837,9 @@ namespace CLOVise
 		rgbValue = Helper::FindAndReplace(rgbValue, "(", "");
 		rgbValue = Helper::FindAndReplace(rgbValue, ")", "");
 		rgbValue = Helper::FindAndReplace(rgbValue, " ", "");
+		QPixmap pixmap;
+		QWidget *pWidget = nullptr;
+		
 		if (FormatHelper::HasContent(rgbValue))
 		{
 			QStringList listRGB;
@@ -2789,15 +2850,47 @@ namespace CLOVise
 			int blue = listRGB.at(2).toInt();
 			QColor color(red, green, blue);
 			QImage image(60, 60, QImage::Format_ARGB32);
-			image.fill(color);
-			QPixmap pixmap;
+			image.fill(color);		
 			QLabel* label = new QLabel();
 			pixmap = QPixmap::fromImage(image);
-			label->setPixmap(QPixmap(pixmap));
-			QWidget *pWidget = nullptr;
-			pWidget = CVWidgetGenerator::InsertWidgetInCenter(label);
-			ui_colorwayTable->setCellWidget(m_selectedRow, COLOR_CHIP_COLUMN, pWidget);
+			label->setPixmap(QPixmap(pixmap));			
+			pWidget = CVWidgetGenerator::InsertWidgetInCenter(label);			
 		}
+		else if(FormatHelper::HasContent(DefaultImageId))
+		{
+			QImage thumnail;
+			string imageResponse=RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::PRINT_IMAGE_API + "/" + DefaultImageId, APPLICATION_JSON_TYPE, BLANK);
+			json imageResponseJson = json::parse(imageResponse);
+
+			string thumbnailUrl = Helper::GetJSONValue<string>(imageResponseJson, THUMBNAIL_KEY, true);
+			string latestVersionAttUrl = Helper::GetJSONValue<string>(imageResponseJson, "_url_base_template", true);
+
+			latestVersionAttUrl = Helper::FindAndReplace(latestVersionAttUrl, "%s", thumbnailUrl);
+			if (FormatHelper::HasContent(latestVersionAttUrl))
+			{
+				QByteArray imageBytes;
+				auto startTime = std::chrono::high_resolution_clock::now();
+				imageBytes = Helper::DownloadImageFromURL(latestVersionAttUrl);
+				auto finishTime = std::chrono::high_resolution_clock::now();
+				std::chrono::duration<double> totalDuration = finishTime - startTime;
+				Logger::perfomance(PERFOMANCE_KEY + "download Thambnail API :: " + to_string(totalDuration.count()));
+				QBuffer buffer(&imageBytes);
+				buffer.open(QIODevice::ReadOnly);
+				QImageReader imageReader(&buffer);
+				imageReader.setDecideFormatFromContent(true);
+				thumnail = imageReader.read();
+				if (thumnail.isNull())
+				{
+					Logger::Error("LOGGER::CVWidgetGenerator: CreateIconWidget() -> Image is not loaded.  ");
+					QImageReader imageReader(":/CLOVise/PLM/Images/NoImage.png");
+					imageReader.setDecideFormatFromContent(true);
+					thumnail = imageReader.read();
+				}
+				pixmap = pixmap.fromImage(thumnail);
+				pWidget = CVWidgetGenerator::GetInstance()->CreateThumbnailWidget(_jsonarray, pixmap, PRINT_MODULE);
+			}			
+		}
+		ui_colorwayTable->setCellWidget(m_selectedRow, COLOR_CHIP_COLUMN, pWidget);
 		Configuration::GetInstance()->SetIsUpdateColorClicked(false);
 		Logger::Debug("CreateProduct -> UpdateColorInColorways () End");
 		return true;

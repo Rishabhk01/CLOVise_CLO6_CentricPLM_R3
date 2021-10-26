@@ -1089,7 +1089,7 @@ namespace CLOVise
 	{
 		Logger::Info("DesignSuite -> onClickedSearchPrints() -> Start");
 		Configuration::GetInstance()->SetCurrentScreen(PRINT_SEARCH_CLICKED);
-		//Configuration::GetInstance()->SetIsUpdateColorClicked(false);
+		Configuration::GetInstance()->SetIsUpdateColorClicked(false);
 		ExecutePrintModule();
 		Logger::Info("DesignSuite -> onClickedSearchPrints() -> Start");
 	}

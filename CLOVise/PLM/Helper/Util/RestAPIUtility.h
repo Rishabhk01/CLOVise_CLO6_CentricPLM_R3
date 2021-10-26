@@ -130,6 +130,7 @@ namespace RESTAPI
 	const string STYLE_COPY_OPTION_API = "/csi-requesthandler/api/v2/style_copy_options";
 	const string UPDATE_STYLE_API = "/csi-requesthandler/api/v2/styles";
 	const string COLOR_SPEC_API = "/csi-requesthandler/api/v2/color_specifications";
+	const string PRINT_IMAGE_API = "/csi-requesthandler/api/v2/images";
 
 	/*
 	* Description - SetProgressBarData() method used to set data, shown in progress bar.

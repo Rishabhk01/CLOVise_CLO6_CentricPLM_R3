@@ -180,6 +180,7 @@ namespace CLOVise
 		void OnplmColorwayNameEntered();
 		void onHorizontalHeaderClicked(int column);
 		void OnCreateColorSpecClicked(int _row);
+		void OnSearchPrintClicked(int _row);
 
 	};
 }
