@@ -643,6 +643,7 @@ namespace CLOVise
 					CreateProduct::GetInstance()->GetUpdatedColorwayNames();
 				}
 				CreateProduct::GetInstance()->addCreateProductDetailsWidgetData();
+				CreateProduct::GetInstance()->ExportTechPack();
 				CreateProduct::GetInstance()->setModal(true);
 				//if (PublishToPLMData::GetInstance()->isModelExecuted)
 				//	UTILITY_API->SetProgress("Loading Create Product to PLM", 100);				

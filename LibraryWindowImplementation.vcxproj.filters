@@ -257,9 +257,6 @@
     <ClCompile Include="CLOVise\PLM\Inbound\Material\MaterialConfig.cpp">
       <Filter>CLOVise\PLM\Inbound\Material</Filter>
     </ClCompile>
-    <ClCompile Include="CLOVise\PLM\Inbound\Product\ProductConfig.cpp">
-      <Filter>CLOVise\PLM\Inbound\Product</Filter>
-    </ClCompile>
     <ClCompile Include="CLOVise\PLM\Inbound\Document\DocumentConfig.cpp">
       <Filter>CLOVise\PLM\Inbound\Document</Filter>
     </ClCompile>
@@ -361,6 +358,39 @@
     </ClCompile>
     <ClCompile Include="CLOVise\PLM\Outbound\UpdateMaterial\UpdateMaterialConfig.cpp">
       <Filter>CLOVise\PLM\Outbound\UpdateMaterial</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_UpdateImageIntent.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CreateImageIntent.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CreateImageIntent.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_UpdateImageIntent.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.cpp">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\CreateImageIntent.cpp">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\AddNewBom.cpp">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_AddNewBom.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_AddNewBom.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Product\ProductConfig.cpp">
+      <Filter>CLOVise\PLM\Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\Section.cpp">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -566,7 +596,7 @@
     <ClInclude Include="GeneratedFiles\ui_CreateImageIntent.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-	    <ClInclude Include="GeneratedFiles\ui_UpdateImageIntent.h">
+    <ClInclude Include="GeneratedFiles\ui_UpdateImageIntent.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_UpdateMaterial.h">
@@ -575,10 +605,10 @@
     <ClInclude Include="CLOVise\PLM\Outbound\UpdateMaterial\UpdateMaterialConfig.h">
       <Filter>CLOVise\PLM\Outbound\UpdateMaterial</Filter>
     </ClInclude>
-    <ClInclude Include="CLOVise\PLM\Outbound\PublishToPLM\CreateImageIntent.h">
-      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    <ClInclude Include="GeneratedFiles\ui_AddNewBom.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.h">
+    <ClInclude Include="CLOVise\PLM\Outbound\PublishToPLM\Section.h">
       <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
     </ClInclude>
   </ItemGroup>
@@ -759,6 +789,47 @@
     <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
       <Filter>Generated Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.ui" />
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.h">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CreateImageIntent.h">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CreateImageIntent.ui">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\AddNewBom.h">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\AddNewBom.ui" />
     <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
       <Filter>Generated Files</Filter>
     </CustomBuild>
@@ -1013,12 +1084,6 @@
       <Filter>CLOVise\PLM\CLOViseSuite</Filter>
     </None>
     <None Include="CloLibraryAPI_Plugin.pro" />
-    <None Include="CLOVise\PLM\Outbound\PublishToPLM\CreateImageIntent.ui">
-      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
-    </None>
-    <None Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.ui">
-      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LibraryWindowImplementation.rc" />

@@ -50,6 +50,11 @@ namespace CLOVise
 		void GetUpdatedColorwayNames();
 		bool UpdateColorInColorways(QStringList _downloadIdList, json _jsonarray);
 		void addCreateProductDetailsWidgetData();
+		void AddMaterialInBom();
+		void GetMappedColorway();
+		void UpdateColorwayColumnsInBom();
+		void ExportTechPack();
+		void CreateBom(string _productId);
 		struct ColorwayViews
 		{
 			string viewUploadId[4];
@@ -59,6 +64,10 @@ namespace CLOVise
 		MVTableWidget *ui_colorwayTable;
 		int m_selectedRow;
 		QStringList m_colorSpecList;
+
+		json m_techPackJson;
+		QStringList m_mappedColorways;
+		json collectCriteriaFields(QTreeWidget* _documentPushToPLMTree_1, QTreeWidget* _documentPushToPLMTree_2);
 	private:
 		CreateProduct(QWidget* parent = nullptr);
 		virtual ~CreateProduct();
@@ -66,7 +75,7 @@ namespace CLOVise
 		
 		void drawCriteriaWidget(json _documentJson, QTreeWidget* _documentPushToPLMTree_1, QTreeWidget* _documentPushToPLMTree_2, json _metadataJson);
 		void drawWidget(json _feildsJson, QTreeWidget* m_TreeWidget, int _start, int _end);
-		json collectCriteriaFields(QTreeWidget* _documentPushToPLMTree_1, QTreeWidget* _documentPushToPLMTree_2);
+		
 		/*void PutRestCall(string _parameter, string _api, string _contentType);
 		 size_t  WriteCallback(void* _contents, size_t _size, size_t _nmemb, string* _userp);
 		size_t GetFileSize(const std::string& _path);*/
@@ -113,6 +122,7 @@ namespace CLOVise
 		string m_3DModelThumbnailPath = "";
 		string m_multipartFilesParams = "";
 		json m_ProductMetaData = json::object();
+		json m_BomMetaData = json::object();
 		json m_downloadJson = json::object();
 		json m_checkedIds = json::object();
 
@@ -126,6 +136,7 @@ namespace CLOVise
 	
 		MVTableWidget *m_imageIntentTable;
 		QPushButton* m_colorwayAddButton;
+		QPushButton* m_bomAddButton;
 
 		int m_colorwayRowcount;
 		QStringList m_modifiedColorwayNames;
@@ -171,6 +182,8 @@ namespace CLOVise
 		void OnUni2CodeSelected(const QString& _str);
 		void OnplmColorwayNameEntered();
 		void onHorizontalHeaderClicked(int column);
+		void onAddNewBomClicked();
+	
 
 	};
 }

@@ -32,6 +32,14 @@ const QString PLM_NAME = "Centric 8";
 #define STARTING_INDEX 0
 #define DIVISION_FACTOR 2
 
+
+//Style tab indexes
+
+#define OVERVIEW_TAB 0
+#define BOM_TAB 3
+#define COLORWAY_TAB 1
+#define IMAGE_INTENT_TAB 2
+
 //Colorway table columns
 
 #define CHECKBOX_COLUMN 0
@@ -60,6 +68,15 @@ const QString PLM_NAME = "Centric 8";
 #define VIEW_COLUMN  1
 #define IMAGE_LABLE_COLUMN  2
 #define DEFAULT_IMAGE_COLUMN  3
+
+
+
+#define DELETE_BUTTON_COLUMN  0
+#define TYPE_COLUMN  3
+#define COMMON_COLOR_COLUMN  7
+
+
+
 
 
 const QString SPLASH_IMAGE_PATH = ":/CLOVise/PLM/Images/Splash.png";
@@ -241,6 +258,7 @@ const string ATTRIBUTE_INITIAL_VALUE = "initial_value";
 const string COLOR_SPEC_ID = "color_specification";
 const string ATTRIBUTE_CREATE_ONLY = "create_only";
 const string ENUM_ATTRIBUTE_FORMAT_KEY = "formatKey";
+const string TECHPACK_API_META_DATA_KEY = "apiMetaData";
 
 
 

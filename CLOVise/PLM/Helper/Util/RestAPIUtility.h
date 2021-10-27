@@ -125,6 +125,10 @@ namespace RESTAPI
 	const string UPDATE_STYLE_API = "/csi-requesthandler/api/v2/styles";
 	const string COLOR_SPEC_API = "/csi-requesthandler/api/v2/color_specifications";
 
+
+
+	const string APPAREL_BOM_SUBTYPE_API = "/csi-requesthandler/api/v2/apparel_bom_subtypes";
+
 	/*
 	* Description - SetProgressBarData() method used to set data, shown in progress bar.
 	* Parameter -  float, string, bool.

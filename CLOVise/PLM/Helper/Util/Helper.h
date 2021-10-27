@@ -1335,7 +1335,7 @@ namespace Helper
 	inline json makeRestcallGet(string _api, string _param = "", string _id = "", string _progressbartext = "")
 	{
 		Logger::Debug("UiHelper drawWidget() _attName == Season");
-		Logger::Debug("UiHelper drawWidget() API: " + _api);
+		Logger::Debug("UiHelper drawWidget() API: " + _api + _id + _param);
 		vector<pair<string, string>> headerNameAndValueList;
 		headerNameAndValueList.push_back(make_pair("content-Type", "application/json"));
 		headerNameAndValueList.push_back(make_pair("Cookie", Configuration::GetInstance()->GetBearerToken()));

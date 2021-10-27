@@ -32,6 +32,16 @@
    <property name="spacing">
     <number>10</number>
    </property>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="ui_buttonsLayout">
+     <property name="spacing">
+      <number>10</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+    </layout>
+   </item>
    <item row="0" column="0">
     <widget class="QFrame" name="ui_outerFrame">
      <property name="sizePolicy">
@@ -80,7 +90,7 @@
         <item>
          <widget class="QTabWidget" name="ui_tabWidget">
           <property name="currentIndex">
-           <number>0</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="ui_overviewTab">
            <attribute name="title">
@@ -118,22 +128,45 @@
             </item>
            </layout>
           </widget>
+          <widget class="QWidget" name="ui_bomTab">
+           <attribute name="title">
+            <string>BOM</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_6">
+            <item row="1" column="0">
+             <widget class="QFrame" name="frame">
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_7">
+               <item row="0" column="0">
+                <layout class="QHBoxLayout" name="ui_addNewBomButtonLayout">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetDefaultConstraint</enum>
+                 </property>
+                </layout>
+               </item>
+               <item row="1" column="0">
+                <layout class="QVBoxLayout" name="ui_sectionLayout">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetMinimumSize</enum>
+                 </property>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </item>
        </layout>
       </item>
      </layout>
     </widget>
-   </item>
-   <item row="1" column="0">
-    <layout class="QHBoxLayout" name="ui_buttonsLayout">
-     <property name="spacing">
-      <number>10</number>
-     </property>
-     <property name="bottomMargin">
-      <number>0</number>
-     </property>
-    </layout>
    </item>
   </layout>
  </widget>
