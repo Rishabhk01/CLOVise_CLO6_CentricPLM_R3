@@ -217,7 +217,19 @@ namespace CLOVise
 
 
 		ui_addNewBomButtonLayout->insertWidget(0, m_bomAddButton);
+		QLabel *label = new QLabel();
+		label->setText("BOM Name: ");
+		QLabel *label1 = new QLabel();
+		label1->setText("Template: ");
+		m_bomName = new QLabel();
+		m_bomTemplateName = new QLabel();
 		ui_addNewBomButtonLayout->insertSpacerItem(1, horizontalSpacer);
+		ui_addNewBomButtonLayout->insertWidget(2, label);
+		ui_addNewBomButtonLayout->insertWidget(3, m_bomName);
+		ui_addNewBomButtonLayout->insertSpacerItem(4, horizontalSpacer);
+		ui_addNewBomButtonLayout->insertWidget(5, label1);
+		ui_addNewBomButtonLayout->insertWidget(6, m_bomTemplateName);
+		ui_addNewBomButtonLayout->insertSpacerItem(7, horizontalSpacer);
 		
 
 		m_ImageIntentList = new QListWidget();
@@ -424,7 +436,7 @@ namespace CLOVise
 				QWidget *item = ui_sectionLayout->itemAt(0)->widget();
 				Logger::Debug("CreateProduct -> onBackButtonClicked -> 3");
 				if (item != nullptr)
-					item->deleteLater();
+					delete item;
 				Logger::Debug("CreateProduct -> onBackButtonClicked -> 4");
 			}
 
@@ -1767,8 +1779,11 @@ namespace CLOVise
 		
 		if (_index == BOM_TAB)
 		{
-			GetMappedColorway();
-			UpdateColorwayColumnsInBom();
+		//	if (ui_sectionLayout->count() > 0)
+			//{
+				GetMappedColorway();
+				UpdateColorwayColumnsInBom();
+			//}
 		}
 
 		Logger::Debug("Create product onTabClicked() End");
@@ -1877,17 +1892,17 @@ namespace CLOVise
 								if (lableText == "shape")
 								{
 									progressbarText = "Loading Shape details..";
-									dependentFieldJson = Helper::makeRestcallGet(RESTAPI::SHAPE_API, "&skip=0&limit=100", "?shape_seasons=" + id, progressbarText);
+									dependentFieldJson = Helper::makeRestcallGet(RESTAPI::SHAPE_API, "?skip=0&limit=100", "?shape_seasons=" + id, progressbarText);
 
 								}
 								else if (lableText == "theme")
 								{
 									progressbarText = "Loading Theme details..";
-									dependentFieldJson = Helper::makeRestcallGet(RESTAPI::THEME_API, "&skip=0&limit=100", "?theme_seasons=" + id, progressbarText);
+									dependentFieldJson = Helper::makeRestcallGet(RESTAPI::THEME_API, "?skip=0&limit=100", "?theme_seasons=" + id, progressbarText);
 								}
 								else
 								{
-									dependentFieldJson = Helper::makeRestcallGet(apiUrl, "/hierarchy&skip=0&limit=1000", "/" + id, progressbarText);
+									dependentFieldJson = Helper::makeRestcallGet(apiUrl, "/hierarchy?skip=0&limit=1000", "/" + id, progressbarText);
 								}
 								json attJson = json::object();
 
@@ -1952,18 +1967,18 @@ namespace CLOVise
 								if (lableText == "shape")
 								{
 									progressbarText = "Loading Shape details..";
-									dependentFieldJson = Helper::makeRestcallGet(RESTAPI::SHAPE_API, "&skip=0&limit=100", "?shape_seasons=" + id, progressbarText);
+									dependentFieldJson = Helper::makeRestcallGet(RESTAPI::SHAPE_API, "?skip=0&limit=100", "?shape_seasons=" + id, progressbarText);
 
 								}
 								else if (lableText == "theme")
 								{
 									progressbarText = "Loading Theme details..";
-									dependentFieldJson = Helper::makeRestcallGet(RESTAPI::THEME_API, "&skip=0&limit=100", "?theme_seasons=" + id, progressbarText);
+									dependentFieldJson = Helper::makeRestcallGet(RESTAPI::THEME_API, "?skip=0&limit=100", "?theme_seasons=" + id, progressbarText);
 
 								}
 								else
 								{
-									dependentFieldJson = Helper::makeRestcallGet(apiUrl, "/hierarchy", "/" + id, progressbarText);
+									dependentFieldJson = Helper::makeRestcallGet(apiUrl, "/hierarchy?skip=0&limit=100", "/" + id, progressbarText);
 								}
 
 								json attJson = json::object();
@@ -2955,8 +2970,13 @@ namespace CLOVise
 		headerNameAndValueList.push_back(make_pair("content-Type", "application/json"));
 		headerNameAndValueList.push_back(make_pair("Accept", "application/json"));
 		headerNameAndValueList.push_back(make_pair("Cookie", Configuration::GetInstance()->GetBearerToken()));
-		string productMetaData = to_string(AddNewBom::GetInstance()->m_BomMetaData);
-		string response = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::STYLE_ENDPOINT_API + "/" + _productId + "/data_sheets/apparel_boms", &productMetaData, headerNameAndValueList, "Loading");
+		
+		string bomTemplateId = Helper::GetJSONValue<string>(AddNewBom::GetInstance()->m_BomMetaData, "bom_template", true);
+		AddNewBom::GetInstance()->m_BomMetaData.erase("bom_template");
+		AddNewBom::GetInstance()->m_BomMetaData["style_id"] = _productId;
+		string bomMetaData = to_string(AddNewBom::GetInstance()->m_BomMetaData);
+		UTILITY_API->DisplayMessageBox(to_string(AddNewBom::GetInstance()->m_BomMetaData));
+		string response = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::CREATE_BOM_API + "/" + bomTemplateId , &bomMetaData, headerNameAndValueList, "Loading");
 		if (!FormatHelper::HasContent(response))
 		{
 			RESTAPI::SetProgressBarData(0, "", false);

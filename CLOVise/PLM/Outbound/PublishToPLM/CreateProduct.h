@@ -64,7 +64,9 @@ namespace CLOVise
 		MVTableWidget *ui_colorwayTable;
 		int m_selectedRow;
 		QStringList m_colorSpecList;
-
+		QLabel *m_bomName;
+		QLabel *m_bomTemplateName;
+		QPushButton* m_bomAddButton;
 		json m_techPackJson;
 		QStringList m_mappedColorways;
 		json collectCriteriaFields(QTreeWidget* _documentPushToPLMTree_1, QTreeWidget* _documentPushToPLMTree_2);
@@ -136,7 +138,7 @@ namespace CLOVise
 	
 		MVTableWidget *m_imageIntentTable;
 		QPushButton* m_colorwayAddButton;
-		QPushButton* m_bomAddButton;
+		
 
 		int m_colorwayRowcount;
 		QStringList m_modifiedColorwayNames;

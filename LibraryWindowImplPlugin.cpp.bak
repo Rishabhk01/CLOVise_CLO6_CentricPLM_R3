@@ -347,7 +347,20 @@ namespace CLOAPI
 			{				
 				if (UTILITY_API->IsCLOFileFormatWithThumbnail(filePath.toStdString()))						// for CLO file format which contains thumbnails
 				{
-					return UTILITY_API->GetAssetIconInCLOFile(filePath.toStdString(), sizeInByte);	
+					if (UTILITY_API->IsCLOFileFormatWithTripleThumbnail(filePath.toStdString()))			// for CLO file format which contains 3 preview images (index: 0 = front thumbnail, 1 = back thumbnail)
+					{
+						return UTILITY_API->GetThumbnailInCLOFile(filePath.toStdString(), 0, sizeInByte);	// index: 0 = front thumbnail, 1 = back thumbnail
+					}
+					else
+					{
+						// zfab and sst files are unusual case
+						if (UTILITY_API && filePath.contains(".zfab", Qt::CaseInsensitive))
+							return UTILITY_API->GetAssetIconInCLOFile(filePath.toStdString(), sizeInByte);
+						else if (UTILITY_API && filePath.contains(".sst", Qt::CaseInsensitive))
+							return UTILITY_API->GetThumbnailInCLOFile(filePath.toStdString(), 0, sizeInByte); // index: 0 = front thumbnail, 1 = back thumbnail
+						else
+							return UTILITY_API->GetThumbnailInCLOFile(filePath.toStdString(), 0, sizeInByte); // for CLO file format which contains only one thumnail 
+					}
 				}
 				else if (UTILITY_API->IsReadableImageFormat(filePath.toStdString()))							// for common type of images which can be displayed in Library Windows, CLO software
 				{

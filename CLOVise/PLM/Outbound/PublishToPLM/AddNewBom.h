@@ -40,17 +40,18 @@ namespace CLOVise
 		static AddNewBom* GetInstance();
 		static void	Destroy();
 		//void getFabricTrimDetails(stringstream& _ssBOMDetails);
-		void getMaterialDetails(string _str, json _techPackJson, bool _flag, QTableWidget* _sectionTable,QString _tableName);
+		void getMaterialDetails(string _str, json _techPackJson, bool _flag, QTableWidget* _sectionTable,QString _tableName, bool _isFabric);
 		void CreateTableforEachSection();
 		void AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString _tableName);
-		void getColorInfo(json _FabricJson, json& rowDataJson, string _materailId);
+		void getColorInfo(json _FabricJson, json& rowDataJson, string _materailId, bool _isFabric);
 		void UpdateColorwayColumns();
 		map<string, QTableWidget*> m_bomSectionTableInfoMap;
-		map<QAction*, QTableWidget*> m_addMaterialButtonAndTableMap;
+		map<QPushButton*, QTableWidget*> m_addMaterialButtonAndTableMap;
 		map<string, json> m_colorwayMapForBom;
-		QAction* currentAddMaterialButtonClicked;
+		QPushButton* currentAddMaterialButtonClicked;
 		json m_mappedColorwaysArr;
 		json m_colorwayOverridesJson;
+		json m_bomTemplateJson;
 		string m_currentTableName;
 		QSignalMapper *m_buttonSignalMapper;
 		QSignalMapper *m_deleteButtonSignalMapper;
@@ -79,7 +80,8 @@ namespace CLOVise
 		void onCreateButtonClicked();
 		void onClickAddFromMaterialButton();
 		void onClickAddSpecialMaterialButton();
-		void OnClickAddColorButton(int _rowCount);
+		void OnClickAddColorButton(const QString &string);
 		void OnClickDeleteButton(int _rowCount);
+		void OnHandleDropDownValue(const QString& _item);
 	};
 }

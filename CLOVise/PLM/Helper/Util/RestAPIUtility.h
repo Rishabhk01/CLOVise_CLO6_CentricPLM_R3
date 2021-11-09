@@ -128,6 +128,9 @@ namespace RESTAPI
 
 
 	const string APPAREL_BOM_SUBTYPE_API = "/csi-requesthandler/api/v2/apparel_bom_subtypes";
+	const string BOM_TEMPLATE_API = "/csi-requesthandler/api/v2/apparel_boms";
+	const string CREATE_BOM_API = "/csi-requesthandler/api/v2/apparel_boms/copy";
+	const string BOM_REVISION_API = "/csi-requesthandler/api/v2/apparel_bom_revisions";
 
 	/*
 	* Description - SetProgressBarData() method used to set data, shown in progress bar.

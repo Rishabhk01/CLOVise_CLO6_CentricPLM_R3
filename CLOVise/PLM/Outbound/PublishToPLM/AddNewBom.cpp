@@ -146,7 +146,36 @@ namespace CLOVise
 		}
 
 		json formDefinitionJson = json::parse(fieldsconfigJsonString);
-		drawWidget(formDefinitionJson, m_createBomTreeWidget);
+		json mergedJsonArray = json::array();
+
+		json jsonvalueArray = json::array();
+		string attJson = DirectoryUtil::GetPLMPluginDirectory() + "CentricBomAttributes.json";//Reading Columns from json
+		jsonvalueArray = Helper::ReadJSONFile(attJson);
+		//UTILITY_API->DisplayMessageBox("jsonvalue:: " + to_string(jsonvalue));
+		//createFieldsJson(to_string(fieldsJsonArray), jsonvalue);
+
+		int sizeOfFormDefinitionJSON = formDefinitionJson.size();
+		int sizeOfDefaultJSON = jsonvalueArray.size();
+
+		for (int i = 0; i < sizeOfFormDefinitionJSON + sizeOfDefaultJSON; i++)
+		{
+			if (i < sizeOfDefaultJSON)
+			{
+				json jsonvalue = Helper::GetJSONParsedValue<int>(jsonvalueArray, i, false);
+				string internalName = Helper::GetJSONValue<string>(jsonvalue, "rest_api_name", true);
+				//m_localAttributesList.push_back(QString::fromStdString(internalName));
+				mergedJsonArray[i] = jsonvalueArray[i];
+			}
+			else
+			{
+				json fieldsJson = Helper::GetJSONParsedValue<int>(formDefinitionJson, i - sizeOfDefaultJSON, false);
+				string internalName = Helper::GetJSONValue<string>(fieldsJson, "rest_api_name", true);
+			//	m_plmAttributesList.push_back(QString::fromStdString(internalName));
+				mergedJsonArray[i] = formDefinitionJson[i - sizeOfDefaultJSON];
+			}
+		}
+
+		drawWidget(mergedJsonArray, m_createBomTreeWidget);
 		connectSignalSlots(true);
 
 		m_bomTableColumnJson = json::object();
@@ -174,9 +203,6 @@ namespace CLOVise
 			string attId = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_ID, true);
 			Logger::Debug("AddNewBom -> AddNewBom attId: " + attId);
 			m_materialTypeList.append(QString::fromStdString(attName));
-			//m_seasonNameIdMap.insert(make_pair(attName, attId));
-			//m_styleTypeNameIdMap.insert(make_pair(attName, attId));
-			//comboBox->setProperty(attName.c_str(), QString::fromStdString(attId));
 		}
 
 		Logger::Debug("AddNewBom -> Constructor() -> End");
@@ -206,7 +232,8 @@ namespace CLOVise
 
 			QObject::connect(m_backButton, SIGNAL(clicked()), this, SLOT(onBackButtonClicked()));
 			QObject::connect(m_createButton, SIGNAL(clicked()), this, SLOT(onCreateButtonClicked()));
-			QObject::connect(m_buttonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickAddColorButton(int)));
+			//QObject::connect(m_buttonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickAddColorButton(int)));
+			QObject::connect(m_buttonSignalMapper, SIGNAL(mapped(const QString &)),this, SLOT(OnClickAddColorButton(const QString &)));
 			QObject::connect(m_deleteButtonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickDeleteButton(int)));
 
 
@@ -216,7 +243,8 @@ namespace CLOVise
 		{
 			QObject::disconnect(m_backButton, SIGNAL(clicked()), this, SLOT(onBackButtonClicked()));
 			QObject::disconnect(m_createButton, SIGNAL(clicked()), this, SLOT(onCreateButtonClicked()));
-			QObject::disconnect(m_buttonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickAddColorButton(int)));
+			//QObject::disconnect(m_buttonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickAddColorButton(int)));
+			QObject::disconnect(m_buttonSignalMapper, SIGNAL(mapped(const QString &)), this, SLOT(OnClickAddColorButton(const QString &)));
 			QObject::disconnect(m_deleteButtonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickDeleteButton(int)));
 		}
 	}
@@ -350,7 +378,13 @@ namespace CLOVise
 				}
 				else
 				{
-					if (internalName == "subtype")
+					
+						if (internalName == "bom_template")
+						{
+							responseJson = Helper::makeRestcallGet(RESTAPI::BOM_TEMPLATE_API, "?is_template=true&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading season details..");
+							m_bomTemplateJson = responseJson;
+						}
+					else if (internalName == "subtype")
 					{
 						responseJson = Helper::makeRestcallGet(RESTAPI::APPAREL_BOM_SUBTYPE_API, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading season details..");
 					}
@@ -369,6 +403,7 @@ namespace CLOVise
 						m_subTypeNameIdMap.insert(make_pair(attName, attId));
 						//m_styleTypeNameIdMap.insert(make_pair(attName, attId));
 						comboBox->setProperty(attName.c_str(), QString::fromStdString(attId));
+						comboBox->setProperty(attId.c_str(), QString::fromStdString(attName));
 					}
 				}
 
@@ -452,10 +487,37 @@ namespace CLOVise
 	void AddNewBom::onCreateButtonClicked()
 	{
 		Logger::Debug("AddNewBom onCreateButtonClicked() Start....");
-		CreateTableforEachSection();
+		
 		QTreeWidget *tree = new QTreeWidget();
 		m_BomMetaData = CreateProduct::GetInstance()->collectCriteriaFields(m_createBomTreeWidget, tree);
-		UTILITY_API->DisplayMessageBox("m_BomMetaData"+ to_string(m_BomMetaData));
+		string bomName = Helper::GetJSONValue<string>(m_BomMetaData, "node_name", true);
+		string bomTemplateId = Helper::GetJSONValue<string>(m_BomMetaData, "bom_template", true);
+		string latestRevision;
+		CreateTableforEachSection();
+		//for (int i = 0; i < m_bomTemplateJson.size(); i++)
+		//{
+		//	json attJson = Helper::GetJSONParsedValue<int>(m_bomTemplateJson, i, false);;///use new method
+		//	//attName = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_NAME, true);
+		//	//Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON attName: " + attName);
+		//	string attId = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_ID, true);
+		//	Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON attId: " + attId);
+		//	if(attId== bomTemplateId)
+		//	{
+		//		latestRevision = Helper::GetJSONValue<string>(attJson, "latest_revision", true);
+		//		break;
+		//	}
+		//}
+		//if (!latestRevision.empty())
+
+		//{
+		//	json responseJson = Helper::makeRestcallGet(RESTAPI::BOM_REVISION_API + "/" + latestRevision, "", "", "");
+
+		//	CreateTableforEachSection();
+		//}
+
+		//UTILITY_API->DisplayMessageBox("m_BomMetaData"+ to_string(m_BomMetaData));
+		CreateProduct::GetInstance()->m_bomAddButton->setDisabled(true);
+		CreateProduct::GetInstance()->m_bomName->setText(QString::fromStdString(bomName));
 		this->hide();
 		CreateProduct::GetInstance()->setModal(true);
 		CreateProduct::GetInstance()->show();
@@ -509,14 +571,14 @@ namespace CLOVise
 			if (sectionList[i] == "FABRICS")
 			{
 				Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionTable" + to_string(long(sectionTable)));
-				getMaterialDetails("fabricList", CreateProduct::GetInstance()->m_techPackJson, true, sectionTable, sectionList[i]);
+				getMaterialDetails("fabricList", CreateProduct::GetInstance()->m_techPackJson, true, sectionTable, sectionList[i],true);
 			}
 			if (sectionList[i] == "TRIMS")
 			{
 				Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionTable" + to_string(long(sectionTable)));
-				getMaterialDetails("buttonHeadList", CreateProduct::GetInstance()->m_techPackJson, false, sectionTable, sectionList[i]);
-				getMaterialDetails("buttonHoleList", CreateProduct::GetInstance()->m_techPackJson, false, sectionTable, sectionList[i]);
-				getMaterialDetails("zipperList", CreateProduct::GetInstance()->m_techPackJson, false, sectionTable, sectionList[i]);
+				getMaterialDetails("buttonHeadList", CreateProduct::GetInstance()->m_techPackJson, false, sectionTable, sectionList[i], false);
+				getMaterialDetails("buttonHoleList", CreateProduct::GetInstance()->m_techPackJson, false, sectionTable, sectionList[i], false);
+				getMaterialDetails("zipperList", CreateProduct::GetInstance()->m_techPackJson, false, sectionTable, sectionList[i], false);
 			}
 
 
@@ -529,28 +591,36 @@ namespace CLOVise
 			sectionTable->horizontalHeader()->setStretchLastSection(true);
 			auto* anyLayout = new QVBoxLayout();
 			auto* addMaterialButtonLayout = new QHBoxLayout();
-			QPushButton* addMaterialButton = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "Add Material", PUSH_BUTTON_STYLE, 30, true);
-			addMaterialButton->setParent(sectionTable);
+			QPushButton* addPlmMaterialButton = CVWidgetGenerator::CreatePushButton("New From Material", ADD_HOVER_ICON_PATH, "New From Material", PUSH_BUTTON_STYLE, 30, true);
+			addPlmMaterialButton->setParent(sectionTable);
+			addPlmMaterialButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
-			addMaterialButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+			QPushButton* addSpecialMaterialButton = CVWidgetGenerator::CreatePushButton("New Special", ADD_HOVER_ICON_PATH, "New Special", PUSH_BUTTON_STYLE, 30, true);
+			addSpecialMaterialButton->setParent(sectionTable);
+			addSpecialMaterialButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
-			QAction* AddFromMaterialAction = new QAction(tr("New From Material"), this);
-			connect(AddFromMaterialAction, SIGNAL(triggered()), this, SLOT(onClickAddFromMaterialButton()));
 
-			QAction* AddSpecialMaterialAction = new QAction(tr("New Special"), this);
-			connect(AddSpecialMaterialAction, SIGNAL(triggered()), this, SLOT(onClickAddSpecialMaterialButton()));
+			//QAction* AddFromMaterialAction = new QAction(tr("New From Material"), this);
+			//connect(AddFromMaterialAction, SIGNAL(triggered()), this, SLOT(onClickAddFromMaterialButton()));
 
-			m_addMaterialButtonAndTableMap.insert(make_pair(AddFromMaterialAction, sectionTable));
-			m_addMaterialButtonAndTableMap.insert(make_pair(AddSpecialMaterialAction, sectionTable));
-			QMenu* menu = new QMenu(addMaterialButton);
-			menu->addAction(AddFromMaterialAction);
-			menu->addAction(AddSpecialMaterialAction);
-			addMaterialButton->setMenu(menu);
+			//QAction* AddSpecialMaterialAction = new QAction(tr("New Special"), this);
+			//connect(AddSpecialMaterialAction, SIGNAL(triggered()), this, SLOT(onClickAddSpecialMaterialButton()));
+
+			m_addMaterialButtonAndTableMap.insert(make_pair(addPlmMaterialButton, sectionTable));
+			m_addMaterialButtonAndTableMap.insert(make_pair(addSpecialMaterialButton, sectionTable));
+			//QMenu* menu = new QMenu(addMaterialButton);
+			//menu->addAction(AddFromMaterialAction);
+			//menu->addAction(AddSpecialMaterialAction);
+			//addMaterialButton->setMenu(menu);
 
 			QSpacerItem *horizontalSpacer = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Fixed);
-			//connect(addMaterialButton, SIGNAL(clicked()), this, SLOT(onClickAddMaterialButton()));
-			addMaterialButtonLayout->insertWidget(1, addMaterialButton);
+			connect(addPlmMaterialButton, SIGNAL(clicked()), this, SLOT(onClickAddFromMaterialButton()));
+			connect(addSpecialMaterialButton, SIGNAL(clicked()), this, SLOT(onClickAddSpecialMaterialButton()));
+
 			addMaterialButtonLayout->insertSpacerItem(0, horizontalSpacer);
+			addMaterialButtonLayout->insertWidget(1, addPlmMaterialButton);
+			//addMaterialButtonLayout->insertSpacerItem(2, horizontalSpacer);
+			addMaterialButtonLayout->insertWidget(2, addSpecialMaterialButton);
 			anyLayout->insertLayout(0, addMaterialButtonLayout);
 			anyLayout->insertWidget(1, sectionTable);
 			section->setContentLayout(*anyLayout);
@@ -561,7 +631,7 @@ namespace CLOVise
 
 	}
 
-	void AddNewBom::getMaterialDetails(string _str, json _techPackJson, bool _isfabric, QTableWidget* _sectionTable, QString _tableName)
+	void AddNewBom::getMaterialDetails(string _str, json _techPackJson, bool _isfabric, QTableWidget* _sectionTable, QString _tableName, bool _isFabric)
 	{
 
 		string fabStrValue = _techPackJson[_str].dump();
@@ -600,7 +670,7 @@ namespace CLOVise
 				string uom = Helper::GetJSONValue<string>(costInfoJson, "rollLengthUnit", true);
 
 				json rowDataJson = json::object();
-				getColorInfo(materialCountJson, rowDataJson, objectId);
+				getColorInfo(materialCountJson, rowDataJson, objectId, _isFabric);
 
 
 
@@ -649,18 +719,49 @@ namespace CLOVise
 			if (_rowDataJson.contains(bomTableColumnKeys[columnIndex].toStdString()))
 			{
 				text = Helper::GetJSONValue<string>(_rowDataJson, bomTableColumnKeys[columnIndex].toStdString(), true);
-				QLineEdit* newColumn = new QLineEdit();
-				newColumn->setStyleSheet(LINEEDIT_STYLE);
-				if (FormatHelper::HasContent(text))
-					newColumn->setText(QString::fromStdString(text));
+			 if (bomTableColumnKeys[columnIndex] == "Type")
+			{
+				ComboBoxItem* comboType = new ComboBoxItem();
+				comboType->setStyleSheet("QComboBox{max-height: 25px; min-width: 100px;}");
+				comboType->setFocusPolicy(Qt::StrongFocus);
+				comboType->addItems(m_materialTypeList);
+				comboType->setProperty("materialId", QString::fromStdString(materialId));
+				int valueIndex = comboType->findText(QString::fromStdString(text));
+
+				if (valueIndex == -1) // -1 for not found
+				{
+					int index = comboType->findText(QString::fromStdString(BLANK));
+					comboType->setCurrentIndex(index);
+				}
 				else
-					newColumn->setText("");
-				Logger::Debug("AddNewBom -> AddBomRows() -> 6");
-				QWidget *pLineEditWidget = CVWidgetGenerator::InsertWidgetInCenter(newColumn);
-				newColumn->setProperty("row", rowCount);
-				Logger::Debug("AddNewBom -> AddBomRows() -> 7");
-				_sectionTable->setCellWidget(rowCount, columnIndex, pLineEditWidget);
-				Logger::Debug("AddNewBom -> AddBomRows() -> 8");
+				{
+					comboType->setCurrentIndex(valueIndex);
+				}
+
+				//comboType->setProperty("Id", QString::fromStdString(_objectId));
+				QWidget *pWidget = CVWidgetGenerator::InsertWidgetInCenter(comboType);
+
+				//comboColorwayItem->clear();
+				//comboColorwayItem->addItems(_colorwayNamesList);
+				_sectionTable->setCellWidget(rowCount, columnIndex, pWidget);
+
+				//QObject::connect(comboColorwayItem, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(OnHandleColorwayNameComboBox(const QString&)));
+			}
+			else{
+					
+					QLineEdit* newColumn = new QLineEdit();
+					newColumn->setStyleSheet(LINEEDIT_STYLE);
+					if (FormatHelper::HasContent(text))
+						newColumn->setText(QString::fromStdString(text));
+					else
+						newColumn->setText("");
+					Logger::Debug("AddNewBom -> AddBomRows() -> 6");
+					QWidget *pLineEditWidget = CVWidgetGenerator::InsertWidgetInCenter(newColumn);
+					newColumn->setProperty("row", rowCount);
+					Logger::Debug("AddNewBom -> AddBomRows() -> 7");
+					_sectionTable->setCellWidget(rowCount, columnIndex, pLineEditWidget);
+					Logger::Debug("AddNewBom -> AddBomRows() -> 8");
+				}
 			}
 			else
 			{
@@ -741,8 +842,9 @@ namespace CLOVise
 										{
 											m_buttonSignalMapper->setProperty("TableName", _tableName);
 											connect(pushButton_2, SIGNAL(clicked()), m_buttonSignalMapper, SLOT(map()));
-											int number = rowCount * 10 + columnIndex;
-											m_buttonSignalMapper->setMapping(pushButton_2, number);
+											//int number = rowCount * 10 + columnIndex;
+											//QString("%1-%2").arg(row).arg(col)
+											m_buttonSignalMapper->setMapping(pushButton_2, QString("%1-%2").arg(rowCount).arg(columnIndex));
 										}
 										pushButton_2->setProperty("TableName", _tableName);
 										gridLayout->addWidget(pushButton_2, 0, 1, 1, 1, Qt::AlignHCenter);
@@ -774,17 +876,24 @@ namespace CLOVise
 						gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
 						gridLayout->setContentsMargins(0, 0, 0, 0);
 
-						QColor color(0, 0, 0);
-						QImage image(20, 20, QImage::Format_ARGB32);
-						image.fill(color);
 						QPixmap pixmap;
 						Logger::Debug("AddNewBom -> AddBomRows() -> 2");
 						QLabel* label = new QLabel();
-						pixmap = QPixmap::fromImage(image);
-						label->setPixmap(QPixmap(pixmap));
+
+						QImage styleIcon;
+						QImageReader imageReader(":/CLOVise/PLM/Images/NoImage.png");
+						imageReader.setDecideFormatFromContent(true);
+						styleIcon = imageReader.read();
+						pixmap = QPixmap::fromImage(styleIcon);
+
+						label->setMaximumSize(QSize(20, 20));
+						int w = label->width();
+						int h = label->height();
+						label->setPixmap(QPixmap(pixmap.scaled(w, h, Qt::KeepAspectRatio)));
 						Logger::Debug("AddNewBom -> AddBomRows() -> 3");
 						QWidget *colorchip = nullptr;
 						colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
+
 						gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
 						QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
 						pushButton_2->setFixedHeight(20);
@@ -793,8 +902,9 @@ namespace CLOVise
 						{
 							m_buttonSignalMapper->setProperty("TableName", _tableName);
 							connect(pushButton_2, SIGNAL(clicked()), m_buttonSignalMapper, SLOT(map()));
-							int number = rowCount * 10 + columnIndex;
-							m_buttonSignalMapper->setMapping(pushButton_2, number);
+							//int number = rowCount * 10 + columnIndex;
+							m_buttonSignalMapper->setMapping(pushButton_2, QString("%1-%2").arg(rowCount).arg(columnIndex));
+							//m_buttonSignalMapper->setMapping(pushButton_2, number);
 						}
 						pushButton_2->setProperty("TableName", _tableName);
 						gridLayout->addWidget(pushButton_2, 0, 1, 1, 1, Qt::AlignHCenter);
@@ -823,14 +933,20 @@ namespace CLOVise
 						gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
 						gridLayout->setContentsMargins(0, 0, 0, 0);
 
-						QColor color(0, 0, 0);
-						QImage image(20, 20, QImage::Format_ARGB32);
-						image.fill(color);
 						QPixmap pixmap;
 						Logger::Debug("AddNewBom -> AddBomRows() -> 2");
 						QLabel* label = new QLabel();
-						pixmap = QPixmap::fromImage(image);
-						label->setPixmap(QPixmap(pixmap));
+
+						QImage styleIcon;
+						QImageReader imageReader(":/CLOVise/PLM/Images/NoImage.png");
+						imageReader.setDecideFormatFromContent(true);
+						styleIcon = imageReader.read();
+						pixmap = QPixmap::fromImage(styleIcon);
+
+						label->setMaximumSize(QSize(20, 20));
+						int w = label->width();
+						int h = label->height();
+						label->setPixmap(QPixmap(pixmap.scaled(w, h, Qt::KeepAspectRatio)));
 						Logger::Debug("AddNewBom -> AddBomRows() -> 3");
 						QWidget *colorchip = nullptr;
 						colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
@@ -845,8 +961,9 @@ namespace CLOVise
 						{
 							m_buttonSignalMapper->setProperty("TableName", _tableName);
 							connect(pushButton_2, SIGNAL(clicked()), m_buttonSignalMapper, SLOT(map()));
-							int number = rowCount * 10 + columnIndex;
-							m_buttonSignalMapper->setMapping(pushButton_2, number);
+							//int number = rowCount * 10 + columnIndex;
+							//m_buttonSignalMapper->setMapping(pushButton_2, number);
+							m_buttonSignalMapper->setMapping(pushButton_2, QString("%1-%2").arg(rowCount).arg(columnIndex));
 						}
 						pushButton_2->setProperty("TableName", _tableName);
 						//pushButton_2->setObjectName(QString::fromUtf8(""));
@@ -862,38 +979,11 @@ namespace CLOVise
 						Logger::Debug("AddNewBom -> AddBomRows() -> 10");
 						_sectionTable->setCellWidget(rowCount, columnIndex, p_widget);
 					}
-					else if (bomTableColumnKeys[columnIndex] == "Type")
-					{
-						ComboBoxItem* comboType = new ComboBoxItem();
-						comboType->setStyleSheet("QComboBox{max-height: 25px; min-width: 100px;}");
-						comboType->setFocusPolicy(Qt::StrongFocus);
-						comboType->addItems(m_materialTypeList);
-						comboType->setProperty("materialId", QString::fromStdString(materialId));
-						int valueIndex = comboType->findText(QString::fromStdString(text));
-
-						if (valueIndex == -1) // -1 for not found
-						{
-							int index = comboType->findText(QString::fromStdString(BLANK));
-							comboType->setCurrentIndex(index);
-						}
-						else
-						{
-							comboType->setCurrentIndex(valueIndex);
-						}
-
-						//comboType->setProperty("Id", QString::fromStdString(_objectId));
-						QWidget *pWidget = CVWidgetGenerator::InsertWidgetInCenter(comboType);
-
-						//comboColorwayItem->clear();
-						//comboColorwayItem->addItems(_colorwayNamesList);
-						_sectionTable->setCellWidget(rowCount, columnIndex, pWidget);
-
-						//QObject::connect(comboColorwayItem, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(OnHandleColorwayNameComboBox(const QString&)));
-					}
 					else if (bomTableColumnKeys[columnIndex] == "Delete")
 					{
 						QPushButton *deleteButton = CVWidgetGenerator::CreatePushButton("", ":/CLOVise/PLM/Images/icon_delete_over.svg", "Delete", PUSH_BUTTON_STYLE, 30, true);
 						deleteButton->setStyleSheet(BUTTON_STYLE);
+						deleteButton->setProperty("materialId", QString::fromStdString(materialId));
 						if (m_deleteButtonSignalMapper != nullptr)
 						{
 							m_deleteButtonSignalMapper->setProperty("TableName", _tableName);
@@ -940,7 +1030,7 @@ namespace CLOVise
 	void AddNewBom::onClickAddFromMaterialButton()
 	{
 		Logger::Debug("AddNewBom -> onClickAddFromMaterialButton () Start");
-		QAction* button = (QAction*)sender();
+		QPushButton* button = (QPushButton*)sender();
 		currentAddMaterialButtonClicked = button;
 		Logger::Debug("AddNewBom -> onClickAddFromMaterialButton () button" + to_string(long(button)));
 		CreateProduct::GetInstance()->hide();
@@ -963,7 +1053,7 @@ namespace CLOVise
 	{
 		Logger::Debug("AddNewBom -> onClickAddSpecialMaterialButton () Start");
 		QTableWidget* sectionTable;
-		QAction* button = (QAction*)sender();
+		QPushButton* button = (QPushButton*)sender();
 		auto it = AddNewBom::GetInstance()->m_addMaterialButtonAndTableMap.find(button);
 		if (it != AddNewBom::GetInstance()->m_addMaterialButtonAndTableMap.end())
 		{
@@ -983,7 +1073,7 @@ namespace CLOVise
 	}
 
 
-	void AddNewBom::getColorInfo(json _FabricJson, json& _rowDataJson, string _materailId)
+	void AddNewBom::getColorInfo(json _FabricJson, json& _rowDataJson, string _materailId, bool _isFabric)
 	{
 		Logger::Debug("AddNewBom -> getColorInfo () Start");
 
@@ -1004,7 +1094,11 @@ namespace CLOVise
 			string cloColorwayStr = colorwayListJsonArr[colorwayListCount].dump();
 			json cloColorwayJson = json::parse(cloColorwayStr);
 			Logger::Logger("cloColorwayJsoncloColorwayJson - " + to_string(cloColorwayJson));
-			string frontJsonStr = Helper::GetJSONValue<string>(cloColorwayJson, "materialFront", false);
+			string frontJsonStr;
+			if(_isFabric)
+				frontJsonStr = Helper::GetJSONValue<string>(cloColorwayJson, "materialFront", false);
+			else
+				frontJsonStr = Helper::GetJSONValue<string>(cloColorwayJson, "bodyMaterial", false);
 			json frontJson = json::parse(frontJsonStr);
 			Logger::Logger("frontJsonfrontJsonfrontJson - " + to_string(frontJson));
 			string cloColorName = Helper::GetJSONValue<string>(frontJson, "baseColorName", true);
@@ -1085,6 +1179,7 @@ namespace CLOVise
 		{
 			QTableWidget* sectionTable = itr->second;
 			Logger::Debug("AddNewBom -> UpdateColorwayColumns () itr->first" + itr->first);
+			QString tableName = QString::fromStdString(itr->first);
 			//Logger::Debug("AddNewBom -> UpdateColorwayColumns () 11");
 			sectionTable->setColumnCount(bomTableColumnKeys.size());
 			sectionTable->setHorizontalHeaderLabels(tablecolumnList);
@@ -1092,110 +1187,182 @@ namespace CLOVise
 			for (int rowCount = 0; rowCount < sectionTable->rowCount(); rowCount++)
 			{
 				QComboBox* typeCombo;
-				typeCombo = static_cast<QComboBox*>(sectionTable->cellWidget(rowCount, TYPE_COLUMN)->children().last());
+				typeCombo = static_cast<QComboBox*>(sectionTable->cellWidget(rowCount, 0)->children().last());
 				QString matrialId = typeCombo->property("materialId").toString();
 				Logger::Debug("AddNewBom -> UpdateColorwayColumns () matrialId" + matrialId.toStdString());
-				if (FormatHelper::HasContent(matrialId.toStdString()))
-				{
+				
 					Logger::Debug("AddNewBom -> UpdateColorwayColumns () sectionTable->columnCount()" + to_string(sectionTable->columnCount()));
 					for (int columnIndex = 0; columnIndex < sectionTable->columnCount(); columnIndex++)
 					{
 						QString columnName = sectionTable->horizontalHeaderItem(columnIndex)->text();
-						//sectionTabl
-						Logger::Debug("AddNewBom -> UpdateColorwayColumns () 2");
-						if (CreateProduct::GetInstance()->m_mappedColorways.contains(columnName))
+						if (FormatHelper::HasContent(matrialId.toStdString()))
 						{
-							Logger::Debug("AddNewBom -> UpdateColorwayColumns () columnName" + columnName.toStdString());
-							auto colorwayJsonItr = m_colorwayMapForBom.find(matrialId.toStdString());
-							json colorwayJson = colorwayJsonItr->second;
-							Logger::Debug("AddNewBom -> UpdateColorwayColumns () colorwayJson" + to_string(colorwayJson));
-							string colorwayNameStr = Helper::GetJSONValue<string>(colorwayJson, columnName.toStdString(), false);
-							json colorwayNameJson1 = json::parse(colorwayNameStr);
-							Logger::Debug("AddNewBom -> UpdateColorwayColumns () colorwayNameJson1" + to_string(colorwayNameJson1));
-							string colorObjId = Helper::GetJSONValue<string>(colorwayNameJson1, "colorObjectId", true);
-							Logger::Debug("AddNewBom -> UpdateColorwayColumns () colorObjId" + colorObjId);
-							if (FormatHelper::HasContent(colorObjId))
+							
+							//sectionTabl
+							Logger::Debug("AddNewBom -> UpdateColorwayColumns () 2");
+							if (CreateProduct::GetInstance()->m_mappedColorways.contains(columnName))
 							{
-								//json dependentFieldJson = Helper::makeRestcallGet("csi-requesthandler/api/v2/color_specifications/", "&skip=0&limit=100", "" + colorId, "");
-								string resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_COLOR_API + "/" + colorObjId, APPLICATION_JSON_TYPE, "");
-								Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> resultResponse" + resultResponse);
-								json ColoreResultJson = json::parse(resultResponse);
-								Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> ColoreResultJson" + to_string(ColoreResultJson));
-								string rgbValue = Helper::GetJSONValue<string>(ColoreResultJson, RGB_VALUE_KEY, true);
-								string colorName = Helper::GetJSONValue<string>(ColoreResultJson, ATTRIBUTE_NAME, true);
-								Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> rgbValue" + rgbValue);
-
-								rgbValue = Helper::FindAndReplace(rgbValue, "(", "");
-								rgbValue = Helper::FindAndReplace(rgbValue, ")", "");
-								rgbValue = Helper::FindAndReplace(rgbValue, " ", "");
-								Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> 3");
-								if (FormatHelper::HasContent(rgbValue))
+								Logger::Debug("AddNewBom -> UpdateColorwayColumns () columnName" + columnName.toStdString());
+								auto colorwayJsonItr = m_colorwayMapForBom.find(matrialId.toStdString());
+								json colorwayJson = colorwayJsonItr->second;
+								Logger::Debug("AddNewBom -> UpdateColorwayColumns () colorwayJson" + to_string(colorwayJson));
+								string colorwayNameStr = Helper::GetJSONValue<string>(colorwayJson, columnName.toStdString(), false);
+								json colorwayNameJson1 = json::parse(colorwayNameStr);
+								Logger::Debug("AddNewBom -> UpdateColorwayColumns () colorwayNameJson1" + to_string(colorwayNameJson1));
+								string colorObjId = Helper::GetJSONValue<string>(colorwayNameJson1, "colorObjectId", true);
+								Logger::Debug("AddNewBom -> UpdateColorwayColumns () colorObjId" + colorObjId);
+								if (FormatHelper::HasContent(colorObjId))
 								{
-									QStringList listRGB;
-									QString colorRGB = QString::fromStdString(rgbValue);
-									listRGB = colorRGB.split(',');
-									int red = listRGB.at(0).toInt();
-									int green = listRGB.at(1).toInt();
-									int blue = listRGB.at(2).toInt();
-									QColor color(red, green, blue);
-									QImage image(20, 20, QImage::Format_ARGB32);
-									image.fill(color);
-									QPixmap pixmap;
-									Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> 4");
-									QLabel* label = new QLabel();
-									label->setToolTip(QString::fromStdString(colorName));
-									pixmap = QPixmap::fromImage(image);
-									label->setPixmap(QPixmap(pixmap));
-									Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> 5");
-									QWidget *pWidget = nullptr;
-									pWidget = CVWidgetGenerator::InsertWidgetInCenter(label);
-									Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> 6");
-									sectionTable->setCellWidget(rowCount, columnIndex, pWidget);
-									Logger::Debug("AddNewBom -> AddBomRows() -> 7");
-									//colorChip = true;
+									//json dependentFieldJson = Helper::makeRestcallGet("csi-requesthandler/api/v2/color_specifications/", "&skip=0&limit=100", "" + colorId, "");
+									string resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_COLOR_API + "/" + colorObjId, APPLICATION_JSON_TYPE, "");
+									Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> resultResponse" + resultResponse);
+									json ColoreResultJson = json::parse(resultResponse);
+									Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> ColoreResultJson" + to_string(ColoreResultJson));
+									string rgbValue = Helper::GetJSONValue<string>(ColoreResultJson, RGB_VALUE_KEY, true);
+									string colorName = Helper::GetJSONValue<string>(ColoreResultJson, ATTRIBUTE_NAME, true);
+									Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> rgbValue" + rgbValue);
+
+									rgbValue = Helper::FindAndReplace(rgbValue, "(", "");
+									rgbValue = Helper::FindAndReplace(rgbValue, ")", "");
+									rgbValue = Helper::FindAndReplace(rgbValue, " ", "");
+									Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> 3");
+									if (FormatHelper::HasContent(rgbValue))
+									{
+										QStringList listRGB;
+										QWidget* p_widget = new QWidget(sectionTable);
+										QGridLayout* gridLayout = new QGridLayout(sectionTable);
+										gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+										gridLayout->setContentsMargins(0, 0, 0, 0);
+										QString colorRGB = QString::fromStdString(rgbValue);
+										listRGB = colorRGB.split(',');
+										int red = listRGB.at(0).toInt();
+										int green = listRGB.at(1).toInt();
+										int blue = listRGB.at(2).toInt();
+										QColor color(red, green, blue);
+										QImage image(20, 20, QImage::Format_ARGB32);
+										image.fill(color);
+										QPixmap pixmap;
+										Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> 4");
+										QLabel* label = new QLabel();
+										label->setToolTip(QString::fromStdString(colorName));
+										pixmap = QPixmap::fromImage(image);
+										label->setPixmap(QPixmap(pixmap));
+										Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> 5");
+
+										QWidget *colorchip = nullptr;
+										colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
+										gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
+										QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
+										pushButton_2->setFixedHeight(20);
+										pushButton_2->setFixedWidth(20);
+										if (m_buttonSignalMapper != nullptr)
+										{
+											m_buttonSignalMapper->setProperty("TableName", tableName);
+											connect(pushButton_2, SIGNAL(clicked()), m_buttonSignalMapper, SLOT(map()));
+											//int number = rowCount * 10 + columnIndex;
+											m_buttonSignalMapper->setMapping(pushButton_2, QString("%1-%2").arg(rowCount).arg(columnIndex));
+											//m_buttonSignalMapper->setMapping(pushButton_2, number);
+										}
+										pushButton_2->setProperty("TableName", tableName);
+										gridLayout->addWidget(pushButton_2, 0, 1, 1, 1, Qt::AlignHCenter);
+										p_widget->setLayout(gridLayout);
+										sectionTable->setCellWidget(rowCount, columnIndex, p_widget);
+										Logger::Debug("AddNewBom -> AddBomRows() -> 7");
+										//colorChip = true;
+									}
 								}
 							}
-						}
 
+						}
+						else
+						{
+							if (CreateProduct::GetInstance()->m_mappedColorways.contains(columnName))
+							{
+								QWidget* p_widget = new QWidget(sectionTable);
+								QGridLayout* gridLayout = new QGridLayout(sectionTable);
+								gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+								gridLayout->setContentsMargins(0, 0, 0, 0);
+
+								QPixmap pixmap;
+								Logger::Debug("AddNewBom -> AddBomRows() -> 2");
+								QLabel* label = new QLabel();
+
+								QImage styleIcon;
+								QImageReader imageReader(":/CLOVise/PLM/Images/NoImage.png");
+								imageReader.setDecideFormatFromContent(true);
+								styleIcon = imageReader.read();
+								pixmap = QPixmap::fromImage(styleIcon);
+
+								label->setMaximumSize(QSize(20, 20));
+								int w = label->width();
+								int h = label->height();
+								label->setPixmap(QPixmap(pixmap.scaled(w, h, Qt::KeepAspectRatio)));
+								Logger::Debug("AddNewBom -> AddBomRows() -> 3");
+								QWidget *colorchip = nullptr;
+								colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
+
+								gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
+								QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
+								pushButton_2->setFixedHeight(20);
+								pushButton_2->setFixedWidth(20);
+								if (m_buttonSignalMapper != nullptr)
+								{
+									m_buttonSignalMapper->setProperty("TableName", tableName);
+									connect(pushButton_2, SIGNAL(clicked()), m_buttonSignalMapper, SLOT(map()));
+									//int number = rowCount * 10 + columnIndex;
+									m_buttonSignalMapper->setMapping(pushButton_2, QString("%1-%2").arg(rowCount).arg(columnIndex));
+									//m_buttonSignalMapper->setMapping(pushButton_2, number);
+								}
+								pushButton_2->setProperty("TableName", tableName);
+								gridLayout->addWidget(pushButton_2, 0, 1, 1, 1, Qt::AlignHCenter);
+								p_widget->setLayout(gridLayout);
+
+								Logger::Debug("AddNewBom -> AddBomRows() -> 10");
+								sectionTable->setCellWidget(rowCount, columnIndex, p_widget);
+							}
+						}
 					}
-				}
+				
 			}
 		}
 
 		Logger::Debug("AddNewBom -> UpdateColorwayColumns () End");
 	}
 
-	void AddNewBom::OnClickAddColorButton(int number)
+	void AddNewBom::OnClickAddColorButton(const QString &position)
 	{
 		Logger::Debug("AddNewBom -> OnClickUpdateColorButton () Start");
 		CreateProduct::GetInstance()->hide();
 		QSignalMapper* button = (QSignalMapper*)sender();
-		Logger::Debug("AddNewBom -> OnClickUpdateColorButton () number" + to_string(number));
-		int row, column;
-		if (number < 10)
-		{
-			if (number == 0)
-			{
-				row = 0;
-				column = 0;
-			}
-			else
-			{
-				row = 0;
-				column = number;
-			}
-		}
-		else
-		{
-			row = number / 10;
-			column = number % 10;
-		}
+		Logger::Debug("AddNewBom -> OnClickUpdateColorButton () string" + position.toStdString());
+		QStringList coordinates = position.split("-");
+		int row = coordinates[0].toInt();
+		int col = coordinates[1].toInt();
+		//int row, column;
+		//if (number < 10)
+		//{
+		//	if (number == 0)
+		//	{
+		//		row = 0;
+		//		column = 0;
+		//	}
+		//	else
+		//	{
+		//		row = 0;
+		//		column = number;
+		//	}
+		//}
+		//else
+		//{
+		//	row = number / 10;
+		//	column = number % 10;
+		//}
 		Logger::Debug("AddNewBom -> OnClickUpdateColorButton () row" + to_string(row));
-		Logger::Debug("AddNewBom -> OnClickUpdateColorButton () column" + to_string(column));
+		Logger::Debug("AddNewBom -> OnClickUpdateColorButton () column" + to_string(col));
 
 		m_currentTableName = button->property("TableName").toString().toStdString();
 		m_currentRow = row;
-		m_currentColumn = column;
+		m_currentColumn = col;
 		Logger::Debug("AddNewBom -> OnClickUpdateColorButton () tableName" + m_currentTableName);
 		//Configuration::GetInstance()->SetIsUpdateColorClicked(true);
 	//	m_selectedRow = i;
@@ -1248,5 +1415,113 @@ namespace CLOVise
 		}
 		Logger::Debug("AddNewBom -> OnClickDeleteButton () End");
 	}
+	void AddNewBom::OnHandleDropDownValue(const QString& _item)
+	{
 
+		try
+		{
+			Logger::Debug("Create product OnHandleDropDownValue() Start");
+			map<string, string>::iterator it;
+			map < string, string> nameIdMap;
+			string id;
+
+			QString labelName = sender()->property("LabelName").toString();
+			string Id = sender()->property(_item.toStdString().c_str()).toString().toStdString();
+			string apiUrl = "";
+			QString comboboxtofill = "";
+
+			Logger::Debug("CreateProduct -> OnHandleDropDownValue() Id: " + Id);
+			Logger::Debug("CreateProduct -> OnHandleDropDownValue() LabelName: " + labelName.toStdString());
+			string progressbarText;
+			Logger::Debug("PublishToPLMData -> OnHandleDropDownValue() _item: " + _item.toStdString());
+			if (!_item.isEmpty())
+			{
+				string subtypeId;
+					for (int i = 0; i < m_bomTemplateJson.size(); i++)
+					{
+						json attJson = Helper::GetJSONParsedValue<int>(m_bomTemplateJson, i, false);;///use new method
+						
+						string attId = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_ID, true);
+						if (attId == Id)
+						{
+							Logger::Debug("CreateProduct -> OnHandleDropDownValue() attId: " + attId);
+							subtypeId = Helper::GetJSONValue<string>(attJson, "subtype", true);
+							Logger::Debug("CreateProduct -> OnHandleDropDownValue() subtype: " + subtypeId);
+							break;
+						}
+					}
+
+
+					for (int itemIndex = 0; itemIndex < m_createBomTreeWidget->topLevelItemCount(); ++itemIndex)
+					{
+						QTreeWidgetItem* topItem = m_createBomTreeWidget->topLevelItem(itemIndex);
+						QWidget* qWidgetColumn_0 = m_createBomTreeWidget->itemWidget(topItem, 0);
+						QWidget* qWidgetColumn_1 = m_createBomTreeWidget->itemWidget(topItem, 1);
+						if (!qWidgetColumn_0 || !qWidgetColumn_1)
+						{
+							continue;
+						}
+						QLabel* qlabel = qobject_cast<QLabel*>(qWidgetColumn_0);
+						QString lableText = qlabel->property(ATTRIBUTE_KEY.c_str()).toString();
+
+						Logger::Debug("PublishToPLMData -> OnHandleDropDownValue() Label text: " + (lableText.toStdString()));
+
+							ComboBoxItem* qComboBox = qobject_cast<ComboBoxItem*>(qWidgetColumn_1);
+							if ((qComboBox))
+							{
+								if (lableText == "subtype")
+								{
+									QString subtypeValue;
+									if(!subtypeId.empty())
+									 subtypeValue = qComboBox->property(subtypeId.c_str()).toString();
+
+									int valueIndex = qComboBox->findText(subtypeValue);
+									Logger::Debug("PublishToPLMData -> OnHandleDropDownValue() valueIndex: " + to_string(valueIndex));
+
+									if (valueIndex == -1) // -1 for not found
+									{
+										int index = qComboBox->findText(QString::fromStdString(BLANK));
+										qComboBox->setCurrentIndex(index);
+									}
+									else
+									{
+										qComboBox->setCurrentIndex(valueIndex);
+									}
+									break;
+								}
+								
+								
+							}
+						}
+					}
+
+
+
+			UTILITY_API->DeleteProgressBar(true);
+		}
+		catch (string msg)
+		{
+			UTILITY_API->DeleteProgressBar(true);
+			Logger::Error("Create product OnHandleDropDownValue()-> Exception string:: " + msg);
+			UTILITY_API->DisplayMessageBox(msg);
+			this->show();
+		}
+		catch (exception& e)
+		{
+			UTILITY_API->DeleteProgressBar(true);
+			Logger::Error("Create product OnHandleDropDownValue()-> Exception e:: " + string(e.what()));
+			UTILITY_API->DisplayMessageBox(e.what());
+			this->show();
+		}
+		catch (const char* msg)
+		{
+			UTILITY_API->DeleteProgressBar(true);
+			Logger::Error("Create product OnHandleDropDownValue()-> Exception char:: " + string(msg));
+			wstring wstr(msg, msg + strlen(msg));
+			UTILITY_API->DisplayMessageBoxW(wstr);
+			this->show();
+		}
+
+		Logger::Debug("Create product OnHandleDropDownValue() End");
+	}
 }
