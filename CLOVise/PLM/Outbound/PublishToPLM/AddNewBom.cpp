@@ -381,12 +381,12 @@ namespace CLOVise
 					
 						if (internalName == "bom_template")
 						{
-							responseJson = Helper::makeRestcallGet(RESTAPI::BOM_TEMPLATE_API, "?is_template=true&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading season details..");
+							responseJson = Helper::makeRestcallGet(RESTAPI::BOM_TEMPLATE_API, "?is_template=true&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading template details..");
 							m_bomTemplateJson = responseJson;
 						}
 					else if (internalName == "subtype")
 					{
-						responseJson = Helper::makeRestcallGet(RESTAPI::APPAREL_BOM_SUBTYPE_API, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading season details..");
+						responseJson = Helper::makeRestcallGet(RESTAPI::APPAREL_BOM_SUBTYPE_API, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading subtype details..");
 					}
 					else if (attributeName == "Style Type")
 					{
@@ -400,21 +400,20 @@ namespace CLOVise
 						attId = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_ID, true);
 						Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON attId: " + attId);
 						valueList.append(QString::fromStdString(attName));
-						m_subTypeNameIdMap.insert(make_pair(attName, attId));
+						//m_subTypeNameIdMap.insert(make_pair(attName, attId));
 						//m_styleTypeNameIdMap.insert(make_pair(attName, attId));
 						comboBox->setProperty(attName.c_str(), QString::fromStdString(attId));
 						comboBox->setProperty(attId.c_str(), QString::fromStdString(attName));
 					}
 				}
-
+				QObject::connect(comboBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(OnHandleDropDownValue(const QString&)));
+				comboBox->setStyleSheet(COMBOBOX_STYLE);
 				if (!isEditable)
 				{
 					comboBox->setDisabled(true);
 					comboBox->setStyleSheet(DISABLED_COMBOBOX_STYLE);
 				}
-				comboBox->setProperty("attName", QString::fromStdString(attributeName));
-
-				comboBox->setStyleSheet(COMBOBOX_STYLE);
+				comboBox->setProperty("attName", QString::fromStdString(attributeName));			
 				m_TreeWidget->addTopLevelItem(topLevel);
 				m_TreeWidget->setItemWidget(topLevel, 0, CVWidgetGenerator::CreateLabelWidget(attributeDisplayName, internalName, "", required, !isEditable));
 				m_TreeWidget->setItemWidget(topLevel, 1, comboBox);
@@ -435,6 +434,7 @@ namespace CLOVise
 				{
 					comboBox->setCurrentIndex(valueIndex);
 				}
+				
 				comboBox->setProperty("LabelName", QString::fromStdString(attributeName));
 				if (comboBox->isEnabled())
 				{
@@ -445,7 +445,7 @@ namespace CLOVise
 					m_nameCompleter->setCaseSensitivity(Qt::CaseInsensitive);
 					comboBox->setCompleter(m_nameCompleter);
 				}
-				QObject::connect(comboBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(OnHandleDropDownValue(const QString&)));
+				
 				Logger::Debug("AddNewBom drawWidget() ref  End....");
 
 			}
@@ -488,43 +488,76 @@ namespace CLOVise
 	{
 		Logger::Debug("AddNewBom onCreateButtonClicked() Start....");
 		
-		QTreeWidget *tree = new QTreeWidget();
-		m_BomMetaData = CreateProduct::GetInstance()->collectCriteriaFields(m_createBomTreeWidget, tree);
-		string bomName = Helper::GetJSONValue<string>(m_BomMetaData, "node_name", true);
-		string bomTemplateId = Helper::GetJSONValue<string>(m_BomMetaData, "bom_template", true);
-		string latestRevision;
-		CreateTableforEachSection();
-		//for (int i = 0; i < m_bomTemplateJson.size(); i++)
-		//{
-		//	json attJson = Helper::GetJSONParsedValue<int>(m_bomTemplateJson, i, false);;///use new method
-		//	//attName = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_NAME, true);
-		//	//Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON attName: " + attName);
-		//	string attId = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_ID, true);
-		//	Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON attId: " + attId);
-		//	if(attId== bomTemplateId)
-		//	{
-		//		latestRevision = Helper::GetJSONValue<string>(attJson, "latest_revision", true);
-		//		break;
-		//	}
-		//}
-		//if (!latestRevision.empty())
+		try
+		{
+			QTreeWidget *tree = new QTreeWidget();
+			UIHelper::ValidateRquired3DModelData(m_createBomTreeWidget);
+			m_BomMetaData = CreateProduct::GetInstance()->collectCriteriaFields(m_createBomTreeWidget, tree);
+			string bomName = Helper::GetJSONValue<string>(m_BomMetaData, "node_name", true);
+			string bomTemplateId = Helper::GetJSONValue<string>(m_BomMetaData, "bom_template", true);
+			string latestRevision;
+			//CreateTableforEachSection();
+			for (int i = 0; i < m_bomTemplateJson.size(); i++)
+			{
+				json attJson = Helper::GetJSONParsedValue<int>(m_bomTemplateJson, i, false);;///use new method
+				//attName = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_NAME, true);
+				//Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON attName: " + attName);
+				string attId = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_ID, true);
+				Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON attId: " + attId);
+				if(attId== bomTemplateId)
+				{
+					latestRevision = Helper::GetJSONValue<string>(attJson, "latest_revision", true);
+					break;
+				}
+			}
+			if (!latestRevision.empty())
 
-		//{
-		//	json responseJson = Helper::makeRestcallGet(RESTAPI::BOM_REVISION_API + "/" + latestRevision, "", "", "");
+			{
+				json responseJson = Helper::makeRestcallGet(RESTAPI::BOM_REVISION_API + "/" + latestRevision, "", "", "");
+			json sectionIdsjson = Helper::GetJSONValue<string>(responseJson, "all_sections", true);
+				CreateTableforEachSection(sectionIdsjson);
+			}
 
-		//	CreateTableforEachSection();
-		//}
+			UTILITY_API->DisplayMessageBox("m_BomMetaData"+ to_string(m_BomMetaData));
+			CreateProduct::GetInstance()->m_bomAddButton->setDisabled(true);
+			CreateProduct::GetInstance()->m_bomName->setText(QString::fromStdString(bomName));
+			this->hide();
+			CreateProduct::GetInstance()->setModal(true);
+			CreateProduct::GetInstance()->show();
+		}
+		catch (exception& e)
+		{
+			RESTAPI::SetProgressBarData(0, "", false);
+			Logger::Error("AddNewBom-> AddNewBom Exception - " + string(e.what()));
+			UTILITY_API->DisplayMessageBox(e.what());
+			//Helper::RemoveDirectory(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_TEMP_DIRECTORY));
+			//dir.mkpath(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_TEMP_DIRECTORY));
 
-		//UTILITY_API->DisplayMessageBox("m_BomMetaData"+ to_string(m_BomMetaData));
-		CreateProduct::GetInstance()->m_bomAddButton->setDisabled(true);
-		CreateProduct::GetInstance()->m_bomName->setText(QString::fromStdString(bomName));
-		this->hide();
-		CreateProduct::GetInstance()->setModal(true);
-		CreateProduct::GetInstance()->show();
+			this->show();
+		}
+		catch (const char* msg)
+		{
+			Logger::Error("AddNewBom-> AddNewBom Exception - " + string(msg));
+			wstring wstr(msg, msg + strlen(msg));
+			RESTAPI::SetProgressBarData(0, "", false);
+			UTILITY_API->DisplayMessageBoxW(wstr);
+			this->show();
+		}
+		catch (string str)
+		{
+			RESTAPI::SetProgressBarData(0, "", false);
+			Logger::Error("Create product-> Create product Exception - " + str);
+			UTILITY_API->DisplayMessageBox(str);
+			//Helper::RemoveDirectory(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_TEMP_DIRECTORY));
+			//dir.mkpath(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_TEMP_DIRECTORY));
+
+			this->show();
+		}
+
 		Logger::Debug("AddNewBom onCreateButtonClicked() End....");
 	}
 
-	void AddNewBom::CreateTableforEachSection()
+	void AddNewBom::CreateTableforEachSection(json _sectionIdJson)
 	{
 		Logger::Debug("AddNewBom CreateTableforEachSection Start: ");
 
@@ -1421,21 +1454,23 @@ namespace CLOVise
 		try
 		{
 			Logger::Debug("Create product OnHandleDropDownValue() Start");
-			map<string, string>::iterator it;
-			map < string, string> nameIdMap;
-			string id;
-
-			QString labelName = sender()->property("LabelName").toString();
-			string Id = sender()->property(_item.toStdString().c_str()).toString().toStdString();
-			string apiUrl = "";
-			QString comboboxtofill = "";
-
-			Logger::Debug("CreateProduct -> OnHandleDropDownValue() Id: " + Id);
-			Logger::Debug("CreateProduct -> OnHandleDropDownValue() LabelName: " + labelName.toStdString());
-			string progressbarText;
-			Logger::Debug("PublishToPLMData -> OnHandleDropDownValue() _item: " + _item.toStdString());
+			
 			if (!_item.isEmpty())
 			{
+				map<string, string>::iterator it;
+				map < string, string> nameIdMap;
+				string id;
+
+				QString labelName = sender()->property("LabelName").toString();
+				string Id = sender()->property(_item.toStdString().c_str()).toString().toStdString();
+				string apiUrl = "";
+				QString comboboxtofill = "";
+
+				Logger::Debug("CreateProduct -> OnHandleDropDownValue() Id: " + Id);
+				Logger::Debug("CreateProduct -> OnHandleDropDownValue() LabelName: " + labelName.toStdString());
+				string progressbarText;
+				Logger::Debug("PublishToPLMData -> OnHandleDropDownValue() _item: " + _item.toStdString());
+
 				string subtypeId;
 					for (int i = 0; i < m_bomTemplateJson.size(); i++)
 					{
@@ -1469,7 +1504,7 @@ namespace CLOVise
 							ComboBoxItem* qComboBox = qobject_cast<ComboBoxItem*>(qWidgetColumn_1);
 							if ((qComboBox))
 							{
-								if (lableText == "subtype")
+								if (labelName.contains("Template") && lableText.contains("subtype"))
 								{
 									QString subtypeValue;
 									if(!subtypeId.empty())

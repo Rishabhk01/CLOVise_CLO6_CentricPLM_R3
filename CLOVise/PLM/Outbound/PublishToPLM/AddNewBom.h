@@ -41,7 +41,7 @@ namespace CLOVise
 		static void	Destroy();
 		//void getFabricTrimDetails(stringstream& _ssBOMDetails);
 		void getMaterialDetails(string _str, json _techPackJson, bool _flag, QTableWidget* _sectionTable,QString _tableName, bool _isFabric);
-		void CreateTableforEachSection();
+		void CreateTableforEachSection(json _sectionIdJson);
 		void AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString _tableName);
 		void getColorInfo(json _FabricJson, json& rowDataJson, string _materailId, bool _isFabric);
 		void UpdateColorwayColumns();
