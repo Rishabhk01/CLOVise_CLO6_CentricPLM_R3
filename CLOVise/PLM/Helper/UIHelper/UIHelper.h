@@ -1192,7 +1192,7 @@ namespace UIHelper
 							attachemntRevisionApi = Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::ATTACHMENTS_LATEST_REVISION_RESULTS_API + objectId + "?revision_details=true";
 						}
 						auto latestStartTime = std::chrono::high_resolution_clock::now();						
-						string attachmentResponse = RESTAPI::CentricRestCallGet(attachemntRevisionApi, APPLICATION_JSON_TYPE, "");
+						string attachmentResponse = RESTAPI::CentricRestCallGet(attachemntRevisionApi + "&decode=true", APPLICATION_JSON_TYPE, "");
 						auto latestVersionApiFinishTime = std::chrono::high_resolution_clock::now();
 						std::chrono::duration<double> latestVersionApiTotalDuration = latestVersionApiFinishTime - latestStartTime;
 						Logger::perfomance(PERFOMANCE_KEY + "Documents Revisions API :: " + to_string(latestVersionApiTotalDuration.count()));
@@ -1796,7 +1796,7 @@ namespace UIHelper
 		std::map<string, string> displayNameInternalNameMap;
 		try
 		{
-			string enumListIdResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ENUM_ATT_API + "?skip=0&limit=1000&node_name=" + _format, APPLICATION_JSON_TYPE, "");
+			string enumListIdResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ENUM_ATT_API + "?skip=0&limit=1000&decode=true&node_name=" + _format, APPLICATION_JSON_TYPE, "");
 
 			if (FormatHelper::HasError(enumListIdResponse))
 			{
@@ -1810,7 +1810,7 @@ namespace UIHelper
 			json enumListIdResponseJson = json::parse(enumListIdResponse);
 			string enumListId = Helper::GetJSONValue<string>(enumListIdResponseJson[0], ATTRIBUTE_ID, true);
 			auto EnumListsApiStartTime = std::chrono::high_resolution_clock::now();
-			string enumListResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ENUM_ATT_API + "/" + enumListId + "/values?skip=0&limit=1000", APPLICATION_JSON_TYPE, "");
+			string enumListResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ENUM_ATT_API + "/" + enumListId + "/values?skip=0&limit=1000&decode=true" , APPLICATION_JSON_TYPE, "");
 
 			if (FormatHelper::HasError(enumListResponse))
 			{
@@ -1874,7 +1874,7 @@ namespace UIHelper
 		
 		try
 		{
-			string enumListIdResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ENUM_ATT_API + "?skip=0&limit=1000&node_name=" + _format, APPLICATION_JSON_TYPE, "");
+			string enumListIdResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ENUM_ATT_API + "?skip=0&limit=1000&decode=true&node_name=" + _format, APPLICATION_JSON_TYPE, "");
 
 			if (FormatHelper::HasError(enumListIdResponse))
 			{
@@ -1888,7 +1888,7 @@ namespace UIHelper
 			json enumListIdResponseJson = json::parse(enumListIdResponse);
 			string enumListId = Helper::GetJSONValue<string>(enumListIdResponseJson[0], ATTRIBUTE_ID, true);
 			auto EnumListsApiStartTime = std::chrono::high_resolution_clock::now();
-			string enumListResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ENUM_ATT_API + "/" + enumListId + "/values?skip=0&limit=1000", APPLICATION_JSON_TYPE, "");
+			string enumListResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ENUM_ATT_API + "/" + enumListId + "/values?skip=0&limit=1000&decode=true", APPLICATION_JSON_TYPE, "");
 
 			if (FormatHelper::HasError(enumListResponse))
 			{
@@ -1957,7 +1957,7 @@ namespace UIHelper
 
 			string image_labels_enum_list = Helper::GetJSONValue<string>(ImageLabelJson[0], "image_labels_enum_list", true);
 			//UTILITY_API->DisplayMessageBox(" imageLabelList3: " + image_labels_enum_list);
-			string labelsResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::IMAGE_LABELS_ENUMLIST_API + "/" + image_labels_enum_list + "/values?skip=0&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), APPLICATION_JSON_TYPE, "");
+			string labelsResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::IMAGE_LABELS_ENUMLIST_API + "/" + image_labels_enum_list + "/values?skip=0&decode=true&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), APPLICATION_JSON_TYPE, "");
 
 			if (FormatHelper::HasError(labelsResponse))
 			{
@@ -2010,7 +2010,7 @@ namespace UIHelper
 			Configuration::GetInstance()->SetProgressBarProgress(0);
 			Configuration::GetInstance()->SetProgressBarProgress(qrand() % 101);
 			RESTAPI::SetProgressBarData(Configuration::GetInstance()->GetProgressBarProgress(), "Loading Division Values..", true);
-			string refApi = Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::COLLECTION_SEARCH_API + "?skip=0&limit=1000&parent_season=" + _seasonId;
+			string refApi = Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::COLLECTION_SEARCH_API + "?skip=0&limit=1000&decode=true&parent_season=" + _seasonId;
 			string refListResponse = RESTAPI::CentricRestCallGet(refApi, APPLICATION_JSON_TYPE, "");
 			Configuration::GetInstance()->SetProgressBarProgress(RESTAPI::SetProgressBarProgress(Configuration::GetInstance()->GetProgressBarProgress(), 10, "Loading Division Values.."));
 			if (FormatHelper::HasError(refListResponse))

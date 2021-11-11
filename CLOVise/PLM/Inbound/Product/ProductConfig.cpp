@@ -933,7 +933,7 @@ void ProductConfig::GetEnumlistJson(string _restApi, json& _attributeJson)
 void ProductConfig::SetProductConfigJSON()
 {
 	auto startTime = std::chrono::high_resolution_clock::now();
-	string initialConfigJsonString = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ATT_API, APPLICATION_JSON_TYPE, "skip=0&limit=10&node_name=Style");
+	string initialConfigJsonString = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ATT_API, APPLICATION_JSON_TYPE, "skip=0&limit=10&decode=true&node_name=Style");
 	auto finishTime = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> totalDuration = finishTime - startTime;
 	Logger::perfomance(PERFOMANCE_KEY + "Library Item, Material API :: " + to_string(totalDuration.count()));
@@ -1089,7 +1089,7 @@ void ProductConfig::SetCopyStyleResult(string _copyResult)
 		
 		if (m_seasonValuesJson.empty())
 		{
-			seasonResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEASON_SEARCH_API + "?", APPLICATION_JSON_TYPE, "&limit="+ Configuration::GetInstance()->GetMaximumLimitForRefAttValue() +"&sort=node_name");
+			seasonResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEASON_SEARCH_API + "?", APPLICATION_JSON_TYPE, "&decode=true&limit="+ Configuration::GetInstance()->GetMaximumLimitForRefAttValue() +"&sort=node_name");
 			auto mTypefinishTime = std::chrono::high_resolution_clock::now();
 			std::chrono::duration<double> mTypetotalDuration = mTypefinishTime - mTypestartTime;
 			Logger::perfomance(PERFOMANCE_KEY + "Style seasons API :: " + to_string(mTypetotalDuration.count()));
@@ -1215,7 +1215,7 @@ void ProductConfig::SetDataFromResponse(json _param)
 
 		auto startTime = std::chrono::high_resolution_clock::now();
 		Logger::Logger("Search Results API 1:: " + Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_STYLE_API + "s?");
-		resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_STYLE_API + "s?", APPLICATION_JSON_TYPE, parameter + "&limit=" + ProductConfig::GetInstance()->GetMaximumLimitForStyleResult());
+		resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_STYLE_API + "s?", APPLICATION_JSON_TYPE, parameter + "&decode=true&limit=" + ProductConfig::GetInstance()->GetMaximumLimitForStyleResult());
 		auto finishTime = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> totalDuration = finishTime - startTime;
 		Logger::perfomance(PERFOMANCE_KEY + "Search Results API :: " + to_string(totalDuration.count()));
@@ -1237,7 +1237,7 @@ void ProductConfig::SetDataFromResponse(json _param)
 		Logger::Logger("total count of result::" + to_string(styleResults.size()));
 
 		auto mTypestartTime = std::chrono::high_resolution_clock::now();
-		string seasonResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEASON_SEARCH_API + "?", APPLICATION_JSON_TYPE, "&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue() + "&sort=node_name");
+		string seasonResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEASON_SEARCH_API + "?", APPLICATION_JSON_TYPE, "&decode=true&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue() + "&sort=node_name");
 		auto mTypefinishTime = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> mTypetotalDuration = mTypefinishTime - mTypestartTime;
 		Logger::perfomance(PERFOMANCE_KEY + "Style seasons API :: " + to_string(mTypetotalDuration.count()));

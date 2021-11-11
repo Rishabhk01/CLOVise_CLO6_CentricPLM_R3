@@ -210,6 +210,7 @@ namespace RESTAPI
 	static string CentricRestCallGet(string _url, string _contentType, string _parameter)
 	{
 		Logger::Info("RestAPI::CentricRestCallGet() Started...");
+		//_url = _url + "&decode=true"; //appending decode=true to get decoded response from centric
 		string response;
 		CURL* curl;
 		FILE* fp = nullptr;;

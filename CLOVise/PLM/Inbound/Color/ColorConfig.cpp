@@ -513,7 +513,7 @@ void ColorConfig::SetColorConfigJSON()
 	try
 	{
 		auto startTime = std::chrono::high_resolution_clock::now();
-		string initialConfigJsonString = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ATT_API, APPLICATION_JSON_TYPE, "skip=0&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue() + "&node_name=Library Item, Color Specification");
+		string initialConfigJsonString = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ATT_API, APPLICATION_JSON_TYPE, "skip=0&decode=true&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue() + "&node_name=Library Item, Color Specification");
 		auto finishTime = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> totalDuration = finishTime - startTime;
 		Logger::perfomance(PERFOMANCE_KEY + "Library Item, Color Specification API :: " + to_string(totalDuration.count()));
@@ -727,11 +727,11 @@ void ColorConfig::SetDataFromResponse(json _param)
 				}
 			}
 			if (isLibrarySearch) {
-				resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::COLOR_SEARCH_API_LIB + "/" + matLibValue + "/elements?", APPLICATION_JSON_TYPE, parameter + "&limit=" + ColorConfig::GetInstance()->GetMaximumLimitForColorResult());
+				resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::COLOR_SEARCH_API_LIB + "/" + matLibValue + "/elements?", APPLICATION_JSON_TYPE, parameter + "&decode=true&limit=" + ColorConfig::GetInstance()->GetMaximumLimitForColorResult());
 			}
 			else {
 				auto startTime = std::chrono::high_resolution_clock::now();
-				resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_COLOR_API + "?", APPLICATION_JSON_TYPE, parameter + "&limit=" + ColorConfig::GetInstance()->GetMaximumLimitForColorResult());
+				resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_COLOR_API + "?", APPLICATION_JSON_TYPE, parameter + "&decode=true&limit=" + ColorConfig::GetInstance()->GetMaximumLimitForColorResult());
 				auto finishTime = std::chrono::high_resolution_clock::now();
 				std::chrono::duration<double> totalDuration = finishTime - startTime;
 				Logger::perfomance(PERFOMANCE_KEY + "Search Results API :: " + to_string(totalDuration.count()));

@@ -1223,7 +1223,7 @@ namespace CLOVise
 		string latestRevision = "";
 		try
 		{
-			string attachmentResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::ATTACHMENTS_LATEST_REVISION_RESULTS_API + _materialId + "?revision_details=true", APPLICATION_JSON_TYPE, "");
+			string attachmentResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::ATTACHMENTS_LATEST_REVISION_RESULTS_API + _materialId + "?revision_details=true&decode=true", APPLICATION_JSON_TYPE, "");
 			if (FormatHelper::HasError(attachmentResponse))
 			{
 				Helper::GetCentricErrorMessage(attachmentResponse);
