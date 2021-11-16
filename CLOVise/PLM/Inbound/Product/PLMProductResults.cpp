@@ -1170,7 +1170,7 @@ namespace CLOVise
 					aditionalResultWidget->clear();
 
 					Logger::Debug("_selectedIdList.contains(QString::fromStdString(styleId)" + styleId);
-					string attachmentResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::ATTACHMENTS_LATEST_REVISION_RESULTS_API + styleId + "?revision_details=true&limit=100&file_ext=" + ZPRJ, APPLICATION_JSON_TYPE, "");
+					string attachmentResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::ATTACHMENTS_LATEST_REVISION_RESULTS_API + styleId + "?revision_details=true&limit=100&decode=true&file_ext=" + ZPRJ, APPLICATION_JSON_TYPE, "");
 					//json documentjson = Helper::GetJSONParsedValue<string>(m_productResults[selctedIdCount], "documents", false);
 					Logger::RestAPIDebug("_selectedIdList.contains(QString::fromStdString(styleId)::documentjson::" + attachmentResponse);
 					if (FormatHelper::HasError(attachmentResponse))

@@ -378,7 +378,7 @@ string ColorConfig::GetThumbnailUrl(string _objectId)
 	try 
 	{
 		json imageResultJson = json::object();
-		string resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_COLOR_API + "/" + _objectId + "/images", APPLICATION_JSON_TYPE, "");
+		string resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_COLOR_API + "/" + _objectId + "/images?decode=true", APPLICATION_JSON_TYPE, "");
 		Logger::RestAPIDebug("resultResponse::" + resultResponse);
 		if (FormatHelper::HasError(resultResponse))
 		{

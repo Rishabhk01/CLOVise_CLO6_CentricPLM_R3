@@ -409,7 +409,7 @@ string MaterialConfig::GetThumbnailUrl(string _objectId)
 	{
 		json imageResultJson = json::object();
 		auto startTime = std::chrono::high_resolution_clock::now();
-		string resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_MATERIAL_API + "/" + _objectId + "/images", APPLICATION_JSON_TYPE, "");
+		string resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_MATERIAL_API + "/" + _objectId + "/images?decode=true", APPLICATION_JSON_TYPE, "");
 		auto finishTime = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> totalDuration = finishTime - startTime;
 		Logger::perfomance(PERFOMANCE_KEY + "Material images API :: " + to_string(totalDuration.count()));

@@ -1852,7 +1852,7 @@ namespace CLOVise
 			{
 				if (lableText == "Copy Template")
 				{
-					string enumListResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::STYLE_COPY_OPTION_API + "?root_sub_type_name=Apparel", APPLICATION_JSON_TYPE, "");
+					string enumListResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::STYLE_COPY_OPTION_API + "?decode-true&root_sub_type_name=Apparel", APPLICATION_JSON_TYPE, "");
 					Logger::RestAPIDebug("enumListResponse::" + enumListResponse);
 
 					json response = json::parse(enumListResponse);
@@ -1935,7 +1935,7 @@ namespace CLOVise
 			{
 				if (lableText == "Copy Template")
 				{
-					string enumListResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::STYLE_COPY_OPTION_API + "?root_sub_type_name=Apparel", APPLICATION_JSON_TYPE, "");
+					string enumListResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::STYLE_COPY_OPTION_API + "?decode=true&root_sub_type_name=Apparel", APPLICATION_JSON_TYPE, "");
 					Logger::RestAPIDebug("enumListResponse::" + enumListResponse);
 
 					json response = json::parse(enumListResponse);
