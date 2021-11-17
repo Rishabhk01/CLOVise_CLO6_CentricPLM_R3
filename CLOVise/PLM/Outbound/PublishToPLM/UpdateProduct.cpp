@@ -3479,9 +3479,9 @@ namespace CLOVise
 			Logger::Debug("_selectedIdList.contains(QString::fromStdString(_selectedColorwayId)" + _id);
 			string attachmentResponse;
 			if (_module == "colorway")
-				attachmentResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::COLORWAY_API + "/" + _id + "/images?skip=0&limit=1000", APPLICATION_JSON_TYPE, "");
+				attachmentResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::COLORWAY_API + "/" + _id + "/images?skip=0&limit=1000&decode=true", APPLICATION_JSON_TYPE, "");
 			if (_module == "style")
-				attachmentResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::STYLE_ENDPOINT_API + "/" + _id + "/images?skip=0&limit=1000", APPLICATION_JSON_TYPE, "");
+				attachmentResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::STYLE_ENDPOINT_API + "/" + _id + "/images?skip=0&limit=1000&decode=true", APPLICATION_JSON_TYPE, "");
 			Logger::Debug("UpdateProduct -> drawColorwayImageList() -> attachmentResponse" + attachmentResponse);
 
 			if (FormatHelper::HasError(attachmentResponse))

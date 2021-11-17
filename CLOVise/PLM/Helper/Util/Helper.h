@@ -1336,6 +1336,7 @@ namespace Helper
 	{
 		Logger::Debug("UiHelper drawWidget() _attName == Season");
 		Logger::Debug("UiHelper drawWidget() API: " + _api);
+		//_api = _api + "&decode=true"; //appending decode=true to get decoded response from centric
 		vector<pair<string, string>> headerNameAndValueList;
 		headerNameAndValueList.push_back(make_pair("content-Type", "application/json"));
 		headerNameAndValueList.push_back(make_pair("Cookie", Configuration::GetInstance()->GetBearerToken()));

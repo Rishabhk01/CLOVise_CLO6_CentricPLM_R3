@@ -57,7 +57,7 @@ namespace RESTAPI
 	const string SEARCH_ENUM_ATT_API = "/csi-requesthandler/api/v2/enum_lists";
 	const string SEARCH_ENUM_LOCAL_ATT_API = "/csi-requesthandler/api/v2/localization/enum_lists";
 	const string SEARCH_ATT_DEFINITION_API = "/csi-requesthandler/api/v2/create_form_definitions/";
-	const string SEARCH_ATT_DEFINITION_ADDITIONAL_API = "/configurable_attributes?skip=0&limit=1000";
+	const string SEARCH_ATT_DEFINITION_ADDITIONAL_API = "/configurable_attributes?skip=0&limit=1000&decode=true";
 	const string SEASON_SEARCH_API = "/csi-requesthandler/api/v2/seasons";
 	const string SHAPE_API = "/csi-requesthandler/api/v2/shapes";
 	const string THEME_API = "/csi-requesthandler/api/v2/themes";
@@ -211,6 +211,7 @@ namespace RESTAPI
 	static string CentricRestCallGet(string _url, string _contentType, string _parameter)
 	{
 		Logger::Info("RestAPI::CentricRestCallGet() Started...");
+		//_url = _url + "&decode=true"; //appending decode=true to get decoded response from centric
 		string response;
 		CURL* curl;
 		FILE* fp = nullptr;;

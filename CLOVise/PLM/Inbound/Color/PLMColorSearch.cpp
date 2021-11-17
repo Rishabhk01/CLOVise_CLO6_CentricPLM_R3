@@ -149,7 +149,7 @@ namespace CLOVise
 
 		m_seasonLabel->hide();
 		m_paletteLabel->hide();
-		m_seasoncomboBox->hide();
+		m_seasoncomboBox->hide(); 
 		m_paletteComboBox->hide();
 		quickSearchHeaderLabel->hide();
 

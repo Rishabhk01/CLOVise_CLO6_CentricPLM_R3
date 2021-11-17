@@ -385,7 +385,7 @@ string PrintConfig::GetThumbnailUrl(string _objectId)
 	try 
 	{
 		json imageResultJson = json::object();
-		string resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_COLOR_API + "/" + _objectId + "/images", APPLICATION_JSON_TYPE, "");
+		string resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_COLOR_API + "/" + _objectId + "/images?decode=true", APPLICATION_JSON_TYPE, "");
 		Logger::RestAPIDebug("resultResponse::" + resultResponse);
 		if (FormatHelper::HasError(resultResponse))
 		{
@@ -527,7 +527,7 @@ void PrintConfig::SetPrintConfigJSON()
 	try
 	{
 		auto startTime = std::chrono::high_resolution_clock::now();
-		string initialConfigJsonString = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ATT_API, APPLICATION_JSON_TYPE, "skip=0&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue() + "&node_name=PrintDesignColor");
+		string initialConfigJsonString = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ATT_API, APPLICATION_JSON_TYPE, "skip=0&decode=true&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue() + "&node_name=PrintDesignColor");
 		auto finishTime = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> totalDuration = finishTime - startTime;
 		Logger::perfomance(PERFOMANCE_KEY + "Print Design colors API :: " + to_string(totalDuration.count()));
@@ -727,7 +727,7 @@ void PrintConfig::SetDataFromResponse(json _param)
 		else {*/
 		
 			auto startTime = std::chrono::high_resolution_clock::now();
-			resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_PRINT_DESIGN_COLOR_API + "?", APPLICATION_JSON_TYPE, parameter + "&limit=" + PrintConfig::GetInstance()->GetMaximumLimitForPrintResult());
+			resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_PRINT_DESIGN_COLOR_API + "?", APPLICATION_JSON_TYPE, parameter + "&decode=true&limit=" + PrintConfig::GetInstance()->GetMaximumLimitForPrintResult());
 			Logger::Debug("Print response ::" + resultResponse);
 			auto finishTime = std::chrono::high_resolution_clock::now();
 			std::chrono::duration<double> totalDuration = finishTime - startTime;

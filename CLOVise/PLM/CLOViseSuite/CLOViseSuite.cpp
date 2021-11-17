@@ -484,7 +484,7 @@ namespace CLOVise
 		this->hide();
 		try
 		{
-				
+			Logger:: GetFileSize("design suite-> FileSize");
 			if (IsModuleExecutable("Print"))
 			{
 				int isFromConstructor = false;

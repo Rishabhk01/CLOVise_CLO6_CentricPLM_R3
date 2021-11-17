@@ -368,7 +368,7 @@ void DataHelper::SetEnumJson(json& _attributesFieldsListJson, json _createFieldR
 		string format = Helper::GetJSONValue<string>(_createFieldResponse, "format", true);
 		string restApiName = Helper::GetJSONValue<string>(_createFieldResponse, "rest_api_name", true);
 		Logger::Debug("feildsvaluesJson:format:" + format);
-		string enumListIdResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ENUM_ATT_API + "?skip=0&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue() + "&node_name=" + format, APPLICATION_JSON_TYPE, "");
+		string enumListIdResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ENUM_ATT_API + "?skip=0&decode=true&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue() + "&node_name=" + format, APPLICATION_JSON_TYPE, "");
 		Logger::RestAPIDebug("enumListIdResponse::" + enumListIdResponse);
 		if (FormatHelper::HasError(enumListIdResponse))
 		{
@@ -383,7 +383,7 @@ void DataHelper::SetEnumJson(json& _attributesFieldsListJson, json _createFieldR
 		{
 			MaterialConfig::GetInstance()->SetMaterialCategoryEnumId(enumListId);
 		}
-		string enumListResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ENUM_ATT_API + "/" + enumListId + "/values?skip=0&limit=1000", APPLICATION_JSON_TYPE, "");
+		string enumListResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ENUM_ATT_API + "/" + enumListId + "/values?skip=0&decode=true&limit=1000", APPLICATION_JSON_TYPE, "");
 		Logger::RestAPIDebug("enumListResponse::" + enumListResponse);
 		if (FormatHelper::HasError(enumListResponse))
 		{
