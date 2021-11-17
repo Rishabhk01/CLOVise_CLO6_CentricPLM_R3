@@ -1749,7 +1749,7 @@ namespace CLOVise
 		ColorCreateButton->setStyleSheet("QPushButton{max-height: 20px; max-width: 10px;}");
 		ColorCreateButton->setMaximumWidth(10);
 		ColorCreateButton->setProperty(("row"), _count);
-		QAction* colorSpecAction = new QAction(tr("Create ColorSpec"), this);
+		QAction* colorSpecAction = new QAction(tr("Create Color Specification"), this);
 		colorSpecAction->setProperty(("row"), _count);
 		colorSpecAction->setEnabled(m_isCreateColorSpec);
 		QAction* printAction = new QAction(tr("Search Prints"), this);

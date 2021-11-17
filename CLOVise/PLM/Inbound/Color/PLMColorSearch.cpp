@@ -932,11 +932,11 @@ namespace CLOVise
 		Logger::Info("INFO::PLMColorSearch -> SetCriteriaHeader() -> Start");
 		if ((Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED && !ColorConfig::GetInstance()->m_isSearchColor) || (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED && !ColorConfig::GetInstance()->m_isSearchColor))
 		{
-			QString windowTitle = PLM_NAME + " PLM " + QString::fromStdString(Configuration::GetInstance()->GetLocalizedColorClassName()) + "Spec Creation";
+			QString windowTitle = PLM_NAME + " PLM " + QString::fromStdString(Configuration::GetInstance()->GetLocalizedColorClassName()) + " Specification Creation";
 			this->setWindowTitle(windowTitle);
 			m_pTitleBar = new MVTitleBar(windowTitle, this);
 			layout()->setMenuBar(m_pTitleBar);
-			string colorspecName = "Color SpecCreation";
+			string colorspecName = "Color Specification Creation";
 			searchCriteriaLabel->setText(QString::fromStdString(colorspecName));
 			ColorConfig::GetInstance()->SetDateFlag(false);
 			QStringList attScops = ColorConfig::GetInstance()->GetAttScopes();
