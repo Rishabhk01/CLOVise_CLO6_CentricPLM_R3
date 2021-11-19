@@ -163,14 +163,29 @@ namespace CLOVise
 		ui_tabWidget->setTabText(2, "Image Intent");
 
 		ui_colorwayTable = new MVTableWidget();
-		CVWidgetGenerator::InitializeTableView(ui_colorwayTable);
 		CVHoverDelegate* customHoverDelegate = new CVHoverDelegate(ui_colorwayTable);
 		ui_colorwayTable->setItemDelegate(customHoverDelegate);
+
+		auto button = ui_colorwayTable->findChild<QAbstractButton*>();
+		if (button)
+		{
+			QVBoxLayout* lay = new QVBoxLayout(button);
+			lay->setContentsMargins(0, 0, 0, 0);
+			QLabel* label = new QLabel("No.");
+			label->setStyleSheet("QLabel {font-face: ArialMT; font-size: 10px; color: #FFFFFF; margin: 2px 2px 2px 2px; }""QToolTip { color: #46C8FF; background-color: #33414D; border: 1px #000000; }");
+			label->setAlignment(Qt::AlignCenter);
+			label->setToolTip("No.");
+			lay->addWidget(label);
+		}
+		QLabel* label = new QLabel;
+		ui_colorwayTable->setCornerWidget(label);
+		label->setStyleSheet("QLabel{background-color: #262628}");
+
 		ui_colorwayTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 		ui_colorwayTable->setContextMenuPolicy(Qt::CustomContextMenu); ui_colorwayTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 		ui_colorwayTable->horizontalHeader()->setStyleSheet("QHeaderView { font-face: ArialMT; font-size: 10px;background-color:#2D2D2F; color: #FFFFFF; font-weight: bold;}" "QHeaderView::section:horizontal{border: 1px solid #000000;}" "QHeaderView::down-arrow{ image: url(:/CLOVise/PLM/Images/ui_spin_icon_minus_over.svg); width: 18px; height: 18px; color: #0000FF }" " QHeaderView::up-arrow{ image: url(:/CLOVise/PLM/Images/ui_spin_icon_plus_over.svg); width: 18px; height: 18px; color: #0000FF }");
 		ui_colorwayTable->horizontalHeader()->setStretchLastSection(true);
-		ui_colorwayTable->verticalHeader()->setStyleSheet("QHeaderView { color: #FFFFFF;font-weight: bold; background-color:#2D2D2F;}" "QHeaderView::section:vertical{border: 1px solid #000000;}");
+		ui_colorwayTable->verticalHeader()->setStyleSheet("QHeaderView { font-face: ArialMT; font-size: 10px; color: #FFFFFF; min-width: 30px; }""QHeaderView::section:vertical{ background-color:#262628; border-right: 0.5px solid #262628; border-bottom: 0.5px solid #000000; border-top: 0.2px solid #000000; border-left: 0.5px solid #000000; min-width: 30px;}");
 		ui_colorwayTable->setStyleSheet("QTableWidget{ background-color: #262628; border-right: 0px solid #000000; border-top: 0px solid #000000; border-left: 0px solid #000000; font-face: ArialMT; font-size: 12px; color: #FFFFFF; }"
 			"QTableCornerButton::section{border: 1px solid #000000; background-color: #262628; }""QTableWidget::item{ border-bottom: 2px solid #000000; font-face: ArialMT; font-size: 12px; color: #FFFFFF; }"
 			"QToolTip{ color: #46C8FF; background-color: #33414D; border: 1px #000000; }""QTableWidget::item:selected{ background-color: #33414D; color: #46C8FF; }""QScrollBar::add-page:vertical { background: #000000; }"
