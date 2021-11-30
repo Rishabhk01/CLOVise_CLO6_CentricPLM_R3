@@ -3032,7 +3032,7 @@ QWidget* CVWidgetGenerator::InsertWidgetInCenter(QWidget* _widget)
 QImage CVWidgetGenerator::ReadQImage(json _resultListJson, string _objectId, string _module)
 {
 	QImage styleIcon;
-
+	string thumbnail;
 	if (_module == COLOR_MODULE)
 	{
 		try
@@ -3071,7 +3071,18 @@ QImage CVWidgetGenerator::ReadQImage(json _resultListJson, string _objectId, str
 	else
 	{
 		//string thumbnail = Helper::GetJSONValue<string>(_resultListJson, THUMBNAIL_KEY, true);
-		string thumbnail = UIHelper::GetThumbnailUrl(_objectId);
+		if (_module == PRINT_MODULE)
+		{
+			string images = Helper::GetJSONValue<string>(_resultListJson, "images", false);
+			json imageIDJson = json::parse(images);
+			string defaultImageID = Helper::GetJSONValue<string>(imageIDJson, "", true);
+			
+			thumbnail = UIHelper::GetPrintThumbnailUrl(defaultImageID);
+		}
+		else
+		{
+			thumbnail = UIHelper::GetThumbnailUrl(_objectId);
+		}
 
 		if (FormatHelper::HasContent(thumbnail))
 		{
