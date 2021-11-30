@@ -2795,11 +2795,21 @@ namespace CLOVise
 		if (!colorSpecId.empty())
 			m_currentColorSpec = colorSpecId;
 		ColorConfig::GetInstance()->m_mode = "Search";
+
+		boolean  isFromConstructor = false;
+		if (!ColorConfig::GetInstance()->GetIsModelExecuted())
+		{
+			ColorConfig::GetInstance()->InitializeColorData();
+			isFromConstructor = true;
+		}
+
 		ColorConfig::GetInstance()->InitializeColorData();
 		ColorConfig::GetInstance()->m_isSearchColor = true;
 		PLMColorSearch::GetInstance()->setModal(true);
-		PLMColorSearch::GetInstance()->DrawSearchWidget(true);
+		PLMColorSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
 		UTILITY_API->DeleteProgressBar(true);
+		ColorConfig::GetInstance()->SetIsModelExecuted(true);
+
 		PLMColorSearch::GetInstance()->exec();
 		RESTAPI::SetProgressBarData(0, "", false);
 

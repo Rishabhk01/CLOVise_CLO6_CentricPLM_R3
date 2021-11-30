@@ -1762,9 +1762,35 @@ namespace UIHelper
 						break;
 					}
 				}
-				//thumbnailUrl = "https://3ddevelop.centricsoftware.com/csi-requesthandler/RequestHandler?Module=Publisher&Operation=GetDirect&URL=cf%3A%2F%2Ffv%2F332437";
-
 			}
+		return thumbnailUrl;
+	}
+
+	inline string GetPrintThumbnailUrl(string _defaultImageId)
+	{
+		string thumbnailUrl = "";
+		string resultResponse = "";
+		json imageResultJson = json::object();
+		auto startTime = std::chrono::high_resolution_clock::now();
+		if (FormatHelper::HasContent(_defaultImageId))
+		{
+			string imageResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::PRINT_IMAGE_API + "/" + _defaultImageId, APPLICATION_JSON_TYPE, BLANK);
+			auto finishTime = std::chrono::high_resolution_clock::now();
+			std::chrono::duration<double> totalDuration = finishTime - startTime;
+			Logger::perfomance(PERFOMANCE_KEY + "Get Thambnail API :: " + to_string(totalDuration.count()));
+			Logger::RestAPIDebug("resultResponse::" + imageResponse);
+			if (FormatHelper::HasError(imageResponse))
+			{
+				thumbnailUrl = "";
+			}
+			else
+			{
+				imageResultJson = json::parse(imageResponse);
+				string thumbnailId = Helper::GetJSONValue<string>(imageResultJson, THUMBNAIL_KEY, true);
+				thumbnailUrl = Helper::GetJSONValue<string>(imageResultJson, "_url_base_template", true);
+				thumbnailUrl = Helper::FindAndReplace(thumbnailUrl, "%s", thumbnailId);
+			}
+		}
 		return thumbnailUrl;
 	}
 	
