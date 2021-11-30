@@ -1296,14 +1296,21 @@ namespace CLOVise
 		}
 		//SetProgressBarData(15, m_translationMap["pbLoadingColorSearch"][m_languageIndex], true);
 		//PLMColorSearch::Destroy();
-		ColorConfig::GetInstance()->InitializeColorData();
+		boolean  isFromConstructor = false;
+		if (!ColorConfig::GetInstance()->GetIsModelExecuted())
+		{
+			ColorConfig::GetInstance()->InitializeColorData();
+			isFromConstructor = true;
+		}
+		//ColorConfig::GetInstance()->InitializeColorData();
 
 		//ColorConfig::GetInstance()->GetColorConfigJSON();
 		PLMColorSearch::GetInstance()->setModal(true);
 		//m_isColorwayHasAccess = true;
 		//PLMColorSearch::GetInstance()->ClearAllFields();
-		PLMColorSearch::GetInstance()->DrawSearchWidget(true);
+		PLMColorSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
 		UTILITY_API->DeleteProgressBar(true);
+		ColorConfig::GetInstance()->SetIsModelExecuted(true);
 		PLMColorSearch::GetInstance()->exec();
 		RESTAPI::SetProgressBarData(0, "", false);
 		//SetProgressBarData(0, "", false);
