@@ -765,10 +765,10 @@ void ColorConfig::SetDataFromResponse(json _param)
 			string resultListStr = Helper::GetJSONValue<int>(colorResults, i, false);
 			json resultListJson = json::parse(resultListStr);
 			string rgbValue = Helper::GetJSONValue<string>(resultListJson, RGB_VALUE_KEY, true);
-			if (rgbValue == "centric%3A" || !FormatHelper::HasContent(rgbValue))
-				continue; 
-			else
-				ColorConfig::GetInstance()->UpdateResultJson(resultListJson);
+			//if (rgbValue == "centric%3A" || !FormatHelper::HasContent(rgbValue))
+			//	//continue; 
+			//else
+			ColorConfig::GetInstance()->UpdateResultJson(resultListJson);
 			m_colorResults.push_back(resultListJson);
 		}
 		string resultsCount = to_string(m_colorResults.size());
