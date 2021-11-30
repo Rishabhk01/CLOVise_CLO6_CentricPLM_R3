@@ -2945,19 +2945,22 @@ namespace CLOVise
 								}
 							}
 							
-							if (colorwayImageAdded)
-								newdata = newdata.substr(0, newdata.length() - 1);
+							
 
-							newdata += "\n}\n}";
-
-							Logger::Debug("UpdateProduct -> LinkImagesToColorways () newdata:" + newdata);
-							//if (!colorwayIterator->second.colorwayId.empty())
-							//{
-							Logger::Debug("UpdateProduct -> LinkImagesToColorways () colorwayIterator->second.colorwayId" + colorwayIterator->second.colorwayId);
+							
 							//Link images to colorways ....
-							string resultJsonString = RESTAPI::PutRestCall(newdata, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::COLORWAY_API + "/" + colorwayIterator->second.colorwayId, "content-type: application/json");
+							
 							//}
 						}
+						if (colorwayImageAdded)
+							newdata = newdata.substr(0, newdata.length() - 1);
+						newdata += "\n}\n}";
+
+						Logger::Debug("UpdateProduct -> LinkImagesToColorways () newdata:" + newdata);
+						//if (!colorwayIterator->second.colorwayId.empty())
+						//{
+						Logger::Debug("UpdateProduct -> LinkImagesToColorways () colorwayIterator->second.colorwayId" + colorwayIterator->second.colorwayId);
+						string resultJsonString = RESTAPI::PutRestCall(newdata, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::COLORWAY_API + "/" + colorwayIterator->second.colorwayId, "content-type: application/json");
 					}
 
 				}

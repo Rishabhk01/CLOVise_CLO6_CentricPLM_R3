@@ -1914,6 +1914,8 @@ namespace CLOVise
 					apiUrl = RESTAPI::SEASON_SEARCH_API;
 					nameIdMap = m_seasonNameIdMap;
 					m_brandNameIdMap.clear();
+					m_shapeNameIdMap.clear();
+					m_themeNameIdMap.clear();
 					comboboxtofill = "Brand";
 					dependentFields.append("category_1");
 					dependentFields.append("shape");
