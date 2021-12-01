@@ -1308,7 +1308,7 @@ namespace CLOVise
 		PLMColorSearch::GetInstance()->setModal(true);
 		//m_isColorwayHasAccess = true;
 		//PLMColorSearch::GetInstance()->ClearAllFields();
-		PLMColorSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
+		PLMColorSearch::GetInstance()->DrawSearchWidget(true);
 		UTILITY_API->DeleteProgressBar(true);
 		ColorConfig::GetInstance()->SetIsModelExecuted(true);
 		PLMColorSearch::GetInstance()->exec();

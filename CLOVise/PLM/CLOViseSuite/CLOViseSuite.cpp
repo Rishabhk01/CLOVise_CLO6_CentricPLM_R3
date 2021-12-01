@@ -440,14 +440,16 @@ namespace CLOVise
 					isFromConstructor = true;
 				}
 				else
-					PLMColorSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
+				{
+					PLMColorSearch::GetInstance()->DrawSearchWidget(true);
+				}
 
 				if (ColorConfig::GetInstance()->m_colorLoggedOut && isFromConstructor)
 				{
 					ColorConfig::GetInstance()->m_colorLoggedOut = false;
 					ColorConfig::GetInstance()->m_resultAfterLogout = true;
 					PLMColorSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
-				}				
+				}
 				PLMColorSearch::GetInstance()->setModal(true);
 				
 				UTILITY_API->DeleteProgressBar(true);
