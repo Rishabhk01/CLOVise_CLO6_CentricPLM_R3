@@ -304,14 +304,14 @@ namespace CLOVise
 			m_CreateMaterialTreeWidget_1->setDropIndicatorShown(false);
 			m_CreateMaterialTreeWidget_1->setRootIsDecorated(false);
 			m_CreateMaterialTreeWidget_1->setSelectionMode(QAbstractItemView::NoSelection);
-			m_CreateMaterialTreeWidget_1->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; outline: 0;}""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
+			m_CreateMaterialTreeWidget_1->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 5px; min-width: 80px; outline: 0;}""QTreeWidget::item {height: 20px; width: 80px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
 			m_CreateMaterialTreeWidget_2->setColumnCount(2);
 			m_CreateMaterialTreeWidget_2->setHeaderHidden(true);
 			m_CreateMaterialTreeWidget_2->setWordWrap(true);
 			m_CreateMaterialTreeWidget_2->setDropIndicatorShown(false);
 			m_CreateMaterialTreeWidget_2->setRootIsDecorated(false);
 			m_CreateMaterialTreeWidget_2->setSelectionMode(QAbstractItemView::NoSelection);
-			m_CreateMaterialTreeWidget_2->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; outline: 0;}""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
+			m_CreateMaterialTreeWidget_2->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 5px; min-width: 80px; outline: 0;}""QTreeWidget::item {height: 20px; width: 80px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
 
 			/*	if (!PublishToPLMData::GetInstance()->GetDateFlag())
 					m_dateResetButton->hide();
