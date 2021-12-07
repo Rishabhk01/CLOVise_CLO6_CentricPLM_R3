@@ -359,6 +359,45 @@
     <ClCompile Include="CLOVise\PLM\Outbound\UpdateMaterial\UpdateMaterialConfig.cpp">
       <Filter>CLOVise\PLM\Outbound\UpdateMaterial</Filter>
     </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\CreateImageIntent.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_UpdateImageIntent.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CreateImageIntent.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CreateImageIntent.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_UpdateImageIntent.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Print\PLMPrintResults.cpp">
+      <Filter>CLOVise\PLM\Inbound\Print</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_PLMPrintResults.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_PLMPrintResults.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Print\PLMPrintSearch.cpp">
+      <Filter>CLOVise\PLM\Inbound\Print</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_PLMPrintSearch.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_PLMPrintSearch.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Print\PrintConfig.cpp">
+      <Filter>CLOVise\PLM\Inbound\Print</Filter>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_UpdateImageIntent.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -605,9 +644,16 @@
     <ClInclude Include="CLOVise\PLM\Outbound\UpdateMaterial\UpdateMaterialConfig.h">
       <Filter>CLOVise\PLM\Outbound\UpdateMaterial</Filter>
     </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_PLMPrintResults.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_PLMPrintSearch.h">
+      <Filter>Generated Files</Filter>
     <ClInclude Include="GeneratedFiles\ui_AddNewBom.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Inbound\Print\PrintConfig.h">
+      <Filter>CLOVise\PLM\Inbound\Print</Filter>
     <ClInclude Include="CLOVise\PLM\Outbound\PublishToPLM\Section.h">
       <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
     </ClInclude>
@@ -937,6 +983,9 @@
     </Filter>
     <Filter Include="CLOVise\PLM\Outbound\UpdateMaterial">
       <UniqueIdentifier>{f702f99b-fa7b-446e-8309-32e23808662d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Inbound\Print">
+      <UniqueIdentifier>{56da6e43-0acb-4951-ba80-1ee478e6ed09}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

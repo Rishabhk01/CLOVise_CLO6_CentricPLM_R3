@@ -21,7 +21,7 @@
 
 using namespace std;
 
-enum currentScreenSelected { COLOR_SEARCH_CLICKED, SEARCH_PRODUCT_CLICKED, COPY_PRODUCT_CLICKED, CREATE_PRODUCT_CLICKED, UPDATE_PRODUCT_CLICKED, CREATE_MATERIAL_CLICKED, SEARCH_MATERIAL_CLICKED, UPDATE_MATERIAL_CLICKED};
+enum currentScreenSelected {COLOR_SEARCH_CLICKED, SEARCH_PRODUCT_CLICKED, COPY_PRODUCT_CLICKED, CREATE_PRODUCT_CLICKED, UPDATE_PRODUCT_CLICKED, CREATE_MATERIAL_CLICKED, SEARCH_MATERIAL_CLICKED, UPDATE_MATERIAL_CLICKED, PRINT_SEARCH_CLICKED};
 const QString PLM_NAME = "Centric 8";
 
 #define FRONT_VIEW 0
@@ -30,6 +30,7 @@ const QString PLM_NAME = "Centric 8";
 #define LEFT_VIEW 3
 
 #define STARTING_INDEX 0
+#define FIRST_INDEX 1
 #define DIVISION_FACTOR 2
 
 
@@ -89,6 +90,7 @@ const QString POWERED_BY_IMAGE_WHITE_PATH = ":/CLOVise/PLM/Images/img_bi_white_p
 
 const QString FABRIC_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_fabric_over.svg";
 const QString COLOR_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_color_over.svg";
+const QString PRINT_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_print_over.svg";
 const QString DOCUMENT_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_3d_over.svg";
 const QString PRODUCT_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_product_over.svg";
 const QString PUBLISH_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_goto_over.svg";
@@ -182,6 +184,7 @@ const string USER_FULL_NAME_KEY = "fullName";
 const string MAX_STYLE_SEARCH_LIMIT = "maximumStyleSearchResults";
 const string MAX_MATERIAL_SEARCH_LIMIT = "maximumMaterialSearchResults";
 const string MAX_COLOR_SEARCH_LIMIT = "maximumColorSearchResults";
+const string MAX_PRINT_SEARCH_LIMIT = "maximumPrintSearchResults";
 const string MAX_REF_ATT_SEARCH_LIMIT = "maximuRefAttributeValues";
 
 /* PLM search functionality Constants End. */
@@ -392,6 +395,15 @@ const string COLOR_SEARCH_ACTIVITY = "FIND_COLOR";
 const string COLOR_SWATCH_NAME = "PLM Solid Colors";
 const QString RGB_TOOLTIP_KEY = "RGB Value: ";
 
+/*PLMPrint */
+const string PLM_PRINT_FILE_NAME = "PLM_PRINT_SEARCH.json";
+const string PLM_PRINT_RESULT_FILE = "PLM_PRINT_RESULTS.json";
+const string PLM_PRINT_VIEW_FILE = "PLM_PRINT_VIEW.json";
+const string PRINT_ROOT_TYPE = "Print";
+const string PRINT_MODULE = "Print";
+const string PRINT_SEARCH_ACTIVITY = "FIND_PRINT";
+
+
 /*PLMMaterial */
 const string PLMMATERIAL_FILE_NAME = "PLMMaterialFilter.json";
 const string PLM_MATERIAL_SEARCH_FILE_NAME = "PLM_MATERIAL_SEARCH.json";
@@ -455,6 +467,7 @@ const int VERTICAL_HEADER = 80;
 const int HORIZONTAL_HEADER_HEIGHT = 30;
 const int COLORWAY_HORIZONTAL_HEADER_HEIGHT = 50;
 const int HORIZONTAL_HEADER_WIDTH = 100;
+const int COLUMN_SIZE = 200;
 const QString TOOLTIP_STYLE = "QToolTip{ color: #46C8FF; background-color: #33414D; border: 1px #000000; }";
 const QString PREVIOUS_BUTTON_STYLE = "#previousButton { qproperty-icon: none; image: url(:/CLOVise/PLM/Images/previous_none.svg); } #previousButton:hover { image: url(:/CLOVise/PLM/Images/previous_over.svg); }""QToolTip{ color: #46C8FF; background-color: #33414D; border: 1px #000000; }";
 const QString NEXT_BUTTON_STYLE = "#nextButton { qproperty-icon: none; image: url(:/CLOVise/PLM/Images/next_none.svg); } #nextButton:hover { image: url(:/CLOVise/PLM/Images/next_over.svg); }""QToolTip{ color: #46C8FF; background-color: #33414D; border: 1px #000000; }";
@@ -589,8 +602,10 @@ const QString SIDE_MENU_TRIM_ID = "TRIM";
 const QString SIDE_MENU_COLOR_ID = "COLOR";
 const QString SIDE_MENU_PRODUCT_ID = "PRODUCT";
 const QString SIDE_MENU_MATERIAL_ID = "MATERIAL";
+const QString SIDE_MENU_PRINT_ID = "PRINT";
 const QString MATERIAL_DATA_ID_KEY = "Material ";
 const QString COLOR_DATA_ID_KEY = "Color ";
+const QString PRINT_DATA_ID_KEY = "Print & Designs ";
 const QString PRODUCT_DATA_ID_KEY = "Product ";
 const QString FABRIC_DATA_ID_KEY = "Fabric";
 const QString DOCUMENT_DATA_ID_KEY = "Document";
@@ -622,4 +637,7 @@ const string UPDATE_MATERIAL = "Update Material";
 const string CREATE_MATERIAL = "Create Material";
 const string DOCUMENT_NAME = "docName";
 const string ATT_RESTRICT_EDIT = "restrict_edit";
+const string ALLOW_CREATE_COLOR = "allow_create_color_spec_on_colorway";
+const string REFER_DEFAULT_IMAGE_ON_COLOR = "reference_default_image_on_colorway_create";
+const string IMAGES_JSON = "images";
 const QStringList MATERIAL_FILTER_LIST{ ".zfab", ".zsd", ".zpl", ".zpac", ".zsp", ".btn", ".bth", ".obj", ".sst" };

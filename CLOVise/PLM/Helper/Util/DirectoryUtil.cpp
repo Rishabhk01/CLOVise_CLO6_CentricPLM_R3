@@ -38,6 +38,8 @@ void DirectoryUtil::CreateDirectories()
 	dir.mkpath(QString::fromStdString(trim_dir));
 	string color_dir = plm_folder + + "color/";
 	dir.mkpath(QString::fromStdString(color_dir));
+	string print_dir = plm_folder + + "print/";
+	dir.mkpath(QString::fromStdString(print_dir));
 }
 
 /*
@@ -98,6 +100,16 @@ const string DirectoryUtil::GetTrimAssetsDirectory() {
 */
 const string DirectoryUtil::GetColorsAssetsDirectory() {
 	return GetSampleStorageDirectory() + "color/";
+}
+
+/*
+* Description - GetPrintAssetsDirectory() method used to get Prints assets directory.
+* Parameter - 
+* Exception -
+* Return - string.
+*/
+const string DirectoryUtil::GetPrintAssetsDirectory() {
+	return GetSampleStorageDirectory() + "print/";
 }
 
 /*

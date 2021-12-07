@@ -37,7 +37,6 @@ namespace CLOVise
 		int m_selectedViewIdx;
 
 		static PLMColorSearch* GetInstance();
-		//static void Destroy();
 		void HideHirarchy(bool _hide);
 		void ClickedSubmitButton();
 		void ClickedBackButton();
@@ -47,7 +46,9 @@ namespace CLOVise
 		void TreeNodeClicked(QTreeWidgetItem* _item, int _column);
 		void ResetDateEditWidget();
 		QTreeWidget* GetTreewidget(int _index);
-
+		void DrawSearchWidget(bool _isFromConstructor);
+		void CreateColorSpecWidget();
+		
 	private:
 		
 		PLMColorSearch(QWidget* parent = nullptr);
@@ -55,7 +56,7 @@ namespace CLOVise
 
 		void collectSearchUIFields();
 		
-		void drawSearchUI(QString _selectType, bool _drawFilter, string _selectedFilter);
+		void drawSearchUI(QString _selectType, bool _drawFilter, string _selectedFilter, json _fieldsJson);
 
 		void connectSignalSlots(bool _b) override;
 
@@ -66,6 +67,7 @@ namespace CLOVise
 		set<string> m_flextypeTree;
 		QString selectType;
 		json m_searchCriteriaJson = json::object();
+		json m_createCriteriaJson = json::object();
 		bool m_hierarchyLoading;
 
 		QTreeWidget* m_hierarchyTreeWidget;
@@ -84,6 +86,7 @@ namespace CLOVise
 		QPushButton* m_backButton;
 		QPushButton* m_unselectAllButton;
 		QPushButton* m_searchButton;
+		QLabel* searchCriteriaLabel;
 
 	private slots:
 		void onHideHirarchy(bool _hide);

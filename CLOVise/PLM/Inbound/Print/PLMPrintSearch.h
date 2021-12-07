@@ -2,16 +2,16 @@
 /*
 * Copyright 2020-2021 CLO-Vise. All rights reserved
 *
-* @file PLMMaterialSearch.h
+* @file PLMColorSearch.h
 *
-* @brief Class declaration for accessing Material in CLO from PLM.
-* This class has all the variable declarations and function declarations which are used in PLM Material Search.
+* @brief Class declaration for accessing Colors in CLO from PLM.
+* This class has all the variable declarations and function declarations which are used in PLM Color Search.
 *
 * @author GoVise
 *
-* @date 16-JUN-2020
+* @date 05-OCT-2021
 */
-#include "ui_PLMMaterialSearch.h"
+#include "ui_PLMPrintSearch.h"
 
 #include <iostream>
 #include <string>
@@ -29,16 +29,14 @@
 
 namespace CLOVise
 {
-	class  PLMMaterialSearch : public MVDialog, public Ui::MaterialSearch
+	class  PLMPrintSearch : public MVDialog, public Ui::PrintSearch
 	{
 		Q_OBJECT
 
 	public:
 		int m_selectedViewIdx;
-		json m_materialFieldsJson = json::object();
 
-		static PLMMaterialSearch* GetInstance();
-		//static void Destroy();
+		static PLMPrintSearch* GetInstance();
 		void HideHirarchy(bool _hide);
 		void ClickedSubmitButton();
 		void ClickedBackButton();
@@ -47,23 +45,23 @@ namespace CLOVise
 		void CheckBoxChecked(bool _checked);
 		void TreeNodeClicked(QTreeWidgetItem* _item, int _column);
 		void ResetDateEditWidget();
-		void ClearAllFields();
-		QTreeWidget* GetTreewidget(int _index);
 		void DrawSearchWidget(bool _isFromConstructor);
+		QTreeWidget* GetTreewidget(int _index);
 
 	private:
-		PLMMaterialSearch(QWidget* parent = nullptr);
-		virtual ~PLMMaterialSearch();
+		
+		PLMPrintSearch(QWidget* parent = nullptr);
+		virtual ~PLMPrintSearch();
 
 		void collectSearchUIFields();
-
+		
 		void drawSearchUI(QString _selectType, bool _drawFilter, string _selectedFilter);
 
 		void connectSignalSlots(bool _b) override;
 
 		void reject();
 
-		static PLMMaterialSearch* _instance;
+		static PLMPrintSearch* _instance;
 		bool m_isHidden = false;
 		set<string> m_flextypeTree;
 		QString selectType;
@@ -96,6 +94,5 @@ namespace CLOVise
 		void onCheckBoxChecked(bool _checked);
 		void onTreeNodeClicked(QTreeWidgetItem* _item, int _column);
 		void onResetDateEditWidget();
-
 	};
 }

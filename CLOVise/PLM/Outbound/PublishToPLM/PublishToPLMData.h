@@ -27,9 +27,10 @@ class PublishToPLMData
 	public:
 		bool m_isModelExecuted = false;
 		bool m_isDateEditPresent = false;
+		bool m_createProductLoggedOut = false;
+		bool m_isSaveClicked = false;
 
 		static PublishToPLMData* GetInstance();
-		static void	Destroy();
 		
 		void SetActiveProductMetaData(json _resultJson);
 		void SetActiveProductId(string _objectIdKey);
@@ -84,6 +85,8 @@ class PublishToPLMData
 		 void SetIsCreateNewDocument(bool _isNewDocument);
 		 bool GetIsCreateNewDocument();
 		 
+		 void ResetPublishData();
+
 	private:
 		static PublishToPLMData* _instance; // zero initialized by default
 		json m_ActiveProductJson;

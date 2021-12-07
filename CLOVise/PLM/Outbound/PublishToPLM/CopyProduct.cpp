@@ -78,20 +78,6 @@ namespace CLOVise
 		return _instance;
 	}
 
-	//void CopyProduct::Destroy()
-	//{
-	//	Logger::Debug("Copy product Destroy() Start....");
-	//	if (_instance)
-	//	{
-	//		Logger::Debug("Copy product Destroy() 1....");
-	//		//_instance->setParent(nullptr);
-	//		//delete _instance;
-	//		_instance = NULL;
-	//		Logger::Debug("Copy product Destroy() 2....");
-	//	}
-	//	Logger::Debug("Copy product Destroy() End....");
-	//}
-
 	CopyProduct::CopyProduct(QWidget* parent) : MVDialog(parent)
 	{
 		setupUi(this);
@@ -704,6 +690,7 @@ namespace CLOVise
 				ProductConfig::GetInstance()->m_isShow3DAttWidget = true;
 				ProductConfig::GetInstance()->SetCopyStyleResult(response);
 				PLMProductResults::GetInstance()->m_downloadButton->setText("Download");
+				PLMProductResults::GetInstance()->DrawResultWidget(false);
 				UTILITY_API->DeleteProgressBar(true);
 				PLMProductResults::GetInstance()->setModal(true);
 				PLMProductResults::GetInstance()->exec();
@@ -952,6 +939,7 @@ namespace CLOVise
 		//ColorConfig::GetInstance()->InitializeColorData();
 		//ColorConfig::GetInstance()->GetColorConfigJSON();
 		PLMColorSearch::GetInstance()->setModal(true);
+		PLMColorSearch::GetInstance()->DrawSearchWidget(false);
 		PLMColorSearch::GetInstance()->exec();
 		Logger::Debug("CopyProduct -> onAddColorwaysClicked() -> End");
 	}
@@ -1864,7 +1852,7 @@ namespace CLOVise
 			{
 				if (lableText == "Copy Template")
 				{
-					string enumListResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::STYLE_COPY_OPTION_API + "?root_sub_type_name=Apparel", APPLICATION_JSON_TYPE, "");
+					string enumListResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::STYLE_COPY_OPTION_API + "?decode-true&root_sub_type_name=Apparel", APPLICATION_JSON_TYPE, "");
 					Logger::RestAPIDebug("enumListResponse::" + enumListResponse);
 
 					json response = json::parse(enumListResponse);
@@ -1947,7 +1935,7 @@ namespace CLOVise
 			{
 				if (lableText == "Copy Template")
 				{
-					string enumListResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::STYLE_COPY_OPTION_API + "?root_sub_type_name=Apparel", APPLICATION_JSON_TYPE, "");
+					string enumListResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::STYLE_COPY_OPTION_API + "?decode=true&root_sub_type_name=Apparel", APPLICATION_JSON_TYPE, "");
 					Logger::RestAPIDebug("enumListResponse::" + enumListResponse);
 
 					json response = json::parse(enumListResponse);

@@ -344,7 +344,7 @@ namespace CLOVise
 					Configuration::GetInstance()->SetPLMVersion(UIHelper::getPLMVersion());
 					UIHelper::GetLocalizedClassNames();
 					Helper::EncryptDecrypt(_userName, _password);
-					string userInfoResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::USER_SESSION_DETAIL_API, APPLICATION_JSON_TYPE, "");
+					string userInfoResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::USER_SESSION_DETAIL_API + "?decode=true", APPLICATION_JSON_TYPE, "");
 					if (!FormatHelper::HasError(userInfoResponse))
 					{
 						Configuration::GetInstance()->SetLoggedInUserName(json::parse(userInfoResponse));

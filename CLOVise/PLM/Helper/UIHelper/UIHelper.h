@@ -1007,6 +1007,11 @@ namespace UIHelper
 									filePath = DirectoryUtil::GetStyleAttachmentDirectory();
 								filePath = filePath + attachmentName;
 							}
+							else if (_module == PRINT_MODULE)
+							{
+								if (COLOR_SUPPORTING_LIST.contains(QString::fromStdString(fileExt), Qt::CaseInsensitive))
+									filePath = DirectoryUtil::GetPrintAssetsDirectory();
+							}
 							else
 							{
 								faildesObjects.push_back(QString::fromStdString(objectName));
@@ -1136,15 +1141,15 @@ namespace UIHelper
 					string type = Helper::GetJSONValue<string>(fieldsJson, "material_type", true);
 					string description = Helper::GetJSONValue<string>(fieldsJson, "description", true);
 					//_previewjsonarray[ResultsjsonCount] = fieldsJson;
-					json searchArrayFields;
-					searchArrayFields["objectId"] = objectId;
-					searchArrayFields[OBJECT_NAME_KEY] = objectName;
-					searchArrayFields["Name"] = objectName;
-					searchArrayFields["Code"] = code;
-					if (_module != COLOR_MODULE)
-						searchArrayFields["Type"] = type;
-					searchArrayFields["Description"] = description;
-					searchArray["SearchResults"][i] = searchArrayFields;
+					json searchArrayFields;	
+						searchArrayFields["objectId"] = objectId;
+						searchArrayFields[OBJECT_NAME_KEY] = objectName;
+						searchArrayFields["Name"] = objectName;
+						searchArrayFields["Code"] = code;
+						if (_module != COLOR_MODULE && _module!=PRINT_MODULE)
+							searchArrayFields["Type"] = type;
+						searchArrayFields["Description"] = description;
+						searchArray["SearchResults"][i] = searchArrayFields;
 					if (_module != COLOR_MODULE)
 					{
 						//auto startTime = std::chrono::high_resolution_clock::now();
@@ -1188,7 +1193,7 @@ namespace UIHelper
 							attachemntRevisionApi = Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::ATTACHMENTS_LATEST_REVISION_RESULTS_API + objectId + "?revision_details=true";
 						}
 						auto latestStartTime = std::chrono::high_resolution_clock::now();						
-						string attachmentResponse = RESTAPI::CentricRestCallGet(attachemntRevisionApi, APPLICATION_JSON_TYPE, "");
+						string attachmentResponse = RESTAPI::CentricRestCallGet(attachemntRevisionApi + "&decode=true", APPLICATION_JSON_TYPE, "");
 						auto latestVersionApiFinishTime = std::chrono::high_resolution_clock::now();
 						std::chrono::duration<double> latestVersionApiTotalDuration = latestVersionApiFinishTime - latestStartTime;
 						Logger::perfomance(PERFOMANCE_KEY + "Documents Revisions API :: " + to_string(latestVersionApiTotalDuration.count()));
@@ -1215,6 +1220,30 @@ namespace UIHelper
 							{
 								string latestRevisionId = Helper::GetJSONValue<string>(attachmentCountJson, "latest_revision", true);
 								json revisionDetailsJson = Helper::GetJSONParsedValue<string>(attachmentCountJson, "revision_details", false);
+								Logger::Debug("revisionDetailsJson::" + to_string(revisionDetailsJson));
+								for (int revisionCount = 0; revisionCount < revisionDetailsJson.size(); revisionCount++)
+								{
+									if (latestRevisionId != Helper::GetJSONValue<string>(revisionDetailsJson[revisionCount], "id", true))
+										continue;
+									string latestVersionAttId = Helper::GetJSONValue<string>(revisionDetailsJson[revisionCount], "file", true);
+									latestVersionAttName = Helper::GetJSONValue<string>(revisionDetailsJson[revisionCount], "file_name", true);
+
+									latestVersionAttUrl = Helper::GetJSONValue<string>(revisionDetailsJson[revisionCount], "_url_base_template", true);
+									
+									latestVersionAttUrl = Helper::FindAndReplace(latestVersionAttUrl, "%s", latestVersionAttId);
+
+									//latestVersionAttUrl = latestVersionAttUrl + latestVersionAttId;
+									Logger::Debug("latestVersionAttName::" + latestVersionAttName + "::latestVersionAttId::" + latestVersionAttId + "  ::latestVersionAttUrl::" + latestVersionAttUrl);
+									documentId = latestRevisionId;
+									break;
+								}
+								break;
+							}
+							
+							else
+							{
+								string latestRevisionId = Helper::GetJSONValue<string>(attachmentCountJson, "latest_revision", true);
+								json revisionDetailsJson = Helper::GetJSONParsedValue<string>(attachmentCountJson, "revision_details", false);
 								Logger::Logger("revisionDetailsJson::" + to_string(revisionDetailsJson));
 								for (int revisionCount = 0; revisionCount < revisionDetailsJson.size(); revisionCount++)
 								{
@@ -1224,7 +1253,7 @@ namespace UIHelper
 									latestVersionAttName = Helper::GetJSONValue<string>(revisionDetailsJson[revisionCount], "file_name", true);
 
 									latestVersionAttUrl = Helper::GetJSONValue<string>(revisionDetailsJson[revisionCount], "_url_base_template", true);
-
+									
 									latestVersionAttUrl = Helper::FindAndReplace(latestVersionAttUrl, "%s", latestVersionAttId);
 
 									//latestVersionAttUrl = latestVersionAttUrl + latestVersionAttId;
@@ -1734,9 +1763,35 @@ namespace UIHelper
 						break;
 					}
 				}
-					
-					
 			}
+		return thumbnailUrl;
+	}
+
+	inline string GetPrintThumbnailUrl(string _defaultImageId)
+	{
+		string thumbnailUrl = "";
+		string resultResponse = "";
+		json imageResultJson = json::object();
+		auto startTime = std::chrono::high_resolution_clock::now();
+		if (FormatHelper::HasContent(_defaultImageId))
+		{
+			string imageResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::PRINT_IMAGE_API + "/" + _defaultImageId, APPLICATION_JSON_TYPE, BLANK);
+			auto finishTime = std::chrono::high_resolution_clock::now();
+			std::chrono::duration<double> totalDuration = finishTime - startTime;
+			Logger::perfomance(PERFOMANCE_KEY + "Get Thambnail API :: " + to_string(totalDuration.count()));
+			Logger::RestAPIDebug("resultResponse::" + imageResponse);
+			if (FormatHelper::HasError(imageResponse))
+			{
+				thumbnailUrl = "";
+			}
+			else
+			{
+				imageResultJson = json::parse(imageResponse);
+				string thumbnailId = Helper::GetJSONValue<string>(imageResultJson, THUMBNAIL_KEY, true);
+				thumbnailUrl = Helper::GetJSONValue<string>(imageResultJson, "_url_base_template", true);
+				thumbnailUrl = Helper::FindAndReplace(thumbnailUrl, "%s", thumbnailId);
+			}
+		}
 		return thumbnailUrl;
 	}
 	
@@ -1768,7 +1823,7 @@ namespace UIHelper
 		std::map<string, string> displayNameInternalNameMap;
 		try
 		{
-			string enumListIdResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ENUM_ATT_API + "?skip=0&limit=1000&node_name=" + _format, APPLICATION_JSON_TYPE, "");
+			string enumListIdResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ENUM_ATT_API + "?skip=0&limit=1000&decode=true&node_name=" + _format, APPLICATION_JSON_TYPE, "");
 
 			if (FormatHelper::HasError(enumListIdResponse))
 			{
@@ -1782,7 +1837,7 @@ namespace UIHelper
 			json enumListIdResponseJson = json::parse(enumListIdResponse);
 			string enumListId = Helper::GetJSONValue<string>(enumListIdResponseJson[0], ATTRIBUTE_ID, true);
 			auto EnumListsApiStartTime = std::chrono::high_resolution_clock::now();
-			string enumListResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ENUM_ATT_API + "/" + enumListId + "/values?skip=0&limit=1000", APPLICATION_JSON_TYPE, "");
+			string enumListResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ENUM_ATT_API + "/" + enumListId + "/values?skip=0&limit=1000&decode=true" , APPLICATION_JSON_TYPE, "");
 
 			if (FormatHelper::HasError(enumListResponse))
 			{
@@ -1846,7 +1901,7 @@ namespace UIHelper
 		
 		try
 		{
-			string enumListIdResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ENUM_ATT_API + "?skip=0&limit=1000&node_name=" + _format, APPLICATION_JSON_TYPE, "");
+			string enumListIdResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ENUM_ATT_API + "?skip=0&limit=1000&decode=true&node_name=" + _format, APPLICATION_JSON_TYPE, "");
 
 			if (FormatHelper::HasError(enumListIdResponse))
 			{
@@ -1860,7 +1915,7 @@ namespace UIHelper
 			json enumListIdResponseJson = json::parse(enumListIdResponse);
 			string enumListId = Helper::GetJSONValue<string>(enumListIdResponseJson[0], ATTRIBUTE_ID, true);
 			auto EnumListsApiStartTime = std::chrono::high_resolution_clock::now();
-			string enumListResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ENUM_ATT_API + "/" + enumListId + "/values?skip=0&limit=1000", APPLICATION_JSON_TYPE, "");
+			string enumListResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ENUM_ATT_API + "/" + enumListId + "/values?skip=0&limit=1000&decode=true", APPLICATION_JSON_TYPE, "");
 
 			if (FormatHelper::HasError(enumListResponse))
 			{
@@ -1929,7 +1984,7 @@ namespace UIHelper
 
 			string image_labels_enum_list = Helper::GetJSONValue<string>(ImageLabelJson[0], "image_labels_enum_list", true);
 			//UTILITY_API->DisplayMessageBox(" imageLabelList3: " + image_labels_enum_list);
-			string labelsResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::IMAGE_LABELS_ENUMLIST_API + "/" + image_labels_enum_list + "/values?skip=0&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), APPLICATION_JSON_TYPE, "");
+			string labelsResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::IMAGE_LABELS_ENUMLIST_API + "/" + image_labels_enum_list + "/values?skip=0&decode=true&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), APPLICATION_JSON_TYPE, "");
 
 			if (FormatHelper::HasError(labelsResponse))
 			{
@@ -1982,7 +2037,7 @@ namespace UIHelper
 			Configuration::GetInstance()->SetProgressBarProgress(0);
 			Configuration::GetInstance()->SetProgressBarProgress(qrand() % 101);
 			RESTAPI::SetProgressBarData(Configuration::GetInstance()->GetProgressBarProgress(), "Loading Division Values..", true);
-			string refApi = Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::COLLECTION_SEARCH_API + "?skip=0&limit=1000&parent_season=" + _seasonId;
+			string refApi = Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::COLLECTION_SEARCH_API + "?skip=0&limit=1000&decode=true&parent_season=" + _seasonId;
 			string refListResponse = RESTAPI::CentricRestCallGet(refApi, APPLICATION_JSON_TYPE, "");
 			Configuration::GetInstance()->SetProgressBarProgress(RESTAPI::SetProgressBarProgress(Configuration::GetInstance()->GetProgressBarProgress(), 10, "Loading Division Values.."));
 			if (FormatHelper::HasError(refListResponse))
@@ -2312,9 +2367,6 @@ namespace UIHelper
 				{
 					QTreeWidgetItem* topLevel = new QTreeWidgetItem();  // Creating new TreeWidgetItem
 					_treeWidget->addTopLevelItem(topLevel);
-					Logger::Debug("Attribute name==========" + attributeName);
-					Logger::Debug("attributeKey============" + attributeKey);
-					Logger::Debug("attributeType============" + attributeType);
 					if (isInteger)
 					{			// Adding ToplevelItem
 						//UTILITY_API->DisplayMessageBox("isInteger::" + to_string(isInteger));
@@ -2884,5 +2936,33 @@ namespace UIHelper
 
 		}
 		Logger::Info("Helper -> GetLocalizedClassNames() -> End");
+	}
+
+	/*
+	* Description - GetButtonWidgetFromCell()  method used to get the button widget from the cell.
+	* Parameter -QTableWidget, int, int, int.
+	* Exception -
+	* Return - QPushButton
+	*/
+	inline QPushButton* GetButtonWidgetFromCell(QTableWidget* _table, int _row, int _col,int _index)
+	{
+		Logger::Info("INFO::Helper -> getButtonWidgetFromCell() -> Start");
+		QPushButton* button = nullptr;
+
+		if (QWidget* widget = _table->cellWidget(_row, _col))
+		{
+			if (QLayout* layout = widget->layout())
+			{
+				if (QLayoutItem* layoutItem = layout->itemAt(_index))
+				{
+					if (QWidgetItem* widgetItem = dynamic_cast<QWidgetItem*>(layoutItem))
+					{
+						button = qobject_cast<QPushButton*>(widgetItem->widget());
+					}
+				}
+			}
+		}
+		Logger::Info("INFO::Helper -> getButtonWidgetFromCell() -> End");
+		return button;
 	}
 }

@@ -49,6 +49,7 @@ namespace CLOVise
 		void UploadStyleThumbnail(string _productId);
 		void GetUpdatedColorwayNames();
 		bool UpdateColorInColorways(QStringList _downloadIdList, json _jsonarray);
+		//void DrawCriteriaWidget(bool _isFromConstructor);
 		void addCreateProductDetailsWidgetData();
 		void AddMaterialInBom();
 		void GetMappedColorway();
@@ -64,6 +65,7 @@ namespace CLOVise
 		MVTableWidget *ui_colorwayTable;
 		int m_selectedRow;
 		QStringList m_colorSpecList;
+		void ResetCreateProductData();
 		QLabel *m_bomName;
 		QLabel *m_bomTemplateName;
 		QPushButton* m_bomAddButton;
@@ -146,7 +148,7 @@ namespace CLOVise
 		QStringList m_localAttributesList;
 		QStringList m_plmAttributesList;
 
-		bool m_isSaveClicked;
+		
 		bool m_addClicked;
 		map<string, string > m_seasonNameIdMap;
 		map<string, string> m_brandNameIdMap;
@@ -165,11 +167,16 @@ namespace CLOVise
 		QLabel* m_totalCountLabel;
 		json m_creatProductFieldsJson = json::object();
 		QSignalMapper *m_buttonSignalMapper;
+		QSignalMapper *m_createActionSignalMapper;
+		QSignalMapper *m_printActionSignalMapper;
 		QStringList m_ColorwayTableColumnNames;
 		string m_currentColorSpec;
 		json m_clientSpecificJson;
 		bool m_2DigiCodeActive;
 		QLineEdit* m_plmColowayName;
+		bool m_isCreateColorSpec = false;
+		int  m_selectedStyleTypeIndex = 0;
+		int  m_prevSelectedStyleTypeIndex = 0;
 
 	private slots:
 		void onBackButtonClicked();
@@ -184,8 +191,9 @@ namespace CLOVise
 		void OnUni2CodeSelected(const QString& _str);
 		void OnplmColorwayNameEntered();
 		void onHorizontalHeaderClicked(int column);
+		void OnCreateColorSpecClicked(int _row);
+		void OnSearchPrintClicked(int _row);
 		void onAddNewBomClicked();
-	
 
 	};
 }

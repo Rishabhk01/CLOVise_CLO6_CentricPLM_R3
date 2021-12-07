@@ -1,22 +1,22 @@
 /*
 * Copyright 2020-2021 CLO-Vise. All rights reserved
 *
-* @file PLMColorSearch.cpp
+* @file PLMPrintSearch.cpp
 *
-* @brief Class implementation for accessing Colors in CLO from PLM.
-* This class has all the variable and methods implementation which are used in PLM Color Search.
+* @brief Class implementation for accessing Prints in CLO from PLM.
+* This class has all the variable and methods implementation which are used in PLM Print Search.
 *
 * @author GoVise
 *
 * @date  27-MAY-2020
 */
-#include "PLMColorSearch.h"
+#include "PLMPrintSearch.h"
 
 #include <iostream>
 #include <string>
 
-#include "CLOVise/PLM/Inbound/Color/PLMColorResults.h"
-#include "CLOVise/PLM/Inbound/Color/PLMColorSearch.h"
+#include "CLOVise/PLM/Inbound/Print/PLMPrintResults.h"
+#include "CLOVise/PLM/Inbound/Print/PLMPrintSearch.h"
 #include "CLOVise/PLM/Helper/Util/Helper.h"
 #include "CLOVise/PLM/Helper/UIHelper/UIHelper.h"
 #include "CLOVise/PLM/Helper/Util/RestAPIUtility.h"
@@ -24,7 +24,7 @@
 #include "CLOVise/PLM/Helper/Util/FlexTypeHelper.h"
 #include "CLOVise/PLM/Helper/UIHelper/CVWidgetGenerator.h"
 #include "CLOVise/PLM/CLOViseSuite/CLOViseSuite.h"
-#include "CLOVise/PLM/Inbound/Color/ColorConfig.h"
+#include "CLOVise/PLM/Inbound/Print/PrintConfig.h"
 #include "classes/widgets/MVDialog.h"
 #include "CLOVise/PLM/Helper/Util/Logger.h"
 #include "CLOVise/PLM/Outbound/PublishToPLM/CreateProduct.h"
@@ -33,34 +33,32 @@ using namespace std;
 
 namespace CLOVise
 {
-	PLMColorSearch* PLMColorSearch::_instance = NULL;
+	PLMPrintSearch* PLMPrintSearch::_instance = NULL;
 	
-	PLMColorSearch* PLMColorSearch::GetInstance()
+	PLMPrintSearch* PLMPrintSearch::GetInstance()
 	{
 		if (_instance == NULL)
-			_instance = new PLMColorSearch();
+			_instance = new PLMPrintSearch();
 		return _instance;
 	}
 
 
-	PLMColorSearch::PLMColorSearch(QWidget* parent) 
+	PLMPrintSearch::PLMPrintSearch(QWidget* parent)
 		: MVDialog(parent)
 	{
-		Logger::Info("PLMColorSearch -> Constructor() -> Start");
+		Logger::Info("PLMPrintSearch -> Constructor() -> Start");
 
-		/*if(!ColorConfig::GetInstance()->isModelExecuted)
-			RESTAPI::SetProgressBarData(18, "Loading Color Search", true);*/
+		
 		setupUi(this);
-		/*QString windowTitle = PLM_NAME + " PLM " + QString::fromStdString(Configuration::GetInstance()->GetLocalizedColorClassName()) + " Search Criteria ";
-		this->setWindowTitle(windowTitle);*/
-		/*this->setWindowTitle("PLM Color Search Criteria");*/
+		QString windowTitle = PLM_NAME + " Print Design Color" + " Search Criteria ";
+		this->setWindowTitle(windowTitle);
 
 #ifdef __APPLE__
 		this->setWindowFlags(Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
 #else
 		this->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
-       /* m_pTitleBar = new MVTitleBar(windowTitle, this);
-        layout()->setMenuBar(m_pTitleBar);*/
+        m_pTitleBar = new MVTitleBar(windowTitle, this);
+        layout()->setMenuBar(m_pTitleBar);
 #endif // !__APPLE__
 		m_hierarchyTreeWidget = nullptr;
 		m_searchTreeWidget_1  = nullptr;
@@ -80,7 +78,7 @@ namespace CLOVise
 		m_searchButton = nullptr;
 		m_hierarchyTreeWidget = CVWidgetGenerator::CreateHirarchyTreeWidget("QTreeWidget{min-height: 230px; min-width: 50px; max-height: 1500px; max-width: 230px; border: 1px solid #000; font-family: ArialMT; font-size: 10px; background-color: #262628; margin-bottom: 20px;} QTreeWidget:item:selected{ color: #46C8FF; }", false);
 		m_hierarchyTreeWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-		//m_hierarchyTreeWidget->hide();
+		m_hierarchyTreeWidget->hide();
 		m_searchTreeWidget_1 = CVWidgetGenerator::CreateSearchCriteriaTreeWidget(/*"QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; }""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }"*/true);
 		m_searchTreeWidget_1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 		m_searchTreeWidget_2 = CVWidgetGenerator::CreateSearchCriteriaTreeWidget(/*"QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; }""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }"*/true);
@@ -105,8 +103,7 @@ namespace CLOVise
 		m_seasonLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 		m_paletteLabel = CVWidgetGenerator::CreateLabel("Palette", QString::fromStdString(BLANK), HEADER_STYLE, true);
 		m_paletteLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-		searchCriteriaLabel = CVWidgetGenerator::CreateLabel("Search Criteria", QString::fromStdString(BLANK), FONT_STYLE, true);
-		searchCriteriaLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+		QLabel* searchCriteriaLabel = CVWidgetGenerator::CreateLabel("Search Criteria", QString::fromStdString(BLANK), HEADER_STYLE, true);
 		QLabel* quickSearchHeaderLabel = CVWidgetGenerator::CreateLabel("Quick Search Criteria", QString::fromStdString(BLANK), HEADER_STYLE, true);
 		quickSearchHeaderLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 		QLabel* quickSearchLabel = CVWidgetGenerator::CreateLabel("Quick Search", QString::fromStdString(BLANK), HEADER_STYLE, true);
@@ -129,9 +126,9 @@ namespace CLOVise
 #endif
 
 		this->setStyleSheet("QDialog{height:539px; width: 1050px;}");
-		ui_paletteSearchWidget->setStyleSheet("#ui_paletteSearchWidget{padding: 10px; width: 920px;  border: 1px solid #000; background-color: #262628; max-height:50px;}");
+		/*ui_paletteSearchWidget->setStyleSheet("#ui_paletteSearchWidget{padding: 10px; width: 920px;  border: 1px solid #000; background-color: #262628; max-height:50px;}");
 		ui_quickSearchWidget->setStyleSheet("#ui_quickSearchWidget{padding: 10px; width: 920px;border: 1px solid #000; background-color: #262628; max-height:42px;}");
-
+*/
 		//initializeColorData();
 		m_flextypeTree.clear();
 		/*selectType = FlexTypeHelper::CreateFlexTypeTree(ColorConfig::GetInstance()->GetColorHierarchyJSON(), m_hierarchyTreeWidget, m_flextypeTree);
@@ -144,12 +141,13 @@ namespace CLOVise
 		m_hierarchyTreeWidget->setFocusPolicy(Qt::NoFocus);*/
 		onHideHirarchy(false);
 		DrawSearchWidget(true);
-
+		//CVWidgetGenerator::CreateViewComboBoxOnSearch(m_viewComboBox, ColorConfig::GetInstance()->GetColorViewJSON(), selectType.toStdString());
+		
 		connectSignalSlots(true);
 
 		m_seasonLabel->hide();
 		m_paletteLabel->hide();
-		m_seasoncomboBox->hide(); 
+		m_seasoncomboBox->hide();
 		m_paletteComboBox->hide();
 		quickSearchHeaderLabel->hide();
 
@@ -192,7 +190,7 @@ namespace CLOVise
 		ui_paletteLayout_1->insertWidget(0, m_seasonLabel);
 		ui_paletteLayout_1->insertWidget(1, m_seasoncomboBox);
 		ui_paletteLayout_1->insertSpacerItem(2, horizontalSpacer_1);		
-
+		
 		ui_paletteLayout_2->insertWidget(0, m_paletteLabel);
 		ui_paletteLayout_2->insertWidget(1, m_paletteComboBox);
 		ui_paletteLayout_2->insertSpacerItem(2, horizontalSpacer_2);
@@ -225,7 +223,7 @@ namespace CLOVise
 
 		m_dateResetButton->hide();
 		UTILITY_API->DeleteProgressBar(true);
-		Logger::Info("PLMColorSearch -> Constructor() -> End");
+		Logger::Info("PLMPrintSearch -> Constructor() -> End");
 	}
 
 	/*
@@ -234,29 +232,29 @@ namespace CLOVise
 	* Exception -
 	* Return -
 	*/
-	void PLMColorSearch::HideHirarchy(bool _hide)
+	void PLMPrintSearch::HideHirarchy(bool _hide)
 	{
-		Logger::Info("PLMColorSearch -> HideHirarchy() -> Start");
+		Logger::Info("PLMPrintSearch -> HideHirarchy() -> Start");
 		if (!_hide)
 		{
 			if (!m_isHidden)
 			{
-				ui_hideAndShowButton->setToolTip("Show");
+				//ui_hideAndShowButton->setToolTip("Show");
 				m_hierarchyTreeWidget->hide();
-				ui_hideAndShowButton->setStyleSheet("#ui_hideAndShowButton {\n" "qproperty-icon: none; \n""image: url(:/CLOVise/PLM/Images/icon_open_tree_none.svg);\n""}\n"
-					"#ui_hideAndShowButton:hover{\n""image: url(:/CLOVise/PLM/Images/icon_open_tree_over.svg);\n""}""QToolTip{ color: #46C8FF; background-color: #33414D; border: 1px #000000; }");
+				//ui_hideAndShowButton->setStyleSheet("#ui_hideAndShowButton {\n" "qproperty-icon: none; \n""image: url(:/CLOVise/PLM/Images/icon_open_tree_none.svg);\n""}\n"
+					//"#ui_hideAndShowButton:hover{\n""image: url(:/CLOVise/PLM/Images/icon_open_tree_over.svg);\n""}""QToolTip{ color: #46C8FF; background-color: #33414D; border: 1px #000000; }");
 				m_isHidden = true;
 			}
 			else
 			{
-				ui_hideAndShowButton->setToolTip("Hide");
+				//ui_hideAndShowButton->setToolTip("Hide");
 				m_hierarchyTreeWidget->show();
-				ui_hideAndShowButton->setStyleSheet("#ui_hideAndShowButton {\n" "qproperty-icon: none; \n""image: url(:/CLOVise/PLM/Images/icon_close_tree_none.svg);\n""}\n"
-					"#ui_hideAndShowButton:hover{\n""image: url(:/CLOVise/PLM/Images/icon_close_tree_over.svg);\n""}""QToolTip{ color: #46C8FF; background-color: #33414D; border: 1px #000000; }");
+				//ui_hideAndShowButton->setStyleSheet("#ui_hideAndShowButton {\n" "qproperty-icon: none; \n""image: url(:/CLOVise/PLM/Images/icon_close_tree_none.svg);\n""}\n"
+					//"#ui_hideAndShowButton:hover{\n""image: url(:/CLOVise/PLM/Images/icon_close_tree_over.svg);\n""}""QToolTip{ color: #46C8FF; background-color: #33414D; border: 1px #000000; }");
 				m_isHidden = false;
 			}
 		}
-		Logger::Info("PLMColorSearch -> HideHirarchy() -> End");
+		Logger::Info("PLMPrintSearch -> HideHirarchy() -> End");
 	}
 
 	/*
@@ -265,16 +263,16 @@ namespace CLOVise
 	* Exception - 
 	* Return -
 	*/
-	void PLMColorSearch::onHideHirarchy(bool _hide)
+	void PLMPrintSearch::onHideHirarchy(bool _hide)
 	{
-		Logger::Info("PLMColorSearch -> onHideHirarchy() -> Start");
+		Logger::Info("PLMPrintSearch -> onHideHirarchy() -> Start");
 		HideHirarchy(_hide);
-		Logger::Info("PLMColorSearch -> onHideHirarchy() -> End");
+		Logger::Info("PLMPrintSearch -> onHideHirarchy() -> End");
 	}
 
-	PLMColorSearch::~PLMColorSearch()
+	PLMPrintSearch::~PLMPrintSearch()
 	{
-		Logger::Info("PLMColorSearch -> Destructor() -> Start");
+		Logger::Info("PLMPrintSearch -> Destructor() -> Start");
 		
 		DisconnectSignalSlots();
 		UIHelper::DeletePointer(m_hierarchyTreeWidget);
@@ -293,8 +291,7 @@ namespace CLOVise
 		UIHelper::DeletePointer(m_backButton);
 		UIHelper::DeletePointer(m_unselectAllButton);
 		UIHelper::DeletePointer(m_searchButton);
-		Logger::Info("PLMColorSearch -> Destructor() -> End");
-		//ColorConfig::GetInstance()->m_colorFieldsJson.clear();
+		Logger::Info("PLMPrintSearch -> Destructor() -> End");
 	}
 
 	/*
@@ -303,12 +300,12 @@ namespace CLOVise
 	* Exception -
 	* Return -
 	*/
-	void PLMColorSearch::ResetDateEditWidget()
+	void PLMPrintSearch::ResetDateEditWidget()
 	{
-		Logger::Info("PLMColorSearch -> ResetDateEditWidget() -> Start");
+		Logger::Info("PLMPrintSearch -> ResetDateEditWidget() -> Start");
 		UIHelper::ResetDate(m_searchTreeWidget_1);
 		UIHelper::ResetDate(m_searchTreeWidget_2);
-		Logger::Info("PLMColorSearch -> ResetDateEditWidget() -> End");
+		Logger::Info("PLMPrintSearch -> ResetDateEditWidget() -> End");
 	}
 
 	/*
@@ -317,11 +314,11 @@ namespace CLOVise
 	* Exception - 
 	* Return -
 	*/
-	void PLMColorSearch::onResetDateEditWidget()
+	void PLMPrintSearch::onResetDateEditWidget()
 	{
-		Logger::Info("PLMColorSearch -> onResetDateEditWidget() -> Start");
+		Logger::Info("PLMPrintSearch -> onResetDateEditWidget() -> Start");
 		ResetDateEditWidget();
-		Logger::Info("PLMColorSearch -> onResetDateEditWidget() -> End");
+		Logger::Info("PLMPrintSearch -> onResetDateEditWidget() -> End");
 	}
 
 	/*
@@ -330,12 +327,12 @@ namespace CLOVise
 	* Exception - 
 	* Return -
 	*/
-	void PLMColorSearch::connectSignalSlots(bool _b)
+	void PLMPrintSearch::connectSignalSlots(bool _b)
 	{
-		Logger::Info("PLMColorSearch -> connectSignalSlots() -> Start");
+		Logger::Info("PLMPrintSearch -> connectSignalSlots() -> Start");
 		if (_b)
 		{
-			QObject::connect(ui_hideAndShowButton, SIGNAL(clicked(bool)), this, SLOT(onHideHirarchy(bool)));
+			//QObject::connect(ui_hideAndShowButton, SIGNAL(clicked(bool)), this, SLOT(onHideHirarchy(bool)));
 			QObject::connect(m_hierarchyTreeWidget, SIGNAL(itemClicked(QTreeWidgetItem*, int)), this, SLOT(onTreeNodeClicked(QTreeWidgetItem*, int)));
 			QObject::connect(m_searchButton, SIGNAL(clicked()), this, SLOT(onClickedSubmitButton())); // should be used
 			QObject::connect(m_backButton, SIGNAL(clicked()), this, SLOT(onClickedBackButton()));
@@ -346,7 +343,7 @@ namespace CLOVise
 		}
 		else
 		{
-			QObject::disconnect(ui_hideAndShowButton, SIGNAL(clicked()), this, SLOT(onHideHirarchy(bool)));
+			//QObject::disconnect(ui_hideAndShowButton, SIGNAL(clicked()), this, SLOT(onHideHirarchy(bool)));
 			QObject::disconnect(m_hierarchyTreeWidget, SIGNAL(itemClicked(QTreeWidgetItem*, int)), this, SLOT(onTreeNodeClicked(QTreeWidgetItem*, int)));
 			QObject::disconnect(m_searchButton, SIGNAL(clicked()), this, SLOT(onClickedSubmitButton())); // should be used
 			QObject::disconnect(m_backButton, SIGNAL(clicked()), this, SLOT(onClickedBackButton()));
@@ -355,7 +352,7 @@ namespace CLOVise
 			QObject::disconnect(m_seasoncomboBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(onSeasonChanged(const QString&)));
 			QObject::disconnect(m_dateResetButton, SIGNAL(clicked()), this, SLOT(onResetDateEditWidget()));
 		}
-		Logger::Info("PLMColorSearch -> connectSignalSlots() -> End");
+		Logger::Info("PLMPrintSearch -> connectSignalSlots() -> End");
 	}
 
 	/*
@@ -364,10 +361,10 @@ namespace CLOVise
 	* Exception -
 	* Return -
 	*/
-	void PLMColorSearch::ClickedBackButton()
+	void PLMPrintSearch::ClickedBackButton()
 	{
 
-		Logger::Info("PLMColorSearch -> ClickedBackButton() -> Start");
+		Logger::Info("PLMPrintSearch -> ClickedBackButton() -> Start");
 		this->hide();
 		switch (Configuration::GetInstance()->GetCurrentScreen())
 		{
@@ -384,7 +381,7 @@ namespace CLOVise
 				UpdateProduct::GetInstance()->show();
 			}
 			break;
-			case COLOR_SEARCH_CLICKED:
+			case PRINT_SEARCH_CLICKED:
 			{
 				CLOVise::CLOViseSuite::GetInstance()->setModal(true);
 				CLOViseSuite::GetInstance()->show();
@@ -392,7 +389,7 @@ namespace CLOVise
 		}
 
 		//PLMColorSearch::Destroy();
-		Logger::Info("PLMColorSearch -> ClickedBackButton() -> End");
+		Logger::Info("PLMPrintSearch -> ClickedBackButton() -> End");
 	}
 
 	/*
@@ -401,11 +398,11 @@ namespace CLOVise
 	* Exception - 
 	* Return -
 	*/
-	void PLMColorSearch::onClickedBackButton()
+	void PLMPrintSearch::onClickedBackButton()
 	{		
-		Logger::Info("PLMColorSearch -> onClickedBackButton() -> Start");
+		Logger::Info("PLMPrintSearch -> onClickedBackButton() -> Start");
 		ClickedBackButton();
-		Logger::Info("PLMColorSearch -> onClickedBackButton() -> End");
+		Logger::Info("PLMPrintSearch -> onClickedBackButton() -> End");
 	}
 
 	/*
@@ -414,89 +411,37 @@ namespace CLOVise
 	* Exception - exception, Char *
 	* Return -
 	*/
-	void PLMColorSearch::ClickedSubmitButton()
+	void PLMPrintSearch::ClickedSubmitButton()
 	{
-		Logger::Info("PLMColorSearch -> ClickedSubmitButton() -> Start");
+		Logger::Info("PLMPrintSearch -> ClickedSubmitButton() -> Start");
 		try
 		{
-			if ((Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED && !ColorConfig::GetInstance()->m_isSearchColor) || (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED && !ColorConfig::GetInstance()->m_isSearchColor))
-			{
-				bool returnValue = false;
-				m_createCriteriaJson[ATTRIBUTES_KEY] = UIHelper::CollectSearchCriteriaFields(m_searchTreeWidget_1, m_searchTreeWidget_2);
-				UIHelper::ValidateForValidParams(m_createCriteriaJson, COLOR_MODULE);
-				this->hide();
-				RESTAPI::SetProgressBarData(30, "Adding Colors", true);
-				UTILITY_API->SetProgress("Adding Colors", (qrand() % 101));
+			collectSearchUIFields();
+			Logger::Info("PLMPrintSearch=================m_searchCriteriaJson "+to_string( m_searchCriteriaJson));
 
-				RESTAPI::SetProgressBarData(14, "Adding Colors", true);
-				ColorConfig::GetInstance()->SetDataFromResponse(m_createCriteriaJson);
-				Logger::Debug("PLMColorResults -> colorResultTableDownload_clicked() -> CreateProduct::GetInstance()");				
-				if (Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED)
-				{
-					returnValue = CreateProduct::GetInstance()->UpdateColorInColorways(ColorConfig::GetInstance()->createdColorId, ColorConfig::GetInstance()->GetColorResultsSON());
-					if (returnValue)
-					{
-						Logger::Debug("PLMColorResults -> void onDownloadClicked TRue");
-						RESTAPI::SetProgressBarData(0, "", false);
-						CreateProduct::GetInstance()->setModal(true);
-						CreateProduct::GetInstance()->show();
-					}
-					else
-					{
-						Logger::Debug("PLMColorResults -> void onDownloadClicked False");
-						RESTAPI::SetProgressBarData(0, "", false);
-						UTILITY_API->DisplayMessageBox(Configuration::GetInstance()->GetLocalizedColorClassName() + " Specification must be unique");
-						this->show();
-					}
-				}
-				else if (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED)
-				{
-					returnValue = UpdateProduct::GetInstance()->UpdateColorInColorways(ColorConfig::GetInstance()->createdColorId, ColorConfig::GetInstance()->GetColorResultsSON());
-					if (returnValue)
-					{
-						Logger::Debug("PLMColorResults -> void onDownloadClicked TRue");
-						RESTAPI::SetProgressBarData(0, "", false);
-						UpdateProduct::GetInstance()->setModal(true);
-						UpdateProduct::GetInstance()->show();
-					}
-					else
-					{
-						Logger::Debug("PLMColorResults -> void onDownloadClicked False");
-						RESTAPI::SetProgressBarData(0, "", false);
-						UTILITY_API->DisplayMessageBox(Configuration::GetInstance()->GetLocalizedColorClassName() + " Specification must be unique");
-						this->show();
-					}
-				}				
-				Logger::Debug("PLMColorResults -> colorResultTableDownload_clicked() -> CreateProduct::GetInstance() returnValue::"+to_string(returnValue));
-				
-			}
-			else
+			UIHelper::ValidateForValidParams(m_searchCriteriaJson, PRINT_MODULE);
+			Logger::Info("PLMPrintSearch=================(m_viewComboBox->currentIndex() " + to_string(m_viewComboBox->currentIndex()));
+			PrintConfig::GetInstance()->SetSelectedViewIdx(m_viewComboBox->currentIndex());
+			PrintConfig::GetInstance()->SetSearchCriteriaJSON(m_searchCriteriaJson);
+			this->hide();
+			//tmporarilry clearing Results object
+			//..... need to implement result related funtionalities.
+			UTILITY_API->CreateProgressBar();
+			RESTAPI::SetProgressBarData(15, "Searching Print Design Color...", true);
+			UTILITY_API->SetProgress("Searching Print Design Color...", (qrand() % 101));			
+			PrintConfig::GetInstance()->SetDataFromResponse(PrintConfig::GetInstance()->GetSearchCriteriaJSON());
+			PLMPrintResults::GetInstance()->setModal(true);
+			if (PrintConfig::GetInstance()->GetIsModelExecuted() || Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED || Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED)
 			{
-				collectSearchUIFields();
-				UIHelper::ValidateForValidParams(m_searchCriteriaJson, COLOR_MODULE);
-				ColorConfig::GetInstance()->SetSelectedViewIdx(m_viewComboBox->currentIndex());
-				ColorConfig::GetInstance()->SetSearchCriteriaJSON(m_searchCriteriaJson);
-				this->hide();
-				//tmporarilry clearing Results object
-				//..... need to implement result related funtionalities.
-				UTILITY_API->CreateProgressBar();
-				RESTAPI::SetProgressBarData(15, "Searching " + Configuration::GetInstance()->GetLocalizedColorClassName(), true);
-				UTILITY_API->SetProgress("Searching " + Configuration::GetInstance()->GetLocalizedColorClassName(), (qrand() % 101));
-				ColorConfig::GetInstance()->SetDataFromResponse(ColorConfig::GetInstance()->GetSearchCriteriaJSON());
-				PLMColorResults::GetInstance()->setModal(true);
-				if (ColorConfig::GetInstance()->GetIsModelExecuted() || ColorConfig::GetInstance()->m_resultAfterLogout)
-				{
-					PLMColorResults::GetInstance()->currPageLabel->setText("1");
-					PLMColorResults::GetInstance()->DrawResultWidget(false);
-					ColorConfig::GetInstance()->m_resultAfterLogout = false;
-				}
-				RESTAPI::SetProgressBarData(0, "", false);
-				PLMColorResults::GetInstance()->exec();
-			}
+				PLMPrintResults::GetInstance()->currPageLabel->setText("1");
+				PLMPrintResults::GetInstance()->DrawResultWidget(false);
+			}			
+			RESTAPI::SetProgressBarData(0, "", false);
+			PLMPrintResults::GetInstance()->exec();
 		}
 		catch (string msg)
 		{
-			Logger::Error("PLMColorSearch -> OnClickedSubmitButton Exception :: " + msg);
+			Logger::Error("PLMPrintSearch -> OnClickedSubmitButton Exception :: " + msg);
 			RESTAPI::SetProgressBarData(0, "", false);
 			UTILITY_API->DisplayMessageBox(msg);
 			this->show();
@@ -504,19 +449,19 @@ namespace CLOVise
 		catch (exception& e)
 		{
 			RESTAPI::SetProgressBarData(0, "", false);
-			Logger::Error("PLMColorSearch -> OnClickedSubmitButton Exception :: " + string(e.what()));
+			Logger::Error("PLMPrintSearch -> OnClickedSubmitButton Exception :: " + string(e.what()));
 			UTILITY_API->DisplayMessageBox(e.what());
 			this->show();
 		}
 		catch (const char* msg)
 		{
-			Logger::Error("PLMColorSearch -> OnClickedSubmitButton Exception :: " + string(msg));
+			Logger::Error("PLMPrintSearch -> OnClickedSubmitButton Exception :: " + string(msg));
 			wstring wstr(msg, msg + strlen(msg));
 			RESTAPI::SetProgressBarData(0, "", false);
 			UTILITY_API->DisplayMessageBoxW(wstr);
 			this->show();
 		}
-		Logger::Info("PLMColorSearch -> ClickedSubmitButton() -> End");
+		Logger::Info("PLMPrintSearch -> ClickedSubmitButton() -> End");
 	}
 
 	/*
@@ -525,11 +470,11 @@ namespace CLOVise
 	* Exception - exception, Char *
 	* Return -
 	*/
-	void PLMColorSearch::onClickedSubmitButton()
+	void PLMPrintSearch::onClickedSubmitButton()
 	{
-		Logger::Info("PLMColorSearch -> onClickedSubmitButton() -> Start");
+		Logger::Info("PLMPrintSearch -> onClickedSubmitButton() -> Start");
 		ClickedSubmitButton();
-		Logger::Info("PLMColorSearch -> onClickedSubmitButton() -> End");
+		Logger::Info("PLMPrintSearch -> onClickedSubmitButton() -> End");
 	}
 
 	/*
@@ -538,9 +483,9 @@ namespace CLOVise
 	* Exception - exception, Char *
 	* Return -
 	*/
-	void PLMColorSearch::FilterChanged(const QString& _item)
+	void PLMPrintSearch::FilterChanged(const QString& _item)
 	{
-		Logger::Info("PLMColorSearch -> FilterChanged() -> Start");
+		Logger::Info("PLMPrintSearch -> FilterChanged() -> Start");
 		try
 		{
 			if (!m_hierarchyLoading)
@@ -550,7 +495,7 @@ namespace CLOVise
 				UTILITY_API->CreateProgressBar();
 				UTILITY_API->SetProgress("Loading", (qrand() % 101));
 			}
-			drawSearchUI(selectType, false, _item.toStdString(), ColorConfig::GetInstance()->GetColorFieldsJSON());
+			drawSearchUI(selectType, false, _item.toStdString());
 			if (!m_hierarchyLoading) {
 				UTILITY_API->DeleteProgressBar(false);
 				this->show();
@@ -558,24 +503,24 @@ namespace CLOVise
 		}
 		catch (string msg)
 		{
-			Logger::Error("PLMColorSearch -> FilterChanged Exception :: " + msg);
+			Logger::Error("PLMPrintSearch -> FilterChanged Exception :: " + msg);
 			UTILITY_API->DisplayMessageBox(msg);
 			this->close();
 		}
 		catch (exception& e)
 		{
-			Logger::Error("PLMColorSearch -> FilterChanged Exception :: " + string(e.what()));
+			Logger::Error("PLMPrintSearch -> FilterChanged Exception :: " + string(e.what()));
 			UTILITY_API->DisplayMessageBox(e.what());
 			this->close();
 		}
 		catch (const char* msg)
 		{
-			Logger::Error("PLMColorSearch -> FilterChanged Exception :: " + string(msg));
+			Logger::Error("PLMPrintSearch -> FilterChanged Exception :: " + string(msg));
 			wstring wstr(msg, msg + strlen(msg));
 			UTILITY_API->DisplayMessageBoxW(wstr);
 			this->close();
 		}
-		Logger::Info("PLMColorSearch -> FilterChanged() -> End");
+		Logger::Info("PLMPrintSearch -> FilterChanged() -> End");
 	}
 
 	/*
@@ -584,11 +529,11 @@ namespace CLOVise
 	* Exception - exception, Char *
 	* Return -
 	*/
-	void PLMColorSearch::onFilterChanged(const QString& _item)
+	void PLMPrintSearch::onFilterChanged(const QString& _item)
 	{
-		Logger::Info("PLMColorSearch -> onFilterChanged() -> Start");
+		Logger::Info("PLMPrintSearch -> onFilterChanged() -> Start");
 		FilterChanged(_item);
-		Logger::Info("PLMColorSearch -> onFilterChanged() -> End");
+		Logger::Info("PLMPrintSearch -> onFilterChanged() -> End");
 	}
 
 	/*
@@ -597,9 +542,9 @@ namespace CLOVise
 	* Exception - exception, Char *
 	* Return -
 	*/
-	void PLMColorSearch::CheckBoxChecked(bool _checked)
+	void PLMPrintSearch::CheckBoxChecked(bool _checked)
 	{
-		Logger::Info("PLMColorSearch -> CheckBoxChecked() -> Start");
+		Logger::Info("PLMPrintSearch -> CheckBoxChecked() -> Start");
 		
 		try
 		{
@@ -612,18 +557,18 @@ namespace CLOVise
 				Configuration::GetInstance()->SetProgressBarProgress(RESTAPI::SetProgressBarProgress(Configuration::GetInstance()->GetProgressBarProgress(), 5, "Loading"));
 
 				DataUtility::GetInstance()->SetProgressBarMsg("Loading");
-				UIHelper::CheckBoxChecked(_checked, ColorConfig::GetInstance()->GetSeasonPaletteJSON(true), m_seasoncomboBox, m_paletteComboBox, m_seasonLabel, m_paletteLabel, COLOR_MODULE);
+				UIHelper::CheckBoxChecked(_checked, PrintConfig::GetInstance()->GetSeasonPaletteJSON(true), m_seasoncomboBox, m_paletteComboBox, m_seasonLabel, m_paletteLabel, PRINT_MODULE);
 				this->show();
 				UTILITY_API->DeleteProgressBar(true);
 			}
 			else
 			{
-				UIHelper::CheckBoxChecked(_checked, ColorConfig::GetInstance()->GetSeasonPaletteJSON(false), m_seasoncomboBox, m_paletteComboBox, m_seasonLabel, m_paletteLabel, COLOR_MODULE);
+				UIHelper::CheckBoxChecked(_checked, PrintConfig::GetInstance()->GetSeasonPaletteJSON(false), m_seasoncomboBox, m_paletteComboBox, m_seasonLabel, m_paletteLabel, PRINT_MODULE);
 			}
 		}
 		catch (string msg)
 		{
-			Logger::Error("PLMColorSearch -> CheckBoxChecked Exception :: " + msg);
+			Logger::Error("PLMPrintSearch -> CheckBoxChecked Exception :: " + msg);
 			UTILITY_API->DisplayMessageBox(msg);
 			m_paletteCheckBox->setCheckState(Qt::Unchecked);
 			this->show();
@@ -631,7 +576,7 @@ namespace CLOVise
 		}
 		catch (exception& e)
 		{
-			Logger::Error("PLMColorSearch -> CheckBoxChecked Exception :: " + string(e.what()));
+			Logger::Error("PLMPrintSearch -> CheckBoxChecked Exception :: " + string(e.what()));
 			UTILITY_API->DisplayMessageBox(e.what());
 			m_paletteCheckBox->setCheckState(Qt::Unchecked);
 			this->show();
@@ -639,14 +584,14 @@ namespace CLOVise
 		}
 		catch (const char* msg)
 		{
-			Logger::Error("PLMColorSearch -> CheckBoxChecked Exception :: " + string(msg));
+			Logger::Error("PLMPrintSearch -> CheckBoxChecked Exception :: " + string(msg));
 			wstring wstr(msg, msg + strlen(msg));
 			UTILITY_API->DisplayMessageBoxW(wstr);
 			m_paletteCheckBox->setCheckState(Qt::Unchecked);
 			this->show();
 			UTILITY_API->DeleteProgressBar(true);
 		}
-		Logger::Info("PLMColorSearch -> CheckBoxChecked() -> End");
+		Logger::Info("PLMPrintSearch -> CheckBoxChecked() -> End");
 	}
 
 	/*
@@ -655,11 +600,11 @@ namespace CLOVise
 	* Exception - exception, Char *
 	* Return -
 	*/
-	void PLMColorSearch::onCheckBoxChecked(bool _checked)
+	void PLMPrintSearch::onCheckBoxChecked(bool _checked)
 	{
-		Logger::Info("PLMColorSearch -> onCheckBoxChecked() -> Start");
+		Logger::Info("PLMPrintSearch -> onCheckBoxChecked() -> Start");
 		CheckBoxChecked(_checked);
-		Logger::Info("PLMColorSearch -> onCheckBoxChecked() -> End");
+		Logger::Info("PLMPrintSearch -> onCheckBoxChecked() -> End");
 	}
 
 	/*
@@ -668,33 +613,33 @@ namespace CLOVise
 	* Exception - exception, Char *
 	* Return -
 	*/
-	void PLMColorSearch::SeasonChanged(const QString& _selectedSeason)
+	void PLMPrintSearch::SeasonChanged(const QString& _selectedSeason)
 	{
-		Logger::Info("PLMColorSearch -> SeasonChanged() -> Start");
+		Logger::Info("PLMPrintSearch -> SeasonChanged() -> Start");
 		try
 		{
-			UIHelper::SeasonChanged(_selectedSeason.toStdString(), ColorConfig::GetInstance()->GetSeasonPaletteJSON(false), m_paletteComboBox, m_paletteLabel);
+			UIHelper::SeasonChanged(_selectedSeason.toStdString(), PrintConfig::GetInstance()->GetSeasonPaletteJSON(false), m_paletteComboBox, m_paletteLabel);
 		}
 		catch (string msg)
 		{
-			Logger::Error("PLMColorSearch -> SeasonChanged Exception :: " + msg);
+			Logger::Error("PLMPrintSearch -> SeasonChanged Exception :: " + msg);
 			UTILITY_API->DisplayMessageBox(msg);
 			m_paletteCheckBox->setCheckState(Qt::Unchecked);
 		}
 		catch (exception& e)
 		{
-			Logger::Error("PLMColorSearch -> SeasonChanged Exception :: " + string(e.what()));
+			Logger::Error("PLMPrintSearch -> SeasonChanged Exception :: " + string(e.what()));
 			UTILITY_API->DisplayMessageBox(e.what());
 			m_paletteCheckBox->setCheckState(Qt::Unchecked);
 		}
 		catch (const char* msg)
 		{
-			Logger::Error("PLMColorSearch -> SeasonChanged Exception :: " + string(msg));
+			Logger::Error("PLMPrintSearch -> SeasonChanged Exception :: " + string(msg));
 			wstring wstr(msg, msg + strlen(msg));
 			UTILITY_API->DisplayMessageBoxW(wstr);
 			m_paletteCheckBox->setCheckState(Qt::Unchecked);
 		}
-		Logger::Info("PLMColorSearch -> SeasonChanged() -> End");
+		Logger::Info("PLMPrintSearch -> SeasonChanged() -> End");
 	}
 
 	/*
@@ -703,11 +648,11 @@ namespace CLOVise
 	* Exception - exception, Char *
 	* Return -
 	*/
-	void PLMColorSearch::onSeasonChanged(const QString& _selectedSeason)
+	void PLMPrintSearch::onSeasonChanged(const QString& _selectedSeason)
 	{
-		Logger::Info("PLMColorSearch -> onSeasonChanged() -> Start");
+		Logger::Info("PLMPrintSearch -> onSeasonChanged() -> Start");
 		SeasonChanged(_selectedSeason);
-		Logger::Info("PLMColorSearch -> onSeasonChanged() -> End");
+		Logger::Info("PLMPrintSearch -> onSeasonChanged() -> End");
 	}
 
 	/*
@@ -716,9 +661,9 @@ namespace CLOVise
 	* Exception - exception, Char *
 	* Return -
 	*/
-	void PLMColorSearch::TreeNodeClicked(QTreeWidgetItem* _item, int _column)
+	void PLMPrintSearch::TreeNodeClicked(QTreeWidgetItem* _item, int _column)
 	{
-		Logger::Info("PLMColorSearch -> TreeNodeClicked() -> Start");
+		Logger::Info("PLMPrintSearch -> TreeNodeClicked() -> Start");
 		m_hierarchyLoading = true;
 		try
 		{
@@ -732,8 +677,8 @@ namespace CLOVise
 				_item->setSelected(true);
 				selectType = _item->data(1, Qt::UserRole).toString();
 				UTILITY_API->SetProgress("Loading", (qrand() % 101));
-				CVWidgetGenerator::CreateViewComboBoxOnSearch(m_viewComboBox, ColorConfig::GetInstance()->GetColorViewJSON(), selectType.toStdString());
-				drawSearchUI(selectType, false, BLANK, ColorConfig::GetInstance()->GetColorFieldsJSON());
+				CVWidgetGenerator::CreateViewComboBoxOnSearch(m_viewComboBox, PrintConfig::GetInstance()->GetPrintViewJSON(), selectType.toStdString());
+				drawSearchUI(selectType, false, BLANK);
 				m_hierarchyLoading = false;
 				UTILITY_API->DeleteProgressBar(true);
 				this->show();
@@ -741,24 +686,24 @@ namespace CLOVise
 		}
 		catch (string msg)
 		{
-			Logger::Error("PLMColorSearch -> TreeNodeClicked Exception :: " + msg);
+			Logger::Error("PLMPrintSearch -> TreeNodeClicked Exception :: " + msg);
 			UTILITY_API->DisplayMessageBox(msg);
 			this->close();
 		}
 		catch (exception& e)
 		{
-			Logger::Error("PLMColorSearch -> TreeNodeClicked Exception :: " + string(e.what()));
+			Logger::Error("PLMPrintSearch -> TreeNodeClicked Exception :: " + string(e.what()));
 			UTILITY_API->DisplayMessageBox(e.what());
 			this->close();
 		}
 		catch (const char* msg)
 		{
-			Logger::Error("PLMColorSearch -> TreeNodeClicked Exception :: " + string(msg));
+			Logger::Error("PLMPrintSearch -> TreeNodeClicked Exception :: " + string(msg));
 			wstring wstr(msg, msg + strlen(msg));
 			UTILITY_API->DisplayMessageBoxW(wstr);
 			this->close();
 		}
-		Logger::Info("PLMColorSearch -> TreeNodeClicked() -> End");
+		Logger::Info("PLMPrintSearch -> TreeNodeClicked() -> End");
 	}
 
 	/*
@@ -767,11 +712,11 @@ namespace CLOVise
 	* Exception - exception, Char *
 	* Return -
 	*/
-	void PLMColorSearch::onTreeNodeClicked(QTreeWidgetItem* _item, int _column)
+	void PLMPrintSearch::onTreeNodeClicked(QTreeWidgetItem* _item, int _column)
 	{
-		Logger::Info("PLMColorSearch -> onTreeNodeClicked() -> Start");
+		Logger::Info("PLMPrintSearch -> onTreeNodeClicked() -> Start");
 		TreeNodeClicked(_item, _column);
-		Logger::Info("PLMColorSearch -> onTreeNodeClicked() -> End");
+		Logger::Info("PLMPrintSearch -> onTreeNodeClicked() -> End");
 	}
 
 	/*
@@ -780,18 +725,14 @@ namespace CLOVise
 	* Exception - exception, Char *
 	* Return -
 	*/
-	void PLMColorSearch::drawSearchUI(QString _selectType, bool _drawFilter, string _selectedFilter, json _fieldsJson)
+	void PLMPrintSearch::drawSearchUI(QString _selectType, bool _drawFilter, string _selectedFilter)
 	{		
-		Logger::Info("PLMColorSearch -> drawSearchUI() -> Start");
+		Logger::Info("PLMPrintSearch -> drawSearchUI() -> Start");
 		try
 		{
-			ColorConfig::GetInstance()->SetDateFlag(false);
-			QStringList attScops = ColorConfig::GetInstance()->GetAttScopes();
-			/*if (!CVWidgetGenerator::DrawFilterAndSearchCriteriaWidget(ColorConfig::GetInstance()->GetColorFilterJSON(), m_filterComboBox, m_searchTreeWidget, _selectType, _selectedFilter, attScops, _drawFilter))
-			{	*/	
-			/*if (ColorConfig::GetInstance()->GetIsModelExecuted())
-				Configuration::GetInstance()->SetProgressBarProgress(RESTAPI::SetProgressBarProgress(Configuration::GetInstance()->GetProgressBarProgress(), 10, "Loading Color Search"));*/
-				FlexTypeHelper::DrawDefaultSearchCriteriaWidget(_fieldsJson, _selectType.toStdString(), m_searchTreeWidget_1, m_searchTreeWidget_2, attScops);
+			PrintConfig::GetInstance()->SetDateFlag(false);
+			QStringList attScops = PrintConfig::GetInstance()->GetAttScopes();
+				FlexTypeHelper::DrawDefaultSearchCriteriaWidget(PrintConfig::GetInstance()->GetPrintFieldsJSON(), _selectType.toStdString(), m_searchTreeWidget_1, m_searchTreeWidget_2, attScops);
 		  //}
 				m_searchTreeWidget_1->setColumnCount(2);
 				m_searchTreeWidget_1->setHeaderHidden(true);
@@ -809,7 +750,7 @@ namespace CLOVise
 				m_searchTreeWidget_2->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; outline: 0;}""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
 
 				/*if (!m_searchTreeWidget_2->isHidden())
-					this->setMinimumSize(850, 650);*/ // this commented because, when two widget apear on the searchtable one widget overon anothere widget.
+					this->setMinimumSize(850, 650);*/
 			//if (!ColorConfig::GetInstance()->GetDateFlag())
 				m_dateResetButton->hide();
 			/*else
@@ -818,26 +759,26 @@ namespace CLOVise
 		}
 		catch (string msg)
 		{
-			Logger::Error("PLMColorSearch -> drawSearchUI() Exception :: " + msg);		
+			Logger::Error("PLMPrintSearch -> drawSearchUI() Exception :: " + msg);		
 			this->close();
 			CLOViseSuite::GetInstance()->show();
 		
 		}
 		catch (exception& e)
 		{
-			Logger::Error("PLMColorSearch -> drawSearchUI() Exception :: " + string(e.what()));
+			Logger::Error("PLMPrintSearch -> drawSearchUI() Exception :: " + string(e.what()));
 			this->close();
 			CLOViseSuite::GetInstance()->show();
 			//throw e;
 		}
 		catch (const char* msg)
 		{
-			Logger::Error("PLMColorSearch -> drawSearchUI() Exception :: " + string(msg));
+			Logger::Error("PLMPrintSearch -> drawSearchUI() Exception :: " + string(msg));
 			this->close();
 			CLOViseSuite::GetInstance()->show();
 			//throw msg;
 		}
-		Logger::Info("PLMColorSearch -> drawSearchUI() -> End");
+		Logger::Info("PLMPrintSearch -> drawSearchUI() -> End");
 	}
 
 	/*
@@ -846,9 +787,9 @@ namespace CLOVise
 	* Exception - 
 	* Return -
 	*/
-	void  PLMColorSearch::collectSearchUIFields()
+	void  PLMPrintSearch::collectSearchUIFields()
 	{
-		Logger::Info("PLMColorSearch -> collectSearchUIFields() -> Start");
+		Logger::Info("PLMPrintSearch -> collectSearchUIFields() -> Start");
 		//UTILITY_API->DisplayMessageBox("collectSearchUIFields()::" + to_string(m_searchCriteriaJson));
 		try
 		{
@@ -888,25 +829,25 @@ namespace CLOVise
 			string tempType = selectType.toStdString();
 			tempType = FormatHelper::ReplaceString(tempType, "\\\\", "\\");
 			m_searchCriteriaJson[FLEX_TYPE_STRING_KEY] = tempType;
-			m_searchCriteriaJson[MODULE_KEY] = COLOR_MODULE;
+			m_searchCriteriaJson[MODULE_KEY] = PRINT_MODULE;
 			m_searchCriteriaJson[INCLUDE_SUPPLIER_STRING_KEY] = "";
 			m_searchCriteriaJson[SEARCHBY_SUPPLIER_STRING_KEY] = "";
 			m_searchCriteriaJson[REQ_FROM_CLO_KEY] = "true";
 			m_searchCriteriaJson[ATTRIBUTES_KEY] = UIHelper::CollectSearchCriteriaFields(m_searchTreeWidget_1, m_searchTreeWidget_2);
-			Logger::Info("PLMColorSearch -> collectSearchUIFields() -> End");
+			Logger::Info("PLMPrintSearch -> collectSearchUIFields() -> End");
 		}
 		catch (string msg)
 		{
-			Logger::Error("PLMColorSearch::collectSearchUIFields() Exception - " + msg);
+			Logger::Error("PLMPrintSearch::collectSearchUIFields() Exception - " + msg);
 		}
 		catch (exception & e)
 		{
-			Logger::Error("PLMColorSearch::collectSearchUIFields() Exception - " + string(e.what()));
+			Logger::Error("PLMPrintSearch::collectSearchUIFields() Exception - " + string(e.what()));
 		}
 		catch (const char* msg)
 		{
 			wstring wstr(msg, msg + strlen(msg));
-			Logger::Error("PLMColorSearch::collectSearchUIFields() Exception - " + string(msg));
+			Logger::Error("PLMPrintSearch::collectSearchUIFields() Exception - " + string(msg));
 		}
 	}
 
@@ -916,60 +857,18 @@ namespace CLOVise
 	* Exception - 
 	* Return -
 	*/
-	void PLMColorSearch::reject()
+	void PLMPrintSearch::reject()
 	{		
 		this->accept();
 	}
 
-	/*
-	* Description - CreateColorSpecWidget() method is for recreate the widget data and the naming changes.
-	* Parameter -  
-	* Exception -
-	* Return -
-	*/
-	void PLMColorSearch::CreateColorSpecWidget()
-	{
-		Logger::Info("INFO::PLMColorSearch -> SetCriteriaHeader() -> Start");
-		if ((Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED && !ColorConfig::GetInstance()->m_isSearchColor) || (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED && !ColorConfig::GetInstance()->m_isSearchColor))
-		{
-			QString windowTitle = PLM_NAME + " PLM " + QString::fromStdString(Configuration::GetInstance()->GetLocalizedColorClassName()) + " Specification Creation";
-			this->setWindowTitle(windowTitle);
-			m_pTitleBar = new MVTitleBar(windowTitle, this);
-			layout()->setMenuBar(m_pTitleBar);
-			string colorspecName = "Color Specification Creation";
-			searchCriteriaLabel->setText(QString::fromStdString(colorspecName));
-			ColorConfig::GetInstance()->SetDateFlag(false);
-			QStringList attScops = ColorConfig::GetInstance()->GetAttScopes();
-			m_searchTreeWidget_1->clear();
-			m_searchTreeWidget_2->clear();
-			drawSearchUI(selectType, false, BLANK, ColorConfig::GetInstance()->GetPLMConfigJson());
-			m_searchButton->setText("Save");
-			m_searchButton->setIcon(QIcon(SAVE_HOVER_ICON_PATH));
-			m_searchButton->setToolTip("Save");
-		}
-		else
-		{
-			QString windowTitle = PLM_NAME + " PLM " + QString::fromStdString(Configuration::GetInstance()->GetLocalizedColorClassName()) + " Search Criteria ";
-			this->setWindowTitle(windowTitle);
-			m_pTitleBar = new MVTitleBar(windowTitle, this);
-			layout()->setMenuBar(m_pTitleBar);
-			selectType = QString::fromStdString(COLOR_ROOT_TYPE);
-			m_searchTreeWidget_1->clear();
-			m_searchTreeWidget_2->clear();
-			drawSearchUI(selectType, false, BLANK, ColorConfig::GetInstance()->GetColorFieldsJSON());
-			searchCriteriaLabel->setText("Search Criteria");
-			m_searchButton->setText("Search");
-			m_searchButton->setIcon(QIcon(SEARCH_HOVER_ICON_PATH));
-			m_searchButton->setToolTip("Search");
-		}
-	}
 	/*
 	* Description - GetTreewidget() method is for pass a treeWidget.
 	* Parameter - int 
 	* Exception -
 	* Return -QTreeWidget
 	*/
-	QTreeWidget* PLMColorSearch::GetTreewidget(int _index)
+	QTreeWidget* PLMPrintSearch::GetTreewidget(int _index)
 	{
 		if (_index == 0)
 			return m_searchTreeWidget_1;
@@ -981,23 +880,27 @@ namespace CLOVise
 
 	/*
 	* Description - DrawSearchWidget() method is create/reset the search widget.
-	* Parameter - bool
+	* Parameter -
 	* Exception -
 	* Return -
 	*/
-	void PLMColorSearch::DrawSearchWidget(bool _isFromConstructor)
+	void PLMPrintSearch::DrawSearchWidget(bool _isFromConstructor)
 	{
-		Logger::Info("PLMColorSearch -> DrawSearchWidget() -> Start");
-		if(!_isFromConstructor)
+		Logger::Info("PLMPrintSearch -> DrawSearchWidget() -> Start");
+		if (!_isFromConstructor)
 		{
 			UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_1);
 			UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_2);
 		}
 		else
 		{
-			selectType = QString::fromStdString(COLOR_ROOT_TYPE);
-			CreateColorSpecWidget();
+			selectType = QString::fromStdString(PRINT_ROOT_TYPE);
+			if (PrintConfig::GetInstance()->GetIsModelExecuted())
+			{
+				Configuration::GetInstance()->SetProgressBarProgress(RESTAPI::SetProgressBarProgress(Configuration::GetInstance()->GetProgressBarProgress(), 8, "Loading Print Design Color Search..."));
+			}
+			drawSearchUI(selectType, false, BLANK);
 		}
-		Logger::Info("PLMColorSearch -> DrawSearchWidget() -> End");
+		Logger::Info("PLMPrintSearch -> DrawSearchWidget() -> End");
 	}
 }

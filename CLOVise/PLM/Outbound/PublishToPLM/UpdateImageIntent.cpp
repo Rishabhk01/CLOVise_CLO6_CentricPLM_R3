@@ -135,7 +135,10 @@ namespace CLOVise
 		//includeAvatarLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
 		m_colorwayComboBox = CVWidgetGenerator::CreateComboBox(QString::fromStdString("Style & Colorway"), "", true);
-		m_colorwayComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+		m_colorwayComboBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+		m_colorwayComboBox->setMaximumWidth(200);
+		m_colorwayComboBox->setMinimumWidth(200);
+		m_colorwayComboBox->setMinimumContentsLength(200);
 
 		QSpacerItem *horizontalSpacer = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Expanding);
 		QSpacerItem *horizontalSpacer1 = new QSpacerItem(1, 1, QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -438,6 +441,7 @@ namespace CLOVise
 					colorwayView.viewLabelMap.insert(make_pair(view, selectedImageLabels));
 					Logger::Debug("UpdateImageIntent -> onAddToQueueButtonClicked() -> colorwayView.viewUploadId[view]:" + colorwayView.viewUploadId[view]);
 					m_ColorwayViewMap.insert(make_pair(selectedColorway.toStdString(), colorwayView));
+					Logger::Debug("UpdateImageIntent -> onAddToQueueButtonClicked() ->m_colorwayViewMap size() after Insert: " + to_string(m_ColorwayViewMap.size()));
 				}
 
 				m_imageQueueTable->setColumnCount(4);
@@ -920,7 +924,7 @@ namespace CLOVise
 		if (it != m_ColorwayViewMap.end())
 		{
 			Logger::Debug("UpdateImageIntent -> IsValidImageIntent() -> it->second.defaultImage" + to_string(it->second.defaultImage));
-			
+
 			if (UpdateProduct::GetInstance()->m_editButtonClicked)
 			{
 				if (it->second.defaultImage != _view && it->second.defaultImage != -1 && it->second.defaultImage != UpdateProduct::GetInstance()->m_currentViewSelected && m_setDefaultCheckBox->isChecked())
@@ -929,7 +933,7 @@ namespace CLOVise
 			else
 			{
 				if(it->second.defaultImage != -1 && m_setDefaultCheckBox->isChecked())
-				defaultselected = true;
+					defaultselected = true;
 			}
 			if(defaultselected)
 			{
@@ -937,6 +941,9 @@ namespace CLOVise
 				throw (throwValue);
 			}
 		}
+		else
+			return true;
+
 		QString currentViewName;
 		switch (UpdateProduct::GetInstance()->m_currentViewSelected)
 		{
@@ -993,7 +1000,9 @@ namespace CLOVise
 		else
 		{
 			Logger::Debug("UpdateImageIntent -> IsValidImageIntent() -> 4");
-			if (it->second.viewUploadId[_view] != "")
+			Logger::Debug("UpdateImageIntent -> IsValidImageIntent() -> it->second.viewUploadId[_view]" + it->second.viewUploadId[_view]);
+
+			if (it->second.viewUploadId[_view] == "1")// means selected view is already selected 
 				retVal = false;
 			else
 				retVal = true;

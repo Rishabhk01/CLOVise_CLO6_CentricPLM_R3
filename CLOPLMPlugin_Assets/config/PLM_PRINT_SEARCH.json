@@ -1,0 +1,130 @@
+{
+  "resultsSupportedAttTypes": [
+    "userList",
+    "boolean",
+    "date",
+    "text",
+    "derivedString",
+    "textArea",
+    "driven",
+    "moaList",
+    "choice",
+    "float",
+    "sequence",
+    "constant",
+    "integer",
+    "currency",
+    "object_ref",
+    "object_ref_list"
+  ],
+  "maxUploadFileSizeLimit": "500",
+  "userAccessPermissions": [
+    "hasReadAccess",
+    "hasCreateAccess",
+    "hasModifyAccess",
+    "hasDeleteAccess"
+  ],
+  "hierarchy": {
+    "typeName": "Print",
+    "subType": [
+      {
+        "typeName": "Color\\Solid",
+        "subType": [],
+        "typeDisplayName": "Color Solid"
+      },
+      {
+        "typeName": "Color\\Custom Color",
+        "subType": [],
+        "typeDisplayName": "Custom Color"
+      },
+      {
+        "typeName": "Color\\Print and Pattern",
+        "subType": [],
+        "typeDisplayName": "Print and Pattern"
+      },
+      {
+        "typeName": "Color\\Washes",
+        "subType": [],
+        "typeDisplayName": "Washes"
+      }
+    ],
+    "typeDisplayName": "Material"
+  },
+  "availableImagePageResolutionOptions": [
+    "640x480",
+    "720x480",
+    "720x576"
+  ],
+  "3dModelType": "Material",
+  "supportedAttTypes": [
+    "userList",
+    "boolean",
+    "date",
+    "text",
+    "derivedString",
+    "textArea",
+    "driven",
+    "moaList",
+    "choice",
+    "float",
+    "sequence",
+    "constant",
+    "integer",
+    "currency"
+  ],
+  "modifySupportedAttTypes": [
+    "userList",
+    "boolean",
+    "date",
+    "text",
+    "derivedString",
+    "textArea",
+    "driven",
+    "moaList",
+    "choice",
+    "float",
+    "sequence",
+    "constant",
+    "integer",
+    "currency"
+  ],
+  "attScopes": [],
+  "productIdKeyExist": false,
+  "availableImagePageNoOfImagesOptions": [
+    "1",
+    "2",
+    "4",
+    "6",
+    "9"
+  ],
+  "turnTableImageResolution": "640x480",
+  "fieldsList": [
+    {
+      "typeName": "Print",
+      "attributes": [       
+        {
+          "attCurrencyCode": null,
+          "attDecimalFigures": 0,
+          "attDefaultValue": null,
+          "attKey": "print_designs",
+          "attName": "Print Design",
+          "attObjectLevel": null,
+          "attScope": "PRINT",
+          "attSearchDefaultValue": null,
+          "attType": "ref",
+          "enumList": [],
+          "isAttEnabled": true,
+          "isAttInSearchResults": true,
+          "isAttRequired": false,
+          "isAttSearchable": true,
+          "isAttSettable": "0",
+          "isAttUpdatable": true,
+          "url": "/csi-requesthandler/api/v2/print_designs",
+		  "rest_api_exposed": true,
+          "userList": []
+        }
+      ]
+    }
+  ],
+  "noOfTurnTableImages": "12"
+}

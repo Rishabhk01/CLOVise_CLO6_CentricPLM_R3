@@ -1,23 +1,23 @@
 /*
 * Copyright 2020-2021 CLO-Vise. All rights reserved
 *
-* @file PLMColorResults.cpp
+* @file PLMPrintResults.cpp
 *
-* @brief Class implementation for cach Colors data in CLO from PLM.
-* This class has all the variable and methods implementation which are used in storing PLM Color instance data to view and download in CLO.
+* @brief Class implementation for cach Prints data in CLO from PLM.
+* This class has all the variable and methods implementation which are used in storing PLM Print instance data to view and download in CLO.
 *
 * @author GoVise
 *
 * @date  30-MAY-2020
 */
-#include "PLMColorResults.h"
+#include "PLMPrintResults.h"
 
 #include <iostream>
 #include <string>
 
 #include "CLOVise/PLM/Helper/UIHelper/CVWidgetGenerator.h"
-#include "CLOVise/PLM/Inbound/Color/PLMColorSearch.h"
-#include "CLOVise/PLM/Inbound/Color/ColorConfig.h"
+#include "CLOVise/PLM/Inbound/Print/PLMPrintSearch.h"
+#include "CLOVise/PLM/Inbound/Print/PrintConfig.h"
 #include "CLOVise/PLM/Helper/Util/FormatHelper.h"
 #include "CLOVise/PLM/Helper/Util/RestAPIUtility.h"
 #include "CLOVise/PLM/Helper/UIHelper/UIHelper.h"
@@ -32,24 +32,24 @@ using namespace std;
 
 namespace CLOVise
 {
-	PLMColorResults* PLMColorResults::_instance = NULL;
+	PLMPrintResults* PLMPrintResults::_instance = NULL;
 
 
-	PLMColorResults* PLMColorResults::GetInstance()
+	PLMPrintResults* PLMPrintResults::GetInstance()
 	{
 		if (_instance == NULL)
-			_instance = new PLMColorResults();
+			_instance = new PLMPrintResults();
 		return _instance;
 	}
-
-	PLMColorResults::PLMColorResults(QWidget* parent)
+	
+	PLMPrintResults::PLMPrintResults(QWidget* parent)
 		: MVDialog(parent)
 	{
-		Logger::Info("PLMColorResults -> Constructor() -> Start");
+		Logger::Info("PLMPrintResults -> Constructor() -> Start");
 		setupUi(this);
 		try
 		{
-			QString windowTitle = PLM_NAME + " PLM "+ QString::fromStdString(Configuration::GetInstance()->GetLocalizedColorClassName()) +" Search Results ";
+			QString windowTitle = PLM_NAME + " PLM Print Design Color Search Results ";
 			this->setWindowTitle(windowTitle);
 
 #ifdef __APPLE__
@@ -142,6 +142,7 @@ namespace CLOVise
 			m_downloadButton->setFocusPolicy(Qt::StrongFocus);
 			
 			ui_buttonLayout->insertWidget(5, m_downloadButton);
+
 			
 			//ui_buttonLayout->insertSpacerItem(6, horizontalSpacer_4);
 
@@ -182,9 +183,11 @@ namespace CLOVise
 			resultTable->setPalette(pal);
 			iconTable = new QListWidget();
 			ui_resultTableLayout->addWidget(resultTable);
-			//setDataFromResponse(ColorConfig::GetInstance()->GetSearchCriteriaJSON());
 			DrawResultWidget(true);
+			//setDataFromResponse(ColorConfig::GetInstance()->GetSearchCriteriaJSON());
+		
 			connectSignalSlots(true);
+
 			RESTAPI::SetProgressBarData(0, "", false);
 		}
 		catch (string msg)
@@ -202,27 +205,27 @@ namespace CLOVise
 			
 			throw msg;
 		}
-		Logger::Info("PLMColorResults -> Constructor() -> End");
+		Logger::Info("PLMPrintResults -> Constructor() -> End");
 	}
 
-	PLMColorResults::~PLMColorResults()
+	PLMPrintResults::~PLMPrintResults()
 	{
-		Logger::Info("PLMColorResults -> Destructor() -> Start");
+		Logger::Info("PLMPrintResults -> Destructor() -> Start");
 		
 	
 	
 		
 		
-		Logger::Info("PLMColorResults -> Destructor() -> End");
+		Logger::Info("PLMPrintResults -> Destructor() -> End");
 	}
 
 	/*
-	* Description - SetColorHierarchyJSON() method used to cache the hierarchy data.
+	* Description - SetPrintHierarchyJSON() method used to cache the hierarchy data.
 	* Parameter -  json.
 	* Exception -
 	* Return -
 	*/
-	void PLMColorResults::setDataFromResponse(json _param)
+	void PLMPrintResults::setDataFromResponse(json _param)
 	{
 		try
 		{
@@ -241,8 +244,8 @@ namespace CLOVise
 			{
 				throw std::logic_error(error);
 			}
-			m_colorResults = json::parse(resultJsonString);
-			string resultsCount = Helper::GetJSONValue<string>(m_colorResults, "resultFound", true);
+			m_printResults = json::parse(resultJsonString);
+			string resultsCount = Helper::GetJSONValue<string>(m_printResults, "resultFound", true);
 			if (FormatHelper::HasContent(resultsCount))
 			{
 				m_resultsCount = stoi(resultsCount);
@@ -251,7 +254,7 @@ namespace CLOVise
 			{
 				m_resultsCount = 0;
 			}
-			string maxResultsLimit = Helper::GetJSONValue<string>(m_colorResults, "maxResultsLimit", true);
+			string maxResultsLimit = Helper::GetJSONValue<string>(m_printResults, "maxResultsLimit", true);
 			if (FormatHelper::HasContent(maxResultsLimit))
 			{
 				m_maxResultsCount = stoi(maxResultsLimit);
@@ -260,24 +263,24 @@ namespace CLOVise
 			{
 				m_maxResultsCount = 50;
 			}
-			m_typename = Helper::GetJSONValue<string>(m_colorResults, TYPENAME_KEY, true);
+			m_typename = Helper::GetJSONValue<string>(m_printResults, TYPENAME_KEY, true);
 			//	m_widgetListJson = Helper::GetJSONValue<string>(m_colorResults, "widgetsList", true);
 		}
 		catch (string msg)
 		{
 			UTILITY_API->DeleteProgressBar(true);
-			Logger::Error("PLMColorResults::setDataFromResponse() Exception - " + msg);
+			Logger::Error("PLMPrintResults::setDataFromResponse() Exception - " + msg);
 		}
 		catch (exception & e)
 		{
 			UTILITY_API->DeleteProgressBar(true);
-			Logger::Error("PLMColorResults::setDataFromResponse() Exception - " + string(e.what()));
+			Logger::Error("PLMPrintResults::setDataFromResponse() Exception - " + string(e.what()));
 		}
 		catch (const char* msg)
 		{
 			UTILITY_API->DeleteProgressBar(true);
 			wstring wstr(msg, msg + strlen(msg));
-			Logger::Error("PLMColorResults::setDataFromResponse() Exception - " + string(msg));
+			Logger::Error("PLMPrintResults::setDataFromResponse() Exception - " + string(msg));
 		}
 	}
 
@@ -287,9 +290,9 @@ namespace CLOVise
 	* Exception -
 	* Return -
 	*/
-	void PLMColorResults::AddConnectorForCheckbox()
+	void PLMPrintResults::AddConnectorForCheckbox()
 	{
-		Logger::Info("PLMColorResult -> AddConnectorForCheckbox() -> Start");
+		Logger::Info("PLMPrintResults -> AddConnectorForCheckbox() -> Start");
 		int currentPageValue = currPageLabel->text().toInt();
 		int m_resultPerPage = m_perPageResultComboBox->currentText().toInt();
 		
@@ -298,7 +301,7 @@ namespace CLOVise
 		for (int row = 0; row < resultTable->rowCount(); row++) 
 		{
 			QWidget* qWidget = resultTable->cellWidget(row, 0); //to select multiple rows
-			if (Configuration::GetInstance()->GetIsUpdateColorClicked())
+			if (Configuration::GetInstance()->GetIsPrintSearchClicked())
 			{
 				tempRadioButton = qobject_cast<QRadioButton*>(qWidget);
 				QObject::connect(tempRadioButton, SIGNAL(clicked()), this, SLOT(TableRadioButtonSelected()));
@@ -309,12 +312,12 @@ namespace CLOVise
 				QObject::connect(tempCheckBox, SIGNAL(clicked()), this, SLOT(onTableCheckBoxSelected()));
 			}
 		}
-		Logger::Info("PLMColorResult -> AddConnectorForCheckbox() -> End");
+		Logger::Info("PLMPrintResult -> AddConnectorForCheckbox() -> End");
 	}
 
-	void PLMColorResults::TableRadioButtonSelected()
+	void PLMPrintResults::TableRadioButtonSelected()
 	{
-		Logger::Info("PLMProductResults -> TableRadioButtonSelected() -> Start");
+		Logger::Info("PLMPrintResults -> TableRadioButtonSelected() -> Start");
 		try
 		{
 			m_rowsSelected.clear();
@@ -333,21 +336,21 @@ namespace CLOVise
 				m_rowsSelected = CVWidgetGenerator::TableRowSelected(resultTable, iconTable, true, false);
 				m_totalSelected = CVWidgetGenerator::SetDownloadCount(m_iconsSelected, m_rowsSelected, m_downloadButton);
 			}
-			Logger::Info("PLMProductResults -> TableRadioButtonSelected() -> end");
+			Logger::Info("PLMPrintResults -> TableRadioButtonSelected() -> end");
 		}
 		catch (string msg)
 		{
-			Logger::Error("PLMProductResults -> TableRadioButtonSelected Exception :: " + msg);
+			Logger::Error("PLMPrintResults -> TableRadioButtonSelected Exception :: " + msg);
 			UTILITY_API->DisplayMessageBox(msg);
 		}
 		catch (exception& e)
 		{
-			Logger::Error("PLMProductResults -> TableRadioButtonSelected Exception :: " + string(e.what()));
+			Logger::Error("PLMPrintResults -> TableRadioButtonSelected Exception :: " + string(e.what()));
 			UTILITY_API->DisplayMessageBox(e.what());
 		}
 		catch (const char* msg)
 		{
-			Logger::Error("PLMProductResults -> TableRadioButtonSelected Exception :: " + string(msg));
+			Logger::Error("PLMPrintResults -> TableRadioButtonSelected Exception :: " + string(msg));
 			wstring wstr(msg, msg + strlen(msg));
 			UTILITY_API->DisplayMessageBoxW(wstr);
 		}
@@ -358,16 +361,16 @@ namespace CLOVise
 	* Exception - exception, Char *
 	* Return -
 	*/
-	void PLMColorResults::onTableCheckBoxSelected()
+	void PLMPrintResults::onTableCheckBoxSelected()
 	{
-		Logger::Info("PLMColorResult -> onTableCheckBoxSelected() -> Start");
+		Logger::Info("PLMPrintResults -> onTableCheckBoxSelected() -> Start");
 		TableCheckBoxSelected();
-		Logger::Info("PLMColorResult -> onTableCheckBoxSelected() -> End");
+		Logger::Info("PLMPrintResults -> onTableCheckBoxSelected() -> End");
 	}
 
-	void PLMColorResults::TableCheckBoxSelected()
+	void PLMPrintResults::TableCheckBoxSelected()
 	{
-		Logger::Info("PLMColorResult -> TableCheckBoxSelected() -> Start");
+		Logger::Info("PLMPrintResults -> TableCheckBoxSelected() -> Start");
 		try
 		{
 			m_rowsSelected.clear();
@@ -377,75 +380,34 @@ namespace CLOVise
 		}
 		catch (string msg)
 		{
-			Logger::Error("PLMColorResults-> TableCheckBoxSelected Exception - " + msg);
+			Logger::Error("PLMPrintResults-> TableCheckBoxSelected Exception - " + msg);
 			UTILITY_API->DisplayMessageBox(msg);
 		}
 		catch (exception& e)
 		{
-			Logger::Error("PLMColorResults-> TableCheckBoxSelected Exception - " + string(e.what()));
+			Logger::Error("PLMPrintResults-> TableCheckBoxSelected Exception - " + string(e.what()));
 			UTILITY_API->DisplayMessageBox(e.what());
 
 		}
 		catch (const char* msg)
 		{
-			Logger::Error("PLMColorResults-> TableCheckBoxSelected Exception - " + string(msg));
+			Logger::Error("PLMPrintResults-> TableCheckBoxSelected Exception - " + string(msg));
 			wstring wstr(msg, msg + strlen(msg));
 			UTILITY_API->DisplayMessageBoxW(wstr);
 		}
-		Logger::Info("PLMColorResults -> TableCheckBoxSelected() -> End");
+		Logger::Info("PLMPrintResults -> TableCheckBoxSelected() -> End");
 	}
 
-	///*
-	//* Description - IconCheckBoxSelected() method is a slot for icon check box select.
-	//* Parameter -
-	//* Exception - exception, Char *
-	//* Return -
-	//*/
-	//void PLMColorResults::onIconCheckBoxSelected()
-	//{
-	//	Logger::Info("PLMColorResults -> onIconCheckBoxSelected() -> Start");
-	//	IconCheckBoxSelected();
-	//	Logger::Info("PLMColorResults -> onIconCheckBoxSelected() -> End");
-	//}
-	//void PLMColorResults::IconCheckBoxSelected()
-	//{
-	//	Logger::Info("PLMColorResults -> IconCheckBoxSelected() -> Start");
-	//	try
-	//	{
-	//		m_iconsSelected.clear();
-	//		m_rowsSelected.clear();
-	//		m_iconsSelected = CVWidgetGenerator::IconRowSelected(iconTable, resultTable, false);
-	//		m_totalSelected = CVWidgetGenerator::SetDownloadCount(m_iconsSelected, m_rowsSelected, m_downloadButton);
-	//	}
-	//	catch (exception& e)
-	//	{
-	//		Logger::Error("PLMColorResults-> IconCheckBoxSelected  Exception- " + string(e.what()));
-	//		UTILITY_API->DisplayMessageBox(e.what());
-	//	}
-	//	catch (const char* msg)
-	//	{
-	//		Logger::Error("PLMColorResults-> IconCheckBoxSelected  Exception- " + string(msg));
-	//		wstring wstr(msg, msg + strlen(msg));
-	//		UTILITY_API->DisplayMessageBoxW(wstr);
-	//	}
-	//	Logger::Info("PLMColorResults -> IconCheckBoxSelected() -> End");
-	//}
-
-	/*
-	* Description - setHeaderToolTip() method used to set header tool tip.
-	* Parameter -
-	* Exception -
-	* Return -
-	*/
-	void PLMColorResults::setHeaderToolTip()
+	
+	void PLMPrintResults::setHeaderToolTip()
 	{
-		Logger::Info("PLMColorResults -> setHeaderToolTip() -> Start");
+		Logger::Info("PLMPrintResults -> setHeaderToolTip() -> Start");
 		for (int i = 0; i < resultTable->columnCount(); i++)
 		{
 			QString headerValue = resultTable->horizontalHeaderItem(i)->text();
 			resultTable->horizontalHeaderItem(i)->setToolTip(headerValue);
 		}
-		Logger::Info("PLMColorResults -> setHeaderToolTip() -> Start");
+		Logger::Info("PLMPrintResults -> setHeaderToolTip() -> Start");
 	}
 
 	/*
@@ -454,21 +416,21 @@ namespace CLOVise
 	* Exception -
 	* Return -
 	*/
-	void PLMColorResults::onClickedDeselectAllButton()
+	void PLMPrintResults::onClickedDeselectAllButton()
 	{
-		Logger::Info("PLMColorResults -> onClickedDeselectAllButton() -> Start");
+		Logger::Info("PLMPrintResults -> onClickedDeselectAllButton() -> Start");
 		ClickedDeselectAllButton();
-		Logger::Info("PLMColorResults -> onClickedDeselectAllButton() -> End");
+		Logger::Info("PLMPrintResults -> onClickedDeselectAllButton() -> End");
 	}
 
-	void PLMColorResults::ClickedDeselectAllButton()
+	void PLMPrintResults::ClickedDeselectAllButton()
 	{
-		Logger::Info("PLMColorResults -> ClickedDeselectAllButton() -> Start");
+		Logger::Info("PLMPrintResults -> ClickedDeselectAllButton() -> Start");
 		CVWidgetGenerator::DeSelectAllClicked(resultTable, iconTable, m_downloadButton);
 		m_rowsSelected.clear();
 		m_iconsSelected.clear();
 		m_totalSelected.clear();
-		Logger::Info("PLMColorResults -> ClickedDeselectAllButton() -> End");
+		Logger::Info("PLMPrintResults -> ClickedDeselectAllButton() -> End");
 	}
 	
 	/*
@@ -477,16 +439,16 @@ namespace CLOVise
 	* Exception -
 	* Return -
 	*/
-	void PLMColorResults::onClickedSelectAllButton()
+	void PLMPrintResults::onClickedSelectAllButton()
 	{
-		Logger::Info("PLMColorResults -> onClickedSelectAllButton() -> Start");
+		Logger::Info("PLMPrintResults -> onClickedSelectAllButton() -> Start");
 		ClickedSelectAllButton();
-		Logger::Info("PLMColorResults -> onClickedSelectAllButton() -> End");
+		Logger::Info("PLMPrintResults -> onClickedSelectAllButton() -> End");
 	}
 
-	void PLMColorResults::ClickedSelectAllButton()
+	void PLMPrintResults::ClickedSelectAllButton()
 	{
-		Logger::Info("PLMColorResults -> ClickedSelectAllButton() -> Start");
+		Logger::Info("PLMPrintResults -> ClickedSelectAllButton() -> Start");
 		m_rowsSelected.clear();
 		m_iconsSelected.clear();
 		m_totalSelected.clear();
@@ -518,7 +480,7 @@ namespace CLOVise
 		m_rowsSelected = selectedIds;
 		m_totalSelected = CVWidgetGenerator::SetDownloadCount(m_iconsSelected, m_rowsSelected, m_downloadButton);
 
-		Logger::Info("PLMColorResults -> ClickedSelectAllButton() -> End");
+		Logger::Info("PLMPrintResults -> ClickedSelectAllButton() -> End");
 	}
 
 	/*
@@ -527,20 +489,20 @@ namespace CLOVise
 	* Exception -
 	* Return -
 	*/
-	void PLMColorResults::onClickedBackButton()
+	void PLMPrintResults::onClickedBackButton()
 	{
-		Logger::Info("PLMColorResults -> onClickedBackButton() -> Start");
+		Logger::Info("PLMPrintResults -> onClickedBackButton() -> Start");
 		backButtonClicked();
-		Logger::Info("PLMColorResults -> onClickedBackButton() -> End");
+		Logger::Info("PLMPrintResults -> onClickedBackButton() -> End");
 	}
 
-	void PLMColorResults::backButtonClicked()
+	void PLMPrintResults::backButtonClicked()
 	{
-		Logger::Info("PLMColorResults -> backButtonClicked() -> Start");
+		Logger::Info("PLMPrintResults -> backButtonClicked() -> Start");
 		this->close();
-		CLOVise::PLMColorSearch::GetInstance()->setModal(true);
-		CLOVise::PLMColorSearch::GetInstance()->show();
-		Logger::Info("PLMColorResults -> backButtonClicked() -> End");
+		CLOVise::PLMPrintSearch::GetInstance()->setModal(true);
+		CLOVise::PLMPrintSearch::GetInstance()->show();
+		Logger::Info("PLMPrintResults -> backButtonClicked() -> End");
 		
 	}
 
@@ -550,16 +512,16 @@ namespace CLOVise
 	* Exception -
 	* Return -
 	*/
-	void PLMColorResults::onClickedNextButton()
+	void PLMPrintResults::onClickedNextButton()
 	{
-		Logger::Info("PLMColorResults -> onClickedNextButton() -> Start");
+		Logger::Info("PLMPrintResults -> onClickedNextButton() -> Start");
 		ClickedNextButton();
-		Logger::Info("PLMColorResults -> onClickedNextButton() -> End");
+		Logger::Info("PLMPrintResults -> onClickedNextButton() -> End");
 	}
 
-	void PLMColorResults::ClickedNextButton()
+	void PLMPrintResults::ClickedNextButton()
 	{
-		Logger::Info("PLMColorResults -> ClickedNextButton() -> Start");
+		Logger::Info("PLMPrintResults -> ClickedNextButton() -> Start");
 		int currPage = currPageLabel->text().toInt() + 1;
 		currPageLabel->setText(QString::fromStdString(to_string(currPage)));
 		if (currPage == totalPageLabel->text().toInt())
@@ -569,7 +531,7 @@ namespace CLOVise
 		else
 			CVWidgetGenerator::UpdateTableAndIconRows(iconTable, currPageLabel, m_perPageResultComboBox, m_resultsCount);
 		previousButton->setEnabled(true);
-		Logger::Info("PLMColorResults -> ClickedNextButton() -> End");
+		Logger::Info("PLMPrintResults -> ClickedNextButton() -> End");
 	}
 
 	/*
@@ -578,16 +540,16 @@ namespace CLOVise
 	* Exception -
 	* Return -
 	*/
-	void PLMColorResults::onClickedPreviousButton()
+	void PLMPrintResults::onClickedPreviousButton()
 	{
-		Logger::Info("PLMColorResults -> onClickedPreviousButton() -> Start");
+		Logger::Info("PLMPrintResults -> onClickedPreviousButton() -> Start");
 		ClickedPreviousButton();
-		Logger::Info("PLMColorResults -> onClickedPreviousButton() -> End");
+		Logger::Info("PLMPrintResults -> onClickedPreviousButton() -> End");
 	}
 
-	void PLMColorResults::ClickedPreviousButton()
+	void PLMPrintResults::ClickedPreviousButton()
 	{
-		Logger::Info("PLMColorResults -> ClickedPreviousButton() -> Start");
+		Logger::Info("PLMPrintResults -> ClickedPreviousButton() -> Start");
 		int currPage = currPageLabel->text().toInt() - 1;
 		currPageLabel->setText(QString::fromStdString(to_string(currPage)));
 		if (currPage == 1)
@@ -597,7 +559,7 @@ namespace CLOVise
 		else
 			CVWidgetGenerator::UpdateTableAndIconRows(iconTable, currPageLabel, m_perPageResultComboBox, m_resultsCount);
 		nextButton->setEnabled(true);
-		Logger::Info("PLMColorResults -> ClickedPreviousButton() -> End");
+		Logger::Info("PLMPrintResults -> ClickedPreviousButton() -> End");
 	}
 	/*
 	* Description - onResultPerPageCurrentIndexChanged() method is a slot for result per page click.
@@ -605,9 +567,9 @@ namespace CLOVise
 	* Exception -
 	* Return -
 	*/
-	void PLMColorResults::onResultPerPageCurrentIndexChanged(const QString&)
+	void PLMPrintResults::onResultPerPageCurrentIndexChanged(const QString&)
 	{
-		Logger::Info("PLMColorResults -> onResultPerPageCurrentIndexChanged() -> Start");
+		Logger::Info("PLMPrintResults -> onResultPerPageCurrentIndexChanged() -> Start");
 		int currPage = 1;
 		currPageLabel->setText(QString::fromStdString(to_string(currPage)));
 		if (currPage == 1)
@@ -617,7 +579,7 @@ namespace CLOVise
 		CVWidgetGenerator::UpdateTableAndIconRows(iconTable, currPageLabel, m_perPageResultComboBox, m_resultsCount);
 		//Caching selected option to remember irrespective of sessions
 		Configuration::GetInstance()->SetSelectedResultsPerPage(m_perPageResultComboBox->currentText().toStdString(), true, false);
-		Logger::Info("PLMColorResults -> onResultPerPageCurrentIndexChanged() -> End");
+		Logger::Info("PLMPrintResults -> onResultPerPageCurrentIndexChanged() -> End");
 	}
 
 	/*
@@ -627,15 +589,15 @@ namespace CLOVise
 	* Return -
 	*/
 
-	void PLMColorResults::onResultViewIndexChanged(const QString& _str)
+	void PLMPrintResults::onResultViewIndexChanged(const QString& _str)
 	{
-		Logger::Info("PLMColorResults -> onResultViewIndexChanged() -> Start");
+		Logger::Info("PLMPrintResults -> onResultViewIndexChanged() -> Start");
 		ResultViewIndexChanged(_str);
-		Logger::Info("PLMColorResults -> onResultViewIndexChanged() -> End");
+		Logger::Info("PLMPrintResults -> onResultViewIndexChanged() -> End");
 	}
-	void PLMColorResults::ResultViewIndexChanged(const QString&)
+	void PLMPrintResults::ResultViewIndexChanged(const QString&)
 	{
-		Logger::Info("PLMColorResults -> ResultViewIndexChanged() -> Start");
+		Logger::Info("PLMPrintResults -> ResultViewIndexChanged() -> Start");
 		try
 		{
 			UTILITY_API->DeleteProgressBar(true);
@@ -644,7 +606,7 @@ namespace CLOVise
 
 			UTILITY_API->CreateProgressBar();
 			UTILITY_API->SetProgress("Loading", (qrand() % 101));
-			Logger::Info("PLMColorResults -> onResultViewIndexChanged() -> Start");
+			Logger::Info("PLMPrintResults -> onResultViewIndexChanged() -> Start");
 			m_totalSelected.clear();
 			m_rowsSelected.clear();
 			m_iconsSelected.clear();
@@ -655,7 +617,7 @@ namespace CLOVise
 			resultTable->setColumnCount(0);
 			CVWidgetGenerator::InitializeTableView(resultTable);
 			iconTable->clear();
-			CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_colorResults, ColorConfig::GetInstance()->GetColorViewJSON(), "Color Image", m_typename, false, m_viewComboBox->currentIndex(), ColorConfig::GetInstance()->GetAttScopes(), false, false, ColorConfig::GetInstance()->GetColorViewJSON());
+			CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_printResults, PrintConfig::GetInstance()->GetPrintViewJSON(), "Color Image", m_typename, false, m_viewComboBox->currentIndex(), PrintConfig::GetInstance()->GetAttScopes(), false, false, PrintConfig::GetInstance()->GetPrintViewJSON());
 			onTabViewClicked();
 			setHeaderToolTip();
 			AddConnectorForCheckbox();
@@ -666,45 +628,45 @@ namespace CLOVise
 		}
 		catch (string msg)
 		{
-			Logger::Error("PLMColorResults -> onResultViewIndexChanged Exception :: " + msg);
+			Logger::Error("PLMPrintResults -> onResultViewIndexChanged Exception :: " + msg);
 			UTILITY_API->DisplayMessageBox(msg);
 			RESTAPI::SetProgressBarData(0, "", false);
 			this->close();
 		}
 		catch (exception& e)
 		{
-			Logger::Error("PLMColorResults -> onResultViewIndexChanged Exception :: " + string(e.what()));
+			Logger::Error("PLMPrintResults -> onResultViewIndexChanged Exception :: " + string(e.what()));
 			UTILITY_API->DisplayMessageBox(e.what());
 			RESTAPI::SetProgressBarData(0, "", false);
 			this->close();
 		}
 		catch (const char* msg)
 		{
-			Logger::Error("PLMColorResults -> onResultViewIndexChanged Exception :: " + string(msg));
+			Logger::Error("PLMPrintResults -> onResultViewIndexChanged Exception :: " + string(msg));
 			wstring wstr(msg, msg + strlen(msg));
 			UTILITY_API->DisplayMessageBoxW(wstr);
 			RESTAPI::SetProgressBarData(0, "", false);
 			this->close();
 		}
-		Logger::Info("PLMColorResults -> onResultViewIndexChanged() -> End");
+		Logger::Info("PLMPrintResults -> onResultViewIndexChanged() -> End");
 	}
 
 	/*
-	* Description - SetColorHierarchyJSON() method is a slot for icon view click.
+	* Description - SetPrintHierarchyJSON() method is a slot for icon view click.
 	* Parameter -
 	* Exception -
 	* Return -
 	*/
-	void PLMColorResults::onIconViewClicked()
+	void PLMPrintResults::onIconViewClicked()
 	{
-		Logger::Info("PLMColorResults -> onIconViewClicked() -> Start");
+		Logger::Info("PLMPrintResults -> onIconViewClicked() -> Start");
 		updateTableForIconView();
-		Logger::Info("PLMColorResults -> onIconViewClicked() -> End");
+		Logger::Info("PLMPrintResults -> onIconViewClicked() -> End");
 	}
 
-	void PLMColorResults::updateTableForIconView()
+	void PLMPrintResults::updateTableForIconView()
 	{
-		Logger::Info("PLMColorResults -> updateTableForIconView() -> Start");
+		Logger::Info("PLMPrintResults -> updateTableForIconView() -> Start");
 		m_isTabularView = false;
 		m_iconViewButton->setEnabled(false);
 		m_tabViewButton->setEnabled(true);
@@ -715,7 +677,7 @@ namespace CLOVise
 			RESTAPI::SetProgressBarData(0, "", false);
 			UTILITY_API->CreateProgressBar();
 			UTILITY_API->SetProgress("Loading", (qrand() % 101));
-			CVWidgetGenerator::SortIconResultTable(m_isResultTableSorted, iconTable, resultTable, m_colorResults, false);
+			CVWidgetGenerator::SortIconResultTable(m_isResultTableSorted, iconTable, resultTable, m_printResults, false);
 			iconTable->show();
 			ui_resultTableLayout->addWidget(iconTable);
 			CVWidgetGenerator::UpdateTableAndIconRows(iconTable, currPageLabel, m_perPageResultComboBox, m_resultsCount);
@@ -730,26 +692,26 @@ namespace CLOVise
 			ui_resultTableLayout->addWidget(iconTable);
 			CVWidgetGenerator::UpdateTableAndIconRows(iconTable, currPageLabel, m_perPageResultComboBox, m_resultsCount);
 		}
-		Logger::Info("PLMColorResults -> updateTableForIconView() -> End");
+		Logger::Info("PLMPrintResults -> updateTableForIconView() -> End");
 	}
 
 	/*
-	* Description - SetColorHierarchyJSON() method is a slot for table view click.
+	* Description - SetPrintHierarchyJSON() method is a slot for table view click.
 	* Parameter -
 	* Exception -
 	* Return -
 	*/
-	void PLMColorResults::onTabViewClicked()
+	void PLMPrintResults::onTabViewClicked()
 	{
-		Logger::Info("PLMColorResults -> onTabViewClicked() -> Start");
+		Logger::Info("PLMPrintResults -> onTabViewClicked() -> Start");
 		updateTableForTabView();
-		Logger::Info("PLMColorResults -> onTabViewClicked() -> End");
+		Logger::Info("PLMPrintResults -> onTabViewClicked() -> End");
 	}
 
 
-	void PLMColorResults::updateTableForTabView()
+	void PLMPrintResults::updateTableForTabView()
 	{
-		Logger::Info("PLMColorResults -> updateTableForTabView() -> Start");
+		Logger::Info("PLMPrintResults -> updateTableForTabView() -> Start");
 		m_isTabularView = true;
 		m_tabViewButton->setEnabled(false);
 		iconTable->close();
@@ -757,7 +719,7 @@ namespace CLOVise
 		CVWidgetGenerator::UpdateTableAndIconRows(resultTable, currPageLabel, m_perPageResultComboBox, m_resultsCount, false);
 		resultTable->show();
 		ui_resultTableLayout->addWidget(resultTable);
-		Logger::Info("PLMColorResults -> updateTableForTabView() -> End");
+		Logger::Info("PLMPrintResults -> updateTableForTabView() -> End");
 	}
 
 	/*
@@ -766,31 +728,27 @@ namespace CLOVise
 	* Exception -
 	* Return -
 	*/
-	void PLMColorResults::onHorizontalHeaderClicked(int _column)
+	void PLMPrintResults::onHorizontalHeaderClicked(int _column)
 	{
-		Logger::Info("PLMColorResults -> onHorizontalHeaderClicked() -> Start");
+		Logger::Info("PLMPrintResults -> onHorizontalHeaderClicked() -> Start");
 		horizontalHeaderClicked(_column);
-		Logger::Info("PLMColorResults -> onHorizontalHeaderClicked() -> End");
+		Logger::Info("PLMPrintResults -> onHorizontalHeaderClicked() -> End");
 	}
 
-	void PLMColorResults::horizontalHeaderClicked(int _column)
+	void PLMPrintResults::horizontalHeaderClicked(int _column)
 	{
-		Logger::Info("ColorResultTable -> horizontalHeaderClicked() -> Start");
+		Logger::Info("PLMPrintResults -> horizontalHeaderClicked() -> Start");
 		Logger::Debug("Column.." + to_string(_column));
 		if (_column == CHECKBOX_COLUMN || _column == IMAGE_COLUMN)
-		{
 			resultTable->setSortingEnabled(false);
-			resultTable->horizontalHeader()->setSortIndicatorShown(false);
-		}
 		else
 		{
 			resultTable->setSortingEnabled(true);
-			resultTable->horizontalHeader()->setSortIndicatorShown(true);
 			m_isResultTableSorted = true;
 			AddConnectorForCheckbox();
-			CVWidgetGenerator::UpdateTableAndIconRows(resultTable, currPageLabel, m_perPageResultComboBox, m_resultsCount, false);
+			CVWidgetGenerator::UpdateTableAndIconRows(resultTable, currPageLabel, m_perPageResultComboBox, m_resultsCount, true);
 		}
-		Logger::Info("ColorResultTable -> horizontalHeaderClicked() -> End");
+		Logger::Info("PLMPrintResults -> horizontalHeaderClicked() -> End");
 	}
 
 	/*
@@ -799,9 +757,9 @@ namespace CLOVise
 	* Exception -
 	* Return -
 	*/
-	void PLMColorResults::connectSignalSlots(bool _b)
+	void PLMPrintResults::connectSignalSlots(bool _b)
 	{
-		Logger::Info("PLMColorResults -> connectSignalSlots() -> Start");
+		Logger::Info("PLMPrintResults -> connectSignalSlots() -> Start");
 		if (_b)
 		{
 			QObject::connect(m_backButton, SIGNAL(clicked()), this, SLOT(onClickedBackButton()));
@@ -830,7 +788,7 @@ namespace CLOVise
 			QObject::disconnect(m_selectAllButton, SIGNAL(clicked()), this, SLOT(onClickedSelectAllButton()));
 			QObject::disconnect(resultTable->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(onHorizontalHeaderClicked(int)));
 		}
-		Logger::Info("PLMColorResults -> connectSignalSlots() -> End");
+		Logger::Info("PLMPrintResults -> connectSignalSlots() -> End");
 	}
 
 	/*
@@ -839,16 +797,16 @@ namespace CLOVise
 	* Exception - exception, Char *
 	* Return -
 	*/
-	void PLMColorResults::onDownloadClicked()
+	void PLMPrintResults::onDownloadClicked()
 	{
-		Logger::Info("PLMColorResults -> onDownloadClicked() -> Start");
-		downloadColorResult();
-		Logger::Info("PLMColorResults -> onDownloadClicked() -> End");
+		Logger::Info("PLMPrintResults -> onDownloadClicked() -> Start");
+		downloadPrintResult();
+		Logger::Info("PLMPrintResults -> onDownloadClicked() -> End");
 	}
 
-	void PLMColorResults::downloadColorResult()
+	void PLMPrintResults::downloadPrintResult()
 	{
-		Logger::Info("PLMColorResults -> downloadColorResult() -> Start");
+		Logger::Info("PLMPrintResults -> downloadPrintResult() -> Start");
 		bool rowsSelected = true;
 		bool returnValue= false;
 		try
@@ -873,44 +831,43 @@ namespace CLOVise
 
 			case CREATE_PRODUCT_CLICKED:
 			{
-				Logger::Debug("PLMColorResults -> colorResultTableDownload_clicked() -> CreateProduct::GetInstance()");
-				RESTAPI::SetProgressBarData(30, "Adding Colors", true);
-				UTILITY_API->SetProgress("Adding Colors", (qrand() % 101));
+				Logger::Debug("PLMPrintResults -> PrintResultTableDownload_clicked() -> CreateProduct::GetInstance()");
+				RESTAPI::SetProgressBarData(30, "Adding Print Design Colors", true);
+				UTILITY_API->SetProgress("Adding Print Design Colors", (qrand() % 101));
 
-				RESTAPI::SetProgressBarData(14, "Adding Colors", true);
-				if (Configuration::GetInstance()->GetIsUpdateColorClicked())
-					returnValue = CreateProduct::GetInstance()->UpdateColorInColorways(m_totalSelected, m_colorResults);
+				RESTAPI::SetProgressBarData(14, "Adding Print Design Colors", true);
+				if (Configuration::GetInstance()->GetIsPrintSearchClicked())
+					returnValue = CreateProduct::GetInstance()->UpdateColorInColorways(m_totalSelected, m_printResults);
 
 				if (returnValue)
 				{
-					Logger::Debug("PLMColorResults -> void onDownloadClicked TRue");
+					Logger::Debug("PLMPrintResults -> void onDownloadClicked TRue");
 					RESTAPI::SetProgressBarData(0, "", false);
 					CreateProduct::GetInstance()->setModal(true);
 					CreateProduct::GetInstance()->show();
 				}
 				else
 				{
-					Logger::Debug("PLMColorResults -> void onDownloadClicked False");
+					Logger::Debug("PLMPrintResults -> void onDownloadClicked False");
 					RESTAPI::SetProgressBarData(0, "", false);
-					UTILITY_API->DisplayMessageBox(Configuration::GetInstance()->GetLocalizedColorClassName() + " Specification must be unique");
+					UTILITY_API->DisplayMessageBox("Print design color Specification must be unique");
 					this->show();
 				}
-
 				
 			}
 			break;
 			case UPDATE_PRODUCT_CLICKED:
 			{
-				Logger::Debug("PLMColorResults -> colorResultTableDownload_clicked() -> CreateProduct::GetInstance()");
-				RESTAPI::SetProgressBarData(30, "Adding Colors", true);
-				UTILITY_API->SetProgress("Adding Colors", (qrand() % 101));
+				Logger::Debug("PLMPrintResults -> colorResultTableDownload_clicked() -> CreateProduct::GetInstance()");
+				RESTAPI::SetProgressBarData(30, "Adding Print Design Colors", true);
+				UTILITY_API->SetProgress("Adding Print Design Colors", (qrand() % 101));
 
-				RESTAPI::SetProgressBarData(14, "Adding Colors", true);
-				if (Configuration::GetInstance()->GetIsUpdateColorClicked())
-					returnValue = UpdateProduct::GetInstance()->UpdateColorInColorways(m_totalSelected, m_colorResults);
+				RESTAPI::SetProgressBarData(14, "Adding Print Design Colors", true);
+				if (Configuration::GetInstance()->GetIsPrintSearchClicked())
+					returnValue = UpdateProduct::GetInstance()->UpdateColorInColorways(m_totalSelected, m_printResults);
 				else
 				{
-					UpdateProduct::GetInstance()->AddColorwayDetails(m_totalSelected, m_colorResults);
+					UpdateProduct::GetInstance()->AddColorwayDetails(m_totalSelected, m_printResults);
 				}
 				if (returnValue)
 				{
@@ -922,18 +879,18 @@ namespace CLOVise
 				{
 					Logger::Debug("PLMColorResults -> void onDownloadClicked False");
 					RESTAPI::SetProgressBarData(0, "", false);
-					UTILITY_API->DisplayMessageBox("The Color Specification must be unique");
+					UTILITY_API->DisplayMessageBox("The print design color Specification must be unique");
 					this->show();
 				}
 			}
 			break;
-			case COLOR_SEARCH_CLICKED:
+			case PRINT_SEARCH_CLICKED:
 			{
-				RESTAPI::SetProgressBarData(30, "Downloading " + Configuration::GetInstance()->GetLocalizedColorClassName(), true);
-				UTILITY_API->SetProgress("Downloading " + Configuration::GetInstance()->GetLocalizedColorClassName(), (qrand() % 101));
+				RESTAPI::SetProgressBarData(30, "Downloading Print Design Colors...", true);
+				UTILITY_API->SetProgress("Downloading Print Design Colors", (qrand() % 101));
 
-				RESTAPI::SetProgressBarData(14, "Downloading "+ Configuration::GetInstance()->GetLocalizedColorClassName(), true);
-				QString faildesObjectsString = UIHelper::DownloadResults(m_totalSelected, COLOR_MODULE, m_colorResults);
+				RESTAPI::SetProgressBarData(14, "Downloading Print Design Colors...", true);
+				QString faildesObjectsString = UIHelper::DownloadResults(m_totalSelected, PRINT_MODULE, m_printResults);
 				RESTAPI::SetProgressBarData(0, "", false);
 
 				if (FormatHelper::HasContent(faildesObjectsString.toStdString()))
@@ -963,17 +920,17 @@ namespace CLOVise
 				}
 				else
 				{
-					if (!Configuration::GetInstance()->GetIsUpdateColorClicked())
+					if (!Configuration::GetInstance()->GetIsPrintSearchClicked())
 					onClickedDeselectAllButton();
 					this->show();
 				}
 			}
 			}
-			Logger::Info("PLMColorResults -> void onDownloadClicked end");
+			Logger::Info("PLMPrintResults -> void onDownloadClicked end");
 		}
 		catch (string msg)
 		{
-			Logger::Error("PLMColorResults -> DownloadClicked Exception :: " + msg);
+			Logger::Error("PLMPrintResults -> DownloadClicked Exception :: " + msg);
 			UTILITY_API->DisplayMessageBox(msg);
 			if (Configuration::GetInstance()->GetCloseResultsDialogue() && rowsSelected)
 			{
@@ -982,14 +939,14 @@ namespace CLOVise
 			}
 			else
 			{
-				if (!Configuration::GetInstance()->GetIsUpdateColorClicked())
+				if (!Configuration::GetInstance()->GetIsPrintSearchClicked())
 				onClickedDeselectAllButton();
 				this->show();
 			}
 		}
 		catch (exception& e)
 		{
-			Logger::Error("PLMColorResults -> DownloadClicked Exception :: " + string(e.what()));
+			Logger::Error("PLMPrintResults -> DownloadClicked Exception :: " + string(e.what()));
 			UTILITY_API->DisplayMessageBox(e.what());
 			if (Configuration::GetInstance()->GetCloseResultsDialogue() && rowsSelected)
 			{
@@ -998,14 +955,14 @@ namespace CLOVise
 			}
 			else
 			{
-				if (!Configuration::GetInstance()->GetIsUpdateColorClicked())
+				if (!Configuration::GetInstance()->GetIsPrintSearchClicked())
 				onClickedDeselectAllButton();
 				this->show();
 			}
 		}
 		catch (const char* msg)
 		{
-			Logger::Error("PLMColorResults -> DownloadClicked Exception :: " + string(msg));
+			Logger::Error("PLMPrintResults -> DownloadClicked Exception :: " + string(msg));
 			wstring wstr(msg, msg + strlen(msg));
 			UTILITY_API->DisplayMessageBoxW(wstr);
 			if (Configuration::GetInstance()->GetCloseResultsDialogue() && rowsSelected)
@@ -1015,46 +972,40 @@ namespace CLOVise
 			}
 			else
 			{
-				if (!Configuration::GetInstance()->GetIsUpdateColorClicked())
+				if (!Configuration::GetInstance()->GetIsPrintSearchClicked())
 				onClickedDeselectAllButton();
 				this->show();
 			}
 		}
-		Logger::Info("PLMColorResults -> downloadColorResult() -> End");
+		Logger::Info("PLMPrintResults -> downloadPrintResult() -> End");
 	}
 
-	/*
-	* Description - DrawResultWidget() method is create/reset the result widget.
-	* Parameter - bool
-	* Exception - 
-	* Return -
-	*/
-	void PLMColorResults::DrawResultWidget(bool _isFromConstructor)
+	void PLMPrintResults::DrawResultWidget(bool _isFromConstructor)
 	{
-		Logger::Info("PLMColorResults -> DrawResultWidget() -> Start");
-		m_colorResults = ColorConfig::GetInstance()->GetColorResultsSON();
-		m_typename = ColorConfig::GetInstance()->GetTypename();
-		m_maxResultsCount = ColorConfig::GetInstance()->GetMaxResultCount();
-		m_resultsCount = ColorConfig::GetInstance()->GetResultsCount();
-		resultTable->clear();
+		Logger::Info("PLMPrintResults -> DrawResultWidget() -> Start");		
 		m_totalSelected.clear();
+		m_printResults = PrintConfig::GetInstance()->GetPrintResultsSON();
+		m_typename = PrintConfig::GetInstance()->GetTypename();
+		m_maxResultsCount = PrintConfig::GetInstance()->GetMaxResultCount();
+		m_resultsCount = PrintConfig::GetInstance()->GetResultsCount();
+		resultTable->clearContents();
 		CVWidgetGenerator::PopulateValuesOnResultsUI(nextButton, m_noOfResultLabel, totalPageLabel, m_perPageResultComboBox, Configuration::GetInstance()->GetResultsPerPage(), m_resultsCount);
 		resultTable->setEnabled(false);
 		m_tabViewButton->setEnabled(false);
-		if (Configuration::GetInstance()->GetIsUpdateColorClicked())
+		if (Configuration::GetInstance()->GetIsPrintSearchClicked())
 		{
-			CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_colorResults, ColorConfig::GetInstance()->GetColorViewJSON(), "Color Image", m_typename, true, ColorConfig::GetInstance()->GetSelectedViewIdx(), ColorConfig::GetInstance()->GetAttScopes(), true, false, ColorConfig::GetInstance()->GetColorViewJSON());
+			CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_printResults, PrintConfig::GetInstance()->GetPrintViewJSON(), "Color Image", m_typename, true, PrintConfig::GetInstance()->GetSelectedViewIdx(), PrintConfig::GetInstance()->GetAttScopes(), true, false, PrintConfig::GetInstance()->GetPrintViewJSON());
 			m_selectAllButton->hide();
 			m_deSelectAllButton->hide();
 		}
 		else
-			CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_colorResults, ColorConfig::GetInstance()->GetColorViewJSON(), "Color Image", m_typename, true, ColorConfig::GetInstance()->GetSelectedViewIdx(), ColorConfig::GetInstance()->GetAttScopes(), false, false, ColorConfig::GetInstance()->GetColorViewJSON());
+			CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_printResults, PrintConfig::GetInstance()->GetPrintViewJSON(), "Color Image", m_typename, true, PrintConfig::GetInstance()->GetSelectedViewIdx(), PrintConfig::GetInstance()->GetAttScopes(), false, false, PrintConfig::GetInstance()->GetPrintViewJSON());
 
 		CVWidgetGenerator::UpdateTableAndIconRows(resultTable, currPageLabel, m_perPageResultComboBox, m_resultsCount, _isFromConstructor);
 		setHeaderToolTip();
 		resultTable->setEnabled(true);
 		AddConnectorForCheckbox();
-		if (Configuration::GetInstance()->GetCurrentScreen() == COLOR_SEARCH_CLICKED)
+		if (Configuration::GetInstance()->GetCurrentScreen() == PRINT_SEARCH_CLICKED)
 		{
 			m_downloadButton->setText("Download");
 			m_downloadButton->setIcon(QIcon(QString(DOWNLOAD_HOVER_ICON_PATH)));
@@ -1063,8 +1014,8 @@ namespace CLOVise
 		{
 			m_downloadButton->setText("Add");
 			m_downloadButton->setIcon(QIcon(QString(ADD_HOVER_ICON_PATH)));
-		}		
-		horizontalHeaderClicked(ColorConfig::GetInstance()->m_sortedColumnNumber);
-		Logger::Info("PLMColorResults -> DrawResultWidget() -> End");
+		}
+		horizontalHeaderClicked(PrintConfig::GetInstance()->m_sortedColumnNumber);
+		Logger::Info("PLMPrintResults -> DrawResultWidget() -> End");
 	}
 }

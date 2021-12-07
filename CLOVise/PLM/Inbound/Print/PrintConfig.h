@@ -2,14 +2,14 @@
 /*
 * Copyright 2020-2021 CLO-Vise. All rights reserved
 *
-* @file PLMColorData.h
+* @file PLMPrintData.h
 *
-* @brief Class declaration for cach Colors data in CLO from PLM.
-* This class has all the variable declarations and function declarations which are used in storing PLM Color configuration related data to search in CLO
+* @brief Class declaration for cach prints data in CLO from PLM.
+* This class has all the variable declarations and function declarations which are used in storing PLM Print configuration related data to search in CLO
 *
 * @author GoVise
 *
-* @date 27-MAY-2020
+* @date 05-OCT-2021
 */
 #include <string>
 
@@ -21,7 +21,7 @@
 using json = nlohmann::json;
 using namespace std;
 
-class ColorConfig
+class PrintConfig
 {
 	
 	public:
@@ -29,37 +29,35 @@ class ColorConfig
 		int m_selectedViewIdx;
 		bool m_isDateEditPresent = false;
 		int m_sortedColumnNumber;
-		bool m_colorLoggedOut = false;
-		bool m_resultAfterLogout = false;
-		static ColorConfig* GetInstance();
-		json m_colorFieldsJson = json::object();
-		bool m_isSearchColor = true;
-		QStringList createdColorId;
-		string m_mode;
-		void InitializeColorData();
+		bool m_printLoggedOut = false;
+		static PrintConfig* GetInstance();
+		
+		json m_printFieldsJson = json::object();
+
+		void InitializePrintData();
 		//void SetColorConfigJSON(string _module, string _rootType, bool _initDepedentJsons);
-		void SetColorConfigJSON();
+		void SetPrintConfigJSON();
 		//void SetColorHierarchyJSON(string _hierarchyJsonKey);
 		//void SetColorFieldsJSON(string _hierarchyJsonKey);
-		void SetColorPresetJSON(string _hierarchyJsonKey);
-		void SetColorFilterJSON(string _module, string _rootType, string _activity);
-		void SetColorViewJSON(string _module, string _rootType, string _activity);
+		void SetPrintPresetJSON(string _hierarchyJsonKey);
+		void SetPrintFilterJSON(string _module, string _rootType, string _activity);
+		void SetPrintViewJSON(string _module, string _rootType, string _activity);
 		//void SetSeasonPaletteJSON();
 		void SetSelectedViewIdx(int _selectedViewIdx);
 		void SetSearchCriteriaJSON(json _criteria);
 		//void SetAttScopes(string _attScopesJsonKey);
 		void SetDateFlag(bool _isDateEditPresent);
-		void SetColorConfigJSONFromFile(string _module, string _rootType, bool _initDepedentJsons);
+		void SetPrintConfigJSONFromFile(string _module, string _rootType, bool _initDepedentJsons);
 		//void InitializeColorData();
 		bool GetIsModelExecuted();
 		void SetIsModelExecuted(bool _isModelExecuted);
-		void SetMaximumLimitForColorResult();
+		void SetMaximumLimitForPrintResult();
 
-		json GetColorConfigJSON();
-		json GetColorHierarchyJSON();
-		json GetColorFieldsJSON();
-		json GetColorFilterJSON();
-		json GetColorViewJSON();
+		json GetPrintConfigJSON();
+		json GetPrintHierarchyJSON();
+		json GetPrintFieldsJSON();
+		json GetPrintFilterJSON();
+		json GetPrintViewJSON();
 		json GetSeasonPaletteJSON(bool _refresh);
 		int GetSelectedViewIdx();
 		json GetSearchCriteriaJSON();
@@ -71,33 +69,31 @@ class ColorConfig
 		void GetEnumlistJson(string _restApi, json& _attributeJson);
 		void ConvertToo(string& _convertValue, bool _isLower);
 		void SetDataFromResponse(json _param);
-		json GetColorResultsSON();
+		json GetPrintResultsSON();
 		string GetTypename();
 		int GetMaxResultCount();
 		int GetResultsCount();
-		json GetColorConfigJSONFromFile();
-		string GetMaximumLimitForColorResult();
-		json GetPLMConfigJson();
-		void ResetColorConfig();
+		json GetPrintConfigJSONFromFile();
+		string GetMaximumLimitForPrintResult();
+		void ResetPrintConfig();
 
 
 	private:
-		static ColorConfig* _instance; // zero initialized by default
-		json m_ColorConfigJson = json::object();
-		json m_ColorHierarchyJson = json::object();
+		static PrintConfig* _instance; // zero initialized by default
+		json m_PrintConfigJson = json::object();
+		json m_PrintHierarchyJson = json::object();
 		//json m_ColorFieldsJson = json::object();
-		json m_ColorPresetJson = json::object();
-		json m_ColorFilterJson = json::object();
-		json m_ColorViewJson = json::object();
+		json m_PrintPresetJson = json::object();
+		json m_PrintFilterJson = json::object();
+		json m_PrintViewJson = json::object();
 		json m_paletteJson = json::object();
 		json m_searchCriteriaJson = json::object();
-		json m_PLMConfigJson = json::object();
 		QStringList m_attScopes;
-		string m_maxColorResultsLimit;
+		string m_maxPrintResultsLimit;
 
 		bool restData = true;
 
-	json m_colorResults = json::array();
+	json m_printResults = json::array();
 	string m_typename = "";
 	int m_maxResultsCount = 0;
 	int m_resultsCount = 0;

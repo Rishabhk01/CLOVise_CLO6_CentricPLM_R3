@@ -28,11 +28,14 @@ public:
 	bool m_isModelExecuted = false;
 	int m_selectedViewIdx;
 	bool m_isDateEditPresent = false;
+	int m_sortedColumnNumber;
 
 	static MaterialConfig* GetInstance();
 	static void	Destroy();
 	//void InitializeMaterialData();
 	json m_materialFieldsJson = json::object();
+	bool m_materialLoggedOut = false;
+	bool m_resultAfterLogout = false;
 
 	void InitializeMaterialData();
 	//void SetMaterialConfigJSON(string _module, string _rootType, bool _initDepedentJsons);
@@ -51,6 +54,7 @@ public:
 	void SetMaximumLimitForMaterialResult();
 	void SetIsSaveAndCloseClicked(bool _isSaveClicked);
 	void SetMaterialCategoryEnumId(string _materialCategoryEnumId);
+	void ResetMaterialConfig();
 
 	json GetMaterialConfigJSON();
 	json GetMaterialFieldsJSON();

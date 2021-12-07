@@ -53,7 +53,7 @@ namespace CLOVise
 		void GetcolorwayDetails();
 		bool GetIsSaveClicked();
 		
-		void FillImageIntentIdAndLabeMap(json _imageJson);
+		void FillImageIntentIdAndLabeMap(json _imageJson, string _module);
 		void FillNonCloImageMap(json _imageJson,string _id);
 		void FillNonCloColorwayImageMap(json _imageJson, string _imageId, QString _colorwayId);
 		struct ColorwayViews
@@ -79,6 +79,7 @@ namespace CLOVise
 		MVTableWidget *ui_colorwayTable;
 		std::map<QString, QString> m_colorwayImageLabelsMap;
 		std::map<QString, QStringList> m_nonCloStyleImageLabelsMap;
+		std::map<QString, QString> m_styleNodeNamedisplayNameMap;
 		std::map<QString, map<QString, QStringList>>m_nonCloColorWayImageLabelsMap;
 		map<QString, QStringList > m_nonCloColorwayImagesMap;
 		std::map<QString, QString> m_styleImageLabelsMap;
@@ -88,6 +89,8 @@ namespace CLOVise
 		QSignalMapper *m_updateColorButtonSignalMapper;
 		QSignalMapper *m_editButtonSignalMapper;
 		QSignalMapper *m_deleteSignalMapper;
+		QSignalMapper *m_createActionSignalMapper;
+		QSignalMapper *m_printActionSignalMapper;
 
 		int m_selectedRow;
 		QStringList m_colorSpecList;
@@ -176,7 +179,7 @@ namespace CLOVise
 		bool m_downloadedColorway;
 		json m_downloadedColorwayJson;
 		int m_colorwayRowcount;
-
+		bool m_isCreateColorSpec = false;
 		QStringList m_modifiedColorwayNames;
 		QStringList m_selectedColorwayNames;
 		bool m_isSaveClicked;
@@ -226,5 +229,7 @@ namespace CLOVise
 		void OnplmColorwayNameEntered();
 		void onImageIntentsTableHorizontalHeaderClicked(int column);
 		void onColorwayTableHorizontalHeaderClicked(int column);
+		void OnCreateColorSpecClicked(int _row);
+		void OnSearchPrintClicked(int _row);
 	};
 }

@@ -28,15 +28,6 @@ CreateMaterialConfig* CreateMaterialConfig::GetInstance()
 	return _instance;
 }
 
-void  CreateMaterialConfig::Destroy()
-{
-	if (_instance)
-	{
-		delete _instance;
-		_instance = NULL;
-	}
-}
-
 /*
 * Description - SetCreateMaterialConfigJSON() method used to set document configuration json.
 * Parameter -  string, string, bool.
@@ -234,8 +225,10 @@ void CreateMaterialConfig::SetMaxUploadFileSize(string _key)
 */
 int CreateMaterialConfig::GetMaxUploadFileSize()
 {
+	Logger::Info("CreateMaterialConfig -> GetMaxUploadFileSize() Start");
 	if (!FormatHelper::HasContent(to_string(m_maxZPRJUploadFileSize)))
 		SetMaxUploadFileSize(MAX_ZPRJ_UPLOAD_FILE_SIZE);
+	Logger::Info("CreateMaterialConfig -> GetMaxUploadFileSize() End");
 	return m_maxZPRJUploadFileSize;
 }
 
@@ -259,4 +252,43 @@ bool CreateMaterialConfig::GetIsModelExecuted()
 void CreateMaterialConfig::SetIsModelExecuted(bool _isModelExecuted)
 {
 	m_isModelExecuted = _isModelExecuted;
+}
+
+/*
+* Description - SetIsSaveAndCloseClicked() method used to set the status for save and close clicked
+* Parameter - _isSaveAndCloseClicked
+* Exception -
+* Return - void
+*/
+void CreateMaterialConfig::SetIsSaveAndCloseClicked(bool _isSaveAndCloseClicked)
+{
+	m_isSaveAndCloseClicked = _isSaveAndCloseClicked;
+}
+
+/*
+* Description - GetIsSaveAndCloseClicked() method used to Get the status for save and close clicked.
+* Parameter -
+* Exception -
+* Return - bool
+*/
+bool CreateMaterialConfig::GetIsSaveAndCloseClicked()
+{
+	return m_isSaveAndCloseClicked;
+}
+/*
+* Description - ResetCreateConfig() is used to reset the values of all the configurations.
+* Parameter -
+* Exception -
+* Return -
+*/
+void CreateMaterialConfig::ResetCreateConfig()
+{
+	Logger::Info("CreateMaterialConfig -> ResetCreateConfig() Start");
+	m_isModelExecuted = false;
+	m_documentFieldsJson = nullptr;
+	m_documentConfigJson = nullptr;
+	SetIsSaveAndCloseClicked(false);
+	SetIsModelExecuted(m_isModelExecuted);
+	m_createMaterialLoggedOut = true;
+	Logger::Info("CreateMaterialConfig -> ResetCreateConfig() End");
 }

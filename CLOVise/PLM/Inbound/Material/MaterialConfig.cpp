@@ -409,7 +409,7 @@ string MaterialConfig::GetThumbnailUrl(string _objectId)
 	{
 		json imageResultJson = json::object();
 		auto startTime = std::chrono::high_resolution_clock::now();
-		string resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_MATERIAL_API + "/" + _objectId + "/images", APPLICATION_JSON_TYPE, "");
+		string resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_MATERIAL_API + "/" + _objectId + "/images?decode=true", APPLICATION_JSON_TYPE, "");
 		auto finishTime = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> totalDuration = finishTime - startTime;
 		Logger::perfomance(PERFOMANCE_KEY + "Material images API :: " + to_string(totalDuration.count()));
@@ -546,7 +546,7 @@ void MaterialConfig::SetMaterialConfigJSON()
 	{
 		m_materialFieldsJson.clear();
 		auto startTime = std::chrono::high_resolution_clock::now();
-		string initialConfigJsonString = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ATT_API, APPLICATION_JSON_TYPE, "skip=0&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue() + "&node_name=Library Item, Material");
+		string initialConfigJsonString = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_ATT_API, APPLICATION_JSON_TYPE, "skip=0&decode=true&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue() + "&node_name=Library Item, Material");
 		auto finishTime = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> totalDuration = finishTime - startTime;
 		Logger::perfomance(PERFOMANCE_KEY + "Library Item, Material API :: " + to_string(totalDuration.count()));
@@ -812,11 +812,11 @@ void MaterialConfig::SetDataFromResponse(json _param)
 		//UTILITY_API->DisplayMessageBox(parameter);
 		string resultResponse = "";
 		if (isLibrarySearch) {
-			resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::MATERIAL_SEARCH_API_LIB + "/" + matLibValue +"/elements?", APPLICATION_JSON_TYPE, parameter + "&limit="+ MaterialConfig::GetInstance()->GetMaximumLimitForMaterialResult());
+			resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::MATERIAL_SEARCH_API_LIB + "/" + matLibValue +"/elements?", APPLICATION_JSON_TYPE, parameter + "&decode=true&limit="+ MaterialConfig::GetInstance()->GetMaximumLimitForMaterialResult());
 		}
 		else {
 			auto startTime = std::chrono::high_resolution_clock::now();
-			resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_MATERIAL_API + "?", APPLICATION_JSON_TYPE, parameter + "&limit="+ MaterialConfig::GetInstance()->GetMaximumLimitForMaterialResult());
+			resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_MATERIAL_API + "?", APPLICATION_JSON_TYPE, parameter + "&decode=true&limit="+ MaterialConfig::GetInstance()->GetMaximumLimitForMaterialResult());
 			auto finishTime = std::chrono::high_resolution_clock::now();
 			std::chrono::duration<double> totalDuration = finishTime - startTime;
 			Logger::perfomance(PERFOMANCE_KEY + "Search Results API :: " + to_string(totalDuration.count()));
@@ -845,7 +845,7 @@ void MaterialConfig::SetDataFromResponse(json _param)
 			materialResults = json::parse(resultResponse);
 		Logger::Logger("total count of result::" + to_string(materialResults.size()));
 		auto mTypestartTime = std::chrono::high_resolution_clock::now();
-		string materialTypeResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::MATERIAL_TYPE_SEARCH_API + "?", APPLICATION_JSON_TYPE, "&limit="+ Configuration::GetInstance()->GetMaximumLimitForRefAttValue()+"&sort=node_name");
+		string materialTypeResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::MATERIAL_TYPE_SEARCH_API + "?", APPLICATION_JSON_TYPE, "&decode=true&limit="+ Configuration::GetInstance()->GetMaximumLimitForRefAttValue()+"&sort=node_name");
 		auto mTypefinishTime = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> mTypetotalDuration = mTypefinishTime - mTypestartTime;
 		Logger::perfomance(PERFOMANCE_KEY + "Material Types API :: " + to_string(mTypetotalDuration.count()));
@@ -1097,3 +1097,22 @@ bool MaterialConfig::GetIsSaveAndCloseClicked()
 {
 	return m_materialCategoryEnumId;
 }
+
+ /*
+* Description - ResetMaterialConfig() is to set basic need jsons and some other attributs as default value.
+* Parameter -
+* Exception -
+* Return -
+*/
+ void MaterialConfig::ResetMaterialConfig()
+ {
+	 Logger::Info("INFO::MaterialConfig: ResetMaterialConfig()-> Start");
+	 m_materialConfigJson = nullptr;
+	 m_materialFieldsJson = nullptr;
+	 m_isModelExecuted = false;
+	 m_sortedColumnNumber = 0;
+	 SetIsSaveAndCloseClicked(false);
+	 SetIsModelExecuted(m_isModelExecuted);
+	 m_materialLoggedOut = true;
+	 Logger::Info("INFO::MaterialConfig: ResetMaterialConfig()-> End");
+ }

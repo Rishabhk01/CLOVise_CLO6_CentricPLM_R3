@@ -57,7 +57,7 @@ namespace RESTAPI
 	const string SEARCH_ENUM_ATT_API = "/csi-requesthandler/api/v2/enum_lists";
 	const string SEARCH_ENUM_LOCAL_ATT_API = "/csi-requesthandler/api/v2/localization/enum_lists";
 	const string SEARCH_ATT_DEFINITION_API = "/csi-requesthandler/api/v2/create_form_definitions/";
-	const string SEARCH_ATT_DEFINITION_ADDITIONAL_API = "/configurable_attributes?skip=0&limit=1000";
+	const string SEARCH_ATT_DEFINITION_ADDITIONAL_API = "/configurable_attributes?skip=0&limit=1000&decode=true";
 	const string SEASON_SEARCH_API = "/csi-requesthandler/api/v2/seasons";
 	const string SHAPE_API = "/csi-requesthandler/api/v2/shapes";
 	const string THEME_API = "/csi-requesthandler/api/v2/themes";
@@ -92,7 +92,13 @@ namespace RESTAPI
 	
 	/*Centric color specification rest calls start	*/
 	const string SEARCH_COLOR_API = "/csi-requesthandler/api/v2/color_specifications";
+	const string CREATE_COLOR_API = "/csi-requesthandler/api/v2/color_specifications";
 	/*Centric color specification rest calls end	*/
+
+	/*Centric Print Design Color rest calls start	*/
+	const string SEARCH_PRINT_DESIGN_API = "/csi-requesthandler/api/v2/print_designs";
+	const string SEARCH_PRINT_DESIGN_COLOR_API = "/csi-requesthandler/api/v2/print_design_colors";
+	/*Centric Print Design Color rest calls end	*/
 
 	/*Centric rest calls end	*/
 
@@ -124,6 +130,7 @@ namespace RESTAPI
 	const string STYLE_COPY_OPTION_API = "/csi-requesthandler/api/v2/style_copy_options";
 	const string UPDATE_STYLE_API = "/csi-requesthandler/api/v2/styles";
 	const string COLOR_SPEC_API = "/csi-requesthandler/api/v2/color_specifications";
+	const string PRINT_IMAGE_API = "/csi-requesthandler/api/v2/images";
 
 
 
@@ -212,6 +219,7 @@ namespace RESTAPI
 	static string CentricRestCallGet(string _url, string _contentType, string _parameter)
 	{
 		Logger::Info("RestAPI::CentricRestCallGet() Started...");
+		//_url = _url + "&decode=true"; //appending decode=true to get decoded response from centric
 		string response;
 		CURL* curl;
 		FILE* fp = nullptr;;
@@ -585,6 +593,7 @@ namespace RESTAPI
 		}
 		return response;
 	}
+
 	static string DeleteRestCall(string _data, string _api, string _contentType)
 	{
 		CURLcode res;

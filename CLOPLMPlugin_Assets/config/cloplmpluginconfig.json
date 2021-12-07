@@ -29,5 +29,6 @@
   "maximumMaterialSearchResults":"100",
   "maximumStyleSearchResults":"50",
   "maximumColorSearchResults":"200",
+  "maximumPrintSearchResults":"200",
   "maximuRefAttributeValues":"1000"
 }

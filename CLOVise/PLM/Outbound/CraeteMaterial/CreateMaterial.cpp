@@ -71,15 +71,7 @@ namespace CLOVise
 
 		return _instance;
 	}
-
-	void CreateMaterial::Destroy()
-	{
-		if (_instance) {
-			//delete _instance;
-			_instance = NULL;
-		}
-	}
-
+	
 	CreateMaterial::CreateMaterial(QWidget* parent) : MVDialog(parent)
 	{
 		setupUi(this);
@@ -198,10 +190,8 @@ namespace CLOVise
 		ui_buttonsLayout->insertWidget(2, m_SaveAndCloseButton);
 		ui_buttonsLayout->insertSpacerItem(3, horizontalSpacer);
 		ui_buttonsLayout->insertWidget(4, m_publishButton);
-
+		DrawCriteriaWidget(true);
 		connectSignalSlots(true);
-
-		addCreateMaterialDetailsWidgetData();
 
 		Logger::Debug("Create Material constructor() end....");
 		//if (!CreateMaterialConfig::GetInstance()->isModelExecuted)
@@ -278,18 +268,8 @@ namespace CLOVise
 
 		Logger::Info("CreateMaterial -> backButtonClicked() -> Start");
 		this->hide();
-		if (!m_isSaveClicked)
-		{
-			m_attachmentsList->clear();
-			ClearAllFields(m_CreateMaterialTreeWidget_1);
-			ClearAllFields(m_CreateMaterialTreeWidget_2);
-			m_tabWidget->setCurrentIndex(0);
-			m_zfabFilePath.clear();
-		}
 		CLOVise::CLOViseSuite::GetInstance()->setModal(true);
 		CLOViseSuite::GetInstance()->show();
-		/*if (!m_isSaveClicked)
-			CreateMaterial::Destroy();*/
 		Logger::Info("CreateMaterial -> backButtonClicked() -> End");
 	}
 	/*
@@ -324,14 +304,14 @@ namespace CLOVise
 			m_CreateMaterialTreeWidget_1->setDropIndicatorShown(false);
 			m_CreateMaterialTreeWidget_1->setRootIsDecorated(false);
 			m_CreateMaterialTreeWidget_1->setSelectionMode(QAbstractItemView::NoSelection);
-			m_CreateMaterialTreeWidget_1->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; outline: 0;}""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
+			m_CreateMaterialTreeWidget_1->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 5px; min-width: 80px; outline: 0;}""QTreeWidget::item {height: 20px; width: 80px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
 			m_CreateMaterialTreeWidget_2->setColumnCount(2);
 			m_CreateMaterialTreeWidget_2->setHeaderHidden(true);
 			m_CreateMaterialTreeWidget_2->setWordWrap(true);
 			m_CreateMaterialTreeWidget_2->setDropIndicatorShown(false);
 			m_CreateMaterialTreeWidget_2->setRootIsDecorated(false);
 			m_CreateMaterialTreeWidget_2->setSelectionMode(QAbstractItemView::NoSelection);
-			m_CreateMaterialTreeWidget_2->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; outline: 0;}""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
+			m_CreateMaterialTreeWidget_2->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 5px; min-width: 80px; outline: 0;}""QTreeWidget::item {height: 20px; width: 80px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
 
 			/*	if (!PublishToPLMData::GetInstance()->GetDateFlag())
 					m_dateResetButton->hide();
@@ -706,6 +686,7 @@ namespace CLOVise
 				m_attachmentsList->clear();
 				m_zfabFilePath.clear();
 				m_tabWidget->setCurrentIndex(0);
+				CreateMaterialConfig::GetInstance()->SetIsSaveAndCloseClicked(false);
 				CVDisplayMessageBox DownloadDialogObject;
 				ClearAllFields(m_CreateMaterialTreeWidget_1);
 				ClearAllFields(m_CreateMaterialTreeWidget_2);
@@ -1193,20 +1174,9 @@ namespace CLOVise
 	void CreateMaterial::reject()
 	{
 		Logger::Debug("CreateMaterial -> reject -> Start");
-		if (m_isSaveClicked == false)
-		{
-			m_attachmentsList->clear();
-			//ClearAllFields();
-			m_tabWidget->setCurrentIndex(0);
-			m_zfabFilePath.clear();
-		}
-		RESTAPI::SetProgressBarData(0, "", false);
+		
 		this->accept();
-		if (!m_isSaveClicked)
-		{
-			ClearAllFields(m_CreateMaterialTreeWidget_1);
-			ClearAllFields(m_CreateMaterialTreeWidget_2);
-		}
+		
 		Logger::Debug("CreateMaterial -> reject -> End");
 	}
 
@@ -1332,8 +1302,7 @@ namespace CLOVise
 	void CreateMaterial::onSaveAndCloseClicked()
 	{
 		Logger::Debug("CreateMaterial -> SaveClicked() -> Start");
-		m_isSaveClicked = true;
-
+		CreateMaterialConfig::GetInstance()->SetIsSaveAndCloseClicked(true);
 		{
 			m_tabWidget->setCurrentIndex(0);	
 			this->hide();
@@ -1582,5 +1551,32 @@ namespace CLOVise
 			}
 		}
 		Logger::Info("CreateMaterial:: clearDependentFields() -> End");
+	}
+	
+	/*
+	* Description - DrawCriteriaWidget() method is create/reset the create widget.
+	* Parameter - bool
+	* Exception -
+	* Return -
+	*/
+	void CreateMaterial::DrawCriteriaWidget(bool _isFromConstructor)
+	{
+		Logger::Info("CreateMaterial:: DrawCriteriaWidget() -> Start");
+		if (_isFromConstructor)
+		{
+			m_CreateMaterialTreeWidget_1->clear();
+			m_CreateMaterialTreeWidget_2->clear();
+			addCreateMaterialDetailsWidgetData();
+		}
+
+		if (!CreateMaterialConfig::GetInstance()->GetIsSaveAndCloseClicked())
+		{
+			m_attachmentsList->clear();
+			ClearAllFields(m_CreateMaterialTreeWidget_1);
+			ClearAllFields(m_CreateMaterialTreeWidget_2);
+			m_tabWidget->setCurrentIndex(0);
+			m_zfabFilePath.clear();
+		}
+		Logger::Info("CreateMaterial:: DrawCriteriaWidget() -> End");
 	}
 }

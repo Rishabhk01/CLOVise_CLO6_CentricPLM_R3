@@ -38,16 +38,7 @@ namespace CLOVise
 			_instance = new PLMProductResults();
 		return _instance;
 	}
-
-	void PLMProductResults::Destroy()
-	{
-		if (_instance)
-		{
-			//delete _instance;
-			_instance = NULL;
-		}
-	}
-
+	
 	PLMProductResults::PLMProductResults(QWidget* parent)
 		: MVDialog(parent)
 	{
@@ -185,61 +176,35 @@ namespace CLOVise
 			aditionalResultWidget = new QListWidget();
 			ui_3DDesignsLayout->addWidget(aditionalResultWidget);
 			CVWidgetGenerator::GetInstance()->InitializeIconView(aditionalResultWidget);
-			resultTable->setMinimumWidth(750);
-			hidebuttonClicked(false);
+			resultTable->setMinimumWidth(750);			
 			//setDataFromResponse(ProductConfig::GetInstance()->GetSearchCriteriaJSON());
 			/*if (m_resultsCount > m_maxResultsCount)
 				throw "Maximum results limit exceeded. Please refine your search.";
 			if (!m_productResults.contains(COMP3D_KEY))
 				throw "Compatibility key is not found. Please contact System Administrator.";*/
-			m_productResults = ProductConfig::GetInstance()->GetStyleResultsSON();
-			m_typename = ProductConfig::GetInstance()->GetTypename();
-			//m_maxResultsCount= MaterialConfig::GetInstance()->GetMaxResultCount();
-			m_resultsCount = ProductConfig::GetInstance()->GetResultsCount();
-			//UTILITY_API->DisplayMessageBox("PopulateValuesOnResultsUI -> Constructor() -> Start calling");
-			CVWidgetGenerator::PopulateValuesOnResultsUI(nextButton, m_noOfResultLabel, totalPageLabel, m_perPageResultComboBox, Configuration::GetInstance()->GetResultsPerPage(), m_resultsCount);
-			resultTable->setEnabled(false);
-			m_tabViewButton->setEnabled(false);
-			//UTILITY_API->DisplayMessageBox("DrawViewAndResultsWidget -> Constructor() -> Start calling");
-			CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_productResults, ProductConfig::GetInstance()->GetProductViewJSON(), IMAGE_DISPLAY_NAME, m_typename, true, ProductConfig::GetInstance()->GetSelectedViewIdx(), ProductConfig::GetInstance()->GetAttScopes(), true, false, ProductConfig::GetInstance()->GetProductViewJSON());
-			//UTILITY_API->DisplayMessageBox("UpdateTableAndIconRows -> Constructor() -> Start calling");
-			CVWidgetGenerator::UpdateTableAndIconRows(resultTable, currPageLabel, m_perPageResultComboBox, m_resultsCount, false);
-			//UTILITY_API->DisplayMessageBox("UpdateTableAndIconRows -> Constructor() -> Start calling");
-			//CVWidgetGenerator::UpdateTableAndIconRows(iconTable, currPageLabel, m_perPageResultComboBox, m_resultsCount);
-			setHeaderToolTip();
-			resultTable->setEnabled(true);
+			DrawResultWidget(true);
 			connectSignalSlots(true);
-			AddConnectorForRadioButton(); 
+			
 			viewLabel->hide();
 			m_viewComboBox->hide();
 			perPageLabel->hide();
 			m_perPageResultComboBox->hide();
 			m_tabViewButton->hide();
 			m_iconViewButton->hide();
-			if (!ProductConfig::GetInstance()->m_isShow3DAttWidget) {
-				aditionalResultWidget->hide();
-				ui_hideButton->hide();
-			}
-			else {
-				ui_hideButton->show();
-			}
-
+			
 			//UTILITY_API->DisplayMessageBox("endddd......");
 			RESTAPI::SetProgressBarData(0, "", false);
 		}
 		catch (exception& e)
 		{
-			Destroy();
 			throw e;
 		}
 		catch (const char* msg)
 		{
-			Destroy();
 			throw msg;
 		}
 		catch (string msg)
 		{
-			Destroy();
 			throw msg;
 		}
 		Logger::Info("PLMProductResults -> Constructor() -> End");
@@ -511,7 +476,6 @@ namespace CLOVise
 			CLOVise::PLMProductSearch::GetInstance()->setModal(true);
 			RESTAPI::SetProgressBarData(0, "", false);
 			CLOVise::PLMProductSearch::GetInstance()->show();
-			Destroy();
 		/*}
 		break;
 		}*/
@@ -1036,7 +1000,6 @@ namespace CLOVise
 			{
 				UTILITY_API->DeleteProgressBar(true);
 				this->close();
-				this->Destroy();
 			}
 			else
 			{
@@ -1052,7 +1015,6 @@ namespace CLOVise
 			if (Configuration::GetInstance()->GetCloseResultsDialogue() && rowsSelected)
 			{
 				this->close();
-				this->Destroy();
 			}
 			else
 			{
@@ -1066,7 +1028,6 @@ namespace CLOVise
 			if (Configuration::GetInstance()->GetCloseResultsDialogue() && rowsSelected)
 			{
 				this->close();
-				this->Destroy();
 			}
 			else
 			{
@@ -1082,7 +1043,6 @@ namespace CLOVise
 			if (Configuration::GetInstance()->GetCloseResultsDialogue() && rowsSelected)
 			{
 				this->close();
-				this->Destroy();
 			}
 			else
 			{
@@ -1210,7 +1170,7 @@ namespace CLOVise
 					aditionalResultWidget->clear();
 
 					Logger::Debug("_selectedIdList.contains(QString::fromStdString(styleId)" + styleId);
-					string attachmentResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::ATTACHMENTS_LATEST_REVISION_RESULTS_API + styleId + "?revision_details=true&limit=100&file_ext=" + ZPRJ, APPLICATION_JSON_TYPE, "");
+					string attachmentResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::ATTACHMENTS_LATEST_REVISION_RESULTS_API + styleId + "?revision_details=true&limit=100&decode=true&file_ext=" + ZPRJ, APPLICATION_JSON_TYPE, "");
 					//json documentjson = Helper::GetJSONParsedValue<string>(m_productResults[selctedIdCount], "documents", false);
 					Logger::RestAPIDebug("_selectedIdList.contains(QString::fromStdString(styleId)::documentjson::" + attachmentResponse);
 					if (FormatHelper::HasError(attachmentResponse))
@@ -1400,5 +1360,52 @@ namespace CLOVise
 			_listItem->setSelected(true);
 			m_selectedIdnameText = _listItem->text().toStdString();
 		}
+	}
+
+	/*
+	* Description - DrawResultWidget() method is create/reset the result widget.
+	* Parameter - bool
+	* Exception -
+	* Return -
+	*/
+	void PLMProductResults::DrawResultWidget(bool _isFromConstructor)
+	{
+		Logger::Info("PLMProductResults -> DrawResultWidget() -> Start");
+		m_isHidden = false;
+		m_productResults = ProductConfig::GetInstance()->GetStyleResultsSON();
+		m_typename = ProductConfig::GetInstance()->GetTypename();
+		m_resultsCount = ProductConfig::GetInstance()->GetResultsCount();
+		resultTable->clearContents();
+		CVWidgetGenerator::PopulateValuesOnResultsUI(nextButton, m_noOfResultLabel, totalPageLabel, m_perPageResultComboBox, Configuration::GetInstance()->GetResultsPerPage(), m_resultsCount);
+		resultTable->setEnabled(false);
+		m_tabViewButton->setEnabled(false);
+		CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_productResults, ProductConfig::GetInstance()->GetProductViewJSON(), IMAGE_DISPLAY_NAME, m_typename, true, ProductConfig::GetInstance()->GetSelectedViewIdx(), ProductConfig::GetInstance()->GetAttScopes(), true, false, ProductConfig::GetInstance()->GetProductViewJSON());
+		CVWidgetGenerator::UpdateTableAndIconRows(resultTable, currPageLabel, m_perPageResultComboBox, m_resultsCount, _isFromConstructor);
+		setHeaderToolTip();
+		resultTable->setEnabled(true);
+		AddConnectorForRadioButton();
+		hidebuttonClicked(false);
+		if (!ProductConfig::GetInstance()->m_isShow3DAttWidget)
+		{
+			aditionalResultWidget->hide();
+			ui_hideButton->hide();
+		}
+		else {
+			ui_hideButton->show();
+		}
+		m_totalSelected.clear();
+		HorizontalHeaderClicked(ProductConfig::GetInstance()->m_sortedColumnNumber);	
+		if (Configuration::GetInstance()->GetCurrentScreen() == SEARCH_PRODUCT_CLICKED || Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED)
+		{
+			m_downloadButton->setText("Download");
+			m_downloadButton->setToolTip("Download");
+			// = CVWidgetGenerator::CreatePushButton("Download", DOWNLOAD_HOVER_ICON_PATH, "Download", PUSH_BUTTON_STYLE, 30, true);
+		}
+		else
+		{
+			m_downloadButton->setText("Copy");
+			m_downloadButton->setToolTip("Copy");
+		}
+		UTILITY_API->DeleteProgressBar(true);
 	}
 }

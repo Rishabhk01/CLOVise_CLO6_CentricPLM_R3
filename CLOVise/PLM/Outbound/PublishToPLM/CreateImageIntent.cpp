@@ -75,14 +75,6 @@ namespace CLOVise
 		return _instance;
 	}
 
-	void CreateImageIntent::Destroy()
-	{
-		if (_instance) {
-			delete _instance;
-			_instance = NULL;
-		}
-	}
-
 	CreateImageIntent::CreateImageIntent(QWidget* parent) : MVDialog(parent)
 	{
 		setupUi(this);
@@ -135,7 +127,9 @@ namespace CLOVise
 		//includeAvatarLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
 		m_colorwayComboBox = CVWidgetGenerator::CreateComboBox(QString::fromStdString("Style & Colorway"), "", true);
-		m_colorwayComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+		m_colorwayComboBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+		m_colorwayComboBox->setMaximumWidth(200);
+		m_colorwayComboBox->setMinimumWidth(200);
 
 		QSpacerItem *horizontalSpacer = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Expanding);
 		QSpacerItem *horizontalSpacer1 = new QSpacerItem(1, 1, QSizePolicy::Fixed, QSizePolicy::Fixed);

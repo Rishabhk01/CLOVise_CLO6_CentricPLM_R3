@@ -2,16 +2,16 @@
 /*
 * Copyright 2020-2021 CLO-Vise. All rights reserved
 *
-* @file PLMColorResults.h
+* @file PLMPrintResults.h
 *
-* @brief Class declaration for cach Colors data in CLO from PLM.
-* This class has all the variable declarations and function declarations which are used in storing PLM Color instance data to view and download in CLO.
+* @brief Class declaration for cach Prints data in CLO from PLM.
+* This class has all the variable declarations and function declarations which are used in storing PLM Print instance data to view and download in CLO.
 *
 * @author GoVise
 *
-* @date 30-MAY-2020
+* @date 05-OCT-2021
 */
-#include "ui_PLMColorResults.h"
+#include "ui_PLMPrintResults.h"
 
 #include <iostream>
 #include <string>
@@ -28,16 +28,16 @@ using namespace std;
 
 namespace CLOVise
 {
-	class  PLMColorResults : public MVDialog, public Ui::ColorResultTable
+	class  PLMPrintResults : public MVDialog, public Ui::PrintResultTable
 	{
 		Q_OBJECT
 
 	public:
-		static PLMColorResults* GetInstance();
+		static PLMPrintResults* GetInstance();
 		void setDataFromResponse(json _resultJson);
 		void updateTableForTabView();
 		void updateTableForIconView();
-		void downloadColorResult();
+		void downloadPrintResult();
 		void backButtonClicked();
 		void horizontalHeaderClicked(int _column);
 		void ResultViewIndexChanged(const QString&);
@@ -48,24 +48,27 @@ namespace CLOVise
 		void ClickedPreviousButton();
 		void TableCheckBoxSelected();
 		void DrawResultWidget(bool _isFromConstructor);
+		//void IconCheckBoxSelected();
+		//json DownloadResults(QStringList _downloadIdList, string _module, json _previewjsonarray);
+
 	private:
 		 
-		PLMColorResults(QWidget* parent = nullptr);
-		virtual ~PLMColorResults();
+		PLMPrintResults(QWidget* parent = nullptr);
+		virtual ~PLMPrintResults();
 		
 		void setHeaderToolTip();
 
 		void connectSignalSlots(bool _b) override;
 
 
-		static PLMColorResults* _instance;
+		static PLMPrintResults* _instance;
 		bool m_isHidden = false;
 		MVTableWidget* resultTable;
 		QListWidget* iconTable;
 
 		int m_resultsCount = 0;
 		bool m_isTabularView = true;
-		json m_colorResults = json::object();
+		json m_printResults = json::object();
 		string m_typename = "";
 		void AddConnectorForCheckbox();
 		bool m_isResultTableSorted = false;
