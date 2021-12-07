@@ -513,9 +513,13 @@ namespace CLOVise
 			if (!latestRevision.empty())
 
 			{
-				json responseJson = Helper::makeRestcallGet(RESTAPI::BOM_REVISION_API + "/" + latestRevision, "", "", "");
-			json sectionIdsjson = Helper::GetJSONValue<string>(responseJson, "all_sections", true);
-				CreateTableforEachSection(sectionIdsjson);
+				string resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API + "/" + latestRevision, APPLICATION_JSON_TYPE, "");
+				//json responseJson = Helper::makeRestcallGet(RESTAPI::BOM_REVISION_API + "/" + latestRevision, "", "", "");
+				json responseJson = json::parse(resultResponse);
+				Logger::Debug("AddNewBom onCreateButtonClicked() responseJson...." + to_string(responseJson));
+				json sectionIdsJson = Helper::GetJSONParsedValue<string>(responseJson, "all_sections", false);
+				Logger::Debug("AddNewBom onCreateButtonClicked() sectionIdsJson...." + to_string(sectionIdsJson));
+				CreateTableforEachSection(sectionIdsJson);
 			}
 
 			UTILITY_API->DisplayMessageBox("m_BomMetaData"+ to_string(m_BomMetaData));
@@ -557,7 +561,7 @@ namespace CLOVise
 		Logger::Debug("AddNewBom onCreateButtonClicked() End....");
 	}
 
-	void AddNewBom::CreateTableforEachSection(json _sectionIdJson)
+	void AddNewBom::CreateTableforEachSection(json _sectionIdsjson)
 	{
 		Logger::Debug("AddNewBom CreateTableforEachSection Start: ");
 
@@ -583,39 +587,64 @@ namespace CLOVise
 		QTableWidget* sectionTable;
 		QStringList tablecolumnList;
 		QStringList bomTableColumnKeys;
+		tablecolumnList = m_bomTableColumnlist;
+		bomTableColumnKeys = m_bomTableColumnKeys;
 		if (CreateProduct::GetInstance()->m_mappedColorways.size())
-		{
-			tablecolumnList = m_bomTableColumnlist;
-			tablecolumnList.append(CreateProduct::GetInstance()->m_mappedColorways);
-			bomTableColumnKeys = m_bomTableColumnKeys;
+		{		
+			tablecolumnList.append(CreateProduct::GetInstance()->m_mappedColorways);		
 			bomTableColumnKeys.append(CreateProduct::GetInstance()->m_mappedColorways);
 
 		}
-		for (int i = 0; i < sectionList.size(); i++)
+		string sectionId;
+		for (int sectionCount = 0; sectionCount < _sectionIdsjson.size(); sectionCount++)
 		{
+			string section = Helper::GetJSONValue<int>(_sectionIdsjson, sectionCount, true);
+			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> apiMetadataStr" + sectionId);
+			sectionId += "id=" + section + "&";
+		}
+		
+		sectionId = sectionId.substr(0, sectionId.length() - 1);
+
+		string sectionDefinitions = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_SECTION_DEFINITION_API + "?" + sectionId + "&sort=sort_order&limit=1000", APPLICATION_JSON_TYPE, "");
+		Logger::Debug("AddNewBom -> CreateTableforEachSection() -> resultResponse" + sectionDefinitions);
+
+		int sectionCountOnBomTab = 0;
+		json sectionDefinitionsJson = json::parse(sectionDefinitions);
+		json placementProductTypeJson;
+		for (int sectionCount = 0; sectionCount < sectionDefinitionsJson.size(); sectionCount++)
+		{
+			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> 1");
+			json sectionCountJson = Helper::GetJSONParsedValue<int>(sectionDefinitionsJson, sectionCount, false);;///use new method
+			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> 1");
+			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionCountJson" + to_string(sectionCountJson));
+			string sectionId = Helper::GetJSONValue<string>(sectionCountJson, ATTRIBUTE_ID, true);
+			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionId" + sectionId);
+			string sectionName = Helper::GetJSONValue<string>(sectionCountJson, "node_name", true);
 
 
-			Section* section = new Section(sectionList[i], 300);
+			Section* section = new Section(QString::fromStdString(sectionName), 300);
 
 			sectionTable = new QTableWidget(section);
-			sectionTable->setProperty("TableName", sectionList[i]);
+			sectionTable->setProperty("TableName", QString::fromStdString(sectionName));
 			sectionTable->setColumnCount(tablecolumnList.size());
 			sectionTable->setHorizontalHeaderLabels(tablecolumnList);
-			if (sectionList[i] == "FABRICS")
+			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionName" + sectionName);
+			if (sectionName == "Fabrics")
 			{
+				
 				Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionTable" + to_string(long(sectionTable)));
-				getMaterialDetails("fabricList", CreateProduct::GetInstance()->m_techPackJson, true, sectionTable, sectionList[i],true);
+				getMaterialDetails("fabricList", CreateProduct::GetInstance()->m_techPackJson, true, sectionTable, QString::fromStdString(sectionName),true);
 			}
-			if (sectionList[i] == "TRIMS")
+			if (sectionName == "Trims")
 			{
 				Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionTable" + to_string(long(sectionTable)));
-				getMaterialDetails("buttonHeadList", CreateProduct::GetInstance()->m_techPackJson, false, sectionTable, sectionList[i], false);
-				getMaterialDetails("buttonHoleList", CreateProduct::GetInstance()->m_techPackJson, false, sectionTable, sectionList[i], false);
-				getMaterialDetails("zipperList", CreateProduct::GetInstance()->m_techPackJson, false, sectionTable, sectionList[i], false);
+				getMaterialDetails("buttonHeadList", CreateProduct::GetInstance()->m_techPackJson, false, sectionTable, QString::fromStdString(sectionName), false);
+				getMaterialDetails("buttonHoleList", CreateProduct::GetInstance()->m_techPackJson, false, sectionTable, QString::fromStdString(sectionName), false);
+				getMaterialDetails("zipperList", CreateProduct::GetInstance()->m_techPackJson, false, sectionTable, QString::fromStdString(sectionName), false);
 			}
 
 
-			m_bomSectionTableInfoMap.insert(make_pair(sectionList[i].toStdString(), sectionTable));
+			m_bomSectionTableInfoMap.insert(make_pair(sectionName, sectionTable));
 			//sectionTable->setStyleSheet("QTableWidget{ background-color: #262628; border-right: 1px solid #000000; border-top: 1px solid #000000; border-left: 1px solid #000000; font-face: ArialMT; font-size: 12px; color: #FFFFFF; }");
 			sectionTable->verticalHeader()->hide();
 			sectionTable->setShowGrid(false);
@@ -640,7 +669,7 @@ namespace CLOVise
 			//connect(AddSpecialMaterialAction, SIGNAL(triggered()), this, SLOT(onClickAddSpecialMaterialButton()));
 
 			m_addMaterialButtonAndTableMap.insert(make_pair(addPlmMaterialButton, sectionTable));
-			m_addMaterialButtonAndTableMap.insert(make_pair(addSpecialMaterialButton, sectionTable));
+			m_addSpecialMaterialButtonAndTableMap.insert(make_pair(addSpecialMaterialButton, sectionTable));
 			//QMenu* menu = new QMenu(addMaterialButton);
 			//menu->addAction(AddFromMaterialAction);
 			//menu->addAction(AddSpecialMaterialAction);
@@ -658,7 +687,7 @@ namespace CLOVise
 			anyLayout->insertWidget(1, sectionTable);
 			section->setContentLayout(*anyLayout);
 			section->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-			CreateProduct::GetInstance()->ui_sectionLayout->insertWidget(i, section);
+			CreateProduct::GetInstance()->ui_sectionLayout->insertWidget(sectionCount, section);
 
 		}
 
@@ -709,11 +738,11 @@ namespace CLOVise
 
 
 				rowDataJson["Code"] = code;
-				rowDataJson["Name"] = name;
+				rowDataJson["material_name"] = name;
 				rowDataJson["Type"] = type;
-				rowDataJson["Description"] = description;
-				rowDataJson["Quantity"] = quantityVal;
-				rowDataJson["UOM"] = uom;
+				rowDataJson["comment"] = description;
+				rowDataJson["qty_default"] = quantityVal;
+				rowDataJson["uom"] = uom;
 				rowDataJson["materialId"] = objectId;
 				AddBomRows(_sectionTable, rowDataJson, _tableName);
 			}
@@ -1071,7 +1100,7 @@ namespace CLOVise
 		Configuration::GetInstance()->SetProgressBarProgress(qrand() % 101);
 		MaterialConfig::GetInstance()->SetMaximumLimitForMaterialResult();
 		RESTAPI::SetProgressBarData(Configuration::GetInstance()->GetProgressBarProgress(), "Loading " + Configuration::GetInstance()->GetLocalizedMaterialClassName() + " Search", true);
-		if (!MaterialConfig::GetInstance()->GetIsModelExecuted())
+		//if (!MaterialConfig::GetInstance()->GetIsModelExecuted())
 		{
 			MaterialConfig::GetInstance()->InitializeMaterialData();
 		}
@@ -1087,18 +1116,19 @@ namespace CLOVise
 		Logger::Debug("AddNewBom -> onClickAddSpecialMaterialButton () Start");
 		QTableWidget* sectionTable;
 		QPushButton* button = (QPushButton*)sender();
-		auto it = AddNewBom::GetInstance()->m_addMaterialButtonAndTableMap.find(button);
-		if (it != AddNewBom::GetInstance()->m_addMaterialButtonAndTableMap.end())
+		auto it = AddNewBom::GetInstance()->m_addSpecialMaterialButtonAndTableMap.find(button);
+		if (it != AddNewBom::GetInstance()->m_addSpecialMaterialButtonAndTableMap.end())
 		{
 			sectionTable = it->second;
 			QString tableName = sectionTable->property("TableName").toString();
 			json rowDataJson = json::object();
 			rowDataJson["Code"] = "";
-			rowDataJson["Name"] = "";
+			rowDataJson["material_name"] = "";
 			rowDataJson["Type"] = "";
-			rowDataJson["Description"] = "";
-			rowDataJson["Quantity"] = "";
-			rowDataJson["UOM"] = "";
+			rowDataJson["comment"] = "";
+			rowDataJson["qty_default"] = "";
+			rowDataJson["uom"] = "";
+			rowDataJson["materialId"] = "";
 			AddBomRows(sectionTable, rowDataJson, tableName);
 		}
 
@@ -1180,11 +1210,12 @@ namespace CLOVise
 
 		QStringList tablecolumnList;
 		QStringList bomTableColumnKeys;
+		tablecolumnList = m_bomTableColumnlist;
+		bomTableColumnKeys = m_bomTableColumnKeys;
 		if (CreateProduct::GetInstance()->m_mappedColorways.size() && m_bomSectionTableInfoMap.size() > 0)
 		{
-			tablecolumnList = m_bomTableColumnlist;
-			tablecolumnList.append(CreateProduct::GetInstance()->m_mappedColorways);
-			bomTableColumnKeys = m_bomTableColumnKeys;
+			
+			tablecolumnList.append(CreateProduct::GetInstance()->m_mappedColorways);			
 			bomTableColumnKeys.append(CreateProduct::GetInstance()->m_mappedColorways);
 
 		}
@@ -1425,11 +1456,12 @@ namespace CLOVise
 		Logger::Debug("AddNewBom -> OnClickDeleteButton () Start");
 		QSignalMapper* button = (QSignalMapper*)sender();
 	//	QPushButton* button = (QPushButton*)sender();
-
+		
 
 
 		string tableName = button->property("TableName").toString().toStdString();
 
+		Logger::Debug("AddNewBom -> OnClickDeleteButton () tableName" + tableName);
 		auto itr = m_bomSectionTableInfoMap.find(tableName);
 		if (itr != m_bomSectionTableInfoMap.end())
 		{
@@ -1559,4 +1591,137 @@ namespace CLOVise
 
 		Logger::Debug("Create product OnHandleDropDownValue() End");
 	}
+
+	void AddNewBom::BackupBomDetails()
+	{
+		Logger::Debug("AddNewBom -> BackupBomDetails() -> Start");
+		try {
+			for (auto itr = m_bomSectionTableInfoMap.begin(); itr != m_bomSectionTableInfoMap.end(); itr++)
+			{
+				//sectionInfo sectionInfoObj = 
+				QTableWidget* sectionTable = itr->second;
+				string sectionId = sectionTable->property("SectionId").toString().toStdString();
+				for (int rowCount = 0; rowCount < sectionTable->rowCount(); rowCount++)
+				{
+					json attJson = json::object();
+					for (int columnCount = 0; columnCount < sectionTable->columnCount(); columnCount++)
+					{
+						string fieldValue;
+
+						QWidget* qcolumnWidget = (QWidget*)sectionTable->cellWidget(rowCount, columnCount)->children().last();
+						string attInternalName = qcolumnWidget->property("rest_api_name").toString().toStdString();
+						Logger::Debug("Create product CreateBom() attInternalName" + attInternalName);
+						if (QLineEdit* qLineEditC1 = qobject_cast<QLineEdit*>(qcolumnWidget))
+						{
+
+							fieldValue = qLineEditC1->text().toStdString();
+							//QString columnName = sectionTable->horizontalHeaderItem(columnCount)->text();
+						}
+						else if (QTextEdit* qTextC1 = qobject_cast<QTextEdit*>(qcolumnWidget))
+						{
+
+							fieldValue = qTextC1->toPlainText().toStdString();
+						}
+						else if (QDateEdit* qDateC1 = qobject_cast<QDateEdit*>(qcolumnWidget))
+						{
+							fieldValue = FormatHelper::RetrieveDate(qDateC1);
+							if (fieldValue.find(DATE_FORMAT_TEXT.toStdString()) != string::npos)
+							{
+								fieldValue = "";
+							}
+							else
+							{
+								//UTILITY_API->DisplayMessageBox("fieldValue::" + fieldValue);
+								fieldValue = fieldValue + "T00:00:00Z";
+							}
+						}
+						else if (QListWidget* listC1 = qobject_cast<QListWidget*>(qcolumnWidget))
+						{
+							string tempValue = "";
+							QListWidgetItem* listItem = nullptr;
+							for (int row = 0; row < listC1->count(); row++)
+							{
+								listItem = listC1->item(row);
+								if (listItem->checkState())
+								{
+									tempValue = listItem->text().toStdString();
+									if (FormatHelper::HasContent(tempValue))
+									{
+										tempValue = listC1->property(tempValue.c_str()).toString().toStdString();
+										if (FormatHelper::HasContent(tempValue))
+										{
+											tempValue = tempValue + DELIMITER_NEGATION;
+											fieldValue = fieldValue + tempValue;
+										}
+									}
+								}
+							}
+						}
+						else if (QPushButton* pushButton = qobject_cast<QPushButton*>(qcolumnWidget))
+						{
+							if (attInternalName == "Delete")
+							{
+								fieldValue = pushButton->property("materialId").toString().toStdString();
+								attInternalName = "actual";
+							}
+						}
+						else if (QSpinBox* SpinC1 = qobject_cast<QSpinBox*>(qcolumnWidget))
+						{
+							if (SpinC1->value() != 0)
+							{
+								fieldValue = to_string(SpinC1->value());
+							}
+						}
+						else if (QComboBox* qComboBoxC1 = qobject_cast<QComboBox*>(qcolumnWidget))
+						{
+							fieldValue = qComboBoxC1->currentText().toStdString();
+
+							Logger::Debug("AddNewBom BackupBomDetails() QComboBox->fieldLabel" + attInternalName);
+							//Logger::Debug("Create product ReadVisualUIFieldValue() QComboBox->labelText" + labelText);
+
+							string fieldVal = qComboBoxC1->property(fieldValue.c_str()).toString().toStdString();
+							Logger::Debug("Create product BackupBomDetails() QComboBox->fieldVal" + fieldVal);
+							if (!fieldVal.empty())
+							{
+								fieldValue = fieldVal;
+							}
+							Logger::Debug("AddNewBom BackupBomDetails() QComboBox->fieldValue" + fieldValue);
+						}
+						if (!attInternalName.empty() && !fieldValue.empty())
+						{
+							if (attInternalName == "qty_default")
+								attJson[attInternalName] = atoi(fieldValue.c_str());
+							else
+								attJson[attInternalName] = fieldValue;
+						}
+						Logger::Debug("AddNewBom BackupBomDetails() fieldValue" + fieldValue);
+					}
+					attJson["ds_section"] = sectionId;
+
+
+					Logger::Debug("AddNewBom BackupBomDetails() attJson" + to_string(attJson));
+
+
+					//UTILITY_API->DisplayMessageBox("attJson" + to_string(attJson));
+				}
+				//sectionTable->model()->removeRows(0, sectionTable->rowCount());
+				sectionTable->clearContents();
+				sectionTable->setRowCount(0);
+				//sectionTable->clear();
+
+			}
+			Logger::Debug("AddNewBom -> BackupBomDetails() -> End");
+		}
+		catch (exception& e)
+		{
+			RESTAPI::SetProgressBarData(0, "", false);
+			Logger::Error("AddNewBom -> AddNewBom Exception - " + string(e.what()));
+			UTILITY_API->DisplayMessageBox(e.what());
+			//Helper::RemoveDirectory(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_TEMP_DIRECTORY));
+			//dir.mkpath(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_TEMP_DIRECTORY));
+
+			this->show();
+		}
+	}
+
 }

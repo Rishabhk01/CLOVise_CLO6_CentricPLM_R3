@@ -41,12 +41,15 @@ namespace CLOVise
 		static void	Destroy();
 		//void getFabricTrimDetails(stringstream& _ssBOMDetails);
 		void getMaterialDetails(string _str, json _techPackJson, bool _flag, QTableWidget* _sectionTable,QString _tableName, bool _isFabric);
-		void CreateTableforEachSection(json _sectionIdJson);
+		void CreateTableforEachSection(json _sectionIdsjson);
 		void AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString _tableName);
 		void getColorInfo(json _FabricJson, json& rowDataJson, string _materailId, bool _isFabric);
 		void UpdateColorwayColumns();
+		void BackupBomDetails();
+
 		map<string, QTableWidget*> m_bomSectionTableInfoMap;
 		map<QPushButton*, QTableWidget*> m_addMaterialButtonAndTableMap;
+		map<QPushButton*, QTableWidget*> m_addSpecialMaterialButtonAndTableMap;
 		map<string, json> m_colorwayMapForBom;
 		QPushButton* currentAddMaterialButtonClicked;
 		json m_mappedColorwaysArr;
@@ -58,6 +61,7 @@ namespace CLOVise
 		int m_currentRow;
 		int m_currentColumn;
 		QTreeWidget* m_createBomTreeWidget;
+		//QWidget* CreateCustomWidget(string _rgbValue, string _colorName, QTableWidget* _sectionTable, QString _tableName, int _row, int _column);
 		json m_BomMetaData = json::object();
 	private:
 		AddNewBom(QWidget* parent = nullptr);

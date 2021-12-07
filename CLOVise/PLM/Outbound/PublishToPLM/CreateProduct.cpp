@@ -443,6 +443,8 @@ namespace CLOVise
 			Logger::Debug("CreateProduct -> onBackButtonClicked -> 5");
 
 		}
+
+		AddNewBom::GetInstance()->m_bomSectionTableInfoMap.clear();
 		//SetTotalImageCount();
 		this->close();
 		CLOVise::CLOViseSuite::GetInstance()->setModal(true);
@@ -1785,7 +1787,7 @@ namespace CLOVise
 				UpdateColorwayColumnsInBom();
 			//}
 		}
-
+		AddNewBom::GetInstance()->BackupBomDetails();
 		Logger::Debug("Create product onTabClicked() End");
 	}
 
@@ -2912,9 +2914,9 @@ namespace CLOVise
 				Logger::Debug("CreateProduct -> AddMaterialInBom() -> 3");
 				json rowDataJson = json::object();
 				rowDataJson["Code"] = code;
-				rowDataJson["Name"] = name;
+				rowDataJson["node_name"] = name;
 				rowDataJson["Type"] = "";
-				rowDataJson["Description"] = "";
+				rowDataJson["comment"] = description;
 				rowDataJson["Quantity"] = "";
 				rowDataJson["UOM"] = "";
 			AddNewBom::GetInstance()->AddBomRows(sectionTable, rowDataJson, tableName);
