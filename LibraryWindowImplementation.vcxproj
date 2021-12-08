@@ -205,8 +205,6 @@
     <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.cpp" />
     <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\CreateProduct.cpp" />
     <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\CreateImageIntent.cpp" />
-    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.cpp" />
-    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\CreateImageIntent.cpp" />
     <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\Section.cpp" />
     <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.cpp" />
     <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\PublishToPLMData.cpp" />
@@ -287,7 +285,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_UpdateImageIntent.cpp">
     <ClCompile Include="GeneratedFiles\Debug\moc_UpdateImageIntent.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -442,7 +439,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_UpdateImageIntent.cpp">
     <ClCompile Include="GeneratedFiles\Release\moc_AddNewBom.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -1295,10 +1291,9 @@
     <ClInclude Include="GeneratedFiles\ui_CreateProduct.h" />
     <ClInclude Include="GeneratedFiles\ui_CVDisplayMessageBox.h" />
     <ClInclude Include="GeneratedFiles\ui_CreateImageIntent.h" />
+    <ClInclude Include="GeneratedFiles\ui_AddNewBom.h" />
     <ClInclude Include="GeneratedFiles\ui_PLMPrintResults.h" />
     <ClInclude Include="GeneratedFiles\ui_PLMPrintSearch.h" />
-    <ClInclude Include="GeneratedFiles\ui_UpdateImageIntent.h" />
-    <ClInclude Include="GeneratedFiles\ui_AddNewBom.h" />
     <ClInclude Include="GeneratedFiles\ui_UpdateImageIntent.h" />
     <ClInclude Include="GeneratedFiles\ui_PLMColorResults.h" />
     <ClInclude Include="GeneratedFiles\ui_PLMColorSearch.h" />

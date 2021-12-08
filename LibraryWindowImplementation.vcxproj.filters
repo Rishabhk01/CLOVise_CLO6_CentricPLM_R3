@@ -257,6 +257,9 @@
     <ClCompile Include="CLOVise\PLM\Inbound\Material\MaterialConfig.cpp">
       <Filter>CLOVise\PLM\Inbound\Material</Filter>
     </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Product\ProductConfig.cpp">
+      <Filter>CLOVise\PLM\Inbound\Product</Filter>
+    </ClCompile>
     <ClCompile Include="CLOVise\PLM\Inbound\Document\DocumentConfig.cpp">
       <Filter>CLOVise\PLM\Inbound\Document</Filter>
     </ClCompile>
@@ -359,9 +362,6 @@
     <ClCompile Include="CLOVise\PLM\Outbound\UpdateMaterial\UpdateMaterialConfig.cpp">
       <Filter>CLOVise\PLM\Outbound\UpdateMaterial</Filter>
     </ClCompile>
-    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\CreateImageIntent.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -398,26 +398,8 @@
     <ClCompile Include="CLOVise\PLM\Inbound\Print\PrintConfig.cpp">
       <Filter>CLOVise\PLM\Inbound\Print</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_UpdateImageIntent.cpp">
+    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\Section.cpp">
       <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_CreateImageIntent.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_CreateImageIntent.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_UpdateImageIntent.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.cpp">
-      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
-    </ClCompile>
-    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\CreateImageIntent.cpp">
-      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
-    </ClCompile>
-    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\AddNewBom.cpp">
-      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_AddNewBom.cpp">
       <Filter>Generated Files</Filter>
@@ -425,10 +407,10 @@
     <ClCompile Include="GeneratedFiles\Release\moc_AddNewBom.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="CLOVise\PLM\Inbound\Product\ProductConfig.cpp">
-      <Filter>CLOVise\PLM\Libraries</Filter>
+    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\AddNewBom.cpp">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
     </ClCompile>
-    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\Section.cpp">
+    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\CreateImageIntent.cpp">
       <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
     </ClCompile>
   </ItemGroup>
@@ -581,9 +563,6 @@
     <ClInclude Include="CLOVise\PLM\Libraries\curl\include\curl\urlapi.h">
       <Filter>CLOVise\PLM\Libraries\curl\include\curl</Filter>
     </ClInclude>
-    <ClInclude Include="CLOVise\PLM\CLOViseSuite\CLOViseSuite.h">
-      <Filter>CLOVise\PLM\CLOViseSuite</Filter>
-    </ClInclude>
     <ClInclude Include="CLOVise\PLM\Helper\Util\CVLicenseHelper.h">
       <Filter>CLOVise\PLM\Helper\Util</Filter>
     </ClInclude>
@@ -649,11 +628,13 @@
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_PLMPrintSearch.h">
       <Filter>Generated Files</Filter>
+    </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_AddNewBom.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="CLOVise\PLM\Inbound\Print\PrintConfig.h">
       <Filter>CLOVise\PLM\Inbound\Print</Filter>
+    </ClInclude>
     <ClInclude Include="CLOVise\PLM\Outbound\PublishToPLM\Section.h">
       <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
     </ClInclude>
@@ -765,9 +746,6 @@
     <CustomBuild Include="CLOVise\PLM\Helper\Util\ComboBoxItem.h">
       <Filter>CLOVise\PLM\Helper\Util</Filter>
     </CustomBuild>
-    <CustomBuild Include="CLOVise\PLM\CLOViseSuite\CLOViseSuite.h">
-      <Filter>Generated Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="CLOVise\PLM\CLOViseSuite\CLOViseSuite.ui" />
     <CustomBuild Include="CLOVise\PLM\Helper\Util\DataHelper.h">
       <Filter>Generated Files</Filter>
@@ -878,6 +856,21 @@
     <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\AddNewBom.ui" />
     <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
       <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Print\PLMPrintResults.h">
+      <Filter>CLOVise\PLM\Inbound\Print</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Print\PLMPrintResults.ui">
+      <Filter>CLOVise\PLM\Inbound\Print</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Print\PLMPrintSearch.h">
+      <Filter>CLOVise\PLM\Inbound\Print</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\Print\PLMPrintSearch.ui">
+      <Filter>CLOVise\PLM\Inbound\Print</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\CLOViseSuite\CLOViseSuite.h">
+      <Filter>CLOVise\PLM\CLOViseSuite</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
