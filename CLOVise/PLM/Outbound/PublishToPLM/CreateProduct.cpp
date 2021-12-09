@@ -442,23 +442,14 @@ namespace CLOVise
 				delete child;
 			}*/
 
-			Logger::Debug("CreateProduct -> onBackButtonClicked -> 1");
-			while (ui_sectionLayout->count() > 0)
-			{
-				Logger::Debug("CreateProduct -> onBackButtonClicked -> 2");
-				QWidget *item = ui_sectionLayout->itemAt(0)->widget();
-				Logger::Debug("CreateProduct -> onBackButtonClicked -> 3");
-				if (item != nullptr)
-					delete item;
-				Logger::Debug("CreateProduct -> onBackButtonClicked -> 4");
-			}
-
-			Logger::Debug("CreateProduct -> onBackButtonClicked -> 5");
-
+			ClearBomSectionLayout();
+			AddNewBom::GetInstance()->ClearBomData();
+			m_bomAddButton->show();
 		}
-
-		AddNewBom::GetInstance()->m_bomSectionTableInfoMap.clear();
+	
+		
 		//SetTotalImageCount();
+		
 		this->close();
 		CLOVise::CLOViseSuite::GetInstance()->setModal(true);
 		CLOViseSuite::GetInstance()->show();
@@ -763,6 +754,22 @@ namespace CLOVise
 							Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON attName: " + attName);
 							attId = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_ID, true);
 							Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON attId: " + attId);
+							if (attributeName == "Style Type")
+							{
+								string tdsmapString = Helper::GetJSONValue<string>(attJson, "tds_map", false);
+								Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON tdsmapString: " + tdsmapString);
+								json tdsmapJson = json::parse(tdsmapString);
+								Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON tdsmapJson: " + to_string(tdsmapJson));
+								string apparelBomFlag = Helper::GetJSONValue<string>(tdsmapJson, "ApparelBOM", true);
+								Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON apparelBomFlag: " + apparelBomFlag);
+								m_styleTypeBomPermessionMap.insert(make_pair(attName, apparelBomFlag));							
+							}
+							/* "tds_map": {
+            "ReviewStyle": true,
+            "ApparelBOM": true,
+            "ImageDataSheet": true,
+            "CareAndComposition": true
+        },*/
 							valueList.append(QString::fromStdString(attName));
 							m_seasonNameIdMap.insert(make_pair(attName, attId));
 							//m_styleTypeNameIdMap.insert(make_pair(attName, attId));
@@ -963,6 +970,9 @@ namespace CLOVise
 					//Logger::Debug("Create product onPublishToPLMClicked() 8....");
 					m_ImageIntentList->clear();
 					m_colorSpecList.clear();
+					ClearBomSectionLayout();
+					AddNewBom::GetInstance()->ClearBomData();
+					m_bomAddButton->show();
 					ui_tabWidget->setCurrentIndex(OVERVIEW_TAB);
 					m_totalCountLabel->setText("Total count: 0");
 					RESTAPI::SetProgressBarData(0, "", false);
@@ -1832,6 +1842,7 @@ namespace CLOVise
 			if (UTILITY_API)
 				UTILITY_API->DisplayMessageBox(Configuration::GetInstance()->GetLocalizedStyleClassName() + " Metadata Saved");
 		}
+		AddNewBom::GetInstance()->BackupBomDetails();
 		Logger::Debug("createProduct -> SaveClicked() -> End");
 	}
 
@@ -1941,7 +1952,7 @@ namespace CLOVise
 				UpdateColorwayColumnsInBom();
 			//}
 		}
-		AddNewBom::GetInstance()->BackupBomDetails();
+		
 		Logger::Debug("Create product onTabClicked() End");
 	}
 
@@ -1967,6 +1978,18 @@ namespace CLOVise
 				QComboBox * comboBox = qobject_cast<QComboBox *>(sender());
 				Logger::Debug("CreateProduct -> OnHandleDropDownValue() senderSignalIndex: "+ to_string(comboBox->currentIndex()));
 				m_selectedStyleTypeIndex = comboBox->currentIndex();
+				Logger::Debug("CreateProduct -> OnHandleDropDownValue() Getcurrent text: " + comboBox->currentText().toStdString());
+				string selectedStyleType = comboBox->currentText().toStdString();
+				auto it = m_styleTypeBomPermessionMap.find(selectedStyleType);
+				if (it != m_styleTypeBomPermessionMap.end())
+				{
+					if (FormatHelper::HasContent(it->second) && it->second == "true")
+							m_bomAddButton->show();
+					else
+						m_bomAddButton->hide();
+					
+				}
+
 				string isAllowCreatColor = sender()->property((_item.toStdString() + ALLOW_CREATE_COLOR).c_str()).toString().toStdString();
 				if (isAllowCreatColor == "true")
 					m_isCreateColorSpec = true;
@@ -3110,17 +3133,19 @@ namespace CLOVise
 			Logger::Debug("CreateProduct -> AddMaterialInBom() -> 2");
 				fieldsJson = MaterialConfig::GetInstance()->GetUpdateMaterialCacheData();
 				string code = Helper::GetJSONValue<string>(fieldsJson, "code", true);
+				string objectId = Helper::GetJSONValue<string>(fieldsJson, "id", true);
 				string name = Helper::GetJSONValue<string>(fieldsJson, "node_name", true);
 				//string type = Helper::GetJSONValue<string>(fieldsJson, "Type", true);
 				string description = Helper::GetJSONValue<string>(fieldsJson, "description", true);
 				Logger::Debug("CreateProduct -> AddMaterialInBom() -> 3");
 				json rowDataJson = json::object();
 				rowDataJson["Code"] = code;
-				rowDataJson["node_name"] = name;
+				rowDataJson["material_name"] = name;
 				rowDataJson["Type"] = "";
 				rowDataJson["comment"] = description;
-				rowDataJson["Quantity"] = "";
-				rowDataJson["UOM"] = "";
+				rowDataJson["qty_default"] = "";
+				rowDataJson["uom"] = "";
+				rowDataJson["materialId"] = objectId;
 			AddNewBom::GetInstance()->AddBomRows(sectionTable, rowDataJson, tableName);
 		}
 		
@@ -3174,13 +3199,15 @@ namespace CLOVise
 		headerNameAndValueList.push_back(make_pair("content-Type", "application/json"));
 		headerNameAndValueList.push_back(make_pair("Accept", "application/json"));
 		headerNameAndValueList.push_back(make_pair("Cookie", Configuration::GetInstance()->GetBearerToken()));
-		
-		string bomTemplateId = Helper::GetJSONValue<string>(AddNewBom::GetInstance()->m_BomMetaData, "bom_template", true);
-		AddNewBom::GetInstance()->m_BomMetaData.erase("bom_template");
-		AddNewBom::GetInstance()->m_BomMetaData["style_id"] = _productId;
-		string bomMetaData = to_string(AddNewBom::GetInstance()->m_BomMetaData);
-		UTILITY_API->DisplayMessageBox(to_string(AddNewBom::GetInstance()->m_BomMetaData));
-		string response = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::CREATE_BOM_API + "/" + bomTemplateId , &bomMetaData, headerNameAndValueList, "Loading");
+
+		Logger::Debug("CreateProduct -> CreateBom() -> AddNewBom::GetInstance()->m_BomMetaData"+ to_string(AddNewBom::GetInstance()->m_BomMetaData));
+		json bomData = AddNewBom::GetInstance()->m_BomMetaData;
+		string bomTemplateId = Helper::GetJSONValue<string>(bomData, "bom_template", true);
+		bomData.erase("bom_template");
+		bomData["style_id"] = _productId;
+		string bomMetaData = to_string(bomData);
+		UTILITY_API->DisplayMessageBox(to_string(bomData));
+		string response = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::CREATE_BOM_API + "/" + bomTemplateId, &bomMetaData, headerNameAndValueList, "Loading");
 		if (!FormatHelper::HasContent(response))
 		{
 			RESTAPI::SetProgressBarData(0, "", false);
@@ -3193,6 +3220,184 @@ namespace CLOVise
 			//Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 1");
 			throw runtime_error(response);
 		}
+		Logger::Debug("CreateProduct -> CreateBom() -> response" + response);
+		json bomJson = Helper::GetJsonFromResponse(response, "{");
+		string bomLatestRevision = Helper::GetJSONValue<string>(bomJson, "latest_revision", true);
+
+		for (auto itr = AddNewBom::GetInstance()->m_bomSectionTableInfoMap.begin(); itr != AddNewBom::GetInstance()->m_bomSectionTableInfoMap.end(); itr++)
+		{
+			//AddNewBom::sectionInfo sectionInfoObj = itr->second;
+			QTableWidget* sectionTable = itr->second;
+			string sectionId = sectionTable->property("SectionId").toString().toStdString();
+			for (int rowCount = 0; rowCount < sectionTable->rowCount(); rowCount++)
+			{
+				json attJson = json::object();
+				for (int columnCount = 0; columnCount < sectionTable->columnCount(); columnCount++)
+				{
+					string fieldValue;
+
+					QWidget* qcolumnWidget = (QWidget*)sectionTable->cellWidget(rowCount, columnCount)->children().last();
+					string attInternalName = qcolumnWidget->property("rest_api_name").toString().toStdString();
+					Logger::Debug("Create product CreateBom() attInternalName" + attInternalName);
+					if (QLineEdit* qLineEditC1 = qobject_cast<QLineEdit*>(qcolumnWidget))
+					{
+
+						fieldValue = qLineEditC1->text().toStdString();
+						//QString columnName = sectionTable->horizontalHeaderItem(columnCount)->text();
+					}
+					else if (QTextEdit* qTextC1 = qobject_cast<QTextEdit*>(qcolumnWidget))
+					{
+
+						fieldValue = qTextC1->toPlainText().toStdString();
+					}
+					else if (QDateEdit* qDateC1 = qobject_cast<QDateEdit*>(qcolumnWidget))
+					{
+						fieldValue = FormatHelper::RetrieveDate(qDateC1);
+						if (fieldValue.find(DATE_FORMAT_TEXT.toStdString()) != string::npos)
+						{
+							fieldValue = "";
+						}
+						else
+						{
+							//UTILITY_API->DisplayMessageBox("fieldValue::" + fieldValue);
+							fieldValue = fieldValue + "T00:00:00Z";
+						}
+					}
+					else if (QListWidget* listC1 = qobject_cast<QListWidget*>(qcolumnWidget))
+					{
+						string tempValue = "";
+						QListWidgetItem* listItem = nullptr;
+						for (int row = 0; row < listC1->count(); row++)
+						{
+							listItem = listC1->item(row);
+							if (listItem->checkState())
+							{
+								tempValue = listItem->text().toStdString();
+								if (FormatHelper::HasContent(tempValue))
+								{
+									tempValue = listC1->property(tempValue.c_str()).toString().toStdString();
+									if (FormatHelper::HasContent(tempValue))
+									{
+										tempValue = tempValue + DELIMITER_NEGATION;
+										fieldValue = fieldValue + tempValue;
+									}
+								}
+							}
+						}
+					}
+					else if (QPushButton* pushButton = qobject_cast<QPushButton*>(qcolumnWidget))
+					{
+						if (attInternalName == "Delete")
+						{
+							fieldValue = pushButton->property("materialId").toString().toStdString();
+							Logger::Debug("Create product CreateBom() QComboBox->materialId" + fieldValue);
+							attInternalName = "actual";
+						}
+					}
+					else if (QSpinBox* SpinC1 = qobject_cast<QSpinBox*>(qcolumnWidget))
+					{
+						if (SpinC1->value() != 0)
+						{
+							fieldValue = to_string(SpinC1->value());
+						}
+					}
+					else if (QComboBox* qComboBoxC1 = qobject_cast<QComboBox*>(qcolumnWidget))
+					{
+						fieldValue = qComboBoxC1->currentText().toStdString();
+
+						Logger::Debug("Create product CreateBom() QComboBox->fieldLabel" + attInternalName);
+						//Logger::Debug("Create product ReadVisualUIFieldValue() QComboBox->labelText" + labelText);
+
+						string fieldVal = qComboBoxC1->property(fieldValue.c_str()).toString().toStdString();
+						Logger::Debug("Create product CreateBom() QComboBox->fieldVal" + fieldVal);
+						if (!fieldVal.empty())
+						{
+							fieldValue = fieldVal;
+						}
+						Logger::Debug("Create product CreateBom() QComboBox->fieldValue" + fieldValue);
+					}
+					if (!attInternalName.empty() && !fieldValue.empty())
+					{
+						if (attInternalName == "qty_default")
+							attJson[attInternalName] = atoi(fieldValue.c_str());
+						else
+							attJson[attInternalName] = fieldValue;
+					}
+					Logger::Debug("Create product CreateBom() fieldValue" + fieldValue);
+				}
+				attJson["ds_section"] = sectionId;
+
+				string materialId = Helper::GetJSONValue<string>(attJson, "actual", true);
+				Logger::Debug("Create product CreateBom() materialId" + materialId);
+				string materialType = Helper::GetJSONValue<string>(attJson, "Type", true);
+				Logger::Debug("Create product CreateBom() materialType" + materialType);
+				string materialName = Helper::GetJSONValue<string>(attJson, "material_name", true);
+				Logger::Debug("Create product CreateBom() mayerialName" + materialName);
+				if (FormatHelper::HasContent(bomLatestRevision))
+				{
+					if (FormatHelper::HasContent(materialId))
+					{
+
+						attJson.erase("Type");
+						attJson.erase("material_name");
+						attJson.erase("uom");
+						string placementData = to_string(attJson);
+						Logger::Debug("Create product CreateBom() placementData" + placementData);
+						string response = RESTAPI::PostRestCall(placementData, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API_V3 + "/" + bomLatestRevision + "/items/part_materials", "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
+						//response = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API_V3 + "/" + bomLatestRevision + "/items/part_materials", &placementData, headerNameAndValueList, "Loading");
+						Logger::Debug("Create product CreateBom() response material" + response);
+					}
+					else
+					{
+						attJson.erase("Type");
+						attJson.erase("material_name");
+						attJson.erase("actual");
+						attJson.erase("uom");
+						string placementData = to_string(attJson);
+
+						string queryParam;
+						if (FormatHelper::HasContent(materialType))
+							queryParam = queryParam + "material_type=" + materialType;
+						if (FormatHelper::HasContent(queryParam))
+							queryParam = "?" + queryParam;
+						if (FormatHelper::HasContent(materialName))
+						{
+							materialName = QString::fromStdString(materialName).replace(" ", "%20").toStdString();
+							queryParam = queryParam + "&material_name=" + materialName ;
+						}
+						string api = Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API_V3 + "/" + bomLatestRevision + "/items/special_part_materials" + queryParam;
+						Logger::Debug("Create product CreateBom() queryParam" + queryParam);
+						Logger::Debug("Create product CreateBom() placementData" + placementData);
+						Logger::Debug("Create product CreateBom() queryParam" + api);
+
+						string response = RESTAPI::PostRestCall(placementData, api, "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
+						//response = REST_API->CallRESTPost(api, &placementData, headerNameAndValueList, "Loading");
+						Logger::Debug("Create product CreateBom() response Special" + response);
+
+					}
+				}
+
+				//UTILITY_API->DisplayMessageBox("attJson" + to_string(attJson));
+			}
+
+
+
+		}
 		Logger::Debug("CreateProduct -> CreateBom() -> End");
+	}
+	void CreateProduct::ClearBomSectionLayout()
+	{
+		Logger::Debug("CreateProduct -> ClearBomSectionLayout -> Start");
+		while (ui_sectionLayout->count() > 0)
+		{
+			Logger::Debug("CreateProduct -> ClearBomSectionLayout -> 2");
+			QWidget *item = ui_sectionLayout->itemAt(0)->widget();
+			Logger::Debug("CreateProduct -> ClearBomSectionLayout -> 3");
+			if (item != nullptr)
+				delete item;
+			Logger::Debug("CreateProduct -> ClearBomSectionLayout -> 4");
+		}
+
+		Logger::Debug("CreateProduct -> ClearBomSectionLayout -> End");
 	}
 }

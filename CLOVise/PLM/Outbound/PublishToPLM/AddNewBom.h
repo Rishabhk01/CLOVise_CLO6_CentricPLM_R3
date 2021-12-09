@@ -51,6 +51,7 @@ namespace CLOVise
 		map<QPushButton*, QTableWidget*> m_addMaterialButtonAndTableMap;
 		map<QPushButton*, QTableWidget*> m_addSpecialMaterialButtonAndTableMap;
 		map<string, json> m_colorwayMapForBom;
+		map<string, string> m_materialTypeNameIdMap;
 		QPushButton* currentAddMaterialButtonClicked;
 		json m_mappedColorwaysArr;
 		json m_colorwayOverridesJson;
@@ -61,6 +62,7 @@ namespace CLOVise
 		int m_currentRow;
 		int m_currentColumn;
 		QTreeWidget* m_createBomTreeWidget;
+		void ClearBomData();
 		//QWidget* CreateCustomWidget(string _rgbValue, string _colorName, QTableWidget* _sectionTable, QString _tableName, int _row, int _column);
 		json m_BomMetaData = json::object();
 	private:

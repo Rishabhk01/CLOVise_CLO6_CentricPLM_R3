@@ -202,7 +202,7 @@ namespace CLOVise
 			Logger::Debug("AddNewBom -> AddNewBom attName: " + attName);
 			string attId = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_ID, true);
 			Logger::Debug("AddNewBom -> AddNewBom attId: " + attId);
-			m_materialTypeList.append(QString::fromStdString(attName));
+			m_materialTypeNameIdMap.insert(make_pair( attId, attName));
 		}
 
 		Logger::Debug("AddNewBom -> Constructor() -> End");
@@ -388,10 +388,10 @@ namespace CLOVise
 					{
 						responseJson = Helper::makeRestcallGet(RESTAPI::APPAREL_BOM_SUBTYPE_API, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading subtype details..");
 					}
-					else if (attributeName == "Style Type")
-					{
-						responseJson = Helper::makeRestcallGet(RESTAPI::STYLE_TYPE_API, "?available=true&limit=100", "", "Loading style type details..");
-					}
+					//else if (attributeName == "Style Type")
+					//{
+					//	responseJson = Helper::makeRestcallGet(RESTAPI::STYLE_TYPE_API, "?available=true&limit=100", "", "Loading style type details..");
+					//}
 					for (int i = 0; i < responseJson.size(); i++)
 					{
 						attJson = Helper::GetJSONParsedValue<int>(responseJson, i, false);;///use new method
@@ -400,14 +400,12 @@ namespace CLOVise
 						attId = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_ID, true);
 						Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON attId: " + attId);
 						valueList.append(QString::fromStdString(attName));
-						//m_subTypeNameIdMap.insert(make_pair(attName, attId));
-						//m_styleTypeNameIdMap.insert(make_pair(attName, attId));
 						comboBox->setProperty(attName.c_str(), QString::fromStdString(attId));
 						comboBox->setProperty(attId.c_str(), QString::fromStdString(attName));
 					}
 				}
 				QObject::connect(comboBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(OnHandleDropDownValue(const QString&)));
-				comboBox->setStyleSheet(COMBOBOX_STYLE);
+				
 				if (!isEditable)
 				{
 					comboBox->setDisabled(true);
@@ -445,7 +443,7 @@ namespace CLOVise
 					m_nameCompleter->setCaseSensitivity(Qt::CaseInsensitive);
 					comboBox->setCompleter(m_nameCompleter);
 				}
-				
+				comboBox->setStyleSheet(COMBOBOX_STYLE);
 				Logger::Debug("AddNewBom drawWidget() ref  End....");
 
 			}
@@ -626,6 +624,7 @@ namespace CLOVise
 
 			sectionTable = new QTableWidget(section);
 			sectionTable->setProperty("TableName", QString::fromStdString(sectionName));
+			sectionTable->setProperty("SectionId", QString::fromStdString(sectionId));
 			sectionTable->setColumnCount(tablecolumnList.size());
 			sectionTable->setHorizontalHeaderLabels(tablecolumnList);
 			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionName" + sectionName);
@@ -786,7 +785,15 @@ namespace CLOVise
 				ComboBoxItem* comboType = new ComboBoxItem();
 				comboType->setStyleSheet("QComboBox{max-height: 25px; min-width: 100px;}");
 				comboType->setFocusPolicy(Qt::StrongFocus);
-				comboType->addItems(m_materialTypeList);
+				QStringList materialType;
+				for (auto itr = m_materialTypeNameIdMap.begin(); itr != m_materialTypeNameIdMap.end(); itr++)
+				{
+					itr->first;
+					materialType.append(QString::fromStdString(itr->second));
+					comboType->setProperty(itr->second.c_str(), QString::fromStdString(itr->first));
+				}
+
+				comboType->addItems(materialType);
 				comboType->setProperty("materialId", QString::fromStdString(materialId));
 				int valueIndex = comboType->findText(QString::fromStdString(text));
 
@@ -799,10 +806,10 @@ namespace CLOVise
 				{
 					comboType->setCurrentIndex(valueIndex);
 				}
+				comboType->setProperty("rest_api_name", bomTableColumnKeys[columnIndex]);
 
 				//comboType->setProperty("Id", QString::fromStdString(_objectId));
 				QWidget *pWidget = CVWidgetGenerator::InsertWidgetInCenter(comboType);
-
 				//comboColorwayItem->clear();
 				//comboColorwayItem->addItems(_colorwayNamesList);
 				_sectionTable->setCellWidget(rowCount, columnIndex, pWidget);
@@ -821,6 +828,8 @@ namespace CLOVise
 					QWidget *pLineEditWidget = CVWidgetGenerator::InsertWidgetInCenter(newColumn);
 					newColumn->setProperty("row", rowCount);
 					Logger::Debug("AddNewBom -> AddBomRows() -> 7");
+					newColumn->setProperty("rest_api_name", bomTableColumnKeys[columnIndex]);
+
 					_sectionTable->setCellWidget(rowCount, columnIndex, pLineEditWidget);
 					Logger::Debug("AddNewBom -> AddBomRows() -> 8");
 				}
@@ -911,7 +920,7 @@ namespace CLOVise
 										pushButton_2->setProperty("TableName", _tableName);
 										gridLayout->addWidget(pushButton_2, 0, 1, 1, 1, Qt::AlignHCenter);
 										p_widget->setLayout(gridLayout);
-
+										p_widget->setProperty("rest_api_name", bomTableColumnKeys[columnIndex]);
 										Logger::Debug("AddNewBom -> AddBomRows() -> 10");
 										_sectionTable->setCellWidget(rowCount, columnIndex, p_widget);
 
@@ -924,6 +933,7 @@ namespace CLOVise
 									QWidget *pPushButtonWidget = CVWidgetGenerator::InsertWidgetInCenter(newButton);
 									newButton->setProperty("row", rowCount);
 									Logger::Debug("AddNewBom -> AddBomRows() -> 7");
+									newButton->setProperty("rest_api_name", bomTableColumnKeys[columnIndex]);
 									_sectionTable->setCellWidget(rowCount, columnIndex, pPushButtonWidget);
 									Logger::Debug("AddNewBom -> AddBomRows() -> 8");
 									colorChip = true;
@@ -971,7 +981,7 @@ namespace CLOVise
 						pushButton_2->setProperty("TableName", _tableName);
 						gridLayout->addWidget(pushButton_2, 0, 1, 1, 1, Qt::AlignHCenter);
 						p_widget->setLayout(gridLayout);
-
+						p_widget->setProperty("rest_api_name", bomTableColumnKeys[columnIndex]);
 						Logger::Debug("AddNewBom -> AddBomRows() -> 10");
 						_sectionTable->setCellWidget(rowCount, columnIndex, p_widget);
 						colorChip = true;
@@ -1037,6 +1047,7 @@ namespace CLOVise
 						//label->setObjectName(QString::fromUtf8("pushButton_3"));
 						//gridLayout->addWidget(label1, 1, 0, 1, 2, Qt::AlignHCenter);
 						p_widget->setLayout(gridLayout);
+						p_widget->setProperty("rest_api_name", bomTableColumnKeys[columnIndex]);
 						//QWidget *pLineEditWidget = CVWidgetGenerator::InsertWidgetInCenter(p_widget);
 						Logger::Debug("AddNewBom -> AddBomRows() -> 10");
 						_sectionTable->setCellWidget(rowCount, columnIndex, p_widget);
@@ -1059,6 +1070,8 @@ namespace CLOVise
 						//QObject::connect(deleteButton, SIGNAL(clicked()), this, SLOT(OnClickDeleteButton()));
 						Logger::Debug("AddNewBom -> AddBomRows() -> 9");
 						QWidget *pPushButton = CVWidgetGenerator::InsertWidgetInCenter(deleteButton);
+						deleteButton->setProperty("rest_api_name", bomTableColumnKeys[columnIndex]);
+					//	pPushButton->setProperty("materialId", QString::fromStdString(materialId));
 						Logger::Debug("AddNewBom -> AddBomRows() -> 10");
 						_sectionTable->setCellWidget(rowCount, columnIndex, pPushButton);
 						Logger::Debug("AddNewBom -> AddBomRows() -> 11");
@@ -1075,6 +1088,7 @@ namespace CLOVise
 						QWidget *pLineEditWidget = CVWidgetGenerator::InsertWidgetInCenter(newColumn);
 						newColumn->setProperty("row", rowCount);
 						Logger::Debug("AddNewBom -> AddBomRows() -> 7");
+						newColumn->setProperty("rest_api_name", bomTableColumnKeys[columnIndex]);
 						_sectionTable->setCellWidget(rowCount, columnIndex, pLineEditWidget);
 						Logger::Debug("AddNewBom -> AddBomRows() -> 8");
 					}
@@ -1093,22 +1107,51 @@ namespace CLOVise
 	{
 		Logger::Debug("AddNewBom -> onClickAddFromMaterialButton () Start");
 		QPushButton* button = (QPushButton*)sender();
+		QTableWidget* sectionTable;
 		currentAddMaterialButtonClicked = button;
+		auto it = AddNewBom::GetInstance()->m_addMaterialButtonAndTableMap.find(button);
+		if (it != AddNewBom::GetInstance()->m_addMaterialButtonAndTableMap.end())
+		{
+			sectionTable = it->second;
+			QString tableName = sectionTable->property("TableName").toString();
+			/*auto itr = m_bomSectionTableInfoMap.find(tableName.toStdString());
+			json placementProductTypeJson;
+			string queryParamsForMaterial;
+			if (itr != m_bomSectionTableInfoMap.end())
+			{
+				sectionInfo sectionInfoObj = itr->second;
+				placementProductTypeJson = sectionInfoObj.bomPlacementProductTypeJson;
+				for (int i = 0; i < placementProductTypeJson.size(); i++)
+				{
+					string bomPlacementProductTypeId = Helper::GetJSONValue<int>(placementProductTypeJson, i, true);
+					queryParamsForMaterial = queryParamsForMaterial + "&product_type=" + bomPlacementProductTypeId;
+
+				}
+				Configuration::GetInstance()->SetQueryParameterForMaterial(queryParamsForMaterial);
+			}*/
+		}
 		Logger::Debug("AddNewBom -> onClickAddFromMaterialButton () button" + to_string(long(button)));
 		CreateProduct::GetInstance()->hide();
 		UTILITY_API->CreateProgressBar();
 		Configuration::GetInstance()->SetProgressBarProgress(qrand() % 101);
 		MaterialConfig::GetInstance()->SetMaximumLimitForMaterialResult();
 		RESTAPI::SetProgressBarData(Configuration::GetInstance()->GetProgressBarProgress(), "Loading " + Configuration::GetInstance()->GetLocalizedMaterialClassName() + " Search", true);
-		//if (!MaterialConfig::GetInstance()->GetIsModelExecuted())
+		int isFromConstructor = false;
+		if (!MaterialConfig::GetInstance()->GetIsModelExecuted())
 		{
 			MaterialConfig::GetInstance()->InitializeMaterialData();
+			isFromConstructor = true;
 		}
+		else
+			PLMMaterialSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
+
 		MaterialConfig::GetInstance()->SetIsRadioButton(true);
 
 		PLMMaterialSearch::GetInstance()->setModal(true);
 		UTILITY_API->DeleteProgressBar(true);
+		MaterialConfig::GetInstance()->SetIsModelExecuted(true);
 		PLMMaterialSearch::GetInstance()->exec();
+		PLMMaterialSearch::GetInstance()->show();
 		Logger::Debug("AddNewBom -> onClickAddFromMaterialButton () End");
 	}
 	void AddNewBom::onClickAddSpecialMaterialButton()
@@ -1624,68 +1667,68 @@ namespace CLOVise
 						}
 						else if (QDateEdit* qDateC1 = qobject_cast<QDateEdit*>(qcolumnWidget))
 						{
-							fieldValue = FormatHelper::RetrieveDate(qDateC1);
-							if (fieldValue.find(DATE_FORMAT_TEXT.toStdString()) != string::npos)
-							{
-								fieldValue = "";
-							}
-							else
-							{
-								//UTILITY_API->DisplayMessageBox("fieldValue::" + fieldValue);
-								fieldValue = fieldValue + "T00:00:00Z";
-							}
+fieldValue = FormatHelper::RetrieveDate(qDateC1);
+if (fieldValue.find(DATE_FORMAT_TEXT.toStdString()) != string::npos)
+{
+	fieldValue = "";
+}
+else
+{
+	//UTILITY_API->DisplayMessageBox("fieldValue::" + fieldValue);
+	fieldValue = fieldValue + "T00:00:00Z";
+}
 						}
 						else if (QListWidget* listC1 = qobject_cast<QListWidget*>(qcolumnWidget))
 						{
-							string tempValue = "";
-							QListWidgetItem* listItem = nullptr;
-							for (int row = 0; row < listC1->count(); row++)
+						string tempValue = "";
+						QListWidgetItem* listItem = nullptr;
+						for (int row = 0; row < listC1->count(); row++)
+						{
+							listItem = listC1->item(row);
+							if (listItem->checkState())
 							{
-								listItem = listC1->item(row);
-								if (listItem->checkState())
+								tempValue = listItem->text().toStdString();
+								if (FormatHelper::HasContent(tempValue))
 								{
-									tempValue = listItem->text().toStdString();
+									tempValue = listC1->property(tempValue.c_str()).toString().toStdString();
 									if (FormatHelper::HasContent(tempValue))
 									{
-										tempValue = listC1->property(tempValue.c_str()).toString().toStdString();
-										if (FormatHelper::HasContent(tempValue))
-										{
-											tempValue = tempValue + DELIMITER_NEGATION;
-											fieldValue = fieldValue + tempValue;
-										}
+										tempValue = tempValue + DELIMITER_NEGATION;
+										fieldValue = fieldValue + tempValue;
 									}
 								}
 							}
 						}
+						}
 						else if (QPushButton* pushButton = qobject_cast<QPushButton*>(qcolumnWidget))
 						{
-							if (attInternalName == "Delete")
-							{
-								fieldValue = pushButton->property("materialId").toString().toStdString();
-								attInternalName = "actual";
-							}
+						if (attInternalName == "Delete")
+						{
+							fieldValue = pushButton->property("materialId").toString().toStdString();
+							attInternalName = "actual";
+						}
 						}
 						else if (QSpinBox* SpinC1 = qobject_cast<QSpinBox*>(qcolumnWidget))
 						{
-							if (SpinC1->value() != 0)
-							{
-								fieldValue = to_string(SpinC1->value());
-							}
+						if (SpinC1->value() != 0)
+						{
+							fieldValue = to_string(SpinC1->value());
+						}
 						}
 						else if (QComboBox* qComboBoxC1 = qobject_cast<QComboBox*>(qcolumnWidget))
 						{
-							fieldValue = qComboBoxC1->currentText().toStdString();
+						fieldValue = qComboBoxC1->currentText().toStdString();
 
-							Logger::Debug("AddNewBom BackupBomDetails() QComboBox->fieldLabel" + attInternalName);
-							//Logger::Debug("Create product ReadVisualUIFieldValue() QComboBox->labelText" + labelText);
+						Logger::Debug("AddNewBom BackupBomDetails() QComboBox->fieldLabel" + attInternalName);
+						//Logger::Debug("Create product ReadVisualUIFieldValue() QComboBox->labelText" + labelText);
 
-							string fieldVal = qComboBoxC1->property(fieldValue.c_str()).toString().toStdString();
-							Logger::Debug("Create product BackupBomDetails() QComboBox->fieldVal" + fieldVal);
-							if (!fieldVal.empty())
-							{
-								fieldValue = fieldVal;
-							}
-							Logger::Debug("AddNewBom BackupBomDetails() QComboBox->fieldValue" + fieldValue);
+						string fieldVal = qComboBoxC1->property(fieldValue.c_str()).toString().toStdString();
+						Logger::Debug("Create product BackupBomDetails() QComboBox->fieldVal" + fieldVal);
+						if (!fieldVal.empty())
+						{
+							fieldValue = fieldVal;
+						}
+						Logger::Debug("AddNewBom BackupBomDetails() QComboBox->fieldValue" + fieldValue);
 						}
 						if (!attInternalName.empty() && !fieldValue.empty())
 						{
@@ -1723,5 +1766,14 @@ namespace CLOVise
 			this->show();
 		}
 	}
-
+	void AddNewBom::ClearBomData()
+	{
+	m_addMaterialButtonAndTableMap.clear();
+	m_addSpecialMaterialButtonAndTableMap.clear();
+	m_colorwayMapForBom.clear();
+	m_bomSectionTableInfoMap.clear();
+	m_mappedColorwaysArr.clear();
+	m_colorwayOverridesJson.clear();
+	m_BomMetaData.clear();
+}
 }

@@ -138,6 +138,7 @@ namespace RESTAPI
 	const string BOM_TEMPLATE_API = "/csi-requesthandler/api/v2/apparel_boms";
 	const string CREATE_BOM_API = "/csi-requesthandler/api/v2/apparel_boms/copy";
 	const string BOM_REVISION_API = "/csi-requesthandler/api/v2/apparel_bom_revisions";
+	const string BOM_REVISION_API_V3 = "/csi-requesthandler/api/v3/apparel_bom_revisions";
 	const string BOM_SECTION_DEFINITION_API = "/csi-requesthandler/api/v2/bom_section_definitions";
 
 	/*
