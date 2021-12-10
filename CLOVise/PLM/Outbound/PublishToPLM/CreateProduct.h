@@ -72,6 +72,7 @@ namespace CLOVise
 		QPushButton* m_bomAddButton;
 		json m_techPackJson;
 		QStringList m_mappedColorways;
+		string m_currentlySelectedStyleTypeId;
 		json collectCriteriaFields(QTreeWidget* _documentPushToPLMTree_1, QTreeWidget* _documentPushToPLMTree_2);
 	private:
 		CreateProduct(QWidget* parent = nullptr);

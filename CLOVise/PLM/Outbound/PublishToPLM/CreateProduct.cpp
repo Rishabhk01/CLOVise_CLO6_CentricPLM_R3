@@ -973,6 +973,7 @@ namespace CLOVise
 					ClearBomSectionLayout();
 					AddNewBom::GetInstance()->ClearBomData();
 					m_bomAddButton->show();
+					m_bomAddButton->setEnabled(true);
 					ui_tabWidget->setCurrentIndex(OVERVIEW_TAB);
 					m_totalCountLabel->setText("Total count: 0");
 					RESTAPI::SetProgressBarData(0, "", false);
@@ -1979,6 +1980,9 @@ namespace CLOVise
 				Logger::Debug("CreateProduct -> OnHandleDropDownValue() senderSignalIndex: "+ to_string(comboBox->currentIndex()));
 				m_selectedStyleTypeIndex = comboBox->currentIndex();
 				Logger::Debug("CreateProduct -> OnHandleDropDownValue() Getcurrent text: " + comboBox->currentText().toStdString());
+				m_currentlySelectedStyleTypeId = sender()->property(_item.toStdString().c_str()).toString().toStdString();
+				Logger::Debug("PublishToPLMData -> OnHandleDropDownValue() m_currentlySelectedStyleTypeId: " + m_currentlySelectedStyleTypeId);
+
 				string selectedStyleType = comboBox->currentText().toStdString();
 				auto it = m_styleTypeBomPermessionMap.find(selectedStyleType);
 				if (it != m_styleTypeBomPermessionMap.end())

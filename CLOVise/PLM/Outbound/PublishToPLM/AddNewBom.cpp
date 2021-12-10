@@ -381,7 +381,7 @@ namespace CLOVise
 					
 						if (internalName == "bom_template")
 						{
-							responseJson = Helper::makeRestcallGet(RESTAPI::BOM_TEMPLATE_API, "?is_template=true&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading template details..");
+							responseJson = Helper::makeRestcallGet(RESTAPI::BOM_TEMPLATE_API, "?parent=centric:&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading template details..");
 							m_bomTemplateJson = responseJson;
 						}
 					else if (internalName == "subtype")
@@ -618,7 +618,22 @@ namespace CLOVise
 			string sectionId = Helper::GetJSONValue<string>(sectionCountJson, ATTRIBUTE_ID, true);
 			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionId" + sectionId);
 			string sectionName = Helper::GetJSONValue<string>(sectionCountJson, "node_name", true);
+			json bomProductTypeJson = Helper::GetJSONParsedValue<string>(sectionCountJson, "bom_product_types", false);
+			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> bomProductTypeJson" + to_string(bomProductTypeJson));
+			placementProductTypeJson = Helper::GetJSONParsedValue<string>(sectionCountJson, "placement_product_types", false);
+			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> placementProductTypeJson" + to_string(placementProductTypeJson));
+			bool isSectionValidForStyleType = false;
 
+
+			for (int itr = 0; itr < bomProductTypeJson.size(); itr++)
+			{
+				string bomProductType = Helper::GetJSONValue<int>(bomProductTypeJson, itr, true);
+				if (bomProductType == CreateProduct::GetInstance()->m_currentlySelectedStyleTypeId)
+					isSectionValidForStyleType = true;
+			}
+
+			if (!isSectionValidForStyleType)
+				continue;
 
 			Section* section = new Section(QString::fromStdString(sectionName), 300);
 
@@ -686,7 +701,10 @@ namespace CLOVise
 			anyLayout->insertWidget(1, sectionTable);
 			section->setContentLayout(*anyLayout);
 			section->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-			CreateProduct::GetInstance()->ui_sectionLayout->insertWidget(sectionCount, section);
+			CreateProduct::GetInstance()->ui_sectionLayout->insertWidget(sectionCountOnBomTab, section);
+			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionCountOnBomTab" + to_string(sectionCountOnBomTab));
+			sectionCountOnBomTab++;
+
 
 		}
 
