@@ -518,6 +518,7 @@ namespace CLOVise
 				json sectionIdsJson = Helper::GetJSONParsedValue<string>(responseJson, "all_sections", false);
 				Logger::Debug("AddNewBom onCreateButtonClicked() sectionIdsJson...." + to_string(sectionIdsJson));
 				CreateTableforEachSection(sectionIdsJson);
+				populateTechPackDataInBom();
 			}
 
 			UTILITY_API->DisplayMessageBox("m_BomMetaData"+ to_string(m_BomMetaData));
@@ -635,6 +636,23 @@ namespace CLOVise
 			if (!isSectionValidForStyleType)
 				continue;
 
+			map<string, QStringList>::iterator it;
+			for (int itr = 0; itr < placementProductTypeJson.size(); itr++)
+			{
+				QStringList sectionNamelist;
+				string bomPlacementProductTypeId = Helper::GetJSONValue<int>(placementProductTypeJson, itr, true);
+
+				it = m_sectionMaterialTypeMap.find(bomPlacementProductTypeId);
+				if (it != m_sectionMaterialTypeMap.end())
+				{
+					sectionNamelist = it->second;
+					m_sectionMaterialTypeMap.erase(bomPlacementProductTypeId);
+				}
+				sectionNamelist.append(QString::fromStdString(sectionName));
+
+				m_sectionMaterialTypeMap.insert(make_pair(bomPlacementProductTypeId, sectionNamelist));
+			}
+
 			Section* section = new Section(QString::fromStdString(sectionName), 300);
 
 			sectionTable = new QTableWidget(section);
@@ -643,22 +661,10 @@ namespace CLOVise
 			sectionTable->setColumnCount(tablecolumnList.size());
 			sectionTable->setHorizontalHeaderLabels(tablecolumnList);
 			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionName" + sectionName);
-			if (sectionName == "Fabrics")
-			{
-				
-				Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionTable" + to_string(long(sectionTable)));
-				getMaterialDetails("fabricList", CreateProduct::GetInstance()->m_techPackJson, true, sectionTable, QString::fromStdString(sectionName),true);
-			}
-			if (sectionName == "Trims")
-			{
-				Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionTable" + to_string(long(sectionTable)));
-				getMaterialDetails("buttonHeadList", CreateProduct::GetInstance()->m_techPackJson, false, sectionTable, QString::fromStdString(sectionName), false);
-				getMaterialDetails("buttonHoleList", CreateProduct::GetInstance()->m_techPackJson, false, sectionTable, QString::fromStdString(sectionName), false);
-				getMaterialDetails("zipperList", CreateProduct::GetInstance()->m_techPackJson, false, sectionTable, QString::fromStdString(sectionName), false);
-			}
-
-
+			
 			m_bomSectionTableInfoMap.insert(make_pair(sectionName, sectionTable));
+			m_bomSectionNameAndTypeMap.insert(make_pair(sectionName, placementProductTypeJson));
+
 			//sectionTable->setStyleSheet("QTableWidget{ background-color: #262628; border-right: 1px solid #000000; border-top: 1px solid #000000; border-left: 1px solid #000000; font-face: ArialMT; font-size: 12px; color: #FFFFFF; }");
 			sectionTable->verticalHeader()->hide();
 			sectionTable->setShowGrid(false);
@@ -709,10 +715,19 @@ namespace CLOVise
 		}
 
 	}
+	void AddNewBom::populateTechPackDataInBom()
+	{
+      
+	  getMaterialDetails("fabricList", CreateProduct::GetInstance()->m_techPackJson, true);
+	  getMaterialDetails("buttonHeadList", CreateProduct::GetInstance()->m_techPackJson, false);
+	  getMaterialDetails("buttonHoleList", CreateProduct::GetInstance()->m_techPackJson, false);
+	  getMaterialDetails("zipperList", CreateProduct::GetInstance()->m_techPackJson, false);
 
-	void AddNewBom::getMaterialDetails(string _str, json _techPackJson, bool _isfabric, QTableWidget* _sectionTable, QString _tableName, bool _isFabric)
+	}
+	void AddNewBom::getMaterialDetails(string _str, json _techPackJson, bool _isFabric)
 	{
 
+		Logger::Debug("UpdateProduct -> getMaterialDetails() -> Start ");
 		string fabStrValue = _techPackJson[_str].dump();
 		string materialCount, cwlStrVal, costInfoStrVal;
 		json fabJson = json::parse(fabStrValue);
@@ -750,8 +765,29 @@ namespace CLOVise
 
 				json rowDataJson = json::object();
 				getColorInfo(materialCountJson, rowDataJson, objectId, _isFabric);
+				QTableWidget* table;
+				json placementMateriaTypeJson;
+				string tableName;
+				Logger::Debug("UpdateProduct -> getMaterialDetails() -> type " + type);
+				auto result = std::find_if(m_materialTypeNameIdMap.begin(), m_materialTypeNameIdMap.end(), [type](const auto& mo) {return mo.second == type; });
+				if (result != m_materialTypeNameIdMap.end())
+				{
+					Logger::Debug("UpdateProduct -> FillImageIntentIdAndLabeMap() -> label: " + result->first);
+					auto it = m_sectionMaterialTypeMap.find(result->first);
 
 
+
+					if (it != m_sectionMaterialTypeMap.end())
+					{
+						Logger::Debug("UpdateProduct -> FillImageIntentIdAndLabeMap() -> material type: " + it->first);
+						Logger::Debug("UpdateProduct -> FillImageIntentIdAndLabeMap() -> supported sections: " + it->second.join(',').toStdString());
+						tableName = it->second[0].toStdString();
+						table = GetSectionTable(tableName);
+						placementMateriaTypeJson = GetMaterialTypeForSection(tableName);
+					}
+
+
+				}
 
 
 				rowDataJson["Code"] = code;
@@ -761,7 +797,7 @@ namespace CLOVise
 				rowDataJson["qty_default"] = quantityVal;
 				rowDataJson["uom"] = uom;
 				rowDataJson["materialId"] = objectId;
-				AddBomRows(_sectionTable, rowDataJson, _tableName);
+				AddBomRows(table, rowDataJson, QString::fromStdString(tableName), placementMateriaTypeJson);
 			}
 
 
@@ -769,8 +805,27 @@ namespace CLOVise
 
 	}
 
-
-	void AddNewBom::AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString _tableName)
+	QTableWidget* AddNewBom::GetSectionTable(string _sectionName )
+	{
+		auto itr = m_bomSectionTableInfoMap.find(_sectionName);
+		QTableWidget* table;
+		if (itr != m_bomSectionTableInfoMap.end())
+		{
+			table = itr->second;
+		}
+		return table;
+	}
+	json AddNewBom::GetMaterialTypeForSection(string _sectionName)
+	{
+		auto itr = m_bomSectionNameAndTypeMap.find(_sectionName);
+		json materialTypeJson;
+		if (itr != m_bomSectionNameAndTypeMap.end())
+		{
+			materialTypeJson = itr->second;
+		}
+		return materialTypeJson;
+	}
+	void AddNewBom::AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString _tableName, json _placementMateriaTypeJson)
 	{
 
 		Logger::Debug("AddNewBom -> AddBomRows() -> Start");
@@ -804,11 +859,17 @@ namespace CLOVise
 				comboType->setStyleSheet("QComboBox{max-height: 25px; min-width: 100px;}");
 				comboType->setFocusPolicy(Qt::StrongFocus);
 				QStringList materialType;
-				for (auto itr = m_materialTypeNameIdMap.begin(); itr != m_materialTypeNameIdMap.end(); itr++)
+				for (int i = 0; i < _placementMateriaTypeJson.size(); i++)
 				{
-					itr->first;
-					materialType.append(QString::fromStdString(itr->second));
+					string bomPlacementProductTypeId = Helper::GetJSONValue<int>(_placementMateriaTypeJson, i, true);
+					auto itr = m_materialTypeNameIdMap.find(bomPlacementProductTypeId);
+					if (itr != m_materialTypeNameIdMap.end())
+					{
+						itr->first;
+						materialType.append(QString::fromStdString(itr->second));
+					}
 					comboType->setProperty(itr->second.c_str(), QString::fromStdString(itr->first));
+
 				}
 
 				comboType->addItems(materialType);
@@ -1190,7 +1251,9 @@ namespace CLOVise
 			rowDataJson["qty_default"] = "";
 			rowDataJson["uom"] = "";
 			rowDataJson["materialId"] = "";
-			AddBomRows(sectionTable, rowDataJson, tableName);
+			json placementMateriaTypeJson;
+			placementMateriaTypeJson = GetMaterialTypeForSection(tableName.toStdString());
+			AddBomRows(sectionTable, rowDataJson, tableName, placementMateriaTypeJson);
 		}
 
 		Logger::Debug("AddNewBom -> onClickAddSpecialMaterialButton () End");

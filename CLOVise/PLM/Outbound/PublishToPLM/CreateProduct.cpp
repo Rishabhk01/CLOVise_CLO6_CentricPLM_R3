@@ -3150,7 +3150,9 @@ namespace CLOVise
 				rowDataJson["qty_default"] = "";
 				rowDataJson["uom"] = "";
 				rowDataJson["materialId"] = objectId;
-			AddNewBom::GetInstance()->AddBomRows(sectionTable, rowDataJson, tableName);
+				json placementMateriaTypeJson;
+				placementMateriaTypeJson = AddNewBom::GetInstance()->GetMaterialTypeForSection(tableName.toStdString());
+			AddNewBom::GetInstance()->AddBomRows(sectionTable, rowDataJson, tableName, placementMateriaTypeJson);
 		}
 		
 		Logger::Debug("CreateProduct -> AddMaterialInBom() -> End");
