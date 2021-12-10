@@ -63,7 +63,6 @@ using namespace zipper;
 #include "CLOVise/PLM/Outbound/PublishToPLM/CreateImageIntent.h"
 #include "CLOVise/PLM/Outbound/PublishToPLM/AddNewBom.h"
 #include "CLOVise/PLM/Outbound/PublishToPLM/Section.h"
-#include "AddNewBom.h"
 
 using namespace std;
 
@@ -101,7 +100,7 @@ namespace CLOVise
 		if (!PublishToPLMData::GetInstance()->isModelExecuted)
 			RESTAPI::SetProgressBarData(15, "Loading Create product", true);*/
 
-		QString windowTitle = PLM_NAME + " PLM Create "+ QString::fromStdString(Configuration::GetInstance()->GetLocalizedStyleClassName());
+		QString windowTitle = PLM_NAME + " PLM Create " + QString::fromStdString(Configuration::GetInstance()->GetLocalizedStyleClassName());
 		this->setWindowTitle(windowTitle);
 
 #ifdef __APPLE__
@@ -172,8 +171,8 @@ namespace CLOVise
 		CVHoverDelegate* customHoverDelegate = new CVHoverDelegate(ui_colorwayTable);
 		ui_colorwayTable->setItemDelegate(customHoverDelegate);
 		CVWidgetGenerator::InitializeTableView(ui_colorwayTable);
-	
-		
+
+
 		ui_colorwayTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 		ui_colorwayTable->setContextMenuPolicy(Qt::CustomContextMenu); ui_colorwayTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 		ui_colorwayTable->horizontalHeader()->setStyleSheet("QHeaderView { font-face: ArialMT; font-size: 10px;background-color:#2D2D2F; color: #FFFFFF; font-weight: bold;}" "QHeaderView::section:horizontal{border: 1px solid #000000;}" "QHeaderView::down-arrow{ image: url(:/CLOVise/PLM/Images/ui_spin_icon_minus_over.svg); width: 18px; height: 18px; color: #0000FF }" " QHeaderView::up-arrow{ image: url(:/CLOVise/PLM/Images/ui_spin_icon_plus_over.svg); width: 18px; height: 18px; color: #0000FF }");
@@ -238,7 +237,7 @@ namespace CLOVise
 		ui_addNewBomButtonLayout->insertWidget(5, label1);
 		ui_addNewBomButtonLayout->insertWidget(6, m_bomTemplateName);
 		ui_addNewBomButtonLayout->insertSpacerItem(7, horizontalSpacer);
-		
+
 
 		m_ImageIntentList = new QListWidget();
 		m_ImageIntentList->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -288,57 +287,8 @@ namespace CLOVise
 			ui_colorwayTable->showColumn(UNI_2_DIGIT_CODE_COLUMN);
 			m_2DigiCodeActive = true;
 		}
-		//m_digiCodeValue.append(QString::fromStdString(BLANK));
-		//m_digiCodeNamesMap = UIHelper::GetEnumValues("uni2DigitCode", m_digiCodeValue, nullptr);
-		
-		QTableWidgetItem* ColorNameWidget = new QTableWidgetItem(QString::fromStdString("Demo"));
-		ColorNameWidget->setTextAlignment(Qt::AlignCenter);
-		ColorNameWidget->setToolTip(QString::fromStdString("Demo"));
 
-
-		/*Logger::Debug("Create product constructor() 1....");
-		Section* section = new Section("Fabrics", 300);
-		Logger::Debug("Create product constructor() 2....");
-		QTableWidget *placementTable = new QTableWidget(section);
-		placementTable->setColumnCount(5);
-		placementTable->setRowCount(8);
-		placementTable->insertRow(1);
-		placementTable->setItem(0, 0, ColorNameWidget);
-		placementTable->setItem(0, 1, ColorNameWidget);
-		placementTable->setItem(0, 2, ColorNameWidget);
-		placementTable->setItem(0, 3, ColorNameWidget);
-		placementTable->setItem(0, 4, ColorNameWidget);
-
-		auto* anyLayout = new QVBoxLayout();
-		anyLayout->addWidget(placementTable);
-		anyLayout->addWidget(new QPushButton("Button in Section", section));
-
-		section->setContentLayout(*anyLayout);
-
-		ui_sectionLayout->insertWidget(0,section);
-
-
-		Section* section2 = new Section("Trims", 300);
-		auto* anyLayout1 = new QVBoxLayout();
-		anyLayout1->addWidget(placementTable);
-		anyLayout1->addWidget(new QPushButton("Button in Section", section2));
-		section2->setContentLayout(*anyLayout1);
-		ui_sectionLayout->insertWidget(1, section2);
-		Logger::Debug("Create product constructor() 3....");
-*/
-		/*auto* anyLayout = new QVBoxLayout();
-		Logger::Debug("Create product constructor() 4....");
-		ui_sectionLayout->insertWidget(0, new QLabel("Some Text in Section", section));
-		Logger::Debug("Create product constructor() 5....");
-		ui_sectionLayout->addWidget(new QPushButton("Button in Section", section));
-		Logger::Debug("Create product constructor() 6....");
-		
-		Logger::Debug("Create product constructor() 7....");*/
-		//ui_sectionLayout
-		//SetDownloadedColorwayDetails();
-		//section->setContentLayout(*ui_sectionLayout);
 		Logger::Debug("Create product constructor() end....");
-		//if (!PublishToPLMData::GetInstance()->isModelExecuted)
 		RESTAPI::SetProgressBarData(0, "", false);
 	}
 
@@ -389,7 +339,7 @@ namespace CLOVise
 			QObject::connect(m_printActionSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnSearchPrintClicked(int)));
 			QObject::connect(ui_colorwayTable->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(onHorizontalHeaderClicked(int)));
 			QObject::connect(m_bomAddButton, SIGNAL(clicked()), this, SLOT(onAddNewBomClicked()));
-			
+
 
 
 		}
@@ -436,11 +386,11 @@ namespace CLOVise
 			m_totalCountLabel->setText("Total count: 0");
 
 
-		/*	QLayoutItem *child;
-			while ((child = ui_sectionLayout->takeAt(0)) != 0) {
-				Logger::Debug("CreateProduct -> onBackButtonClicked -> 6");
-				delete child;
-			}*/
+			/*	QLayoutItem *child;
+				while ((child = ui_sectionLayout->takeAt(0)) != 0) {
+					Logger::Debug("CreateProduct -> onBackButtonClicked -> 6");
+					delete child;
+				}*/
 
 			Logger::Debug("CreateProduct -> onBackButtonClicked -> 1");
 			while (ui_sectionLayout->count() > 0)
@@ -472,108 +422,108 @@ namespace CLOVise
 	* Return -
 	*/
 	void CreateProduct::addCreateProductDetailsWidgetData()
-	{		
-			Logger::Debug("Create product add3DModelDetailsWidgetData() start....");
-			//Configuration::GetInstance()->SetModifySupportedAttsList(PublishToPLMData::GetInstance()->GetDocumentConfigJSON());
-			//PublishToPLMData::GetInstance()->GetMaxUploadFileSize();
-			json fieldsJsonArray = json::array();
-			json mergedJsonArray = json::array();
+	{
+		Logger::Debug("Create product add3DModelDetailsWidgetData() start....");
+		//Configuration::GetInstance()->SetModifySupportedAttsList(PublishToPLMData::GetInstance()->GetDocumentConfigJSON());
+		//PublishToPLMData::GetInstance()->GetMaxUploadFileSize();
+		json fieldsJsonArray = json::array();
+		json mergedJsonArray = json::array();
 
-			fieldsJsonArray = PublishToPLMData::GetInstance()->GetDocumentFieldsJSON();
-			Logger::Debug("Create product add3DModelDetailsWidgetData() fieldsJsonArray:: " + to_string(fieldsJsonArray));
-			//QStringList emptylist;
-			//json feildsJson = json::object();
+		fieldsJsonArray = PublishToPLMData::GetInstance()->GetDocumentFieldsJSON();
+		Logger::Debug("Create product add3DModelDetailsWidgetData() fieldsJsonArray:: " + to_string(fieldsJsonArray));
+		//QStringList emptylist;
+		//json feildsJson = json::object();
 
-			//string attRestApiExposed = "";
-			//UTILITY_API->DisplayMessageBox(to_string(fieldsJsonArray));
-			json jsonvalueArray = json::array();
-			string columnsNames = DirectoryUtil::GetPLMPluginDirectory() + "CentricCreateStyleHierarchy.json";//Reading Columns from json
-			jsonvalueArray = Helper::ReadJSONFile(columnsNames);
-			//UTILITY_API->DisplayMessageBox("jsonvalue:: " + to_string(jsonvalue));
-			//createFieldsJson(to_string(fieldsJsonArray), jsonvalue);
+		//string attRestApiExposed = "";
+		//UTILITY_API->DisplayMessageBox(to_string(fieldsJsonArray));
+		json jsonvalueArray = json::array();
+		string columnsNames = DirectoryUtil::GetPLMPluginDirectory() + "CentricCreateStyleHierarchy.json";//Reading Columns from json
+		jsonvalueArray = Helper::ReadJSONFile(columnsNames);
+		//UTILITY_API->DisplayMessageBox("jsonvalue:: " + to_string(jsonvalue));
+		//createFieldsJson(to_string(fieldsJsonArray), jsonvalue);
 
-			int sizeOfResponseJSON = fieldsJsonArray.size();
-			int sizeOfDefaultJSON = jsonvalueArray.size();
+		int sizeOfResponseJSON = fieldsJsonArray.size();
+		int sizeOfDefaultJSON = jsonvalueArray.size();
 
-			for (int i = 0; i < sizeOfResponseJSON + sizeOfDefaultJSON; i++)
+		for (int i = 0; i < sizeOfResponseJSON + sizeOfDefaultJSON; i++)
+		{
+			if (i < sizeOfDefaultJSON)
 			{
-				if (i < sizeOfDefaultJSON)
-				{
-					json jsonvalue = Helper::GetJSONParsedValue<int>(jsonvalueArray, i, false);
-					string internalName = Helper::GetJSONValue<string>(jsonvalue, "rest_api_name", true);
-					//m_localAttributesList.push_back(QString::fromStdString(internalName));
-					mergedJsonArray[i] = jsonvalueArray[i];
-				}
-				else
-				{
-					json fieldsJson = Helper::GetJSONParsedValue<int>(fieldsJsonArray, i - sizeOfDefaultJSON, false);
-					string internalName = Helper::GetJSONValue<string>(fieldsJson, "rest_api_name", true);
-					m_plmAttributesList.push_back(QString::fromStdString(internalName));
-					mergedJsonArray[i] = fieldsJsonArray[i - sizeOfDefaultJSON];
-				}
+				json jsonvalue = Helper::GetJSONParsedValue<int>(jsonvalueArray, i, false);
+				string internalName = Helper::GetJSONValue<string>(jsonvalue, "rest_api_name", true);
+				//m_localAttributesList.push_back(QString::fromStdString(internalName));
+				mergedJsonArray[i] = jsonvalueArray[i];
 			}
-			//UTILITY_API->DisplayMessageBox("mergedJsonArray:: " + to_string(mergedJsonArray));
+			else
+			{
+				json fieldsJson = Helper::GetJSONParsedValue<int>(fieldsJsonArray, i - sizeOfDefaultJSON, false);
+				string internalName = Helper::GetJSONValue<string>(fieldsJson, "rest_api_name", true);
+				m_plmAttributesList.push_back(QString::fromStdString(internalName));
+				mergedJsonArray[i] = fieldsJsonArray[i - sizeOfDefaultJSON];
+			}
+		}
+		//UTILITY_API->DisplayMessageBox("mergedJsonArray:: " + to_string(mergedJsonArray));
 
-			//UTILITY_API->DisplayMessageBox("m_creatProductFieldsJson:: " + to_string(m_creatProductFieldsJson));
-			////QStringList emptylist;
-			////json feildsJson = json::object();
-			//json attributesJson = json::object();
-			//string typeName = "";
-			//for (int feildsCount = 0; feildsCount < m_creatProductFieldsJson.size(); feildsCount++)
-			//{
-			//	feildsJson = Helper::GetJSONParsedValue<int>(m_creatProductFieldsJson, feildsCount, false);
-			//	typeName = Helper::GetJSONValue<string>(feildsJson, TYPENAME_JSON_KEY, true);
-			//	attributesJson = Helper::GetJSONParsedValue<string>(feildsJson, FILTER_ATTRIBUTES_KEY, false);
-			//	UTILITY_API->DisplayMessageBox("attributesJson:: " + to_string(attributesJson));
-			drawCriteriaWidget(mergedJsonArray, m_createProductTreeWidget_1, m_createProductTreeWidget_2, PublishToPLMData::GetInstance()->GetActive3DModelMetaData());
-			//	break;
-			//}
+		//UTILITY_API->DisplayMessageBox("m_creatProductFieldsJson:: " + to_string(m_creatProductFieldsJson));
+		////QStringList emptylist;
+		////json feildsJson = json::object();
+		//json attributesJson = json::object();
+		//string typeName = "";
+		//for (int feildsCount = 0; feildsCount < m_creatProductFieldsJson.size(); feildsCount++)
+		//{
+		//	feildsJson = Helper::GetJSONParsedValue<int>(m_creatProductFieldsJson, feildsCount, false);
+		//	typeName = Helper::GetJSONValue<string>(feildsJson, TYPENAME_JSON_KEY, true);
+		//	attributesJson = Helper::GetJSONParsedValue<string>(feildsJson, FILTER_ATTRIBUTES_KEY, false);
+		//	UTILITY_API->DisplayMessageBox("attributesJson:: " + to_string(attributesJson));
+		drawCriteriaWidget(mergedJsonArray, m_createProductTreeWidget_1, m_createProductTreeWidget_2, PublishToPLMData::GetInstance()->GetActive3DModelMetaData());
+		//	break;
+		//}
 
-			m_createProductTreeWidget_1->setColumnCount(2);
-			m_createProductTreeWidget_1->setHeaderHidden(true);
-			m_createProductTreeWidget_1->setWordWrap(true);
-			m_createProductTreeWidget_1->setDropIndicatorShown(false);
-			m_createProductTreeWidget_1->setRootIsDecorated(false);
-			m_createProductTreeWidget_1->setSelectionMode(QAbstractItemView::NoSelection);
-			m_createProductTreeWidget_1->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; outline: 0;}""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
-			m_createProductTreeWidget_2->setColumnCount(2);
-			m_createProductTreeWidget_2->setHeaderHidden(true);
-			m_createProductTreeWidget_2->setWordWrap(true);
-			m_createProductTreeWidget_2->setDropIndicatorShown(false);
-			m_createProductTreeWidget_2->setRootIsDecorated(false);
-			m_createProductTreeWidget_2->setSelectionMode(QAbstractItemView::NoSelection);
-			m_createProductTreeWidget_2->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; outline: 0;}""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
+		m_createProductTreeWidget_1->setColumnCount(2);
+		m_createProductTreeWidget_1->setHeaderHidden(true);
+		m_createProductTreeWidget_1->setWordWrap(true);
+		m_createProductTreeWidget_1->setDropIndicatorShown(false);
+		m_createProductTreeWidget_1->setRootIsDecorated(false);
+		m_createProductTreeWidget_1->setSelectionMode(QAbstractItemView::NoSelection);
+		m_createProductTreeWidget_1->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; outline: 0;}""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
+		m_createProductTreeWidget_2->setColumnCount(2);
+		m_createProductTreeWidget_2->setHeaderHidden(true);
+		m_createProductTreeWidget_2->setWordWrap(true);
+		m_createProductTreeWidget_2->setDropIndicatorShown(false);
+		m_createProductTreeWidget_2->setRootIsDecorated(false);
+		m_createProductTreeWidget_2->setSelectionMode(QAbstractItemView::NoSelection);
+		m_createProductTreeWidget_2->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; outline: 0;}""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
 
 
-			//for (int feildsCount = 0; feildsCount < jsonvalue.size(); feildsCount++)
-			//{
-			//	feildsJson = Helper::GetJSONParsedValue<int>(jsonvalue, feildsCount, false);
-			//	attRestApiExposed = Helper::GetJSONValue<string>(feildsJson, ATTRIBUTE_REST_API_EXPOSED, true);
-			//	if (attRestApiExposed == "false")
-			//		continue;
-			//	drawWidget(feildsJson, m_createProductTreeWidget);
+		//for (int feildsCount = 0; feildsCount < jsonvalue.size(); feildsCount++)
+		//{
+		//	feildsJson = Helper::GetJSONParsedValue<int>(jsonvalue, feildsCount, false);
+		//	attRestApiExposed = Helper::GetJSONValue<string>(feildsJson, ATTRIBUTE_REST_API_EXPOSED, true);
+		//	if (attRestApiExposed == "false")
+		//		continue;
+		//	drawWidget(feildsJson, m_createProductTreeWidget);
 
-			//	//drawCriteriaWidget(attributesJson, m_createProductTreeWidget, PublishToPLMData::GetInstance()->GetActive3DModelMetaData());
-			//	//break;
-			//}
-			//for (int feildsCount = 0; feildsCount < fieldsJsonArray.size(); feildsCount++)
-			//{
-			//	feildsJson = Helper::GetJSONParsedValue<int>(fieldsJsonArray, feildsCount, false);
-			//	attRestApiExposed = Helper::GetJSONValue<string>(feildsJson, ATTRIBUTE_REST_API_EXPOSED, true);
-			//	if (attRestApiExposed == "false")
-			//		continue;
-			//	drawWidget(feildsJson, m_createProductTreeWidget);
+		//	//drawCriteriaWidget(attributesJson, m_createProductTreeWidget, PublishToPLMData::GetInstance()->GetActive3DModelMetaData());
+		//	//break;
+		//}
+		//for (int feildsCount = 0; feildsCount < fieldsJsonArray.size(); feildsCount++)
+		//{
+		//	feildsJson = Helper::GetJSONParsedValue<int>(fieldsJsonArray, feildsCount, false);
+		//	attRestApiExposed = Helper::GetJSONValue<string>(feildsJson, ATTRIBUTE_REST_API_EXPOSED, true);
+		//	if (attRestApiExposed == "false")
+		//		continue;
+		//	drawWidget(feildsJson, m_createProductTreeWidget);
 
-			//	//drawCriteriaWidget(attributesJson, m_createProductTreeWidget, PublishToPLMData::GetInstance()->GetActive3DModelMetaData());
-			//	//break;
-			//}
-			//m_createProductTreeWidget->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; }""QTreeWidget::item {font-size: 10px; font-face: ArialMT; height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; } QTreeView{outline: 0;}");
+		//	//drawCriteriaWidget(attributesJson, m_createProductTreeWidget, PublishToPLMData::GetInstance()->GetActive3DModelMetaData());
+		//	//break;
+		//}
+		//m_createProductTreeWidget->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; }""QTreeWidget::item {font-size: 10px; font-face: ArialMT; height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; } QTreeView{outline: 0;}");
 
-			///*	if (!PublishToPLMData::GetInstance()->GetDateFlag())
-			//		m_dateResetButton->hide();
-			//	else
-			//		m_dateResetButton->show();*/
-	
+		///*	if (!PublishToPLMData::GetInstance()->GetDateFlag())
+		//		m_dateResetButton->hide();
+		//	else
+		//		m_dateResetButton->show();*/
+
 		Logger::Debug("Create product add3DModelDetailsWidgetData() end....");
 	}
 
@@ -768,7 +718,7 @@ namespace CLOVise
 							//m_styleTypeNameIdMap.insert(make_pair(attName, attId));
 							comboBox->setProperty(attName.c_str(), QString::fromStdString(attId));
 							string allowCreateColor = Helper::GetJSONValue<string>(attJson, ALLOW_CREATE_COLOR, true);
-							comboBox->setProperty((attName+ALLOW_CREATE_COLOR).c_str(), QString::fromStdString(allowCreateColor));
+							comboBox->setProperty((attName + ALLOW_CREATE_COLOR).c_str(), QString::fromStdString(allowCreateColor));
 							string defaultImage = Helper::GetJSONValue<string>(attJson, REFER_DEFAULT_IMAGE_ON_COLOR, true);
 							comboBox->setProperty((attName + REFER_DEFAULT_IMAGE_ON_COLOR).c_str(), QString::fromStdString(defaultImage));
 						}
@@ -940,12 +890,12 @@ namespace CLOVise
 					//Logger::Debug("Create product onPublishToPLMClicked() 1....");
 					UTILITY_API->NewProject();
 					//Logger::Debug("Create product onPublishToPLMClicked() 2....");
-					
+
 					CVDisplayMessageBox * DownloadDialogObject = new CVDisplayMessageBox(this);
 					//Logger::Debug("Create product onPublishToPLMClicked() 3....");
 					DownloadDialogObject->DisplyMessage("Successfully published to PLM.");
 					//Logger::Debug("Create product onPublishToPLMClicked() 4....");
-					DownloadDialogObject->setModal(true);					
+					DownloadDialogObject->setModal(true);
 					DownloadDialogObject->show();
 					Helper::RemoveDirectory(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_TEMP_DIRECTORY));
 					dir.mkpath(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_TEMP_DIRECTORY));
@@ -1071,7 +1021,7 @@ namespace CLOVise
 	{
 		Logger::Debug("Create product collectCreateProductFieldsData() start....");
 		m_ProductMetaData = collectCriteriaFields(m_createProductTreeWidget_1, m_createProductTreeWidget_2);
-		
+
 		//m_documentDetailsJson[ATTRIBUTES_KEY] = m_ProductMetaData;
 
 		/*json thumbNailDetails = json::object();
@@ -1293,12 +1243,12 @@ namespace CLOVise
 
 
 		AddRows(count, attId, objectName, rgbValue, objectCode, pantone, colorwayNamesList);
-		
+
 		for (int index = 0; index < headerlist.count(); index++)
 		{
 			if (index == CHECKBOX_COLUMN)
 				ui_colorwayTable->setColumnWidth(index, COLUMN_SIZE);
-				//ui_colorwayTable->resizeColumnToContents(1);
+			//ui_colorwayTable->resizeColumnToContents(1);
 			else if (index == CLO_COLORWAY_COLUMN || index == UNI_2_DIGIT_CODE_COLUMN)
 			{
 				ui_colorwayTable->resizeColumnToContents(1);
@@ -1314,7 +1264,7 @@ namespace CLOVise
 	void CreateProduct::onContextMenuClicked(const QPoint & _pos)
 	{
 		Logger::Debug("CreateProduct -> onContextMenu_Clicked() -> Start");
-		
+
 		QModelIndex index = ui_colorwayTable->indexAt(_pos);
 		if ((index.column() != CHECKBOX_COLUMN) && (index.column() != CLO_COLORWAY_COLUMN) && (index.column() != UNI_2_DIGIT_CODE_COLUMN) && (index.column() != COLOR_CHIP_COLUMN) && (index.column() != PLM_COLORWAY_COLUMN))
 		{
@@ -1362,7 +1312,7 @@ namespace CLOVise
 									m_buttonSignalMapper->setMapping(colorButoon, i);
 								QPushButton *CreateButoon = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, FIRST_INDEX);
 								if (m_createActionSignalMapper != nullptr)
-								{									
+								{
 									if (CreateButoon)
 									{
 										QList<QAction*> actions;
@@ -1435,7 +1385,7 @@ namespace CLOVise
 								CreateImageIntent::GetInstance()->m_colorwayViewQueue.removeAll(plmColorwayName + QString::fromStdString(currentViewName));
 						}
 					}
-					
+
 					else
 					{
 						UTILITY_API->DisplayMessageBox("Select Image To Delete");
@@ -1622,11 +1572,11 @@ namespace CLOVise
 		ui_colorwayTable->setColumnWidth(CLO_COLORWAY_COLUMN, 140);
 		pWidget = CVWidgetGenerator::InsertWidgetInCenter(comboColorwayItem);
 		ui_colorwayTable->setColumnWidth(CLO_COLORWAY_COLUMN, 140);
-		
+
 		ui_colorwayTable->setCellWidget(m_colorwayRowcount, CLO_COLORWAY_COLUMN, pWidget);
 
 		QObject::connect(comboColorwayItem, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(OnHandleColorwayNameComboBox(const QString&)));
-		
+
 		m_plmColowayName = new QLineEdit();
 		m_plmColowayName->setStyleSheet(LINEEDIT_STYLE);
 		m_plmColowayName->setText("");
@@ -1634,8 +1584,8 @@ namespace CLOVise
 		m_plmColowayName->setProperty("row", _count + m_colorwayRowcount);
 		m_plmColowayName->setProperty("Edited", false);
 		connect(m_plmColowayName, SIGNAL(editingFinished()), this, SLOT(OnplmColorwayNameEntered()));
-		ui_colorwayTable->setCellWidget(_count + m_colorwayRowcount, PLM_COLORWAY_COLUMN, pLineEditWidget);		
-		
+		ui_colorwayTable->setCellWidget(_count + m_colorwayRowcount, PLM_COLORWAY_COLUMN, pLineEditWidget);
+
 		QSize iconSize(40, 40);
 		ui_colorwayTable->setIconSize(iconSize);
 		ui_colorwayTable->setWordWrap(true);
@@ -1674,7 +1624,7 @@ namespace CLOVise
 			ui_colorwayTable->setCellWidget(m_colorwayRowcount, COLOR_CHIP_COLUMN, pWidget);
 		}
 
-			   
+
 		QTableWidgetItem* ColorNameWidget = new QTableWidgetItem(QString::fromStdString(_objectName));
 		ColorNameWidget->setTextAlignment(Qt::AlignCenter);
 		ColorNameWidget->setToolTip(QString::fromStdString(_objectName));
@@ -1708,8 +1658,8 @@ namespace CLOVise
 		{
 			connect(uni2digiCodes, SIGNAL(activated(const QString&)), this, SLOT(OnUni2CodeSelected(const QString&)));
 		}
-		ui_colorwayTable->setCellWidget(m_colorwayRowcount, UNI_2_DIGIT_CODE_COLUMN, pWidget);	
-				
+		ui_colorwayTable->setCellWidget(m_colorwayRowcount, UNI_2_DIGIT_CODE_COLUMN, pWidget);
+
 		QTextEdit* textEditItem = new QTextEdit();
 		textEditItem->setStyleSheet(TEXTEDIT_STYLE);
 		textEditItem->setText("");
@@ -1725,7 +1675,7 @@ namespace CLOVise
 	* Return -
 	*/
 	void CreateProduct::OnCreateColorSpecClicked(int _SelectedRow)
-	{	
+	{
 		Logger::Info("INFO::createProduct -> OnCreateColorSpecClicked() -> Start");
 		Configuration::GetInstance()->SetIsUpdateColorClicked(true);
 		m_selectedRow = _SelectedRow;
@@ -1744,7 +1694,7 @@ namespace CLOVise
 		this->hide();
 		ColorConfig::GetInstance()->m_mode = "Creacte";
 		ColorConfig::GetInstance()->InitializeColorData();
-		ColorConfig::GetInstance()->m_isSearchColor = false;		
+		ColorConfig::GetInstance()->m_isSearchColor = false;
 		PLMColorSearch::GetInstance()->setModal(true);
 		PLMColorSearch::GetInstance()->DrawSearchWidget(true);
 		UTILITY_API->DeleteProgressBar(true);
@@ -1760,7 +1710,7 @@ namespace CLOVise
 	* Return -
 	*/
 	void CreateProduct::OnSearchPrintClicked(int _SelectedRow)
-	{	
+	{
 		Logger::Info("INFO::createProduct -> OnSearchPrintClicked() -> Start");
 		Configuration::GetInstance()->SetIsPrintSearchClicked(true);
 		m_selectedRow = _SelectedRow;
@@ -1782,7 +1732,7 @@ namespace CLOVise
 		PLMPrintSearch::GetInstance()->setModal(true);
 		if (!PrintConfig::GetInstance()->GetIsModelExecuted())
 			PLMPrintSearch::GetInstance()->DrawSearchWidget(true);
-		else 
+		else
 			PLMPrintSearch::GetInstance()->DrawSearchWidget(false);
 		UTILITY_API->DeleteProgressBar(true);
 		PLMPrintSearch::GetInstance()->exec();
@@ -1864,14 +1814,14 @@ namespace CLOVise
 				RESTAPI::SetProgressBarData(20, "Loading Latest Image Intents... ", true);
 				UTILITY_API->SetProgress("Loading Latest Image Intents...", (qrand() % 101));
 			}
-			
+
 			if (ValidateColorwayNameField() && imageRowCount != 0)
 			{
 				exportTurntableImages();
 
 				string colorwayName;
 				string viewName;
-				int view;				
+				int view;
 				Logger::Debug("CreateProduct -> onTabClicked() -> Item" + to_string(imageRowCount));
 
 				string temporaryPath = UTILITY_API->GetCLOTemporaryFolderPath();
@@ -1929,16 +1879,16 @@ namespace CLOVise
 					CreateProduct::GetInstance()->m_ImageIntentList->setItemWidget(item, listItem);
 				}
 			}
-			
-				RESTAPI::SetProgressBarData(0, "", false);			
+
+			RESTAPI::SetProgressBarData(0, "", false);
 		}
-		
+
 		if (_index == BOM_TAB)
 		{
-		//	if (ui_sectionLayout->count() > 0)
-			//{
-				GetMappedColorway();
-				UpdateColorwayColumnsInBom();
+			//	if (ui_sectionLayout->count() > 0)
+				//{
+			GetMappedColorway();
+			UpdateColorwayColumnsInBom();
 			//}
 		}
 		AddNewBom::GetInstance()->BackupBomDetails();
@@ -1961,11 +1911,11 @@ namespace CLOVise
 
 			Logger::Debug("CreateProduct -> OnHandleDropDownValue() LabelName: " + labelName.toStdString());
 			string progressbarText;
-			Logger::Debug("PublishToPLMData -> OnHandleDropDownValue() _item: " + _item.toStdString());		
+			Logger::Debug("PublishToPLMData -> OnHandleDropDownValue() _item: " + _item.toStdString());
 			if (labelName == "Style Type")
 			{
 				QComboBox * comboBox = qobject_cast<QComboBox *>(sender());
-				Logger::Debug("CreateProduct -> OnHandleDropDownValue() senderSignalIndex: "+ to_string(comboBox->currentIndex()));
+				Logger::Debug("CreateProduct -> OnHandleDropDownValue() senderSignalIndex: " + to_string(comboBox->currentIndex()));
 				m_selectedStyleTypeIndex = comboBox->currentIndex();
 				string isAllowCreatColor = sender()->property((_item.toStdString() + ALLOW_CREATE_COLOR).c_str()).toString().toStdString();
 				if (isAllowCreatColor == "true")
@@ -2037,7 +1987,7 @@ namespace CLOVise
 					Logger::Debug("CreateProduct -> OnHandleDropDownValue() Department combobox Start ");
 					apiUrl = RESTAPI::COLLECTION_DETAIL_API;
 					Logger::Debug("CreateProduct -> OnHandleDropDownValue() m_brandNameIdMap " + to_string(m_dipartmentNameIdMap.size()));
-					nameIdMap = m_dipartmentNameIdMap; 
+					nameIdMap = m_dipartmentNameIdMap;
 					m_collectionNameIdMap.clear();
 					dependentFields.append("collection");
 					clearDependentComboBox(labelName, m_createProductTreeWidget_1);
@@ -2112,16 +2062,16 @@ namespace CLOVise
 									valueList.append(QString::fromStdString(attName));
 									qComboBox->setProperty(attName.c_str(), QString::fromStdString(attId));
 									if (labelName == "Season")
-									m_brandNameIdMap.insert(make_pair(attName, attId));
+										m_brandNameIdMap.insert(make_pair(attName, attId));
 									if (labelName == "Brand")
-									m_dipartmentNameIdMap.insert(make_pair(attName, attId));							
+										m_dipartmentNameIdMap.insert(make_pair(attName, attId));
 									if (labelName == "Department")
-									m_collectionNameIdMap.insert(make_pair(attName, attId));
+										m_collectionNameIdMap.insert(make_pair(attName, attId));
 									if (lableText == "shape")
-									m_shapeNameIdMap.insert(make_pair(attName, attId));
+										m_shapeNameIdMap.insert(make_pair(attName, attId));
 									if (lableText == "theme")
-									m_themeNameIdMap.insert(make_pair(attName, attId));
-									
+										m_themeNameIdMap.insert(make_pair(attName, attId));
+
 								}
 								qComboBox->clear();
 								if (qComboBox->isEnabled())
@@ -2235,7 +2185,7 @@ namespace CLOVise
 		catch (const char* msg)
 		{
 			UTILITY_API->DeleteProgressBar(true);
-			Logger::Error("Create product OnHandleDropDownValue()-> Exception char:: " + string(msg));			
+			Logger::Error("Create product OnHandleDropDownValue()-> Exception char:: " + string(msg));
 			wstring wstr(msg, msg + strlen(msg));
 			UTILITY_API->DisplayMessageBoxW(wstr);
 			this->show();
@@ -2339,7 +2289,7 @@ namespace CLOVise
 		else if (QComboBox* qComboBoxC1 = qobject_cast<QComboBox*>(qWidgetColumn1))
 		{
 			fieldValue = qComboBoxC1->currentText().toStdString();
-			
+
 			Logger::Debug("Create product ReadVisualUIFieldValue() QComboBox->fieldLabel" + attInternalName);
 			Logger::Debug("Create product ReadVisualUIFieldValue() QComboBox->labelText" + labelText);
 			if (attInternalName == "parent_season")
@@ -2544,8 +2494,8 @@ namespace CLOVise
 					vector<pair<string, string>> headerNameAndValueList;
 					json request = json::object();
 
-				/*if (!colorwayName1->currentText().toStdString().empty())
-				{*/
+					/*if (!colorwayName1->currentText().toStdString().empty())
+					{*/
 					if (m_2DigiCodeActive)
 					{
 						if (!colorwayName1->currentText().toStdString().empty())
@@ -2554,14 +2504,14 @@ namespace CLOVise
 							request["uni_2_digit_code"] = twoDigiCode;
 						}
 					}
-					request["color_specification"] = id.toStdString();					
+					request["color_specification"] = id.toStdString();
 					request["description"] = description->toPlainText().toStdString();
 					request["node_name"] = plmColorwayName->text().toStdString();
 
-						//UTILITY_API->DisplayMessageBox("colorwayName" + colorwayName);
+					//UTILITY_API->DisplayMessageBox("colorwayName" + colorwayName);
 
-						headerNameAndValueList.push_back(make_pair("content-Type", "application/json"));
-						headerNameAndValueList.push_back(make_pair("Cookie", Configuration::GetInstance()->GetBearerToken()));
+					headerNameAndValueList.push_back(make_pair("content-Type", "application/json"));
+					headerNameAndValueList.push_back(make_pair("Cookie", Configuration::GetInstance()->GetBearerToken()));
 
 					string requestString = to_string(request);
 					//UTILITY_API->DisplayMessageBox("requestString" + requestString);
@@ -2576,35 +2526,35 @@ namespace CLOVise
 					int colorwayCount = UTILITY_API->GetColorwayCount();
 					QString selectedCLOColorwayName = colorwayNameCombo->currentText();
 
-						for (int count = 0; count < colorwayCount; count++)
+					for (int count = 0; count < colorwayCount; count++)
+					{
+						string colorwayName = UTILITY_API->GetColorwayName(count);
+						if (selectedCLOColorwayName.toStdString() == colorwayName)
 						{
-							string colorwayName = UTILITY_API->GetColorwayName(count);
-							if (selectedCLOColorwayName.toStdString() == colorwayName)
-							{
-								UTILITY_API->SetColorwayName(count, plmColorwayName->text().toStdString());
-							}
+							UTILITY_API->SetColorwayName(count, plmColorwayName->text().toStdString());
 						}
+					}
 
-						json detailJson = Helper::GetJsonFromResponse(response, "{");
-						string colorwayId = Helper::GetJSONValue<string>(detailJson, ATTRIBUTE_ID, true);
+					json detailJson = Helper::GetJsonFromResponse(response, "{");
+					string colorwayId = Helper::GetJSONValue<string>(detailJson, ATTRIBUTE_ID, true);
 
-						//ColorwayViews colorwayView;
-						QString selectedColorway = colorwayNameCombo->currentText();
+					//ColorwayViews colorwayView;
+					QString selectedColorway = colorwayNameCombo->currentText();
 
-						if (!selectedColorway.isEmpty())
+					if (!selectedColorway.isEmpty())
+					{
+						auto it = CreateImageIntent::GetInstance()->m_ColorwayViewMap.find(selectedColorway.toStdString());// Searching unit in map
+
+						if (it != CreateImageIntent::GetInstance()->m_ColorwayViewMap.end())
 						{
-							auto it = CreateImageIntent::GetInstance()->m_ColorwayViewMap.find(selectedColorway.toStdString());// Searching unit in map
-
-							if (it != CreateImageIntent::GetInstance()->m_ColorwayViewMap.end())
-							{
-								it->second.colorwayId = colorwayId;
-								//UTILITY_API->DisplayMessageBox("ExtractColorwayDetails it->first: " + it->first + "  Colorway id: " + colorwayId);
-							}
+							it->second.colorwayId = colorwayId;
+							//UTILITY_API->DisplayMessageBox("ExtractColorwayDetails it->first: " + it->first + "  Colorway id: " + colorwayId);
 						}
 					}
 				}
 			}
-		
+		}
+
 		catch (string msg)
 		{
 			Logger::Error("CreateProduct -> ExtractColorwayDetails() Exception - " + msg);
@@ -2864,10 +2814,10 @@ namespace CLOVise
 			ui_tabWidget->setCurrentIndex(OVERVIEW_TAB);
 			m_totalCountLabel->setText("Total count: 0");
 
-			
+
 			//ui_sectionLayout->removeWidget();
 
-			
+
 		}
 		this->accept();
 		/*if (!m_isSaveClicked)*/
@@ -2887,7 +2837,7 @@ namespace CLOVise
 		{
 			GetUpdatedColorwayNames();
 		}
-		
+
 		//QWidget* widget = ui_colorwayTable->cellWidget(m_selectedRow, 1);
 		QComboBox *colorwayNameCombo = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(m_selectedRow, CLO_COLORWAY_COLUMN)->children().last());
 		string colorSpecId = colorwayNameCombo->property("Id").toString().toStdString();
@@ -2987,10 +2937,10 @@ namespace CLOVise
 			QImage image(size, QImage::Format_ARGB32);
 			image.fill(color);
 			QPixmap pixmap;
-			
+
 			pixmap = QPixmap::fromImage(image);
 			label->setPixmap(QPixmap(pixmap));
-			
+
 			pWidget = CVWidgetGenerator::InsertWidgetInCenter(label);
 			Logger::Debug("CreateProduct -> UpdateColorInColorways () 5");
 		}
@@ -3005,7 +2955,7 @@ namespace CLOVise
 			QSize iconSize(40, 40);
 			iconItem->setSizeHint(iconSize);
 			QStringList listRGB;
-			
+
 			ui_colorwayTable->setCellWidget(m_selectedRow, COLOR_CHIP_COLUMN, pWidget);
 		}
 		if (tabIndex == BOM_TAB)
@@ -3015,7 +2965,7 @@ namespace CLOVise
 			auto itr = AddNewBom::GetInstance()->m_bomSectionTableInfoMap.find(AddNewBom::GetInstance()->m_currentTableName);
 			if (itr != AddNewBom::GetInstance()->m_bomSectionTableInfoMap.end())
 			{
-				Logger::Debug("CreateProduct -> UpdateColorInColorways () AddNewBom::GetInstance()->m_currentRow"+ to_string(AddNewBom::GetInstance()->m_currentRow));
+				Logger::Debug("CreateProduct -> UpdateColorInColorways () AddNewBom::GetInstance()->m_currentRow" + to_string(AddNewBom::GetInstance()->m_currentRow));
 				QTableWidget* sectionTable = itr->second;
 				if (QWidget* widget = sectionTable->cellWidget(AddNewBom::GetInstance()->m_currentRow, AddNewBom::GetInstance()->m_currentColumn))
 				{
@@ -3027,15 +2977,15 @@ namespace CLOVise
 							auto gridLayout = dynamic_cast<QGridLayout*>(widget->layout());
 							gridLayout->addWidget(pWidget, 0, 0, 1, 1, Qt::AlignHCenter);
 							Logger::Debug("CreateProduct -> UpdateColorInColorways () 10");
-							
+
 						}
 					}
 				}
 
 			}
 		}
-		
-			
+
+
 		Configuration::GetInstance()->SetIsUpdateColorClicked(false);
 		Logger::Debug("CreateProduct -> UpdateColorInColorways () End");
 		return true;
@@ -3085,7 +3035,7 @@ namespace CLOVise
 		Logger::Info("CreateProduct -> horizontalHeaderClicked() -> End");
 	}
 
-	
+
 	void CreateProduct::onAddNewBomClicked()
 	{
 		this->hide();
@@ -3108,26 +3058,26 @@ namespace CLOVise
 			QString tableName = sectionTable->property("TableName").toString();
 			json fieldsJson;
 			Logger::Debug("CreateProduct -> AddMaterialInBom() -> 2");
-				fieldsJson = MaterialConfig::GetInstance()->GetUpdateMaterialCacheData();
-				string code = Helper::GetJSONValue<string>(fieldsJson, "code", true);
-				string name = Helper::GetJSONValue<string>(fieldsJson, "node_name", true);
-				//string type = Helper::GetJSONValue<string>(fieldsJson, "Type", true);
-				string description = Helper::GetJSONValue<string>(fieldsJson, "description", true);
-				Logger::Debug("CreateProduct -> AddMaterialInBom() -> 3");
-				json rowDataJson = json::object();
-				rowDataJson["Code"] = code;
-				rowDataJson["node_name"] = name;
-				rowDataJson["Type"] = "";
-				rowDataJson["comment"] = description;
-				rowDataJson["Quantity"] = "";
-				rowDataJson["UOM"] = "";
+			fieldsJson = MaterialConfig::GetInstance()->GetUpdateMaterialCacheData();
+			string code = Helper::GetJSONValue<string>(fieldsJson, "code", true);
+			string name = Helper::GetJSONValue<string>(fieldsJson, "node_name", true);
+			//string type = Helper::GetJSONValue<string>(fieldsJson, "Type", true);
+			string description = Helper::GetJSONValue<string>(fieldsJson, "description", true);
+			Logger::Debug("CreateProduct -> AddMaterialInBom() -> 3");
+			json rowDataJson = json::object();
+			rowDataJson["Code"] = code;
+			rowDataJson["node_name"] = name;
+			rowDataJson["Type"] = "";
+			rowDataJson["comment"] = description;
+			rowDataJson["Quantity"] = "";
+			rowDataJson["UOM"] = "";
 			AddNewBom::GetInstance()->AddBomRows(sectionTable, rowDataJson, tableName);
 		}
-		
+
 		Logger::Debug("CreateProduct -> AddMaterialInBom() -> End");
 	}
 
-	
+
 	void CreateProduct::GetMappedColorway()
 	{
 		Logger::Debug("CreateProduct -> GetMappedColorway() -> Start");
@@ -3140,7 +3090,7 @@ namespace CLOVise
 			Logger::Debug("CreateProduct -> GetMappedColorway() ->cloColorway:" + cloColorwayCombo->currentText().toStdString());
 			QString plmColorwayName = plmColorwayCombo->text();
 			QString cloColorwayName = cloColorwayCombo->currentText();
-			if ( !plmColorwayName.isEmpty() && !cloColorwayName.isEmpty())
+			if (!plmColorwayName.isEmpty() && !cloColorwayName.isEmpty())
 			{
 				m_mappedColorways.append(cloColorwayCombo->currentText());
 				Logger::Debug("CreateProduct -> GetMappedColorway() -> mappedColorway:" + cloColorwayCombo->currentText().toStdString());
@@ -3162,9 +3112,9 @@ namespace CLOVise
 		stringstream ssBOMInfo;
 		ssBOMInfo.str(jsonBOMDetails);
 		string json_value = ssBOMInfo.str();
-		 m_techPackJson = json::parse(json_value);
-		 Logger::Debug("CreateProduct -> ExportTechPack() -> m_techPackJson" + to_string(m_techPackJson));
-		 Logger::Debug("CreateProduct -> ExportTechPack() -> End");
+		m_techPackJson = json::parse(json_value);
+		Logger::Debug("CreateProduct -> ExportTechPack() -> m_techPackJson" + to_string(m_techPackJson));
+		Logger::Debug("CreateProduct -> ExportTechPack() -> End");
 	}
 
 	void CreateProduct::CreateBom(string _productId)
@@ -3174,13 +3124,13 @@ namespace CLOVise
 		headerNameAndValueList.push_back(make_pair("content-Type", "application/json"));
 		headerNameAndValueList.push_back(make_pair("Accept", "application/json"));
 		headerNameAndValueList.push_back(make_pair("Cookie", Configuration::GetInstance()->GetBearerToken()));
-		
+
 		string bomTemplateId = Helper::GetJSONValue<string>(AddNewBom::GetInstance()->m_BomMetaData, "bom_template", true);
 		AddNewBom::GetInstance()->m_BomMetaData.erase("bom_template");
 		AddNewBom::GetInstance()->m_BomMetaData["style_id"] = _productId;
 		string bomMetaData = to_string(AddNewBom::GetInstance()->m_BomMetaData);
 		UTILITY_API->DisplayMessageBox(to_string(AddNewBom::GetInstance()->m_BomMetaData));
-		string response = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::CREATE_BOM_API + "/" + bomTemplateId , &bomMetaData, headerNameAndValueList, "Loading");
+		string response = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::CREATE_BOM_API + "/" + bomTemplateId, &bomMetaData, headerNameAndValueList, "Loading");
 		if (!FormatHelper::HasContent(response))
 		{
 			RESTAPI::SetProgressBarData(0, "", false);

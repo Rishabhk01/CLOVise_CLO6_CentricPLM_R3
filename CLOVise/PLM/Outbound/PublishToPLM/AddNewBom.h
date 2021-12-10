@@ -1,15 +1,15 @@
 #pragma once
 /*
-* Copyright 2020-2021 CLO-Vise. All rights reserved
+* Copyright 2021-2022 CLO-Vise. All rights reserved
 *
-* @file PublishToPLM.h
+* @file AddNewBom.h
 *
-* @brief Class declaration for publish Product and Document from CLO to PLM.
-* This class has all the variable declarations and function declarations which are used to PLM Product and Document instance data update and Publish from CLO to PLM.
+* @brief Class implementation for create Bom table on tab.
+* This class has all the variable declarations and function declarations which are used to create bom table and publish bom lines from CLO to PLM.
 *
 * @author GoVise
 *
-* @date 14-AUG-2020
+* @date 10-OCT-2021
 */
 #include "ui_AddNewBom.h"
 
@@ -38,9 +38,8 @@ namespace CLOVise
 
 	public:
 		static AddNewBom* GetInstance();
-		static void	Destroy();
 		//void getFabricTrimDetails(stringstream& _ssBOMDetails);
-		void getMaterialDetails(string _str, json _techPackJson, bool _flag, QTableWidget* _sectionTable,QString _tableName, bool _isFabric);
+		void getMaterialDetails(string _str, json _techPackJson, bool _flag, QTableWidget* _sectionTable, QString _tableName, bool _isFabric);
 		void CreateTableforEachSection(json _sectionIdsjson);
 		void AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString _tableName);
 		void getColorInfo(json _FabricJson, json& rowDataJson, string _materailId, bool _isFabric);
@@ -56,7 +55,7 @@ namespace CLOVise
 		json m_colorwayOverridesJson;
 		json m_bomTemplateJson;
 		string m_currentTableName;
-		QSignalMapper *m_buttonSignalMapper;
+		QSignalMapper *m_addColorButtonSignalMapper;
 		QSignalMapper *m_deleteButtonSignalMapper;
 		int m_currentRow;
 		int m_currentColumn;
@@ -65,11 +64,11 @@ namespace CLOVise
 		json m_BomMetaData = json::object();
 	private:
 		AddNewBom(QWidget* parent = nullptr);
-		virtual ~AddNewBom();
+		~AddNewBom();
 		void connectSignalSlots(bool _b) override;
 		void drawWidget(json _feildsJson, QTreeWidget* m_TreeWidget);
 
-		map<string,string> m_subTypeNameIdMap;
+		map<string, string> m_subTypeNameIdMap;
 		static AddNewBom* _instance;
 		QPushButton* m_backButton;
 		QPushButton* m_createButton;
@@ -77,8 +76,8 @@ namespace CLOVise
 		QStringList m_bomTableColumnKeys;
 		QStringList m_materialTypeList;
 		json m_bomTableColumnJson;
-		
-		
+
+
 	private slots:
 		void onBackButtonClicked();
 		void onCreateButtonClicked();
