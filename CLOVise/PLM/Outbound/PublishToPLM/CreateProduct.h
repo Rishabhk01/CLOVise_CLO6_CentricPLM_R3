@@ -123,6 +123,7 @@ namespace CLOVise
 		QTreeWidget* m_createProductTreeWidget_2;
 		//QToolButton* m_dateResetButton;
 		QPushButton* m_cancelButton;
+		QSignalMapper* m_colorwayDeleteSignalMapper;
 		QPushButton* m_publishButton;
 		QPushButton* m_SaveAndCloseButton;
 		QPushButton* m_addImageIntentButton;
@@ -181,6 +182,6 @@ namespace CLOVise
 		void onHorizontalHeaderClicked(int column);
 		void OnCreateColorSpecClicked(int _row);
 		void OnSearchPrintClicked(int _row);
-
+		void OnColorwaysTableDeleteButtonClicked(int _row);
 	};
 }

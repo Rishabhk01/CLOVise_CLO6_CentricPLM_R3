@@ -89,6 +89,7 @@ namespace CLOVise
 		QSignalMapper *m_updateColorButtonSignalMapper;
 		QSignalMapper *m_editButtonSignalMapper;
 		QSignalMapper *m_deleteSignalMapper;
+		QSignalMapper *m_updateColorwayDeleteSignalMapper;
 		QSignalMapper *m_createActionSignalMapper;
 		QSignalMapper *m_printActionSignalMapper;
 
@@ -170,6 +171,7 @@ namespace CLOVise
 		QTreeWidget* m_updateProductTreeWidget_2;
 		//QToolButton* m_dateResetButton;
 		QPushButton* m_cancelButton;
+		QPushButton* m_updateColorwayDeleteButton;
 		QPushButton* m_publishButton;
 		QPushButton* m_SaveAndCloseButton;
 		QPushButton* m_addImageIntentButton;
@@ -221,6 +223,7 @@ namespace CLOVise
 		void onAddImageIntentClicked();
 		void onTabClicked(int _index);
 		void OnAddColorwayClicked();
+		void OnColorwaysTableDeleteButtonClicked(int _row);
 		//	void onTableRadioButtonSelected(int _row);
 		//void onHideButtonClicked(bool _hide);
 		void onImageIntentsTableEditButtonClicked(int row);
