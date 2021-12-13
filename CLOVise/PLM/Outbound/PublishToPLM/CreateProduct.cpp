@@ -445,6 +445,7 @@ namespace CLOVise
 			ClearBomSectionLayout();
 			AddNewBom::GetInstance()->ClearBomData();
 			m_bomAddButton->show();
+			m_bomAddButton->setEnabled(true);
 		}
 	
 		
@@ -1948,9 +1949,16 @@ namespace CLOVise
 		if (_index == BOM_TAB)
 		{
 		//	if (ui_sectionLayout->count() > 0)
-			//{
+			//{m_backupBomDataMap.insert(make_pair(itr->first, attJson));
+			if (PublishToPLMData::GetInstance()->m_isSaveClicked)
+			{
+
+			AddNewBom::GetInstance()->RestoreBomDetails();
+				//updateBomTab = false;
+			}
 				GetMappedColorway();
 				UpdateColorwayColumnsInBom();
+
 			//}
 		}
 		
@@ -3044,6 +3052,7 @@ namespace CLOVise
 			{
 				Logger::Debug("CreateProduct -> UpdateColorInColorways () AddNewBom::GetInstance()->m_currentRow"+ to_string(AddNewBom::GetInstance()->m_currentRow));
 				QTableWidget* sectionTable = itr->second;
+
 				if (QWidget* widget = sectionTable->cellWidget(AddNewBom::GetInstance()->m_currentRow, AddNewBom::GetInstance()->m_currentColumn))
 				{
 					Logger::Debug("CreateProduct -> UpdateColorInColorways () 8");
@@ -3139,20 +3148,20 @@ namespace CLOVise
 				string code = Helper::GetJSONValue<string>(fieldsJson, "code", true);
 				string objectId = Helper::GetJSONValue<string>(fieldsJson, "id", true);
 				string name = Helper::GetJSONValue<string>(fieldsJson, "node_name", true);
-				//string type = Helper::GetJSONValue<string>(fieldsJson, "Type", true);
+				string materialType = Helper::GetJSONValue<string>(fieldsJson, "product_type", true);
 				string description = Helper::GetJSONValue<string>(fieldsJson, "description", true);
 				Logger::Debug("CreateProduct -> AddMaterialInBom() -> 3");
 				json rowDataJson = json::object();
 				rowDataJson["Code"] = code;
 				rowDataJson["material_name"] = name;
-				rowDataJson["Type"] = "";
+				rowDataJson["Type"] = materialType;
 				rowDataJson["comment"] = description;
 				rowDataJson["qty_default"] = "";
 				rowDataJson["uom"] = "";
 				rowDataJson["materialId"] = objectId;
 				json placementMateriaTypeJson;
 				placementMateriaTypeJson = AddNewBom::GetInstance()->GetMaterialTypeForSection(tableName.toStdString());
-			AddNewBom::GetInstance()->AddBomRows(sectionTable, rowDataJson, tableName, placementMateriaTypeJson);
+			AddNewBom::GetInstance()->AddBomRows(sectionTable, rowDataJson, tableName, placementMateriaTypeJson, true);
 		}
 		
 		Logger::Debug("CreateProduct -> AddMaterialInBom() -> End");

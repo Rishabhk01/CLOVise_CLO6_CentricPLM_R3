@@ -89,6 +89,7 @@ public:
 	json GetClientSpecificJson();
 	json GetClientSpecificAttCachedData();
 	string GetSubTypeInternalName();
+	string GetQueryParameterForMaterial();
 	
 	void SetPLMServerURL(string _plmServerURL);
 	void SetLogFileName(string _logFileName);
@@ -138,6 +139,8 @@ public:
 	void SetClientSpecificJson(json _clientSpecificJson);
 	void SetClientSpecificAttCachedData(json _clientSpecificAttCachedData);
 	void SetSubTypeInternalName(json _clientSpecificJson);
+	void SetQueryParameterForMaterial(string queryParamsForMaterial);
+	
 
 private:
 	static Configuration* _instance; // zero initialized by default
@@ -189,4 +192,5 @@ private:
 	json m_clientSpecificJson;
 	json m_clientSpecificAttCachedData;
 	string m_categoryInternalName;
+	string m_queryParamsForMaterial;
 	};

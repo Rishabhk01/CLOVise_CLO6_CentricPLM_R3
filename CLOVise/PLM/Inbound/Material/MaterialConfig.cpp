@@ -810,6 +810,10 @@ void MaterialConfig::SetDataFromResponse(json _param)
 			}
 		}
 		//UTILITY_API->DisplayMessageBox(parameter);
+
+
+		string queryParamsForMaterial = Configuration::GetInstance()->GetQueryParameterForMaterial();
+		parameter = parameter + queryParamsForMaterial;
 		string resultResponse = "";
 		if (isLibrarySearch) {
 			resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::MATERIAL_SEARCH_API_LIB + "/" + matLibValue +"/elements?", APPLICATION_JSON_TYPE, parameter + "&decode=true&limit="+ MaterialConfig::GetInstance()->GetMaximumLimitForMaterialResult());
@@ -872,7 +876,7 @@ void MaterialConfig::SetDataFromResponse(json _param)
 			string resultListStr = Helper::GetJSONValue<int>(materialResults, i, false);
 			json resultListJson = json::parse(resultListStr);
 			string attachmentId = Helper::GetJSONValue<string>(resultListJson, "default_3d_material", true);
-			if (Configuration::GetInstance()->GetCurrentScreen() == SEARCH_MATERIAL_CLICKED)
+			if (Configuration::GetInstance()->GetCurrentScreen() == SEARCH_MATERIAL_CLICKED )
 			{
 				if (attachmentId == "centric%3A" || !FormatHelper::HasContent(attachmentId))
 					continue;
