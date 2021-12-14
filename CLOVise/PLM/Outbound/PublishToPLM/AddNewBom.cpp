@@ -487,9 +487,14 @@ namespace CLOVise
 	void AddNewBom::onCreateButtonClicked()
 	{
 		Logger::Debug("AddNewBom onCreateButtonClicked() Start....");
-
+		
 		try
 		{
+			this->hide();
+			Configuration::GetInstance()->SetProgressBarProgress(0);
+			UTILITY_API->CreateProgressBar();
+			Configuration::GetInstance()->SetProgressBarProgress(qrand() % 101);
+			RESTAPI::SetProgressBarData(20, "Loading BOM data ", true);
 			QTreeWidget *tree = new QTreeWidget();
 			UIHelper::ValidateRquired3DModelData(m_createBomTreeWidget);
 			m_BomMetaData = CreateProduct::GetInstance()->collectCriteriaFields(m_createBomTreeWidget, tree);
@@ -524,9 +529,13 @@ namespace CLOVise
 			}
 
 			UTILITY_API->DisplayMessageBox("m_BomMetaData" + to_string(m_BomMetaData));
-			CreateProduct::GetInstance()->m_bomAddButton->setDisabled(true);
-			CreateProduct::GetInstance()->m_bomName->setText(QString::fromStdString(bomName));
-			this->hide();
+			CreateProduct::GetInstance()->m_bomAddButton->hide();
+			if (FormatHelper::HasContent(bomName))
+				CreateProduct::GetInstance()->m_bomName->setText(QString::fromStdString(bomName));
+			else
+				CreateProduct::GetInstance()->m_bomName->setText("");
+
+			UTILITY_API->DeleteProgressBar(true);
 			CreateProduct::GetInstance()->setModal(true);
 			CreateProduct::GetInstance()->show();
 		}
@@ -583,19 +592,6 @@ namespace CLOVise
 
 		}
 
-		QStringList sectionList;
-		sectionList << "FABRICS" << "TRIMS" << "LABELS";
-		QTableWidget* sectionTable;
-		QStringList tablecolumnList;
-		QStringList bomTableColumnKeys;
-		tablecolumnList = m_bomTableColumnlist;
-		bomTableColumnKeys = m_bomTableColumnKeys;
-		if (CreateProduct::GetInstance()->m_mappedColorways.size())
-		{
-			tablecolumnList.append(CreateProduct::GetInstance()->m_mappedColorways);
-			bomTableColumnKeys.append(CreateProduct::GetInstance()->m_mappedColorways);
-
-		}
 		string sectionId;
 		for (int sectionCount = 0; sectionCount < _sectionIdsjson.size(); sectionCount++)
 		{
@@ -603,16 +599,29 @@ namespace CLOVise
 			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> apiMetadataStr" + sectionId);
 			sectionId += "id=" + section + "&";
 		}
-
 		sectionId = sectionId.substr(0, sectionId.length() - 1);
 
 		string sectionDefinitions = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_SECTION_DEFINITION_API + "?" + sectionId + "&sort=sort_order&limit=1000", APPLICATION_JSON_TYPE, "");
 		Logger::Debug("AddNewBom -> CreateTableforEachSection() -> resultResponse" + sectionDefinitions);
 
+		//QStringList sectionList;
+		//sectionList << "FABRICS" << "TRIMS" << "LABELS";
+
+		QStringList tablecolumnList;
+		QStringList bomTableColumnKeys;
+		tablecolumnList = m_bomTableColumnlist;
+		bomTableColumnKeys = m_bomTableColumnKeys;
+		Logger::Debug("AddNewBom -> CreateTableforEachSection() -> 1");
+		if (CreateProduct::GetInstance()->m_mappedColorways.size())
+		{
+
+			tablecolumnList.append(CreateProduct::GetInstance()->m_mappedColorways);
+			bomTableColumnKeys.append(CreateProduct::GetInstance()->m_mappedColorways);
+
+		}
 		int sectionCountOnBomTab = 0;
 		json sectionDefinitionsJson = json::parse(sectionDefinitions);
 		json placementProductTypeJson;
-		string sectionName;
 		for (int sectionCount = 0; sectionCount < sectionDefinitionsJson.size(); sectionCount++)
 		{
 			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> 1");
@@ -622,6 +631,7 @@ namespace CLOVise
 			string sectionId = Helper::GetJSONValue<string>(sectionCountJson, ATTRIBUTE_ID, true);
 			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionId" + sectionId);
 			string sectionName = Helper::GetJSONValue<string>(sectionCountJson, "node_name", true);
+			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionName" + sectionName);
 			json bomProductTypeJson = Helper::GetJSONParsedValue<string>(sectionCountJson, "bom_product_types", false);
 			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> bomProductTypeJson" + to_string(bomProductTypeJson));
 			placementProductTypeJson = Helper::GetJSONParsedValue<string>(sectionCountJson, "placement_product_types", false);
@@ -640,6 +650,7 @@ namespace CLOVise
 				continue;
 
 			map<string, QStringList>::iterator it;
+
 			for (int itr = 0; itr < placementProductTypeJson.size(); itr++)
 			{
 				QStringList sectionNamelist;
@@ -655,108 +666,15 @@ namespace CLOVise
 
 				m_sectionMaterialTypeMap.insert(make_pair(bomPlacementProductTypeId, sectionNamelist));
 			}
-
-			Section* section = new Section(QString::fromStdString(sectionName), 300);
-
-			sectionTable = new QTableWidget(section);
-			sectionTable->setProperty("TableName", QString::fromStdString(sectionName));
-			sectionTable->setProperty("SectionId", QString::fromStdString(sectionId));
-			sectionTable->setColumnCount(tablecolumnList.size());
-			sectionTable->setHorizontalHeaderLabels(tablecolumnList);
-			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionName" + sectionName);
-
-			m_bomSectionTableInfoMap.insert(make_pair(sectionName, sectionTable));
-			m_bomSectionNameAndTypeMap.insert(make_pair(sectionName, placementProductTypeJson));
-
-			//sectionTable->setStyleSheet("QTableWidget{ background-color: #262628; border-right: 1px solid #000000; border-top: 1px solid #000000; border-left: 1px solid #000000; font-face: ArialMT; font-size: 12px; color: #FFFFFF; }");
-			sectionTable->verticalHeader()->hide();
-			sectionTable->setShowGrid(false);
-			sectionTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-			sectionTable->setSelectionMode(QAbstractItemView::NoSelection);
-			sectionTable->horizontalHeader()->setStretchLastSection(true);
-			auto* anyLayout = new QVBoxLayout();
-			auto* addMaterialButtonLayout = new QHBoxLayout();
-			QPushButton* addPlmMaterialButton = CVWidgetGenerator::CreatePushButton("New From Material", ADD_HOVER_ICON_PATH, "New From Material", PUSH_BUTTON_STYLE, 30, true);
-			addPlmMaterialButton->setParent(sectionTable);
-			addPlmMaterialButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-
-			QPushButton* addSpecialMaterialButton = CVWidgetGenerator::CreatePushButton("New Special", ADD_HOVER_ICON_PATH, "New Special", PUSH_BUTTON_STYLE, 30, true);
-			addSpecialMaterialButton->setParent(sectionTable);
-			addSpecialMaterialButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-
-
-			m_addMaterialButtonAndTableMap.insert(make_pair(addPlmMaterialButton, sectionTable));
-			m_addSpecialMaterialButtonAndTableMap.insert(make_pair(addSpecialMaterialButton, sectionTable));
-			//QMenu* menu = new QMenu(addMaterialButton);
-			//menu->addAction(AddFromMaterialAction);
-			//menu->addAction(AddSpecialMaterialAction);
-			//addMaterialButton->setMenu(menu);
-
-			QSpacerItem *horizontalSpacer = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Fixed);
-			connect(addPlmMaterialButton, SIGNAL(clicked()), this, SLOT(onClickAddFromMaterialButton()));
-			connect(addSpecialMaterialButton, SIGNAL(clicked()), this, SLOT(onClickAddSpecialMaterialButton()));
-
-			addMaterialButtonLayout->insertSpacerItem(0, horizontalSpacer);
-			addMaterialButtonLayout->insertWidget(1, addPlmMaterialButton);
-			//addMaterialButtonLayout->insertSpacerItem(2, horizontalSpacer);
-			addMaterialButtonLayout->insertWidget(2, addSpecialMaterialButton);
-			anyLayout->insertLayout(0, addMaterialButtonLayout);
-			anyLayout->insertWidget(1, sectionTable);
-			section->setContentLayout(*anyLayout);
-			section->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-			CreateProduct::GetInstance()->ui_sectionLayout->insertWidget(sectionCountOnBomTab, section);
-			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionCountOnBomTab" + to_string(sectionCountOnBomTab));
+			CreateSectionInBom(sectionName, sectionId, tablecolumnList, sectionCountOnBomTab, placementProductTypeJson);
 			sectionCountOnBomTab++;
 
 
 		}
 
-		sectionName = "Blank";
-		Section* section = new Section(QString::fromStdString(sectionName), 300);
+		// Create blank section
+		CreateSectionInBom("Blank", "", tablecolumnList, sectionCountOnBomTab, placementProductTypeJson);
 
-		sectionTable = new QTableWidget(section);
-		sectionTable->setProperty("TableName", QString::fromStdString(sectionName));
-		sectionTable->setProperty("SectionId", QString::fromStdString(sectionId));
-		sectionTable->setColumnCount(tablecolumnList.size());
-		sectionTable->setHorizontalHeaderLabels(tablecolumnList);
-		Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionName" + sectionName);
-
-		m_bomSectionTableInfoMap.insert(make_pair(sectionName, sectionTable));
-		m_bomSectionNameAndTypeMap.insert(make_pair(sectionName, placementProductTypeJson));
-
-		//sectionTable->setStyleSheet("QTableWidget{ background-color: #262628; border-right: 1px solid #000000; border-top: 1px solid #000000; border-left: 1px solid #000000; font-face: ArialMT; font-size: 12px; color: #FFFFFF; }");
-		sectionTable->verticalHeader()->hide();
-		sectionTable->setShowGrid(false);
-		sectionTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-		sectionTable->setSelectionMode(QAbstractItemView::NoSelection);
-		sectionTable->horizontalHeader()->setStretchLastSection(true);
-		auto* anyLayout = new QVBoxLayout();
-		auto* addMaterialButtonLayout = new QHBoxLayout();
-		QPushButton* addPlmMaterialButton = CVWidgetGenerator::CreatePushButton("New From Material", ADD_HOVER_ICON_PATH, "New From Material", PUSH_BUTTON_STYLE, 30, true);
-		addPlmMaterialButton->setParent(sectionTable);
-		addPlmMaterialButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-
-		QPushButton* addSpecialMaterialButton = CVWidgetGenerator::CreatePushButton("New Special", ADD_HOVER_ICON_PATH, "New Special", PUSH_BUTTON_STYLE, 30, true);
-		addSpecialMaterialButton->setParent(sectionTable);
-		addSpecialMaterialButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-
-
-		m_addMaterialButtonAndTableMap.insert(make_pair(addPlmMaterialButton, sectionTable));
-		m_addSpecialMaterialButtonAndTableMap.insert(make_pair(addSpecialMaterialButton, sectionTable));
-
-		QSpacerItem *horizontalSpacer = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Fixed);
-		connect(addPlmMaterialButton, SIGNAL(clicked()), this, SLOT(onClickAddFromMaterialButton()));
-		connect(addSpecialMaterialButton, SIGNAL(clicked()), this, SLOT(onClickAddSpecialMaterialButton()));
-
-		addMaterialButtonLayout->insertSpacerItem(0, horizontalSpacer);
-		addMaterialButtonLayout->insertWidget(1, addPlmMaterialButton);
-		//addMaterialButtonLayout->insertSpacerItem(2, horizontalSpacer);
-		addMaterialButtonLayout->insertWidget(2, addSpecialMaterialButton);
-		anyLayout->insertLayout(0, addMaterialButtonLayout);
-		anyLayout->insertWidget(1, sectionTable);
-		section->setContentLayout(*anyLayout);
-		section->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-		CreateProduct::GetInstance()->ui_sectionLayout->insertWidget(sectionCountOnBomTab, section);
 
 	}
 	void AddNewBom::populateTechPackDataInBom()
@@ -1855,7 +1773,7 @@ namespace CLOVise
 								fieldValue = pushButton->property("materialId").toString().toStdString();
 								isRowAddedByUser = pushButton->property("RowAddedByUser").toString().toStdString();
 								Logger::Debug("AddNewBom BackupBomDetails() isRowAddedByUser" + isRowAddedByUser);
-								attInternalName = "actual";
+								attInternalName = "materialId";
 							}
 						}
 						else if (QSpinBox* SpinC1 = qobject_cast<QSpinBox*>(qcolumnWidget))
@@ -1946,5 +1864,67 @@ namespace CLOVise
 		}
 		Logger::Debug("AddNewBom -> RestoreBomDetails() -> End");
 	}
+	void AddNewBom::CreateSectionInBom(string _sectionName, string _sectionId, QStringList _tablecolumnList, int& _sectionCount, json _placementProductTypeJson)
+	{
 
+		bool isSectionValidForStyleType = false;
+		Section* section = new Section(QString::fromStdString(_sectionName), 300);
+
+		QTableWidget* sectionTable;
+		sectionTable = new QTableWidget();
+		//CVWidgetGenerator::InitializeTableView(sectionTable);
+		sectionTable->setShowGrid(false);
+		sectionTable->setProperty("TableName", QString::fromStdString(_sectionName));
+		sectionTable->setProperty("SectionId", QString::fromStdString(_sectionId));
+		sectionTable->setColumnCount(_tablecolumnList.size());
+		sectionTable->setHorizontalHeaderLabels(_tablecolumnList);
+		m_bomSectionTableInfoMap.insert(make_pair(_sectionName, sectionTable));
+		m_bomSectionNameAndTypeMap.insert(make_pair(_sectionName, _placementProductTypeJson));
+		sectionTable->setStyleSheet("QTableWidget{ background-color: #262628; border-right: 1px solid #000000; border-top: 1px solid #000000; border-left: 1px solid #000000; font-face: ArialMT; font-size: 12px; color: #FFFFFF; } QTableWidget::Item{outline:0;}");
+		sectionTable->verticalHeader()->hide();
+		sectionTable->horizontalHeader()->setMinimumHeight(10);
+		sectionTable->setShowGrid(false);
+		sectionTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+		//sectionTable->setSelectionMode(QAbstractItemView::NoSelection);
+		sectionTable->horizontalHeader()->setStretchLastSection(true);
+
+		auto* addMaterialButtonLayout = new QHBoxLayout();
+		QPushButton* addPlmMaterialButton = CVWidgetGenerator::CreatePushButton("New From Material", ADD_HOVER_ICON_PATH, "New From Material", PUSH_BUTTON_STYLE, 30, true);
+		addPlmMaterialButton->setParent(sectionTable);
+		addPlmMaterialButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+
+		QPushButton* addSpecialMaterialButton = CVWidgetGenerator::CreatePushButton("New Special", ADD_HOVER_ICON_PATH, "New Special", PUSH_BUTTON_STYLE, 30, true);
+		addSpecialMaterialButton->setParent(sectionTable);
+		addSpecialMaterialButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+
+
+		//QAction* AddFromMaterialAction = new QAction(tr("New From Material"), this);
+		//connect(AddFromMaterialAction, SIGNAL(triggered()), this, SLOT(onClickAddFromMaterialButton()));
+
+		//QAction* AddSpecialMaterialAction = new QAction(tr("New Special"), this);
+		//connect(AddSpecialMaterialAction, SIGNAL(triggered()), this, SLOT(onClickAddSpecialMaterialButton()));
+
+		m_addMaterialButtonAndTableMap.insert(make_pair(addPlmMaterialButton, sectionTable));
+		m_addSpecialMaterialButtonAndTableMap.insert(make_pair(addSpecialMaterialButton, sectionTable));
+		//QMenu* menu = new QMenu(addMaterialButton);
+		//menu->addAction(AddFromMaterialAction);
+		//menu->addAction(AddSpecialMaterialAction);
+		//addMaterialButton->setMenu(menu);
+
+		QSpacerItem *horizontalSpacer = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Fixed);
+		connect(addPlmMaterialButton, SIGNAL(clicked()), this, SLOT(onClickAddFromMaterialButton()));
+		connect(addSpecialMaterialButton, SIGNAL(clicked()), this, SLOT(onClickAddSpecialMaterialButton()));
+
+		addMaterialButtonLayout->insertSpacerItem(0, horizontalSpacer);
+		addMaterialButtonLayout->insertWidget(1, addPlmMaterialButton);
+		//addMaterialButtonLayout->insertSpacerItem(2, horizontalSpacer);
+		addMaterialButtonLayout->insertWidget(2, addSpecialMaterialButton);
+		auto* anyLayout = new QVBoxLayout();
+		anyLayout->insertLayout(0, addMaterialButtonLayout);
+		anyLayout->insertWidget(1, sectionTable);
+		section->setContentLayout(*anyLayout);
+		section->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+		CreateProduct::GetInstance()->ui_sectionLayout->insertWidget(_sectionCount, section);
+
+	}
 }

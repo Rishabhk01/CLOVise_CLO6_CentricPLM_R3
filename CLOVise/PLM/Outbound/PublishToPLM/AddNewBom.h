@@ -67,9 +67,11 @@ namespace CLOVise
 		int m_currentRow;
 		int m_currentColumn;
 		QTreeWidget* m_createBomTreeWidget;
+		
 		void ClearBomData();
 		QTableWidget* GetSectionTable(string _sectionName);
 		json GetMaterialTypeForSection(string _sectionName);
+		void CreateSectionInBom(string _sectionName, string _sectionId, QStringList _tablecolumnList, int& _sectionCount, json _placementProductTypeJson);
 		//QWidget* CreateCustomWidget(string _rgbValue, string _colorName, QTableWidget* _sectionTable, QString _tableName, int _row, int _column);
 		json m_BomMetaData = json::object();
 

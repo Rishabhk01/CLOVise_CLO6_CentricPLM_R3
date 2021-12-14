@@ -121,6 +121,7 @@ namespace CLOVise
 		m_colorwayAddButton = nullptr;
 		m_bomAddButton = nullptr;
 		m_2DigiCodeActive = false;
+		m_updateBomTab = false;
 		m_multipartFilesParams = "";
 		m_buttonSignalMapper = new QSignalMapper();
 		m_createActionSignalMapper = new QSignalMapper();
@@ -295,48 +296,6 @@ namespace CLOVise
 		ColorNameWidget->setTextAlignment(Qt::AlignCenter);
 		ColorNameWidget->setToolTip(QString::fromStdString("Demo"));
 
-
-		/*Logger::Debug("Create product constructor() 1....");
-		Section* section = new Section("Fabrics", 300);
-		Logger::Debug("Create product constructor() 2....");
-		QTableWidget *placementTable = new QTableWidget(section);
-		placementTable->setColumnCount(5);
-		placementTable->setRowCount(8);
-		placementTable->insertRow(1);
-		placementTable->setItem(0, 0, ColorNameWidget);
-		placementTable->setItem(0, 1, ColorNameWidget);
-		placementTable->setItem(0, 2, ColorNameWidget);
-		placementTable->setItem(0, 3, ColorNameWidget);
-		placementTable->setItem(0, 4, ColorNameWidget);
-
-		auto* anyLayout = new QVBoxLayout();
-		anyLayout->addWidget(placementTable);
-		anyLayout->addWidget(new QPushButton("Button in Section", section));
-
-		section->setContentLayout(*anyLayout);
-
-		ui_sectionLayout->insertWidget(0,section);
-
-
-		Section* section2 = new Section("Trims", 300);
-		auto* anyLayout1 = new QVBoxLayout();
-		anyLayout1->addWidget(placementTable);
-		anyLayout1->addWidget(new QPushButton("Button in Section", section2));
-		section2->setContentLayout(*anyLayout1);
-		ui_sectionLayout->insertWidget(1, section2);
-		Logger::Debug("Create product constructor() 3....");
-*/
-		/*auto* anyLayout = new QVBoxLayout();
-		Logger::Debug("Create product constructor() 4....");
-		ui_sectionLayout->insertWidget(0, new QLabel("Some Text in Section", section));
-		Logger::Debug("Create product constructor() 5....");
-		ui_sectionLayout->addWidget(new QPushButton("Button in Section", section));
-		Logger::Debug("Create product constructor() 6....");
-		
-		Logger::Debug("Create product constructor() 7....");*/
-		//ui_sectionLayout
-		//SetDownloadedColorwayDetails();
-		//section->setContentLayout(*ui_sectionLayout);
 		Logger::Debug("Create product constructor() end....");
 		//if (!PublishToPLMData::GetInstance()->isModelExecuted)
 		RESTAPI::SetProgressBarData(0, "", false);
@@ -1950,11 +1909,11 @@ namespace CLOVise
 		{
 		//	if (ui_sectionLayout->count() > 0)
 			//{m_backupBomDataMap.insert(make_pair(itr->first, attJson));
-			if (PublishToPLMData::GetInstance()->m_isSaveClicked)
+			if (PublishToPLMData::GetInstance()->m_isSaveClicked && m_updateBomTab)
 			{
 
 			AddNewBom::GetInstance()->RestoreBomDetails();
-				//updateBomTab = false;
+             m_updateBomTab = false;
 			}
 				GetMappedColorway();
 				UpdateColorwayColumnsInBom();
@@ -2389,7 +2348,8 @@ namespace CLOVise
 				nameIdMap = m_shapeNameIdMap;
 			else if (attInternalName == "theme")
 				nameIdMap = m_themeNameIdMap;
-
+			else if (attInternalName == "bom_template")
+				m_bomTemplateName->setText(QString::fromStdString(fieldValue));
 
 			if (attInternalName == "parent_season" || attInternalName == "category_1" || attInternalName == "category_2" || attInternalName == "collection" || attInternalName == "shape" || attInternalName == "theme")
 			{
@@ -3414,5 +3374,10 @@ namespace CLOVise
 		}
 
 		Logger::Debug("CreateProduct -> ClearBomSectionLayout -> End");
+	}
+
+	void CreateProduct::SetUpdateBomFlag(bool _flag)
+	{
+		m_updateBomTab = _flag;
 	}
 }
