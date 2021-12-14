@@ -847,8 +847,8 @@ namespace CLOVise
 					RESTAPI::SetProgressBarData(20, "Loading Create Product..", true);
 					UTILITY_API->SetProgress("Loading Create Product..", (qrand() % 101));
 					CreateProduct::GetInstance()->AddMaterialInBom();
-					//CreateProduct::GetInstance()->setModal(true);
-					//CreateProduct::GetInstance()->exec();
+					CreateProduct::GetInstance()->setModal(true);
+					CreateProduct::GetInstance()->exec();
 				}
 				if (Configuration::GetInstance()->GetCloseResultsDialogue())
 				{

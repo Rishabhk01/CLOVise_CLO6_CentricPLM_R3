@@ -1309,8 +1309,8 @@ namespace CLOVise
 		PLMMaterialSearch::GetInstance()->exec();
 		UTILITY_API->DeleteProgressBar(true);
 		Logger::Debug("AddNewBom -> onClickAddFromMaterialButton () End");
-		CreateProduct::GetInstance()->setModal(true);
-		CreateProduct::GetInstance()->exec();
+		PLMMaterialSearch::GetInstance()->exec();
+		PLMMaterialSearch::GetInstance()->show();
 
 		Logger::Debug("AddNewBom -> onClickAddFromMaterialButton () End");
 	}

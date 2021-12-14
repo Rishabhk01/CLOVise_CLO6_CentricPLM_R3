@@ -876,7 +876,7 @@ void MaterialConfig::SetDataFromResponse(json _param)
 			string resultListStr = Helper::GetJSONValue<int>(materialResults, i, false);
 			json resultListJson = json::parse(resultListStr);
 			string attachmentId = Helper::GetJSONValue<string>(resultListJson, "default_3d_material", true);
-			if (Configuration::GetInstance()->GetCurrentScreen() == SEARCH_MATERIAL_CLICKED )
+			if (Configuration::GetInstance()->GetCurrentScreen() == SEARCH_MATERIAL_CLICKED)
 			{
 				if (attachmentId == "centric%3A" || !FormatHelper::HasContent(attachmentId))
 					continue;
