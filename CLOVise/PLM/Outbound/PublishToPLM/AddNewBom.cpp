@@ -353,7 +353,7 @@ namespace CLOVise
 
 					if (internalName == "bom_template")
 					{
-						responseJson = Helper::makeRestcallGet(RESTAPI::BOM_TEMPLATE_API, "?is_template=true&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading template details..");
+						responseJson = Helper::makeRestcallGet(RESTAPI::BOM_TEMPLATE_API, "?parent=centric:&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading template details..");
 						m_bomTemplateJson = responseJson;
 					}
 					else if (internalName == "subtype")
@@ -899,8 +899,8 @@ namespace CLOVise
 										gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
 										gridLayout->setContentsMargins(0, 0, 0, 0);
 
-										QWidget *colorchip = nullptr;
-										colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
+										QWidget *colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
+										
 										gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
 										QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
 										pushButton_2->setFixedHeight(20);
@@ -909,8 +909,6 @@ namespace CLOVise
 										{
 											m_addColorButtonSignalMapper->setProperty("TableName", _tableName);
 											connect(pushButton_2, SIGNAL(clicked()), m_addColorButtonSignalMapper, SLOT(map()));
-											//int number = rowCount * 10 + columnIndex;
-											//QString("%1-%2").arg(row).arg(col)
 											m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2").arg(rowCount).arg(columnIndex));
 										}
 										pushButton_2->setProperty("TableName", _tableName);
@@ -954,12 +952,12 @@ namespace CLOVise
 						pixmap = QPixmap::fromImage(styleIcon);
 
 						label->setMaximumSize(QSize(20, 20));
-						int w = label->width();
-						int h = label->height();
-						label->setPixmap(QPixmap(pixmap.scaled(w, h, Qt::KeepAspectRatio)));
+						int width = label->width();
+						int height = label->height();
+						label->setPixmap(QPixmap(pixmap.scaled(width, height, Qt::KeepAspectRatio)));
 						Logger::Debug("AddNewBom -> AddBomRows() -> 3");
-						QWidget *colorchip = nullptr;
-						colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
+						QWidget *colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
+						
 
 						gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
 						QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
@@ -1011,13 +1009,12 @@ namespace CLOVise
 						pixmap = QPixmap::fromImage(styleIcon);
 
 						label->setMaximumSize(QSize(20, 20));
-						int w = label->width();
-						int h = label->height();
-						label->setPixmap(QPixmap(pixmap.scaled(w, h, Qt::KeepAspectRatio)));
+						int width = label->width();
+						int height = label->height();
+						label->setPixmap(QPixmap(pixmap.scaled(width, height, Qt::KeepAspectRatio)));
 						Logger::Debug("AddNewBom -> AddBomRows() -> 3");
-						QWidget *colorchip = nullptr;
-						colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
-
+						QWidget *colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
+						
 						//QPushButton* pushButton = new QPushButton(_sectionTable);
 						//pushButton->setObjectName(QString::fromUtf8("Add"));
 						gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
@@ -1055,9 +1052,6 @@ namespace CLOVise
 						{
 							m_deleteButtonSignalMapper->setProperty("TableName", _tableName);
 							connect(deleteButton, SIGNAL(clicked()), m_deleteButtonSignalMapper, SLOT(map()));
-
-
-
 							m_deleteButtonSignalMapper->setMapping(deleteButton, rowCount);
 						}
 						//deleteButton->setProperty("TableName", _tableName);
@@ -1256,14 +1250,14 @@ namespace CLOVise
 			Logger::Debug("AddNewBom -> UpdateColorwayColumns () 1");
 			QTableWidget* sectionTable = itr->second;
 			int columnCount = sectionTable->columnCount();
-			int columnCountWithoutcolorway = m_bomTableColumnlist.size();
-			if (columnCount > columnCountWithoutcolorway)// means colorway column in table
+			int bomColumnCountWOColorway = m_bomTableColumnlist.size();
+			if (columnCount > bomColumnCountWOColorway)// means colorway column in table
 			{
-				int diff = columnCount - columnCountWithoutcolorway;
+				int diff = columnCount - bomColumnCountWOColorway;
 				Logger::Debug("AddNewBom -> UpdateColorwayColumns () diff" + to_string(diff));
 				while (diff)
 				{
-					int columnNumber = columnCountWithoutcolorway + diff;
+					int columnNumber = bomColumnCountWOColorway + diff;
 					sectionTable->removeColumn(columnNumber - 1);
 					diff--;
 				}

@@ -1,0 +1,14 @@
+[
+
+ {
+ "id": "1",
+ "node_name": "Template",
+ "value_type": "ref",
+ "display_name": "Template",
+ "attribute_flags":"0",
+ "required":"true",
+ "restrict_edit": false,
+ "rest_api_exposed": true,
+ "rest_api_name":"bom_template"
+}
+]
