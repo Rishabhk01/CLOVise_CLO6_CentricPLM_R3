@@ -26,7 +26,7 @@
 #include "classes/widgets/MVTableWidget.h"
 #include "CLOVise/PLM/Libraries/json.h"
 #include "classes/widgets/MVDialog.h"
-
+#include "CLOVise/PLM/Outbound/PublishToPLM/Section.h"
 using json = nlohmann::json;
 using namespace std;
 
@@ -66,7 +66,7 @@ namespace CLOVise
 		int m_currentRow;
 		int m_currentColumn;
 		QTreeWidget* m_createBomTreeWidget;
-		
+		//vector<Section*> m_sectionVector;
 		void ClearBomData();
 		QTableWidget* GetSectionTable(string _sectionName);
 		json GetMaterialTypeForSection(string _sectionName);
@@ -88,8 +88,8 @@ namespace CLOVise
 		QStringList m_bomTableColumnKeys;
 		QStringList m_materialTypeList;
 		json m_bomTableColumnJson;
-
-
+		
+		
 	private slots:
 		void onBackButtonClicked();
 		void onCreateButtonClicked();

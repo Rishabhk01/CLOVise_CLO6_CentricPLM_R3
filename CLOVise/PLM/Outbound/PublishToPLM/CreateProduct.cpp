@@ -2979,6 +2979,7 @@ namespace CLOVise
 			label->setPixmap(QPixmap(pixmap));
 
 			pWidget = CVWidgetGenerator::InsertWidgetInCenter(label);
+			pWidget->setProperty("colorId", attId.c_str());
 			Logger::Debug("CreateProduct -> UpdateColorInColorways () 5");
 		}
 		if (tabIndex == COLORWAY_TAB)
@@ -2998,21 +2999,29 @@ namespace CLOVise
 		if (tabIndex == BOM_TAB)
 		{
 			Logger::Debug("CreateProduct -> UpdateColorInColorways () 6");
+			Logger::Debug("CreateProduct -> UpdateColorInColorways () AddNewBom::GetInstance()->m_currentTableName" + AddNewBom::GetInstance()->m_currentTableName);
 			AddNewBom::GetInstance()->m_currentTableName;
 			auto itr = AddNewBom::GetInstance()->m_bomSectionTableInfoMap.find(AddNewBom::GetInstance()->m_currentTableName);
 			if (itr != AddNewBom::GetInstance()->m_bomSectionTableInfoMap.end())
 			{
 				Logger::Debug("CreateProduct -> UpdateColorInColorways () AddNewBom::GetInstance()->m_currentRow" + to_string(AddNewBom::GetInstance()->m_currentRow));
 				QTableWidget* sectionTable = itr->second;
-
 				if (QWidget* widget = sectionTable->cellWidget(AddNewBom::GetInstance()->m_currentRow, AddNewBom::GetInstance()->m_currentColumn))
 				{
+					widget->setProperty("colorId", attId.c_str());
+					QPushButton* pushButton = static_cast<QPushButton*>(sectionTable->cellWidget(AddNewBom::GetInstance()->m_currentRow, 0)->children().last());;
+					if (pushButton != nullptr)
+					{
+						Logger::Debug("CreateProduct -> UpdateColorInColorways () colorId" + attId);
+						pushButton->setProperty("commonColorId", attId.c_str());
+					}
 					Logger::Debug("CreateProduct -> UpdateColorInColorways () 8");
 					if (QLayout* layout = widget->layout())
 					{
 						Logger::Debug("CreateProduct -> UpdateColorInColorways () 9");
 						{
 							auto gridLayout = dynamic_cast<QGridLayout*>(widget->layout());
+							pWidget->setProperty("colorId", attId.c_str());
 							gridLayout->addWidget(pWidget, 0, 0, 1, 1, Qt::AlignHCenter);
 							Logger::Debug("CreateProduct -> UpdateColorInColorways () 10");
 
@@ -3073,7 +3082,7 @@ namespace CLOVise
 		Logger::Info("CreateProduct -> horizontalHeaderClicked() -> End");
 	}
 
-
+	
 	void CreateProduct::onAddNewBomClicked()
 	{
 		this->hide();
@@ -3115,11 +3124,11 @@ namespace CLOVise
 				placementMateriaTypeJson = AddNewBom::GetInstance()->GetMaterialTypeForSection(tableName.toStdString());
 			AddNewBom::GetInstance()->AddBomRows(sectionTable, rowDataJson, tableName, placementMateriaTypeJson, true);
 		}
-
+		
 		Logger::Debug("CreateProduct -> AddMaterialInBom() -> End");
 	}
 
-
+	
 	void CreateProduct::GetMappedColorway()
 	{
 		Logger::Debug("CreateProduct -> GetMappedColorway() -> Start");
@@ -3199,6 +3208,7 @@ namespace CLOVise
 			for (int rowCount = 0; rowCount < sectionTable->rowCount(); rowCount++)
 			{
 				json attJson = json::object();
+				string commonColorId;
 				for (int columnCount = 0; columnCount < sectionTable->columnCount(); columnCount++)
 				{
 					string fieldValue;
@@ -3206,7 +3216,41 @@ namespace CLOVise
 					QWidget* qcolumnWidget = (QWidget*)sectionTable->cellWidget(rowCount, columnCount)->children().last();
 					string attInternalName = qcolumnWidget->property("rest_api_name").toString().toStdString();
 					Logger::Debug("Create product CreateBom() attInternalName" + attInternalName);
-					if (QLineEdit* qLineEditC1 = qobject_cast<QLineEdit*>(qcolumnWidget))
+					QString columnName = sectionTable->horizontalHeaderItem(columnCount)->text();
+					Logger::Debug("Create product CreateBom() columnName" + columnName.toStdString());
+					if (CreateProduct::GetInstance()->m_mappedColorways.contains(columnName))
+					{
+						Logger::Debug("Create product CreateBom() colorways1");
+
+						//QWidget *widget = gridLayout->itemAt(i)->widget();
+						//auto gridLayout = dynamic_cast<QGridLayout*>(qcolumnWidget->layout());
+						//QWidget *widget = gridLayout->itemAtPosition(0,0)->widget();
+						//attInternalName = columnName.toStdString();
+						//fieldValue = widget->property("colorId").toString().toStdString();
+						//Logger::Debug("Create product CreateBom() colorId" + fieldValue);
+
+						if (QWidget* widget = sectionTable->cellWidget(rowCount, columnCount))// Half cooked code for part material color
+						{
+							//fieldValue = widget->property("colorId").toString().toStdString();
+							//attInternalName = columnName.toStdString();
+							//Logger::Debug("Create product CreateBom() colorId1" + fieldValue);
+							//Logger::Debug("CreateProduct -> CreateBom () 8");
+							//if (QLayout* layout = widget->layout())
+							//{
+							//	Logger::Debug("CreateProduct -> CreateBom () 9");
+							//	{
+							//		auto gridLayout = dynamic_cast<QGridLayout*>(widget->layout());
+							//		QWidget *childwidget = gridLayout->itemAtPosition(0, 0)->widget();
+							//		attInternalName = columnName.toStdString();
+							//		//fieldValue = childwidget->property("colorId").toString().toStdString();
+							//		Logger::Debug("Create product CreateBom() colorId" + fieldValue);
+
+							//	}
+							//}
+						}
+
+					}
+					else if (QLineEdit* qLineEditC1 = qobject_cast<QLineEdit*>(qcolumnWidget))
 					{
 
 						fieldValue = qLineEditC1->text().toStdString();
@@ -3257,7 +3301,9 @@ namespace CLOVise
 						if (attInternalName == "Delete")
 						{
 							fieldValue = pushButton->property("materialId").toString().toStdString();
+							commonColorId = pushButton->property("commonColorId").toString().toStdString();
 							Logger::Debug("Create product CreateBom() QComboBox->materialId" + fieldValue);
+							Logger::Debug("Create product CreateBom() QComboBox->commonColorId" + commonColorId);
 							attInternalName = "actual";
 						}
 					}
@@ -3286,14 +3332,17 @@ namespace CLOVise
 					if (!attInternalName.empty() && !fieldValue.empty())
 					{
 						if (attInternalName == "qty_default")
-							attJson[attInternalName] = atoi(fieldValue.c_str());
+							attJson[attInternalName] = atof(fieldValue.c_str());
 						else
 							attJson[attInternalName] = fieldValue;
 					}
 					Logger::Debug("Create product CreateBom() fieldValue" + fieldValue);
 				}
 				attJson["ds_section"] = sectionId;
+				if(FormatHelper::HasContent(commonColorId))
+				    attJson["common_color"] = commonColorId;
 
+				Logger::Debug("Create product CreateBom() attJson" + to_string(attJson));
 				string materialId = Helper::GetJSONValue<string>(attJson, "actual", true);
 				Logger::Debug("Create product CreateBom() materialId" + materialId);
 				string materialType = Helper::GetJSONValue<string>(attJson, "Type", true);
