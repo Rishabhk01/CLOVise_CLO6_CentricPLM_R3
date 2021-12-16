@@ -1753,7 +1753,9 @@ namespace CLOVise
 		}
 		QPushButton* updateColorButton = CVWidgetGenerator::CreatePushButton("Update Color", "", "Update Color", PUSH_BUTTON_STYLE, 30, true);	
 		QPushButton* ColorCreateButton = new QPushButton();
-		ColorCreateButton->setStyleSheet("QPushButton{max-height: 20px; max-width: 10px;}");
+		ColorCreateButton->setStyleSheet("QPushButton{max-height: 20px; max-width: 10px;} ::menu-indicator{ image: none; }");
+		ColorCreateButton->setIcon(QIcon(":/CLOVise/PLM/Images/ui_spin_icon_minus_none.svg"));
+		ColorCreateButton->setIconSize(QSize(25, 22));
 		ColorCreateButton->setMaximumWidth(10);
 		ColorCreateButton->setProperty(("row"), _count);
 		QAction* colorSpecAction = new QAction(tr("Create Color Specification"), this);
