@@ -2845,7 +2845,7 @@ namespace CLOVise
 			m_currentColorSpec = colorSpecId;
 		ColorConfig::GetInstance()->m_mode = "Search";
 
-		boolean  isFromConstructor = false;
+		bool isFromConstructor = false;
 		if (!ColorConfig::GetInstance()->GetIsModelExecuted())
 		{
 			ColorConfig::GetInstance()->InitializeColorData();

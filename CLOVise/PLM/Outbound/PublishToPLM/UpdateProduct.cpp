@@ -24,8 +24,8 @@
 #ifdef __APPLE__
 
 #include "zlib.h"
-#include "CLOVise/FlexPLM/Libraries/zlib/include/zip.h"
-#include "CLOVise/FlexPLM/Libraries/zlib/zipper/zipper.h"
+#include "CLOVise/PLM/Libraries/zlib/include/zip.h"
+#include "CLOVise/PLM/Libraries/zlib/zipper/zipper.h"
 
 #if defined(MSDOS) || defined(OS2) || defined(WIN32) || defined(__CYGWIN__)
 #  include <fcntl.h>
@@ -1296,7 +1296,7 @@ namespace CLOVise
 		}
 		//SetProgressBarData(15, m_translationMap["pbLoadingColorSearch"][m_languageIndex], true);
 		//PLMColorSearch::Destroy();
-		boolean  isFromConstructor = false;
+		bool isFromConstructor = false;
 		if (!ColorConfig::GetInstance()->GetIsModelExecuted())
 		{
 			ColorConfig::GetInstance()->InitializeColorData();
@@ -3148,10 +3148,11 @@ namespace CLOVise
 				Logger::RestAPIDebug("responseJson->GetcolorwayDetails() ::responseJson::" + to_string(colorwayJson));
 				//colorwayJson = Helper::makeRestcallGet(RESTAPI::UPDATE_STYLE_API + "/" + styleId + "/product_colors?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "", "Loading colorway details..");
 				//m_downloadedColorwayJson = colorwayJson;
-				if (FormatHelper::HasError(to_string(colorwayJson)))
+                string colorwayJSONString = to_string(colorwayJson);
+				if (FormatHelper::HasError(colorwayJSONString))
 				{
-					Helper::GetCentricErrorMessage(to_string(colorwayJson));
-					throw runtime_error(to_string(colorwayJson));
+					Helper::GetCentricErrorMessage(colorwayJSONString);
+					throw runtime_error(colorwayJSONString);
 				}
 				m_colorwayJson = colorwayJson;
 				for (int colorwayAarrayCount = 0; colorwayAarrayCount < colorwayJson.size(); colorwayAarrayCount++)
@@ -4056,7 +4057,8 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 				ImageIdlist.append(value);
 
 
-			auto result = std::find_if(imageLabelsMap.begin(), imageLabelsMap.end(),[key](const auto& mo) {return mo.second == key; });
+//			auto result = std::find_if(imageLabelsMap.begin(), imageLabelsMap.end(),[key](const auto& mo) {return mo.second == key; });
+            auto result = std::find_if(std::begin(imageLabelsMap), std::end(imageLabelsMap), [&](const std::pair<QString, QString> &pair) { return pair.second == key; });
 
 			//getting key based on value 
 			if (result != imageLabelsMap.end())

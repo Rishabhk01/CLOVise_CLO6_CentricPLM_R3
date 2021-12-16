@@ -934,8 +934,10 @@ namespace CLOVise
 		{
 			QString windowTitle = PLM_NAME + " PLM " + QString::fromStdString(Configuration::GetInstance()->GetLocalizedColorClassName()) + " Specification Creation";
 			this->setWindowTitle(windowTitle);
-			m_pTitleBar = new MVTitleBar(windowTitle, this);
-			layout()->setMenuBar(m_pTitleBar);
+#ifdef _WIN32
+            m_pTitleBar = new MVTitleBar(windowTitle, this);
+            layout()->setMenuBar(m_pTitleBar);
+#endif
 			string colorspecName = "Color Specification Creation";
 			searchCriteriaLabel->setText(QString::fromStdString(colorspecName));
 			ColorConfig::GetInstance()->SetDateFlag(false);
@@ -951,8 +953,10 @@ namespace CLOVise
 		{
 			QString windowTitle = PLM_NAME + " PLM " + QString::fromStdString(Configuration::GetInstance()->GetLocalizedColorClassName()) + " Search Criteria ";
 			this->setWindowTitle(windowTitle);
+#ifdef _WIN32
 			m_pTitleBar = new MVTitleBar(windowTitle, this);
 			layout()->setMenuBar(m_pTitleBar);
+#endif
 			selectType = QString::fromStdString(COLOR_ROOT_TYPE);
 			m_searchTreeWidget_1->clear();
 			m_searchTreeWidget_2->clear();

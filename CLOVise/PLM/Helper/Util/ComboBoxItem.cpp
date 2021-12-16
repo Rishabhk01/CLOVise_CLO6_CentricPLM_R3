@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Copyright 2020-2021 CLO-Vise. All rights reserved
 *
 * @file ComboBoxItem.cpp
@@ -71,7 +71,7 @@ void ComboBoxItem::focusOutEvent(QFocusEvent* event)
 #ifdef __APPLE__
 		QComboBox::focusOutEvent(event);
 #else
-		__super::focusOutEvent(event);
+        __super::focusOutEvent(event);
 #endif
 		this->lineEdit()->setReadOnly(false);
 		this->setStyleSheet(COMBOBOX_STYLE);
