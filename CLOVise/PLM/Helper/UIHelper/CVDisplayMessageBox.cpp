@@ -32,13 +32,27 @@ using namespace std;
 
 namespace CLOVise
 {
-	
+	CVDisplayMessageBox* CVDisplayMessageBox::_instance = NULL;
+	CVDisplayMessageBox* CVDisplayMessageBox::GetInstance()
+	{
+		if (_instance == NULL)
+		{
+			_instance = new CVDisplayMessageBox();
+		}
+		return _instance;
+	}
 
-	
+	void CVDisplayMessageBox::Destroy()
+	{
+		if (_instance)
+		{
+			delete _instance;
+			_instance = NULL;
+		}
+	}
 
 	CVDisplayMessageBox::CVDisplayMessageBox(QWidget* parent) : MVDialog(parent)
 	{
-		Logger::Debug("CVDisplayMessageBox::CVDisplayMessageBox constructor Start");
 		setupUi(this);
 		m_CVTitleBar = new CVTitleBar("Information", this);
 		this->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
@@ -46,54 +60,57 @@ namespace CLOVise
 		progressBar->setTextVisible(false);
 		progressBar->setValue(0);
 		progressBar->setMinimum(0);
-		progressBar->setMaximum(Configuration::GetInstance()->GetProgressBarTimer());
 		progressBar->setFixedHeight(10);
-		QTimer::singleShot(0, this, SLOT(onProgress()));
-		Logger::Debug("CVDisplayMessageBox::CVDisplayMessageBox constructor End");
+		timer = new QTimer(this);
+		QTimer::singleShot(0, this, &CVDisplayMessageBox::on_pbGo_released);
+		connect(timer, &QTimer::timeout, this, &CVDisplayMessageBox::TimerSlot);
 	}
 
 	CVDisplayMessageBox::~CVDisplayMessageBox()
 	{
-		Logger::Debug("CVDisplayMessageBox::CVDisplayMessageBox destructor Start");
-		Logger::Debug("CVDisplayMessageBox::CVDisplayMessageBox destructor End");
-		
+		Destroy();
 	}
 
 	/*
-	* Description - progress() method used to process the progress bar.
+	* Description - on_pbGo_released() method used to process the progress bar.
 	* Parameter -
 	* Exception -
 	* Return -
 	*/
-	void CVDisplayMessageBox::onProgress()
+	void CVDisplayMessageBox::on_pbGo_released()
 	{
-		Logger::Debug("CVDisplayMessageBox::onProgress Start");
-		for (int i = 0; i < Configuration::GetInstance()->GetProgressBarTimer(); i++)
-		{
-			progressBar->setValue(i);
-			QApplication::processEvents();
+		CurProgress = 0;
+		progressBar->setValue(CurProgress);
+		timer->start(20);
+	}
 
-            #ifdef __APPLE__
-            usleep(1000);
-            #else
-			Sleep(1);
-            #endif
+	/*
+	* Description - TimerSlot() method used to close the progress bar after process.
+	* Parameter -
+	* Exception -
+	* Return -
+	*/
+	void CVDisplayMessageBox::TimerSlot()
+	{
+		CurProgress++;
+		if (CurProgress > progressBar->maximum()) // stop logic
+		{
+			timer->stop();
+			this->close();
 		}
-		Logger::Debug("CVDisplayMessageBox::onProgress End");
-		this->close();
-		
+
+		else
+			progressBar->setValue(CurProgress);
 	}
 
 	/*
 	* Description - DisplyMessage() method used to the custom message.
-	* Parameter -  string.
+	* Parameter -  string
 	* Exception -
 	* Return -
 	*/
 	void CVDisplayMessageBox::DisplyMessage(string _message)
 	{
-		Logger::Debug("CVDisplayMessageBox::DisplyMessage Start");
 		label->setText(QString::fromStdString(_message));
-		Logger::Debug("CVDisplayMessageBox::DisplyMessage End");
 	}
 }

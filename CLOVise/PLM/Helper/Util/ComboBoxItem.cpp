@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Copyright 2020-2021 CLO-Vise. All rights reserved
 *
 * @file ComboBoxItem.cpp
@@ -68,7 +68,11 @@ void ComboBoxItem::focusOutEvent(QFocusEvent* event)
 			//UTILITY_API->DisplayMessageBox("inside 3");
 		}
 		this->lineEdit()->setReadOnly(true);
-		__super::focusOutEvent(event);
+#ifdef __APPLE__
+		QComboBox::focusOutEvent(event);
+#else
+        __super::focusOutEvent(event);
+#endif
 		this->lineEdit()->setReadOnly(false);
 		this->setStyleSheet(COMBOBOX_STYLE);
 	}

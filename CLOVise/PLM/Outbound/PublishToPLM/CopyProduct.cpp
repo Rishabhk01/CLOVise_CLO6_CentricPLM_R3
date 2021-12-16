@@ -1887,7 +1887,7 @@ namespace CLOVise
 					if (FormatHelper::HasContent(defaultValueStr))
 					{
 						defaultValueStr = qComboBox->property(defaultValueStr.c_str()).toString().toStdString();
-						if (!qComboBox->findText(QString::fromStdString(defaultValueStr), Qt::MatchExactly || Qt::CaseInsensitive))
+						if (!qComboBox->findText(QString::fromStdString(defaultValueStr), Qt::MatchExactly | Qt::MatchFixedString))
 							defaultValueStr = qComboBox->property(defaultValueStr.c_str()).toString().toStdString();
 						qComboBox->setCurrentText(QString::fromStdString(defaultValueStr));
 						}
@@ -1970,7 +1970,7 @@ namespace CLOVise
 					if (FormatHelper::HasContent(defaultValueStr))
 					{
 						defaultValueStr = qComboBox->property(defaultValueStr.c_str()).toString().toStdString();
-						if (!qComboBox->findText(QString::fromStdString(defaultValueStr), Qt::MatchExactly || Qt::CaseInsensitive))
+						if (!qComboBox->findText(QString::fromStdString(defaultValueStr), Qt::MatchExactly | Qt::MatchFixedString))
 							defaultValueStr = qComboBox->property(defaultValueStr.c_str()).toString().toStdString();
 						qComboBox->setCurrentText(QString::fromStdString(defaultValueStr));
 					}

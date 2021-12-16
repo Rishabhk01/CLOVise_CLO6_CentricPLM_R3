@@ -1543,7 +1543,9 @@ namespace CLOVise
 		QWidget *newQWidget = new QWidget();
 		QPushButton* updateColorButton = CVWidgetGenerator::CreatePushButton("Search Color", "", "Search Color", PUSH_BUTTON_STYLE, 30, true);
 		QPushButton* ColorCreateButton = new QPushButton();
-		ColorCreateButton->setStyleSheet("QPushButton{max-height: 20px; max-width: 10px;}");
+		ColorCreateButton->setStyleSheet("QPushButton{max-height: 20px; max-width: 10px;} ::menu-indicator{ image: none; }");
+		ColorCreateButton->setIcon(QIcon(":/CLOVise/PLM/Images/ui_spin_icon_minus_none.svg"));
+		ColorCreateButton->setIconSize(QSize(25, 22));
 		ColorCreateButton->setMaximumWidth(10);
 		ColorCreateButton->setProperty(("row"), _count);
 		QAction* colorSpecAction = new QAction(tr("Create Color Specification"), this);
@@ -1582,9 +1584,9 @@ namespace CLOVise
 		comboColorwayItem->setFocusPolicy(Qt::StrongFocus);
 		comboColorwayItem->addItems(_colorwayNamesList);
 		comboColorwayItem->setProperty("Id", QString::fromStdString(_objectId));
-		ui_colorwayTable->setColumnWidth(CLO_COLORWAY_COLUMN, 140);
+		ui_colorwayTable->setColumnWidth(CLO_COLORWAY_COLUMN, 150);
 		pWidget = CVWidgetGenerator::InsertWidgetInCenter(comboColorwayItem);
-		ui_colorwayTable->setColumnWidth(CLO_COLORWAY_COLUMN, 140);
+		ui_colorwayTable->setColumnWidth(CLO_COLORWAY_COLUMN, 150);
 
 		ui_colorwayTable->setCellWidget(m_colorwayRowcount, CLO_COLORWAY_COLUMN, pWidget);
 
@@ -1592,6 +1594,7 @@ namespace CLOVise
 
 		m_plmColowayName = new QLineEdit();
 		m_plmColowayName->setStyleSheet(LINEEDIT_STYLE);
+		m_plmColowayName->setAttribute(Qt::WA_MacShowFocusRect, false);
 		m_plmColowayName->setText("");
 		QWidget *pLineEditWidget = CVWidgetGenerator::InsertWidgetInCenter(m_plmColowayName);
 		m_plmColowayName->setProperty("row", _count + m_colorwayRowcount);
@@ -2882,7 +2885,7 @@ namespace CLOVise
 			m_currentColorSpec = colorSpecId;
 		ColorConfig::GetInstance()->m_mode = "Search";
 
-		boolean  isFromConstructor = false;
+		bool isFromConstructor = false;
 		if (!ColorConfig::GetInstance()->GetIsModelExecuted())
 		{
 			ColorConfig::GetInstance()->InitializeColorData();
