@@ -198,7 +198,7 @@ namespace CLOVise
 			QObject::connect(m_backButton, SIGNAL(clicked()), this, SLOT(onBackButtonClicked()));
 			QObject::connect(m_createButton, SIGNAL(clicked()), this, SLOT(onCreateButtonClicked()));
 			//QObject::connect(m_buttonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickAddColorButton(int)));
-			QObject::connect(m_buttonSignalMapper, SIGNAL(mapped(const QString &)), this, SLOT(OnClickAddColorButton(const QString &)));
+			QObject::connect(m_addColorButtonSignalMapper, SIGNAL(mapped(const QString &)), this, SLOT(OnClickAddColorButton(const QString &)));
 			QObject::connect(m_deleteButtonSignalMapper, SIGNAL(mapped(const QString &)), this, SLOT(OnClickDeleteButton(const QString &)));
 			//	QObject::connect(m_deleteButtonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickDeleteButton(int)));
 
@@ -210,7 +210,7 @@ namespace CLOVise
 			QObject::disconnect(m_backButton, SIGNAL(clicked()), this, SLOT(onBackButtonClicked()));
 			QObject::disconnect(m_createButton, SIGNAL(clicked()), this, SLOT(onCreateButtonClicked()));
 			//QObject::disconnect(m_buttonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickAddColorButton(int)));
-			QObject::disconnect(m_buttonSignalMapper, SIGNAL(mapped(const QString &)), this, SLOT(OnClickAddColorButton(const QString &)));
+			QObject::disconnect(m_addColorButtonSignalMapper, SIGNAL(mapped(const QString &)), this, SLOT(OnClickAddColorButton(const QString &)));
 			//QObject::disconnect(m_deleteButtonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickDeleteButton(int)));
 			QObject::disconnect(m_deleteButtonSignalMapper, SIGNAL(mapped(const QString &)), this, SLOT(OnClickDeleteButton(const QString &)));
 		}
@@ -1470,12 +1470,12 @@ namespace CLOVise
 									QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
 									pushButton_2->setFixedHeight(20);
 									pushButton_2->setFixedWidth(20);
-									if (m_buttonSignalMapper != nullptr)
+									if (m_addColorButtonSignalMapper != nullptr)
 									{
-										m_buttonSignalMapper->setProperty("TableName", tableName);
-										connect(pushButton_2, SIGNAL(clicked()), m_buttonSignalMapper, SLOT(map()));
+										m_addColorButtonSignalMapper->setProperty("TableName", tableName);
+										connect(pushButton_2, SIGNAL(clicked()), m_addColorButtonSignalMapper, SLOT(map()));
 										//int number = rowCount * 10 + columnIndex;
-										m_buttonSignalMapper->setMapping(pushButton_2, QString("%1-%2").arg(rowCount).arg(columnIndex));
+										m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2").arg(rowCount).arg(columnIndex));
 										//m_buttonSignalMapper->setMapping(pushButton_2, number);
 									}
 									pushButton_2->setProperty("TableName", tableName);
@@ -1520,12 +1520,12 @@ namespace CLOVise
 							QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
 							pushButton_2->setFixedHeight(20);
 							pushButton_2->setFixedWidth(20);
-							if (m_buttonSignalMapper != nullptr)
+							if (m_addColorButtonSignalMapper != nullptr)
 							{
-								m_buttonSignalMapper->setProperty("TableName", tableName);
-								connect(pushButton_2, SIGNAL(clicked()), m_buttonSignalMapper, SLOT(map()));
+								m_addColorButtonSignalMapper->setProperty("TableName", tableName);
+								connect(pushButton_2, SIGNAL(clicked()), m_addColorButtonSignalMapper, SLOT(map()));
 								//int number = rowCount * 10 + columnIndex;
-								m_buttonSignalMapper->setMapping(pushButton_2, QString("%1-%2").arg(rowCount).arg(columnIndex));
+								m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2").arg(rowCount).arg(columnIndex));
 								//m_buttonSignalMapper->setMapping(pushButton_2, number);
 							}
 							pushButton_2->setProperty("TableName", tableName);
