@@ -55,6 +55,7 @@ namespace CLOVise
 		void GetMappedColorway();
 		void UpdateColorwayColumnsInBom();
 		void ExportTechPack();
+		void ClearBomSectionLayout();
 		void CreateBom(string _productId);
 		struct ColorwayViews
 		{
@@ -70,7 +71,10 @@ namespace CLOVise
 		QLabel *m_bomTemplateName;
 		QPushButton* m_bomAddButton;
 		json m_techPackJson;
+		bool m_updateBomTab;
+		void SetUpdateBomFlag(bool _flag);
 		QStringList m_mappedColorways;
+		string m_currentlySelectedStyleTypeId;
 		json collectCriteriaFields(QTreeWidget* _documentPushToPLMTree_1, QTreeWidget* _documentPushToPLMTree_2);
 	private:
 		CreateProduct(QWidget* parent = nullptr);
@@ -159,6 +163,7 @@ namespace CLOVise
 		map<string, string> m_styleTypeNameIdMap;
 		map<string, string> m_developmentTypeNameIdMap;
 		map<string, string> m_curPriorityNameIdMap;
+		map<string, string> m_styleTypeBomPermissionMap;
 		std::map<QString, QString> m_colorwayImageLabelsMap;
 		std::map<QString, QString> m_styleImageLabelsMap;
 		std::map<string, string> m_digiCodeNamesMap;

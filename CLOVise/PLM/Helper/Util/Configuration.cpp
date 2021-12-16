@@ -1524,3 +1524,12 @@ bool Configuration::GetIsUpdateColorClicked()
  {
 	 return m_categoryInternalName;
  }
+
+ string Configuration::GetQueryParameterForMaterial()
+ {
+	 return m_queryParamsForMaterial;
+ }
+ void Configuration::SetQueryParameterForMaterial(string _queryParamsForMaterial)
+ {
+	 m_queryParamsForMaterial = _queryParamsForMaterial;
+ }

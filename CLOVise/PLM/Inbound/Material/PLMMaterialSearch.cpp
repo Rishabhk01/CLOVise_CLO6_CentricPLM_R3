@@ -29,6 +29,8 @@
 #include "CLOVise/PLM/CLOViseSuite/CLOViseSuite.h"
 #include "CLOVise/PLM/Helper/Util/Logger.h"
 #include"classes/widgets/MVDialog.h"
+#include "CLOVise/PLM/Outbound/PublishToPLM/CreateProduct.h"
+#include "CLOVise/PLM/Outbound/PublishToPLM/UpdateProduct.h"
 
 using namespace std;
 
@@ -323,8 +325,27 @@ namespace CLOVise
 	{
 		this->hide();
 		Logger::Info("PLMMaterialSearch -> ClickedBackButton() -> Start");
-		CLOVise::CLOViseSuite::GetInstance()->setModal(true);
-		CLOViseSuite::GetInstance()->show();
+		switch (Configuration::GetInstance()->GetCurrentScreen())
+		{
+
+		case CREATE_PRODUCT_CLICKED:
+		{
+			CreateProduct::GetInstance()->setModal(true);
+			CreateProduct::GetInstance()->show();
+		}
+		break;
+		case UPDATE_PRODUCT_CLICKED:
+		{
+			UpdateProduct::GetInstance()->setModal(true);
+			UpdateProduct::GetInstance()->show();
+		}
+		break;
+		case SEARCH_MATERIAL_CLICKED:
+		{
+			CLOVise::CLOViseSuite::GetInstance()->setModal(true);
+			CLOViseSuite::GetInstance()->show();
+		}
+		}
 		UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_1);
 		UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_2);
 		Logger::Info("PLMMaterialSearch -> ClickedBackButton() -> End");

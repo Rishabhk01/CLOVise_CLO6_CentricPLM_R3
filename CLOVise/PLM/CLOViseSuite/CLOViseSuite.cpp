@@ -722,6 +722,7 @@ namespace CLOVise
 				}
 				CreateProduct::GetInstance()->addCreateProductDetailsWidgetData();
 				CreateProduct::GetInstance()->ExportTechPack();
+				CreateProduct::GetInstance()->SetUpdateBomFlag(true);
 				CreateProduct::GetInstance()->setModal(true);
 				CreateProduct::GetInstance()->addCreateProductDetailsWidgetData();
 				//if (PublishToPLMData::GetInstance()->isModelExecuted)
