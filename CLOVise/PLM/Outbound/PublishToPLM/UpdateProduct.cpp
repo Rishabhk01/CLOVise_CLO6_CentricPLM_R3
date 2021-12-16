@@ -1798,7 +1798,7 @@ namespace CLOVise
 		comboColorwayItem->setFocusPolicy(Qt::StrongFocus);
 		comboColorwayItem->addItems(_colorwayNamesList);
 		comboColorwayItem->setProperty("Id", QString::fromStdString(_objectId));
-		ui_colorwayTable->setColumnWidth(CLO_COLORWAY_COLUMN, 140);
+		ui_colorwayTable->setColumnWidth(CLO_COLORWAY_COLUMN, 150);
 		if (m_downloadedColorway)
 		{
 			comboColorwayItem->setProperty("IsDownloadedColorway", "1");
@@ -1834,6 +1834,7 @@ namespace CLOVise
 
 		QLineEdit* lineEditItem = new QLineEdit();
 		lineEditItem->setStyleSheet(LINEEDIT_STYLE);
+		lineEditItem->setAttribute(Qt::WA_MacShowFocusRect, false);
 		lineEditItem->setText("");
 		QWidget *pLineEditWidget = CVWidgetGenerator::InsertWidgetInCenter(lineEditItem);
 		ui_colorwayTable->setCellWidget(_count + m_colorwayRowcount, PLM_COLORWAY_COLUMN, pLineEditWidget);

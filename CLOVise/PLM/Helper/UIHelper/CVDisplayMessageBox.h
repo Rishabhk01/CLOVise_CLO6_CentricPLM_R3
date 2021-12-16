@@ -33,19 +33,25 @@ namespace CLOVise
 	class CVDisplayMessageBox : public MVDialog, public Ui::CVDisplayMessageBox
 
 	{
-		Q_OBJECT			
-		
-	public:				
-		CVDisplayMessageBox(QWidget* parent = nullptr);
-		~CVDisplayMessageBox();
+		Q_OBJECT
 
-			
+	public:
+		CVDisplayMessageBox(QWidget* parent = nullptr);
+		virtual ~CVDisplayMessageBox();
+
+		static CVDisplayMessageBox* GetInstance();
+		static void	Destroy();
+
+		QTimer *timer;
+		int CurProgress = 0;
 
 		void DisplyMessage(string _message);
-		
-	
+
+	private:
+		static CVDisplayMessageBox* _instance;
 
 	private slots:
-		void onProgress();
+		void on_pbGo_released();
+		void TimerSlot();
 	};
 }
