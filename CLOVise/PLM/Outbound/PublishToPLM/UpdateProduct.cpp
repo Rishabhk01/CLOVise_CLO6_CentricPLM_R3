@@ -4056,9 +4056,11 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 			else
 				ImageIdlist.append(value);
 
-
-//			auto result = std::find_if(imageLabelsMap.begin(), imageLabelsMap.end(),[key](const auto& mo) {return mo.second == key; });
-            auto result = std::find_if(std::begin(imageLabelsMap), std::end(imageLabelsMap), [&](const std::pair<QString, QString> &pair) { return pair.second == key; });
+#ifdef __APPLE__
+			auto result = std::find_if(std::begin(imageLabelsMap), std::end(imageLabelsMap), [&](const std::pair<QString, QString> &pair) { return pair.second == key; });
+#else
+			auto result = std::find_if(imageLabelsMap.begin(), imageLabelsMap.end(),[key](const auto& mo) {return mo.second == key; });
+#endif
 
 			//getting key based on value 
 			if (result != imageLabelsMap.end())

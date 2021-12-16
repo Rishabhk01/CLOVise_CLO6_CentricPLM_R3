@@ -61,10 +61,14 @@ FORMS += CLOAPIInterface/Samples/LibraryWindowImplementation/classes/APISearchDi
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Inbound/Product/PLMProductResults.ui \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Inbound/Sample/PLMSampleSearch.ui \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Inbound/Sample/PLMSampleResult.ui \
+    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Inbound/Print/PLMPrintSearch.ui \
+    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Inbound/Print/PLMPrintResults.ui \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/CreateProduct.ui \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/UpdateProduct.ui \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/CopyProduct.ui \
-    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/ImageIntent.ui \
+    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/CreateImageIntent.ui \
+    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/UpdateImageIntent.ui \
+    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/AddNewBom.ui \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/CraeteMaterial/CreateMaterial.ui \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/UpdateMaterial/UpdateMaterial.ui \
 
@@ -127,11 +131,17 @@ HEADERS += CLOAPIInterface/LibraryWindowInterface.h \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Inbound/Sample/SampleConfig.h \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Inbound/Sample/PLMSampleSearch.h \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Inbound/Sample/PLMSampleResult.h \
+    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Inbound/Print/PLMPrintSearch.h \
+    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Inbound/Print/PLMPrintResults.h \
+    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Inbound/Print/PrintConfig.h \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/CreateProduct.h \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/PublishToPLMData.h \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/UpdateProduct.h \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/CopyProduct.h \
-    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/ImageIntent.h \
+    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/CreateImageIntent.h \
+    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/UpdateImageIntent.h \
+    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/AddNewBom.h \
+    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/Section.h \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/CraeteMaterial/CreateMaterial.h \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/CraeteMaterial/CreateMaterialConfig.h \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/UpdateMaterial/UpdateMaterialConfig.h \
@@ -186,11 +196,17 @@ SOURCES += CLOAPIInterface/Samples/LibraryWindowImplementation/LibraryWindowImpl
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Inbound/Sample/SampleConfig.cpp \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Inbound/Sample/PLMSampleSearch.cpp \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Inbound/Sample/PLMSampleResult.cpp \
+    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Inbound/Print/PLMPrintSearch.cpp \
+    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Inbound/Print/PLMPrintResults.cpp \
+    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Inbound/Print/PrintConfig.cpp \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/CreateProduct.cpp \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/PublishToPLMData.cpp \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/UpdateProduct.cpp \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/CopyProduct.cpp \
-    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/ImageIntent.cpp \
+    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/CreateImageIntent.cpp \
+    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/UpdateImageIntent.cpp \
+    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/AddNewBom.cpp \
+    CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/PublishToPLM/Section.cpp \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/CraeteMaterial/CreateMaterial.cpp \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/CraeteMaterial/CreateMaterialConfig.cpp \
     CLOAPIInterface/Samples/LibraryWindowImplementation/CLOVise/PLM/Outbound/UpdateMaterial/UpdateMaterialConfig.cpp \
