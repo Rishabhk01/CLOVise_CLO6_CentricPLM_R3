@@ -745,15 +745,14 @@ namespace CLOVise
 						tableName = it->second[0];
 						if (itr != m_bomSectionTableInfoMap.end())
 						{
-							table = table = GetSectionTable(it->second[0].toStdString());;
-							//tableName = QString::fromStdString(itr->first);
+							table = GetSectionTable(it->second[0].toStdString());
 							placementProductTypeJson = GetMaterialTypeForSection(tableName.toStdString());
 						}
 
 					}
 					else
 					{
-						table = table = GetSectionTable("Blank");
+						table = GetSectionTable("Blank");
 						tableName = "Blank";
 					}
 
@@ -765,7 +764,7 @@ namespace CLOVise
 			else
 			{
 				name = Helper::GetJSONValue<string>(materialCountJson, "name", true);
-				table = table = GetSectionTable("Blank");;
+				table = GetSectionTable("Blank");;
 				tableName = "Blank";
 			}
 
@@ -1183,8 +1182,8 @@ namespace CLOVise
 		QPushButton* button = (QPushButton*)sender();
 		QTableWidget* sectionTable;
 		currentAddMaterialButtonClicked = button;
-		auto it = AddNewBom::GetInstance()->m_addMaterialButtonAndTableMap.find(button);
-		if (it != AddNewBom::GetInstance()->m_addMaterialButtonAndTableMap.end())
+		auto it = m_addMaterialButtonAndTableMap.find(button);
+		if (it != m_addMaterialButtonAndTableMap.end())
 		{
 			sectionTable = it->second;
 			QString tableName = sectionTable->property("TableName").toString();
@@ -1237,8 +1236,8 @@ namespace CLOVise
 		Logger::Debug("AddNewBom -> onClickAddSpecialMaterialButton () Start");
 		QTableWidget* sectionTable;
 		QPushButton* button = (QPushButton*)sender();
-		auto it = AddNewBom::GetInstance()->m_addSpecialMaterialButtonAndTableMap.find(button);
-		if (it != AddNewBom::GetInstance()->m_addSpecialMaterialButtonAndTableMap.end())
+		auto it = m_addSpecialMaterialButtonAndTableMap.find(button);
+		if (it != m_addSpecialMaterialButtonAndTableMap.end())
 		{
 			sectionTable = it->second;
 			QString tableName = sectionTable->property("TableName").toString();
@@ -1870,8 +1869,7 @@ namespace CLOVise
 		bool isSectionValidForStyleType = false;
 		Section* section = new Section(QString::fromStdString(_sectionName), 300);
 
-		QTableWidget* sectionTable;
-		sectionTable = new QTableWidget();
+		QTableWidget* sectionTable = new QTableWidget();
 		//CVWidgetGenerator::InitializeTableView(sectionTable);
 		sectionTable->setShowGrid(false);
 		sectionTable->setProperty("TableName", QString::fromStdString(_sectionName));

@@ -163,7 +163,7 @@ namespace CLOVise
 		map<string, string> m_styleTypeNameIdMap;
 		map<string, string> m_developmentTypeNameIdMap;
 		map<string, string> m_curPriorityNameIdMap;
-		map<string, string> m_styleTypeBomPermessionMap;
+		map<string, string> m_styleTypeBomPermissionMap;
 		std::map<QString, QString> m_colorwayImageLabelsMap;
 		std::map<QString, QString> m_styleImageLabelsMap;
 		std::map<string, string> m_digiCodeNamesMap;

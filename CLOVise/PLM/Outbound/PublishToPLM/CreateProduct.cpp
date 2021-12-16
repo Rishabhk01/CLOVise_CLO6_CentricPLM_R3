@@ -722,7 +722,7 @@ namespace CLOVise
 								Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON tdsmapJson: " + to_string(tdsmapJson));
 								string apparelBomFlag = Helper::GetJSONValue<string>(tdsmapJson, "ApparelBOM", true);
 								Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON apparelBomFlag: " + apparelBomFlag);
-								m_styleTypeBomPermessionMap.insert(make_pair(attName, apparelBomFlag));							
+								m_styleTypeBomPermissionMap.insert(make_pair(attName, apparelBomFlag));							
 							}
 							/* "tds_map": {
             "ReviewStyle": true,
@@ -1951,8 +1951,8 @@ namespace CLOVise
 				Logger::Debug("PublishToPLMData -> OnHandleDropDownValue() m_currentlySelectedStyleTypeId: " + m_currentlySelectedStyleTypeId);
 
 				string selectedStyleType = comboBox->currentText().toStdString();
-				auto it = m_styleTypeBomPermessionMap.find(selectedStyleType);
-				if (it != m_styleTypeBomPermessionMap.end())
+				auto it = m_styleTypeBomPermissionMap.find(selectedStyleType);
+				if (it != m_styleTypeBomPermissionMap.end())
 				{
 					if (FormatHelper::HasContent(it->second) && it->second == "true")
 							m_bomAddButton->show();
