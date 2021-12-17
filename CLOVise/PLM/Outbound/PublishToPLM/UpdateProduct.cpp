@@ -892,18 +892,25 @@ namespace CLOVise
 					Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 2");
 					string productId = Helper::GetJSONValue<string>(detailJson, ATTRIBUTE_ID, true);
 					Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 3");
-
-					if (PublishToPLMData::GetInstance()->GetIsCreateNewDocument())
+					
+					if (PublishToPLMData::GetInstance()->GetIsCreateNewGLBDocument())
 					{
 						Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 4");
-						documentId = uploadDocument(productId);
+						uploadGLBFile(productId);
 					}
+					if (PublishToPLMData::GetInstance()->GetIsCreateNewDocument())
+					{
+						documentId = uploadDocument(productId);
+				        uploadGLBFile(productId);
+					}
+				   
 					else
 					{
 						Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 5");
 						string latestRevisionId = PublishToPLMData::GetInstance()->GetLatestRevision();
-						//UTILITY_API->DisplayMessageBox("latestRevisionId:" + latestRevisionId);
 						documentId = reviseDocument(latestRevisionId);
+						string latestGLBRevisionId = PublishToPLMData::GetInstance()->GetGLBLatestRevision();
+						reviseDocument(latestGLBRevisionId);
 					}
 					Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 6");
 					UTILITY_API->SetProgress("Publishing to PLM", (qrand() % 101));
@@ -1093,6 +1100,13 @@ namespace CLOVise
 			postField += "------WebKitFormBoundary7MA4YWxkTrZu0gW--";
 			Logger::Debug("Update product getPublishRequestParameter(string _path, string _imageName) end....");
 		}
+		else if (_fileName.find(".zip") != -1)
+		{
+			postField += "\r\nContent-Disposition: form-data; name=\"is_3d\"\r\n\r\n";
+			postField += "true";
+			postField += "\r\n";
+			postField += "------WebKitFormBoundary7MA4YWxkTrZu0gW--";
+		}
 		else
 			postField += "--";
 		return postField;
@@ -1140,6 +1154,56 @@ namespace CLOVise
 		return latestRevisionId;
 	}
 
+	string UpdateProduct::uploadGLBFile(string _productId)
+	{
+		Logger::Debug("UpdateProduct uploadGLBFile() start....");
+		string latestRevisionId;
+		try
+		{
+			string _3DModelFilePath = UTILITY_API->GetProjectFilePath();
+			Helper::EraseSubString(_3DModelFilePath, UTILITY_API->GetProjectName());
+			string m_GLBFilePath = _3DModelFilePath + UTILITY_API->GetProjectName();
+			string FileName = UTILITY_API->GetProjectName() + ".zip";
+
+			Marvelous::ImportExportOption option;
+			option.bSaveInZip = true;
+			EXPORT_API->ExportGLTF(m_GLBFilePath + GLB, option, true);
+			Logger::Debug("m_GLBFilePath::" + m_GLBFilePath);
+			RESTAPI::SetProgressBarData(20, "Uploading GLB file to PLM...", true);
+			string postField = getPublishRequestParameter(m_GLBFilePath + ".zip", FileName);
+
+			string resultJsonString;
+
+			resultJsonString = RESTAPI::PostRestCall(postField, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::DOCUMENT_CREATE_API + "/" + _productId + "/upload", "content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
+
+			if (!FormatHelper::HasContent(resultJsonString))
+			{
+				throw "Unable to initiliaze Document Configuration. Please try again or Contact your System Administrator.";
+			}json detailJson = Helper::GetJsonFromResponse(resultJsonString, "{");
+			//UTILITY_API->DisplayMessageBox(to_string(detailJson));
+
+			latestRevisionId = Helper::GetJSONValue<string>(detailJson, LATEST_REVISION_KEY, true);
+		}
+	
+		catch (string msg)
+		{
+			Logger::Error("UpdateProduct uploadGLBFile() Exception - " + msg);
+		}
+		catch (exception & e)
+		{
+			Logger::Error("UpdateProduct uploadGLBFile() Exception - " + string(e.what()));
+		}
+		catch (const char* msg)
+		{
+			wstring wstr(msg, msg + strlen(msg));
+			Logger::Error("UpdateProduct uploadGLBFile() Exception - " + string(msg));
+		}
+		
+		return latestRevisionId;
+		RESTAPI::SetProgressBarData(0, "", false);
+		Logger::Debug("UpdateProduct uploadDocument() End....");
+	}
+
 	/*
 	* Description - exportZPRJ() method used to export a 3D model and visual images.
 	* Parameter -
@@ -1156,6 +1220,7 @@ namespace CLOVise
 		//UTILITY_API->DisplayMessageBox("m_3DModelFileName" + m_3DModelFileName);
 		EXPORT_API->ExportZPrj(_3DModelFilePath, true);
 		string postField = getPublishRequestParameter(_3DModelFilePath, m_3DModelFileName);
+		Logger::Logger("PostField=========" + postField);
 		//string resultJsonString = RESTAPI::PutRestCall(postField, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::DOCUMENT_UPLOAD_API + "/" + _revisionId + "/upload", "content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 		string resultJsonString = RESTAPI::PutRestCall(postField, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::DOCUMENT_UPLOAD_API + "/" + _revisedDocId + "/upload", "content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 		//UTILITY_API->DisplayMessageBox("Upload zprj completed"+ resultJsonString);
