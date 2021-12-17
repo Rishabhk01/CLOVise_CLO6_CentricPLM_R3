@@ -909,8 +909,12 @@ namespace CLOVise
 						Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 5");
 						string latestRevisionId = PublishToPLMData::GetInstance()->GetLatestRevision();
 						documentId = reviseDocument(latestRevisionId);
-						string latestGLBRevisionId = PublishToPLMData::GetInstance()->GetGLBLatestRevision();
-						reviseDocument(latestGLBRevisionId);
+						if (PublishToPLMData::GetInstance()->GetIsCreateNewGLBDocument())
+						{
+							string latestGLBRevisionId = PublishToPLMData::GetInstance()->GetGLBLatestRevision();
+							reviseDocument(latestGLBRevisionId);
+						}
+						
 					}
 					Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 6");
 					UTILITY_API->SetProgress("Publishing to PLM", (qrand() % 101));
