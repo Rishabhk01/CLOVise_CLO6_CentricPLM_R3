@@ -114,8 +114,11 @@ namespace CLOVise
 		json mergedJsonArray = json::array();
 
 		json jsonvalueArray = json::array();
-		string attJson = DirectoryUtil::GetPLMPluginDirectory() + "CentricBomAttributes.json";//Reading Columns from json
-		jsonvalueArray = Helper::ReadJSONFile(attJson);
+		json bomConfigjson = json::object();
+		string attJson = DirectoryUtil::GetPLMPluginDirectory() + "BomConfig.json";//Reading Columns from json
+		bomConfigjson = Helper::ReadJSONFile(attJson);
+		jsonvalueArray = Helper::GetJSONParsedValue<string>(bomConfigjson, "CreateBomAttributes", false);
+
 		//UTILITY_API->DisplayMessageBox("jsonvalue:: " + to_string(jsonvalue));
 		//createFieldsJson(to_string(fieldsJsonArray), jsonvalue);
 
@@ -144,9 +147,7 @@ namespace CLOVise
 		connectSignalSlots(true);
 
 		m_bomTableColumnJson = json::object();
-		string columnsNames = DirectoryUtil::GetPLMPluginDirectory() + "BomTableColumn.json";//Reading Columns from json
-		m_bomTableColumnJson = Helper::ReadJSONFile(columnsNames);
-
+		m_bomTableColumnJson = Helper::GetJSONParsedValue<string>(bomConfigjson, "BomTableColumns", false);
 
 		for (int i = 0; i < m_bomTableColumnJson.size(); i++)
 		{
@@ -985,7 +986,7 @@ namespace CLOVise
 										gridLayout->setContentsMargins(0, 0, 0, 0);
 
 										QWidget *colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
-										
+
 										gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
 										QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
 										pushButton_2->setFixedHeight(20);
@@ -994,7 +995,7 @@ namespace CLOVise
 										{
 											m_addColorButtonSignalMapper->setProperty("TableName", _tableName);
 											connect(pushButton_2, SIGNAL(clicked()), m_addColorButtonSignalMapper, SLOT(map()));
-											m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2").arg(rowCount).arg(columnIndex));
+											m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2-%3").arg(rowCount).arg(columnIndex).arg(_tableName));
 										}
 										pushButton_2->setProperty("TableName", _tableName);
 										gridLayout->addWidget(pushButton_2, 0, 1, 1, 1, Qt::AlignHCenter);
@@ -1043,7 +1044,7 @@ namespace CLOVise
 						label->setPixmap(QPixmap(pixmap.scaled(width, height, Qt::KeepAspectRatio)));
 						Logger::Debug("AddNewBom -> AddBomRows() -> 3");
 						QWidget *colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
-						
+
 
 						gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
 						QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
@@ -1054,7 +1055,7 @@ namespace CLOVise
 							m_addColorButtonSignalMapper->setProperty("TableName", _tableName);
 							connect(pushButton_2, SIGNAL(clicked()), m_addColorButtonSignalMapper, SLOT(map()));
 							//int number = rowCount * 10 + columnIndex;
-							m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2").arg(rowCount).arg(columnIndex));
+							m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2-%3").arg(rowCount).arg(columnIndex).arg(_tableName));
 							//m_buttonSignalMapper->setMapping(pushButton_2, number);
 						}
 						pushButton_2->setProperty("TableName", _tableName);
@@ -1071,7 +1072,7 @@ namespace CLOVise
 
 
 					Logger::Debug("AddNewBom -> AddBomRows() -> m_bomTableColumnKeys[columnIndex]" + bomTableColumnKeys[columnIndex].toStdString());
-					if (bomTableColumnKeys[columnIndex] == "Common Color")
+					if (bomTableColumnKeys[columnIndex] == "common_color")
 					{
 						Logger::Debug("AddNewBom -> AddBomRows() -> 9");
 
@@ -1100,7 +1101,7 @@ namespace CLOVise
 						label->setPixmap(QPixmap(pixmap.scaled(width, height, Qt::KeepAspectRatio)));
 						Logger::Debug("AddNewBom -> AddBomRows() -> 3");
 						QWidget *colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
-						
+
 						//QPushButton* pushButton = new QPushButton(_sectionTable);
 						//pushButton->setObjectName(QString::fromUtf8("Add"));
 						gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
@@ -1113,7 +1114,7 @@ namespace CLOVise
 							connect(pushButton_2, SIGNAL(clicked()), m_addColorButtonSignalMapper, SLOT(map()));
 							//int number = rowCount * 10 + columnIndex;
 							//m_buttonSignalMapper->setMapping(pushButton_2, number);
-							m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2").arg(rowCount).arg(columnIndex));
+							m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2-%3").arg(rowCount).arg(columnIndex).arg(_tableName));
 						}
 						pushButton_2->setProperty("TableName", _tableName);
 						//pushButton_2->setObjectName(QString::fromUtf8(""));
@@ -1402,7 +1403,9 @@ namespace CLOVise
 			for (int rowCount = 0; rowCount < sectionTable->rowCount(); rowCount++)
 			{
 				QComboBox* typeCombo;
-				typeCombo = static_cast<QComboBox*>(sectionTable->cellWidget(rowCount, 0)->children().last());
+				typeCombo = static_cast<QComboBox*>(sectionTable->cellWidget(rowCount, TYPE_COLUMN)->children().last());
+				if (typeCombo != nullptr)
+					continue;
 				QString matrialId = typeCombo->property("materialId").toString();
 				Logger::Debug("AddNewBom -> UpdateColorwayColumns () matrialId" + matrialId.toStdString());
 
@@ -1475,7 +1478,7 @@ namespace CLOVise
 										m_addColorButtonSignalMapper->setProperty("TableName", tableName);
 										connect(pushButton_2, SIGNAL(clicked()), m_addColorButtonSignalMapper, SLOT(map()));
 										//int number = rowCount * 10 + columnIndex;
-										m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2").arg(rowCount).arg(columnIndex));
+										m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2-%3").arg(rowCount).arg(columnIndex).arg(tableName));
 										//m_buttonSignalMapper->setMapping(pushButton_2, number);
 									}
 									pushButton_2->setProperty("TableName", tableName);
@@ -1525,7 +1528,7 @@ namespace CLOVise
 								m_addColorButtonSignalMapper->setProperty("TableName", tableName);
 								connect(pushButton_2, SIGNAL(clicked()), m_addColorButtonSignalMapper, SLOT(map()));
 								//int number = rowCount * 10 + columnIndex;
-								m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2").arg(rowCount).arg(columnIndex));
+								m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2-%3").arg(rowCount).arg(columnIndex).arg(tableName));
 								//m_buttonSignalMapper->setMapping(pushButton_2, number);
 							}
 							pushButton_2->setProperty("TableName", tableName);
@@ -1560,21 +1563,35 @@ namespace CLOVise
 		QStringList coordinates = position.split("-");
 		int row = coordinates[0].toInt();
 		int col = coordinates[1].toInt();
-
+		string tableName = coordinates[2].toStdString();
 		Logger::Debug("AddNewBom -> OnClickUpdateColorButton () row" + to_string(row));
 		Logger::Debug("AddNewBom -> OnClickUpdateColorButton () column" + to_string(col));
 
-		m_currentTableName = button->property("TableName").toString().toStdString();
+		m_currentTableName = tableName;
 		m_currentRow = row;
 		m_currentColumn = col;
 		Logger::Debug("AddNewBom -> OnClickUpdateColorButton () tableName" + m_currentTableName);
 
+
 		Configuration::GetInstance()->SetIsUpdateColorClicked(true);
+
+
+		ColorConfig::GetInstance()->m_mode = "Search";
+
+		boolean  isFromConstructor = false;
+		if (!ColorConfig::GetInstance()->GetIsModelExecuted())
+		{
+			ColorConfig::GetInstance()->InitializeColorData();
+			isFromConstructor = true;
+		}
+
 		ColorConfig::GetInstance()->InitializeColorData();
-		UIHelper::ClearAllFieldsForSearch(PLMColorSearch::GetInstance()->GetTreewidget(0));
-		UIHelper::ClearAllFieldsForSearch(PLMColorSearch::GetInstance()->GetTreewidget(1));
+		ColorConfig::GetInstance()->m_isSearchColor = true;
 		PLMColorSearch::GetInstance()->setModal(true);
+		PLMColorSearch::GetInstance()->DrawSearchWidget(true);
 		UTILITY_API->DeleteProgressBar(true);
+		ColorConfig::GetInstance()->SetIsModelExecuted(true);
+
 		PLMColorSearch::GetInstance()->exec();
 		RESTAPI::SetProgressBarData(0, "", false);
 
@@ -1612,8 +1629,9 @@ namespace CLOVise
 			{
 				for (int i = 0; i < sectionTable->rowCount(); i++)
 				{
-					QPushButton *deleteButoon = static_cast<QPushButton*>(sectionTable->cellWidget(i, DELETE_BUTTON_COLUMN)->children().last());
-					m_deleteButtonSignalMapper->setMapping(deleteButoon, QString("%1-%2").arg(i).arg(coordinates[1]));
+					QPushButton *deleteButton = static_cast<QPushButton*>(sectionTable->cellWidget(i, DELETE_BUTTON_COLUMN)->children().last());
+					if(deleteButton!= nullptr)
+					    m_deleteButtonSignalMapper->setMapping(deleteButton, QString("%1-%2").arg(i).arg(coordinates[1]));
 				}
 			}
 		}
@@ -1740,7 +1758,7 @@ Description - OnHandleDropDownValue() method used to fill the dependecy fields o
 
 
 	/*
-Description - OnHandleDropDownValue() method used backup bom data in a data structure to again populate bom tab information.
+Description - BackupBomDetails() method used backup bom data in a data structure to again populate bom tab information.
 	* Parameter -
 	* Exception -
 	*Return -
@@ -1758,6 +1776,7 @@ Description - OnHandleDropDownValue() method used backup bom data in a data stru
 				{
 					json attJson = json::object();
 					string isRowAddedByUser;
+					string commonColorId;
 					for (int columnCount = 0; columnCount < sectionTable->columnCount(); columnCount++)
 					{
 						string fieldValue;
@@ -1816,6 +1835,7 @@ Description - OnHandleDropDownValue() method used backup bom data in a data stru
 							if (attInternalName == "Delete")
 							{
 								fieldValue = pushButton->property("materialId").toString().toStdString();
+								commonColorId = pushButton->property("commonColorId").toString().toStdString();
 								isRowAddedByUser = pushButton->property("RowAddedByUser").toString().toStdString();
 								Logger::Debug("AddNewBom BackupBomDetails() isRowAddedByUser" + isRowAddedByUser);
 								attInternalName = "materialId";
@@ -1853,6 +1873,8 @@ Description - OnHandleDropDownValue() method used backup bom data in a data stru
 						Logger::Debug("AddNewBom BackupBomDetails() fieldValue" + fieldValue);
 					}
 					attJson["ds_section"] = sectionId;
+					attJson["common_color"] = commonColorId;
+
 					if (isRowAddedByUser == "true")
 						m_backupBomDataMap.insert(make_pair(itr->first, attJson));
 					Logger::Debug("AddNewBom BackupBomDetails() attJson" + to_string(attJson));
@@ -1879,6 +1901,12 @@ Description - OnHandleDropDownValue() method used backup bom data in a data stru
 			this->show();
 		}
 	}
+	/*
+Description - ClearBomData() method used to clear all the bom related variables.
+	* Parameter -
+	* Exception -
+	*Return -
+	*/
 	void AddNewBom::ClearBomData()
 	{
 		Logger::Debug("AddNewBom -> ClearBomData() -> Start");
@@ -1892,6 +1920,12 @@ Description - OnHandleDropDownValue() method used backup bom data in a data stru
 		Logger::Debug("AddNewBom -> ClearBomData() -> End");
 	}
 
+	/*
+Description - RestoreBomDetails() method used to store bom data.
+	* Parameter -
+	* Exception -
+	*Return -
+	*/
 	void AddNewBom::RestoreBomDetails()
 	{
 		Logger::Debug("AddNewBom -> RestoreBomDetails() -> Start");
@@ -1902,21 +1936,32 @@ Description - OnHandleDropDownValue() method used backup bom data in a data stru
 		for (auto itr = m_backupBomDataMap.begin(); itr != m_backupBomDataMap.end(); itr++)
 		{
 			json rowDataJson = itr->second;
+			Logger::Debug("AddNewBom -> RestoreBomDetails() -> TableName" + itr->first);
+			Logger::Debug("AddNewBom -> RestoreBomDetails() -> rowDataJson" + to_string(rowDataJson));
 			QTableWidget* table = AddNewBom::GetInstance()->GetSectionTable(itr->first);
 			json placementMateriaTypeJson;
+			placementMateriaTypeJson = GetMaterialTypeForSection(itr->first);
 			if (table != nullptr)
-				AddBomRows(table, rowDataJson, QString::fromStdString(itr->first), placementMateriaTypeJson);
+				AddBomRows(table, rowDataJson, QString::fromStdString(itr->first), placementMateriaTypeJson, true);
 		}
 		Logger::Debug("AddNewBom -> RestoreBomDetails() -> End");
 	}
+
+	/*
+Description - CreateSectionInBom() method used to create one section/table on bom tab.
+	* Parameter -string , string , QStringList , int& , json
+	* Exception -
+	*Return -
+	*/
 	void AddNewBom::CreateSectionInBom(string _sectionName, string _sectionId, QStringList _tablecolumnList, int& _sectionCount, json _placementProductTypeJson)
 	{
 
 		bool isSectionValidForStyleType = false;
 		Section* section = new Section(QString::fromStdString(_sectionName), 300);
 
-		QTableWidget* sectionTable = new QTableWidget();
-		//CVWidgetGenerator::InitializeTableView(sectionTable);
+		//	m_sectionVector.push_back(section);
+		MVTableWidget* sectionTable = new MVTableWidget();
+		CVWidgetGenerator::InitializeTableView(sectionTable);
 		sectionTable->setShowGrid(false);
 		sectionTable->setProperty("TableName", QString::fromStdString(_sectionName));
 		sectionTable->setProperty("SectionId", QString::fromStdString(_sectionId));
@@ -1926,7 +1971,8 @@ Description - OnHandleDropDownValue() method used backup bom data in a data stru
 		m_bomSectionNameAndTypeMap.insert(make_pair(_sectionName, _placementProductTypeJson));
 		sectionTable->setStyleSheet("QTableWidget{ background-color: #262628; border-right: 1px solid #000000; border-top: 1px solid #000000; border-left: 1px solid #000000; font-face: ArialMT; font-size: 12px; color: #FFFFFF; } QTableWidget::Item{outline:0;}");
 		sectionTable->verticalHeader()->hide();
-		sectionTable->horizontalHeader()->setMinimumHeight(10);
+		//sectionTable->horizontalHeader()->setMinimumHeight(10);
+		sectionTable->verticalHeader()->setDefaultSectionSize(30);
 		sectionTable->setShowGrid(false);
 		sectionTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 		//sectionTable->setSelectionMode(QAbstractItemView::NoSelection);

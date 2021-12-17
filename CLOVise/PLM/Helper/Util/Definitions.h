@@ -78,6 +78,11 @@ const QString PLM_NAME = "Centric 8";
 
 
 
+//Bom Table columns
+#define TYPE_COLUMN  2
+
+
+
 
 
 const QString SPLASH_IMAGE_PATH = ":/CLOVise/PLM/Images/Splash.png";
