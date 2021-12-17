@@ -1403,7 +1403,9 @@ namespace CLOVise
 			for (int rowCount = 0; rowCount < sectionTable->rowCount(); rowCount++)
 			{
 				QComboBox* typeCombo;
-				typeCombo = static_cast<QComboBox*>(sectionTable->cellWidget(rowCount, 2)->children().last());
+				typeCombo = static_cast<QComboBox*>(sectionTable->cellWidget(rowCount, TYPE_COLUMN)->children().last());
+				if (typeCombo != nullptr)
+					continue;
 				QString matrialId = typeCombo->property("materialId").toString();
 				Logger::Debug("AddNewBom -> UpdateColorwayColumns () matrialId" + matrialId.toStdString());
 
@@ -1565,7 +1567,7 @@ namespace CLOVise
 		Logger::Debug("AddNewBom -> OnClickUpdateColorButton () row" + to_string(row));
 		Logger::Debug("AddNewBom -> OnClickUpdateColorButton () column" + to_string(col));
 
-		m_currentTableName = tableName/*button->property("TableName").toString().toStdString()*/;
+		m_currentTableName = tableName;
 		m_currentRow = row;
 		m_currentColumn = col;
 		Logger::Debug("AddNewBom -> OnClickUpdateColorButton () tableName" + m_currentTableName);
@@ -1627,8 +1629,9 @@ namespace CLOVise
 			{
 				for (int i = 0; i < sectionTable->rowCount(); i++)
 				{
-					QPushButton *deleteButoon = static_cast<QPushButton*>(sectionTable->cellWidget(i, DELETE_BUTTON_COLUMN)->children().last());
-					m_deleteButtonSignalMapper->setMapping(deleteButoon, QString("%1-%2").arg(i).arg(coordinates[1]));
+					QPushButton *deleteButton = static_cast<QPushButton*>(sectionTable->cellWidget(i, DELETE_BUTTON_COLUMN)->children().last());
+					if(deleteButton!= nullptr)
+					    m_deleteButtonSignalMapper->setMapping(deleteButton, QString("%1-%2").arg(i).arg(coordinates[1]));
 				}
 			}
 		}

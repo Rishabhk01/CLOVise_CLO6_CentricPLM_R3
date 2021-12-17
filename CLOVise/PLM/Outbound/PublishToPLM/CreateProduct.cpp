@@ -1408,6 +1408,7 @@ namespace CLOVise
 				for (int count = 0; count < ui_colorwayTable->rowCount(); count++)
 				{
 					QComboBox * digiCodeCombo = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(count, UNI_2_DIGIT_CODE_COLUMN)->children().last());
+					if(digiCodeCombo!=nullptr)
 					digiCodeCombo->setProperty("row", count);
 				}
 			}
@@ -3021,9 +3022,12 @@ namespace CLOVise
 						Logger::Debug("CreateProduct -> UpdateColorInColorways () 9");
 						{
 							auto gridLayout = dynamic_cast<QGridLayout*>(widget->layout());
-							pWidget->setProperty("colorId", attId.c_str());
-							gridLayout->addWidget(pWidget, 0, 0, 1, 1, Qt::AlignHCenter);
-							Logger::Debug("CreateProduct -> UpdateColorInColorways () 10");
+							if (gridLayout != nullptr)
+							{
+								pWidget->setProperty("colorId", attId.c_str());
+								gridLayout->addWidget(pWidget, 0, 0, 1, 1, Qt::AlignHCenter);
+								Logger::Debug("CreateProduct -> UpdateColorInColorways () 10");
+							}
 
 						}
 					}
