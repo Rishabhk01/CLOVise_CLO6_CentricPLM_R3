@@ -392,16 +392,16 @@ namespace CLOVise
 					Logger::Debug("CreateProduct -> onBackButtonClicked -> 6");
 					delete child;
 				}*/
-
+			m_CloAndPLMColorwayMap.clear();
 			ClearBomSectionLayout();
 			AddNewBom::GetInstance()->ClearBomData();
 			m_bomAddButton->show();
 			m_bomAddButton->setEnabled(true);
 		}
-	
-		
+
+
 		//SetTotalImageCount();
-		
+
 		this->close();
 		CLOVise::CLOViseSuite::GetInstance()->setModal(true);
 		CLOViseSuite::GetInstance()->show();
@@ -714,14 +714,14 @@ namespace CLOVise
 								Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON tdsmapJson: " + to_string(tdsmapJson));
 								string apparelBomFlag = Helper::GetJSONValue<string>(tdsmapJson, "ApparelBOM", true);
 								Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON apparelBomFlag: " + apparelBomFlag);
-								m_styleTypeBomPermissionMap.insert(make_pair(attName, apparelBomFlag));							
+								m_styleTypeBomPermissionMap.insert(make_pair(attName, apparelBomFlag));
 							}
 							/* "tds_map": {
-            "ReviewStyle": true,
-            "ApparelBOM": true,
-            "ImageDataSheet": true,
-            "CareAndComposition": true
-        },*/
+			"ReviewStyle": true,
+			"ApparelBOM": true,
+			"ImageDataSheet": true,
+			"CareAndComposition": true
+		},*/
 							valueList.append(QString::fromStdString(attName));
 							m_seasonNameIdMap.insert(make_pair(attName, attId));
 							//m_styleTypeNameIdMap.insert(make_pair(attName, attId));
@@ -830,7 +830,7 @@ namespace CLOVise
 		string response;
 		try
 		{
-			if (ValidateColorwayNameField())
+			if (ValidateColorwayNameField() && AddNewBom::GetInstance()->ValidateBomFields())
 			{
 				this->hide();
 				collectCreateProductFieldsData();
@@ -922,6 +922,7 @@ namespace CLOVise
 					//Logger::Debug("Create product onPublishToPLMClicked() 8....");
 					m_ImageIntentList->clear();
 					m_colorSpecList.clear();
+					m_CloAndPLMColorwayMap.clear();
 					ClearBomSectionLayout();
 					AddNewBom::GetInstance()->ClearBomData();
 					m_bomAddButton->show();
@@ -1408,8 +1409,8 @@ namespace CLOVise
 				for (int count = 0; count < ui_colorwayTable->rowCount(); count++)
 				{
 					QComboBox * digiCodeCombo = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(count, UNI_2_DIGIT_CODE_COLUMN)->children().last());
-					if(digiCodeCombo!=nullptr)
-					digiCodeCombo->setProperty("row", count);
+					if (digiCodeCombo != nullptr)
+						digiCodeCombo->setProperty("row", count);
 				}
 			}
 		}
@@ -1808,7 +1809,7 @@ namespace CLOVise
 		Logger::Debug("Create product onTabClicked() Start");
 		QStringList list;
 		bool duplicateColrwayName = false;
-		if (_index == OVERVIEW_TAB)
+		if (_index == COLORWAY_TAB)
 		{
 			if (m_selectedStyleTypeIndex <= 0)
 			{
@@ -1903,20 +1904,25 @@ namespace CLOVise
 
 		if (_index == BOM_TAB)
 		{
-		//	if (ui_sectionLayout->count() > 0)
-			//{m_backupBomDataMap.insert(make_pair(itr->first, attJson));
-			if (PublishToPLMData::GetInstance()->m_isSaveClicked && m_updateBomTab)
+			if (m_selectedStyleTypeIndex <= 0)
 			{
-
-			AddNewBom::GetInstance()->RestoreBomDetails();
-             m_updateBomTab = false;
+				UTILITY_API->DisplayMessageBox("Please select the Style Type in the Overview tab to create BOM ");
+				ui_tabWidget->setCurrentIndex(0);
 			}
+			else
+			{
+				if (PublishToPLMData::GetInstance()->m_isSaveClicked && m_updateBomTab)
+				{
+
+					AddNewBom::GetInstance()->RestoreBomDetails();
+					m_updateBomTab = false;
+				}
 				GetMappedColorway();
 				UpdateColorwayColumnsInBom();
 
-			//}
+			}
 		}
-		
+
 		Logger::Debug("Create product onTabClicked() End");
 	}
 
@@ -1951,10 +1957,10 @@ namespace CLOVise
 				if (it != m_styleTypeBomPermissionMap.end())
 				{
 					if (FormatHelper::HasContent(it->second) && it->second == "true")
-							m_bomAddButton->show();
+						m_bomAddButton->show();
 					else
 						m_bomAddButton->hide();
-					
+
 				}
 
 				string isAllowCreatColor = sender()->property((_item.toStdString() + ALLOW_CREATE_COLOR).c_str()).toString().toStdString();
@@ -3012,12 +3018,22 @@ namespace CLOVise
 				QTableWidget* sectionTable = itr->second;
 				if (QWidget* widget = sectionTable->cellWidget(AddNewBom::GetInstance()->m_currentRow, AddNewBom::GetInstance()->m_currentColumn))
 				{
-					widget->setProperty("colorId", attId.c_str());
-					QPushButton* pushButton = static_cast<QPushButton*>(sectionTable->cellWidget(AddNewBom::GetInstance()->m_currentRow, 0)->children().last());;
-					if (pushButton != nullptr)
+
+					QString columnName = sectionTable->horizontalHeaderItem(AddNewBom::GetInstance()->m_currentColumn)->text();
+					if (columnName == "Common Color")
 					{
-						Logger::Debug("CreateProduct -> UpdateColorInColorways () colorId" + attId);
-						pushButton->setProperty("commonColorId", attId.c_str());
+						QPushButton* pushButton = static_cast<QPushButton*>(sectionTable->cellWidget(AddNewBom::GetInstance()->m_currentRow, 0)->children().last());;
+
+						if (pushButton != nullptr)
+						{
+
+							Logger::Debug("CreateProduct -> UpdateColorInColorways () colorId" + attId);
+							pushButton->setProperty("commonColorId", attId.c_str());
+						}
+					}
+					else
+					{
+						widget->setProperty("colorId", attId.c_str());
 					}
 					Logger::Debug("CreateProduct -> UpdateColorInColorways () 8");
 					if (QLayout* layout = widget->layout())
@@ -3089,7 +3105,7 @@ namespace CLOVise
 		Logger::Info("CreateProduct -> horizontalHeaderClicked() -> End");
 	}
 
-	
+
 	void CreateProduct::onAddNewBomClicked()
 	{
 		this->hide();
@@ -3112,30 +3128,30 @@ namespace CLOVise
 			QString tableName = sectionTable->property("TableName").toString();
 			json fieldsJson;
 			Logger::Debug("CreateProduct -> AddMaterialInBom() -> 2");
-				fieldsJson = MaterialConfig::GetInstance()->GetUpdateMaterialCacheData();
-				string code = Helper::GetJSONValue<string>(fieldsJson, "code", true);
-				string objectId = Helper::GetJSONValue<string>(fieldsJson, "id", true);
-				string name = Helper::GetJSONValue<string>(fieldsJson, "node_name", true);
-				string materialType = Helper::GetJSONValue<string>(fieldsJson, "product_type", true);
-				string description = Helper::GetJSONValue<string>(fieldsJson, "description", true);
-				Logger::Debug("CreateProduct -> AddMaterialInBom() -> 3");
-				json rowDataJson = json::object();
-				rowDataJson["Code"] = code;
-				rowDataJson["material_name"] = name;
-				rowDataJson["Type"] = materialType;
-				rowDataJson["comment"] = description;
-				rowDataJson["qty_default"] = "";
-				rowDataJson["uom"] = "";
-				rowDataJson["materialId"] = objectId;
-				json placementMateriaTypeJson;
-				placementMateriaTypeJson = AddNewBom::GetInstance()->GetMaterialTypeForSection(tableName.toStdString());
+			fieldsJson = MaterialConfig::GetInstance()->GetUpdateMaterialCacheData();
+			string code = Helper::GetJSONValue<string>(fieldsJson, "code", true);
+			string objectId = Helper::GetJSONValue<string>(fieldsJson, "id", true);
+			string name = Helper::GetJSONValue<string>(fieldsJson, "node_name", true);
+			string materialType = Helper::GetJSONValue<string>(fieldsJson, "product_type", true);
+			string description = Helper::GetJSONValue<string>(fieldsJson, "description", true);
+			Logger::Debug("CreateProduct -> AddMaterialInBom() -> 3");
+			json rowDataJson = json::object();
+			rowDataJson["Code"] = code;
+			rowDataJson["material_name"] = name;
+			rowDataJson["Type"] = materialType;
+			rowDataJson["comment"] = description;
+			rowDataJson["qty_default"] = "";
+			rowDataJson["uom"] = "";
+			rowDataJson["materialId"] = objectId;
+			json placementMateriaTypeJson;
+			placementMateriaTypeJson = AddNewBom::GetInstance()->GetMaterialTypeForSection(tableName.toStdString());
 			AddNewBom::GetInstance()->AddBomRows(sectionTable, rowDataJson, tableName, placementMateriaTypeJson, true);
 		}
-		
+
 		Logger::Debug("CreateProduct -> AddMaterialInBom() -> End");
 	}
 
-	
+
 	void CreateProduct::GetMappedColorway()
 	{
 		Logger::Debug("CreateProduct -> GetMappedColorway() -> Start");
@@ -3150,6 +3166,7 @@ namespace CLOVise
 			QString cloColorwayName = cloColorwayCombo->currentText();
 			if (!plmColorwayName.isEmpty() && !cloColorwayName.isEmpty())
 			{
+				m_CloAndPLMColorwayMap.insert(make_pair(plmColorwayName.toStdString(), cloColorwayName.toStdString()));
 				m_mappedColorways.append(cloColorwayCombo->currentText());
 				Logger::Debug("CreateProduct -> GetMappedColorway() -> mappedColorway:" + cloColorwayCombo->currentText().toStdString());
 			}
@@ -3183,7 +3200,7 @@ namespace CLOVise
 		headerNameAndValueList.push_back(make_pair("Accept", "application/json"));
 		headerNameAndValueList.push_back(make_pair("Cookie", Configuration::GetInstance()->GetBearerToken()));
 
-		Logger::Debug("CreateProduct -> CreateBom() -> AddNewBom::GetInstance()->m_BomMetaData"+ to_string(AddNewBom::GetInstance()->m_BomMetaData));
+		Logger::Debug("CreateProduct -> CreateBom() -> AddNewBom::GetInstance()->m_BomMetaData" + to_string(AddNewBom::GetInstance()->m_BomMetaData));
 		json bomData = AddNewBom::GetInstance()->m_BomMetaData;
 		string bomTemplateId = Helper::GetJSONValue<string>(bomData, "bom_template", true);
 		bomData.erase("bom_template");
@@ -3207,6 +3224,13 @@ namespace CLOVise
 		json bomJson = Helper::GetJsonFromResponse(response, "{");
 		string bomLatestRevision = Helper::GetJSONValue<string>(bomJson, "latest_revision", true);
 
+		if (FormatHelper::HasContent(bomLatestRevision))
+		{
+			string modifiedbyFlag = "{\"modified_by_application\":\"CLO3D\"}";
+			Logger::Debug("AddNewBom -> CreateBom() -> modifiedbyFlag" + modifiedbyFlag);
+			string resultJsonString = RESTAPI::PutRestCall(modifiedbyFlag, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API + "/" + bomLatestRevision, "content-type: application/json");
+			Logger::Debug("CreateProduct -> CreateBom() -> resultJsonStringModifiedBy" + resultJsonString);
+		}
 		for (auto itr = AddNewBom::GetInstance()->m_bomSectionTableInfoMap.begin(); itr != AddNewBom::GetInstance()->m_bomSectionTableInfoMap.end(); itr++)
 		{
 			//AddNewBom::sectionInfo sectionInfoObj = itr->second;
@@ -3216,6 +3240,7 @@ namespace CLOVise
 			{
 				json attJson = json::object();
 				string commonColorId;
+				map<string, string> partMaterialColorsMap;
 				for (int columnCount = 0; columnCount < sectionTable->columnCount(); columnCount++)
 				{
 					string fieldValue;
@@ -3225,6 +3250,7 @@ namespace CLOVise
 					Logger::Debug("Create product CreateBom() attInternalName" + attInternalName);
 					QString columnName = sectionTable->horizontalHeaderItem(columnCount)->text();
 					Logger::Debug("Create product CreateBom() columnName" + columnName.toStdString());
+
 					if (CreateProduct::GetInstance()->m_mappedColorways.contains(columnName))
 					{
 						Logger::Debug("Create product CreateBom() colorways1");
@@ -3238,19 +3264,24 @@ namespace CLOVise
 
 						if (QWidget* widget = sectionTable->cellWidget(rowCount, columnCount))// Half cooked code for part material color
 						{
-							//fieldValue = widget->property("colorId").toString().toStdString();
-							//attInternalName = columnName.toStdString();
-							//Logger::Debug("Create product CreateBom() colorId1" + fieldValue);
-							//Logger::Debug("CreateProduct -> CreateBom () 8");
+							string colorId = widget->property("colorId").toString().toStdString();
+							if (FormatHelper::HasContent(colorId))
+								partMaterialColorsMap.insert(make_pair(columnName.toStdString(), colorId));
+
+
+							Logger::Debug("Create product CreateBom() colorId1" + colorId);
+							Logger::Debug("CreateProduct -> CreateBom () 8");
 							//if (QLayout* layout = widget->layout())
 							//{
 							//	Logger::Debug("CreateProduct -> CreateBom () 9");
 							//	{
 							//		auto gridLayout = dynamic_cast<QGridLayout*>(widget->layout());
 							//		QWidget *childwidget = gridLayout->itemAtPosition(0, 0)->widget();
-							//		attInternalName = columnName.toStdString();
-							//		//fieldValue = childwidget->property("colorId").toString().toStdString();
-							//		Logger::Debug("Create product CreateBom() colorId" + fieldValue);
+							//		//attInternalName = columnName.toStdString();
+							//		colorId = childwidget->property("colorId").toString().toStdString();
+							//		if (FormatHelper::HasContent(colorId))
+							//			partMaterialColorsMap.insert(make_pair(columnName.toStdString(), colorId));
+							//		Logger::Debug("Create product CreateBom() colorId2" + colorId);
 
 							//	}
 							//}
@@ -3346,8 +3377,8 @@ namespace CLOVise
 					Logger::Debug("Create product CreateBom() fieldValue" + fieldValue);
 				}
 				attJson["ds_section"] = sectionId;
-				if(FormatHelper::HasContent(commonColorId))
-				    attJson["common_color"] = commonColorId;
+				if (FormatHelper::HasContent(commonColorId))
+					attJson["common_color"] = commonColorId;
 
 				Logger::Debug("Create product CreateBom() attJson" + to_string(attJson));
 				string materialId = Helper::GetJSONValue<string>(attJson, "actual", true);
@@ -3358,6 +3389,7 @@ namespace CLOVise
 				Logger::Debug("Create product CreateBom() mayerialName" + materialName);
 				if (FormatHelper::HasContent(bomLatestRevision))
 				{
+					string partMaterialResponse;
 					if (FormatHelper::HasContent(materialId))
 					{
 
@@ -3366,9 +3398,10 @@ namespace CLOVise
 						attJson.erase("uom");
 						string placementData = to_string(attJson);
 						Logger::Debug("Create product CreateBom() placementData" + placementData);
-						string response = RESTAPI::PostRestCall(placementData, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API_V3 + "/" + bomLatestRevision + "/items/part_materials", "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
+						partMaterialResponse = RESTAPI::PostRestCall(placementData, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API_V3 + "/" + bomLatestRevision + "/items/part_materials", "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 						//response = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API_V3 + "/" + bomLatestRevision + "/items/part_materials", &placementData, headerNameAndValueList, "Loading");
-						Logger::Debug("Create product CreateBom() response material" + response);
+						Logger::Debug("Create product CreateBom() response material" + partMaterialResponse);
+
 					}
 					else
 					{
@@ -3386,18 +3419,78 @@ namespace CLOVise
 						if (FormatHelper::HasContent(materialName))
 						{
 							materialName = QString::fromStdString(materialName).replace(" ", "%20").toStdString();
-							queryParam = queryParam + "&material_name=" + materialName ;
+							queryParam = queryParam + "&material_name=" + materialName;
 						}
 						string api = Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API_V3 + "/" + bomLatestRevision + "/items/special_part_materials" + queryParam;
 						Logger::Debug("Create product CreateBom() queryParam" + queryParam);
 						Logger::Debug("Create product CreateBom() placementData" + placementData);
 						Logger::Debug("Create product CreateBom() queryParam" + api);
 
-						string response = RESTAPI::PostRestCall(placementData, api, "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
+						partMaterialResponse = RESTAPI::PostRestCall(placementData, api, "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 						//response = REST_API->CallRESTPost(api, &placementData, headerNameAndValueList, "Loading");
-						Logger::Debug("Create product CreateBom() response Special" + response);
+						Logger::Debug("Create product CreateBom() response Special" + partMaterialResponse);
 
 					}
+
+					json detailJson = Helper::GetJsonFromResponse(partMaterialResponse, "{");
+
+					Logger::Debug("Create product CreateBom() detailJson" + to_string(detailJson));
+
+					string partMaterialId = Helper::GetJSONValue<string>(detailJson, ATTRIBUTE_ID, true);
+					Logger::Debug("Create product CreateBom() partMaterialId" + partMaterialId);
+					if (FormatHelper::HasContent(partMaterialId) && partMaterialColorsMap.size())
+					{
+						json partMaterailColorJson = Helper::GetJSONParsedValue<string>(detailJson, "part_material_colors", false);
+						//	json partMaterailColorJson = Helper::GetJSONParsedValue<string>(partMaterialResponse, "part_material_colors", false);
+						string partMaterailColorIds;
+						for (int partMaterailColorCount = 0; partMaterailColorCount < partMaterailColorJson.size(); partMaterailColorCount++)
+						{
+							string partMaterailColorId = Helper::GetJSONValue<int>(partMaterailColorJson, partMaterailColorCount, true);
+							Logger::Debug("CreateProduct -> CreateBom() -> apiMetadataStr" + sectionId);
+							partMaterailColorIds += "id=" + partMaterailColorId + "&";
+						}
+						partMaterailColorIds = partMaterailColorIds.substr(0, partMaterailColorIds.length() - 1);
+
+						string partMaterialDefinitions = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::PART_MATERIAL_COLOR_API + "?" + partMaterailColorIds + "&limit=1000", APPLICATION_JSON_TYPE, "");
+						Logger::Debug("CreateProduct -> CreateBom() -> partMaterialDefinitions" + partMaterialDefinitions);
+
+						json partMaterialDefinitionsJson = json::parse(partMaterialDefinitions);
+
+						for (int partMaterailColorCount = 0; partMaterailColorCount < partMaterialDefinitionsJson.size(); partMaterailColorCount++)
+						{
+							Logger::Debug("CreateProduct -> CreateBom() -> 1");
+							json partMaterailColor = Helper::GetJSONParsedValue<int>(partMaterialDefinitionsJson, partMaterailColorCount, false);;///use new method
+							Logger::Debug("CreateProduct -> CreateBom() -> 1");
+							Logger::Debug("CreateProduct -> CreateBom() -> sectionCountJson" + to_string(partMaterailColor));
+							string partMaterailColorId = Helper::GetJSONValue<string>(partMaterailColor, ATTRIBUTE_ID, true);
+							Logger::Debug("CreateProduct -> CreateBom() -> sectionId" + partMaterailColorId);
+							string partMaterailColorName = Helper::GetJSONValue<string>(partMaterailColor, "node_name", true);
+							Logger::Debug("CreateProduct -> CreateBom()-> partMaterailColorName" + partMaterailColorName);
+							Logger::Debug("CreateProduct -> CreateBom()-> partMaterialColorsMap.size()" + partMaterialColorsMap.size());
+							auto it = m_CloAndPLMColorwayMap.find(partMaterailColorName);
+							if (it != m_CloAndPLMColorwayMap.end())
+							{
+
+								string cloColorwayName = it->second;
+								auto itr = partMaterialColorsMap.find(cloColorwayName);
+								if (itr != partMaterialColorsMap.end())
+								{
+									string colorid = itr->second;
+									Logger::Debug("CreateProduct -> CreateBom()-> colorid" + colorid);
+									if (FormatHelper::HasContent(colorid))
+									{
+										string data = "{\"pmc_color\":\"" + colorid + "\"}";
+										Logger::Debug("AddNewBom -> CreateTableforEachSection() -> data" + data);
+										string resultJsonString = RESTAPI::PutRestCall(data, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::PART_MATERIAL_COLOR_API + "/" + partMaterailColorId, "content-type: application/json");
+
+									}
+								}
+							}
+
+						}
+
+					}
+
 				}
 
 				//UTILITY_API->DisplayMessageBox("attJson" + to_string(attJson));

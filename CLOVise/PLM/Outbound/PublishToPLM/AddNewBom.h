@@ -47,7 +47,7 @@ namespace CLOVise
 		void BackupBomDetails();
 		void populateTechPackDataInBom();
 		void RestoreBomDetails();
-		
+		bool ValidateBomFields();
 		map<string, QTableWidget*> m_bomSectionTableInfoMap;
 		map<QPushButton*, QTableWidget*> m_addMaterialButtonAndTableMap;
 		map<QPushButton*, QTableWidget*> m_addSpecialMaterialButtonAndTableMap;

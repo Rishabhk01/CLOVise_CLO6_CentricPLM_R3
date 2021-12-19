@@ -71,15 +71,14 @@ const QString PLM_NAME = "Centric 8";
 #define DEFAULT_IMAGE_COLUMN  3
 
 
-
-#define DELETE_BUTTON_COLUMN  0
-#define TYPE_COLUMN  3
-#define COMMON_COLOR_COLUMN  7
-
-
-
 //Bom Table columns
-#define TYPE_COLUMN  2
+#define DELETE_BUTTON_COLUMN  0
+#define MATERIAL_NAME_COLUMN  1
+#define MATERIAL_TYPE_COLUMN  2
+#define COMMON_COLOR_COLUMN  5
+
+
+
 
 
 

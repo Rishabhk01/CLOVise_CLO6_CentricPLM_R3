@@ -848,7 +848,7 @@ namespace CLOVise
 					UTILITY_API->SetProgress("Loading Create Product..", (qrand() % 101));
 					CreateProduct::GetInstance()->AddMaterialInBom();
 					CreateProduct::GetInstance()->setModal(true);
-					CreateProduct::GetInstance()->exec();
+					CreateProduct::GetInstance()->show();
 				}
 				if (Configuration::GetInstance()->GetCloseResultsDialogue())
 				{

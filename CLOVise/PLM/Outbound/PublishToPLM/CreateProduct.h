@@ -167,6 +167,7 @@ namespace CLOVise
 		std::map<QString, QString> m_colorwayImageLabelsMap;
 		std::map<QString, QString> m_styleImageLabelsMap;
 		std::map<string, string> m_digiCodeNamesMap;
+		std::map<string, string> m_CloAndPLMColorwayMap;
 		QStringList m_digiCodeValue;
 		string m_collectionId;
 		QLabel* m_totalCountLabel;
