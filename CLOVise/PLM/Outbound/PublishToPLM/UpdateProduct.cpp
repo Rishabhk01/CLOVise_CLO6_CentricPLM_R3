@@ -893,15 +893,10 @@ namespace CLOVise
 					string productId = Helper::GetJSONValue<string>(detailJson, ATTRIBUTE_ID, true);
 					Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 3");
 					
-					if (PublishToPLMData::GetInstance()->GetIsCreateNewGLBDocument())
-					{
-						Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 4");
-						uploadGLBFile(productId);
-					}
 					if (PublishToPLMData::GetInstance()->GetIsCreateNewDocument())
 					{
 						documentId = uploadDocument(productId);
-				        uploadGLBFile(productId);
+						uploadGLBFile(productId);						
 					}
 				   
 					else
@@ -911,11 +906,18 @@ namespace CLOVise
 						documentId = reviseDocument(latestRevisionId);
 						if (PublishToPLMData::GetInstance()->GetIsCreateNewGLBDocument())
 						{
+							Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 6======");
+							uploadGLBFile(productId);
+						}
+						else
+						{
+							Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 7======");
 							string latestGLBRevisionId = PublishToPLMData::GetInstance()->GetGLBLatestRevision();
 							reviseDocument(latestGLBRevisionId);
-						}
-						
+						}					
 					}
+					
+
 					Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 6");
 					UTILITY_API->SetProgress("Publishing to PLM", (qrand() % 101));
 					CreateAndUpdateColorways(productId);
@@ -962,6 +964,7 @@ namespace CLOVise
 					m_isSaveClicked = false;
 					PublishToPLMData::GetInstance()->SetUpdateStyleCacheData(m_downloadedStyleJson);
 					ui_tabWidget->setCurrentIndex(0);
+					PublishToPLMData::GetInstance()->SetIsCreateNewGLBDocument(false);
 					m_totalCountLabel->setText("Total count: 0");
 					RESTAPI::SetProgressBarData(0, "", false);
 					//this->hide();
@@ -1158,6 +1161,12 @@ namespace CLOVise
 		return latestRevisionId;
 	}
 
+	/*
+		* Description - uploadGLBFile() method used to Upload GLb file into PLM with .zip format
+		* Parameter -
+		* Exception -
+		* Return -
+		*/
 	string UpdateProduct::uploadGLBFile(string _productId)
 	{
 		Logger::Debug("UpdateProduct uploadGLBFile() start....");

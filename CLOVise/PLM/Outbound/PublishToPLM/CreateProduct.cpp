@@ -1052,33 +1052,52 @@ namespace CLOVise
 		Logger::Debug("Create product uploadDocument() end....");
 		return latestRevisionId;
 	}
-
+	/*
+		* Description - uploadGLBFile() method used to Upload GLb file into PLM with .zip format
+		* Parameter -
+		* Exception -
+		* Return -
+		*/
 	void CreateProduct::uploadGLBFile(string _productId)
 	{
-		Logger::Debug("Create product uploadGLBFile() start....");	
+		Logger::Debug("CreateProduct uploadGLBFile() start....");	
+		try {
+			string _3DModelFilePath = UTILITY_API->GetProjectFilePath();
+			Helper::EraseSubString(_3DModelFilePath, UTILITY_API->GetProjectName());
+			string m_GLBFilePath = _3DModelFilePath + UTILITY_API->GetProjectName();
+			string FileName = UTILITY_API->GetProjectName() + ".zip";
 
-		string _3DModelFilePath = UTILITY_API->GetProjectFilePath();
-		Helper::EraseSubString(_3DModelFilePath, UTILITY_API->GetProjectName());
-		string m_GLBFilePath = _3DModelFilePath+ UTILITY_API->GetProjectName();
-		string FileName = UTILITY_API->GetProjectName()+".zip";
+			Marvelous::ImportExportOption option;
+			option.bSaveInZip = true;
+			EXPORT_API->ExportGLTF(m_GLBFilePath + GLB, option, true);
+			Logger::Debug("m_GLBFilePath::" + m_GLBFilePath);
+			RESTAPI::SetProgressBarData(20, "Uploading GLB file to PLM...", true);
+			string postField = getPublishRequestParameter(m_GLBFilePath + ".zip", FileName);
 
-		Marvelous::ImportExportOption option;
-		option.bSaveInZip = true;
-		EXPORT_API->ExportGLTF(m_GLBFilePath + GLB, option, true);
-		Logger::Debug("m_GLBFilePath::"+ m_GLBFilePath);
-		RESTAPI::SetProgressBarData(20, "Uploading GLB file to PLM...", true);
-		string postField = getPublishRequestParameter(m_GLBFilePath+".zip", FileName);
-		
-		string resultJsonString;
+			string resultJsonString;
 
-		resultJsonString = RESTAPI::PostRestCall(postField, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::DOCUMENT_CREATE_API+ "/" + _productId + "/upload", "content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
+			resultJsonString = RESTAPI::PostRestCall(postField, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::DOCUMENT_CREATE_API + "/" + _productId + "/upload", "content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 
-		if (!FormatHelper::HasContent(resultJsonString))
+			if (!FormatHelper::HasContent(resultJsonString))
+			{
+				throw "Unable to initiliaze Document Configuration. Please try again or Contact your System Administrator.";
+			}
+		}
+		catch (string msg)
 		{
-			throw "Unable to initiliaze Document Configuration. Please try again or Contact your System Administrator.";
+			Logger::Error("CreateProduct uploadGLBFile() Exception - " + msg);
+		}
+		catch (exception & e)
+		{
+			Logger::Error("CreateProduct uploadGLBFile() Exception - " + string(e.what()));
+		}
+		catch (const char* msg)
+		{
+			wstring wstr(msg, msg + strlen(msg));
+			Logger::Error("CreateProduct uploadGLBFile() Exception - " + string(msg));
 		}
 		RESTAPI::SetProgressBarData(0, "", false);
-		Logger::Debug("Create product uploadZip() end....");
+		Logger::Debug("CreateProduct uploadZip() end....");
 	}
 	/*
 	* Description - exportZPRJ() method used to export a 3D model and visual images.

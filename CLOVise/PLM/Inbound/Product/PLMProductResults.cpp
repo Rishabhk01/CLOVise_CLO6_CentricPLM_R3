@@ -1246,6 +1246,7 @@ namespace CLOVise
 					}
 					else
 					{
+						PublishToPLMData::GetInstance()->SetIsCreateNewGLBDocument(false);
 						for (int attachmenAarrayCount = 0; attachmenAarrayCount < glbAttachmentjson.size(); attachmenAarrayCount++)
 						{
 							json attachmentCountJson = Helper::GetJSONParsedValue<int>(glbAttachmentjson, attachmenAarrayCount, false);
