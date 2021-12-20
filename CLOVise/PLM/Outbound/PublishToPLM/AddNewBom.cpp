@@ -772,6 +772,7 @@ namespace CLOVise
 
 			if (table == nullptr)
 				continue;
+
 			costInfoStrVal = colorwayListJson["colorwayCostInfo"].dump();
 			json costInfoJson = json::parse(costInfoStrVal);
 			quantityVal = Helper::GetJSONValue<string>(costInfoJson, "rollLength", true);
@@ -1354,7 +1355,8 @@ namespace CLOVise
 			auto itr = m_bomSectionTableInfoMap.find(tableName.toStdString());
 			json placementProductTypeJson;
 			string queryParamsForMaterial = "";
-			if (itr != m_bomSectionTableInfoMap.end())
+		
+			if (itr != m_bomSectionTableInfoMap.end() && tableName!="Blank")
 			{
 				placementProductTypeJson = GetMaterialTypeForSection(tableName.toStdString());
 				for (int i = 0; i < placementProductTypeJson.size(); i++)
@@ -1363,8 +1365,9 @@ namespace CLOVise
 					queryParamsForMaterial = queryParamsForMaterial + "&product_type=" + bomPlacementProductTypeId;
 
 				}
-				Configuration::GetInstance()->SetQueryParameterForMaterial(queryParamsForMaterial);
+				
 			}
+			Configuration::GetInstance()->SetQueryParameterForMaterial(queryParamsForMaterial);
 		}
 		Logger::Debug("AddNewBom -> onClickAddFromMaterialButton () button" + to_string(long(button)));
 		CreateProduct::GetInstance()->hide();

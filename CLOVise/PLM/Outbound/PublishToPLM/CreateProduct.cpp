@@ -927,6 +927,7 @@ namespace CLOVise
 					AddNewBom::GetInstance()->ClearBomData();
 					m_bomAddButton->show();
 					m_bomAddButton->setEnabled(true);
+					PublishToPLMData::GetInstance()->m_isSaveClicked = false;
 					ui_tabWidget->setCurrentIndex(OVERVIEW_TAB);
 					m_totalCountLabel->setText("Total count: 0");
 					RESTAPI::SetProgressBarData(0, "", false);
@@ -3264,27 +3265,33 @@ namespace CLOVise
 
 						if (QWidget* widget = sectionTable->cellWidget(rowCount, columnCount))// Half cooked code for part material color
 						{
-							string colorId = widget->property("colorId").toString().toStdString();
+							
+							string colorId, colorId2;
+							string colorId1 = widget->property("colorId").toString().toStdString();
+
+
+							Logger::Debug("Create product CreateBom() colorId1" + colorId1);
+							Logger::Debug("CreateProduct -> CreateBom () 8");
+							if (QLayout* layout = widget->layout())
+							{
+								Logger::Debug("CreateProduct -> CreateBom () 9");
+								{
+									auto gridLayout = dynamic_cast<QGridLayout*>(widget->layout());
+									QWidget *childwidget = gridLayout->itemAtPosition(0, 0)->widget();
+									//attInternalName = columnName.toStdString();
+									colorId2 = childwidget->property("colorId").toString().toStdString();
+									Logger::Debug("Create product CreateBom() colorId2" + colorId2);
+
+								}
+							}
+
+							if (FormatHelper::HasContent(colorId1))
+								colorId = colorId1;
+							else
+								colorId = colorId2;
+
 							if (FormatHelper::HasContent(colorId))
 								partMaterialColorsMap.insert(make_pair(columnName.toStdString(), colorId));
-
-
-							Logger::Debug("Create product CreateBom() colorId1" + colorId);
-							Logger::Debug("CreateProduct -> CreateBom () 8");
-							//if (QLayout* layout = widget->layout())
-							//{
-							//	Logger::Debug("CreateProduct -> CreateBom () 9");
-							//	{
-							//		auto gridLayout = dynamic_cast<QGridLayout*>(widget->layout());
-							//		QWidget *childwidget = gridLayout->itemAtPosition(0, 0)->widget();
-							//		//attInternalName = columnName.toStdString();
-							//		colorId = childwidget->property("colorId").toString().toStdString();
-							//		if (FormatHelper::HasContent(colorId))
-							//			partMaterialColorsMap.insert(make_pair(columnName.toStdString(), colorId));
-							//		Logger::Debug("Create product CreateBom() colorId2" + colorId);
-
-							//	}
-							//}
 						}
 
 					}
