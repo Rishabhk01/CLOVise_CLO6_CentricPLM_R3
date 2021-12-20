@@ -126,6 +126,7 @@ namespace CLOVise
 		void AddRows(int _count, string _objectId, string _objectName, string _rgbValue, string _code, string _pantone, QStringList _colorwayNamesList, json _colorwayJson = NULL, string _colorwayId = "");
 		json ReadVisualUIFieldValue(QTreeWidget* _searchTree, int _rowIndex);
 		string uploadDocument(string _productId);
+		string uploadGLBFile(string _productId);
 		void clearDependentComboBox(QString _lable, QTreeWidget* _searchTree);
 		void reject();
 		string reviseDocument(string _revisionId);

@@ -103,6 +103,7 @@ namespace CLOVise
 		void clearDependentComboBox(QString _lable, QTreeWidget* _searchTree);
 		void reject();
 		void exportTurntableImages();
+		void uploadGLBFile(string _productId);
 
 		static CreateProduct* _instance;
 		json m_parameterJson;
