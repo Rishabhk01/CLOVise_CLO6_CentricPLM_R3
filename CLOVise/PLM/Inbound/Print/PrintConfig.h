@@ -90,7 +90,7 @@ class PrintConfig
 		json m_searchCriteriaJson = json::object();
 		QStringList m_attScopes;
 		string m_maxPrintResultsLimit;
-
+		map<string, string> m_printDesignIdNameMap;
 		bool restData = true;
 
 	json m_printResults = json::array();

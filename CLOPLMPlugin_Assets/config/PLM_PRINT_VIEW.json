@@ -72,7 +72,7 @@
             "attCurrencyCode": null,
             "attDecimalFigures": 0,
             "attDefaultValue": null,
-            "attKey": "print_designs",
+            "attKey": "print_design",
             "attName": "Print Design",
             "attObjectLevel": null,
             "attScope": "PRINT",

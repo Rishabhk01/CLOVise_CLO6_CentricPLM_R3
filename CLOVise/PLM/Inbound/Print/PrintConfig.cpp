@@ -372,6 +372,15 @@ void  PrintConfig::UpdateResultJson(json& _listjson)
 	Logger::Info("PrintConfig -> UpdateResultJson() Start");
 		string objectName = Helper::GetJSONValue<string>(_listjson, NODE_NAME_KEY, true);
 		string objectId = Helper::GetJSONValue<string>(_listjson, "id", true);
+		string printDesignId = Helper::GetJSONValue<string>(_listjson, "parent", true);
+		string printDesignName = "";
+		auto itr = m_printDesignIdNameMap.find(printDesignId);
+		if (itr != m_printDesignIdNameMap.end())
+		{
+			printDesignName = itr->second;
+		}
+
+		_listjson["print_design"] = printDesignName;
 		_listjson[OBJECT_NAME_KEY] = objectName;
 		_listjson[OBJECT_ID_KEY] = objectId;
 		Logger::Info("PrintConfig -> UpdateResultJson() End");
@@ -743,6 +752,17 @@ void PrintConfig::SetDataFromResponse(json _param)
 		{
 			Helper::GetCentricErrorMessage(resultResponse);
 			throw runtime_error(resultResponse);
+		}
+
+		json printDesignResponseJson = Helper::makeRestcallGet(RESTAPI::SEARCH_PRINT_DESIGN_API, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading print design details..");
+		
+		for (int i = 0; i < printDesignResponseJson.size(); i++)
+		{
+			json attJson = Helper::GetJSONParsedValue<int>(printDesignResponseJson, i, false);;///use new method
+			string attName = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_NAME, true);
+			Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON attName: " + attName);
+			string attId = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_ID, true);		
+			m_printDesignIdNameMap.insert(make_pair(attId, attName));
 		}
 		json printResults = json::array();
 		if (FormatHelper::HasContent(resultResponse))
