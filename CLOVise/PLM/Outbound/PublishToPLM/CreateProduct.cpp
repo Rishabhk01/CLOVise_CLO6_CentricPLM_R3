@@ -1660,7 +1660,7 @@ namespace CLOVise
 			m_currentColorSpec = colorSpecId;
 
 		this->hide();
-		ColorConfig::GetInstance()->m_mode = "Creacte";
+		ColorConfig::GetInstance()->m_mode = "Create";
 		ColorConfig::GetInstance()->InitializeColorData();
 		ColorConfig::GetInstance()->m_isSearchColor = false;		
 		PLMColorSearch::GetInstance()->setModal(true);
