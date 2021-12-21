@@ -990,10 +990,13 @@ namespace CLOVise
 					DownloadDialogObject.DisplyMessage("Download Completed.");
 					DownloadDialogObject.setModal(true);
 					DownloadDialogObject.exec();
-						if (FormatHelper::HasContent(m_selectedIdnameText))
-						     PublishToPLMData::GetInstance()->SetIsCreateNewDocument(false);
-						else
-							PublishToPLMData::GetInstance()->SetIsCreateNewDocument(true);
+
+					UTILITY_API->UpdateColorways(true);	// update colorways tab in CLO
+
+					if (FormatHelper::HasContent(m_selectedIdnameText))
+						PublishToPLMData::GetInstance()->SetIsCreateNewDocument(false);
+					else
+						PublishToPLMData::GetInstance()->SetIsCreateNewDocument(true);
 				}
 			}
 			if (Configuration::GetInstance()->GetCloseResultsDialogue())
