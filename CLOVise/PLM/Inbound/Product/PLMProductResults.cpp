@@ -990,10 +990,13 @@ namespace CLOVise
 					DownloadDialogObject.DisplyMessage("Download Completed.");
 					DownloadDialogObject.setModal(true);
 					DownloadDialogObject.exec();
-						if (FormatHelper::HasContent(m_selectedIdnameText))
-						     PublishToPLMData::GetInstance()->SetIsCreateNewDocument(false);
-						else
-							PublishToPLMData::GetInstance()->SetIsCreateNewDocument(true);
+
+					UTILITY_API->UpdateColorways(true);	// update colorways tab in CLO
+
+					if (FormatHelper::HasContent(m_selectedIdnameText))
+						PublishToPLMData::GetInstance()->SetIsCreateNewDocument(false);
+					else
+						PublishToPLMData::GetInstance()->SetIsCreateNewDocument(true);
 				}
 			}
 			if (Configuration::GetInstance()->GetCloseResultsDialogue())
@@ -1171,12 +1174,18 @@ namespace CLOVise
 
 					Logger::Debug("_selectedIdList.contains(QString::fromStdString(styleId)" + styleId);
 					string attachmentResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::ATTACHMENTS_LATEST_REVISION_RESULTS_API + styleId + "?revision_details=true&limit=100&decode=true&file_ext=" + ZPRJ, APPLICATION_JSON_TYPE, "");
+					string glbAttachmentResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::ATTACHMENTS_LATEST_REVISION_RESULTS_API + styleId + "?revision_details=true&limit=100&decode=true&file_ext=" + ZIP, APPLICATION_JSON_TYPE, "");
 					//json documentjson = Helper::GetJSONParsedValue<string>(m_productResults[selctedIdCount], "documents", false);
 					Logger::RestAPIDebug("_selectedIdList.contains(QString::fromStdString(styleId)::documentjson::" + attachmentResponse);
 					if (FormatHelper::HasError(attachmentResponse))
 					{
 						Helper::GetCentricErrorMessage(attachmentResponse);
 						throw runtime_error(attachmentResponse);
+					}
+					if (FormatHelper::HasError(glbAttachmentResponse))
+					{
+						Helper::GetCentricErrorMessage(glbAttachmentResponse);
+						throw runtime_error(glbAttachmentResponse);
 					}
 					aditionalResultWidget->setEnabled(true);
 					json attachmentjson = json::parse(attachmentResponse);
@@ -1232,6 +1241,43 @@ namespace CLOVise
 						//item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 						aditionalResultWidget->setProperty(displayDetails.toStdString().c_str(), QString::fromStdString(documentId));
 						aditionalResultWidget->addItem(item);
+					}
+					json glbAttachmentjson = json::parse(glbAttachmentResponse);
+					if (glbAttachmentjson.size() == 0)
+					{
+						PublishToPLMData::GetInstance()->SetIsCreateNewGLBDocument(true);
+					}
+					else
+					{
+						PublishToPLMData::GetInstance()->SetIsCreateNewGLBDocument(false);
+						for (int attachmenAarrayCount = 0; attachmenAarrayCount < glbAttachmentjson.size(); attachmenAarrayCount++)
+						{
+							json attachmentCountJson = Helper::GetJSONParsedValue<int>(glbAttachmentjson, attachmenAarrayCount, false);
+							string documentName = Helper::GetJSONValue<string>(attachmentCountJson, NODE_NAME_KEY, true);
+
+							string documentId = Helper::GetJSONValue<string>(attachmentCountJson, "id", true);
+
+							if (!FormatHelper::HasContent(documentName))
+								documentName = "(unnamed)";
+							json revisionDetailsJson = Helper::GetJSONParsedValue<string>(attachmentCountJson, "revision_details", false);
+							Logger::Logger("revisionDetailsJson===========" + to_string(revisionDetailsJson));
+							string modifiedAt = Helper::GetJSONValue<string>(attachmentCountJson, "_modified_at", true);
+							string latestVersionAttName = "";
+							string latestRevisionId = "";
+							//string modifiedAt = "";
+							for (int attachmenAarrayCount = 0; attachmenAarrayCount < revisionDetailsJson.size(); attachmenAarrayCount++)
+							{
+								json attachmentCountJson = Helper::GetJSONParsedValue<int>(revisionDetailsJson, attachmenAarrayCount, false);
+								latestVersionAttName = Helper::GetJSONValue<string>(attachmentCountJson, "file_name", true);
+								Logger::Logger("latestVersionAttName===========" + latestVersionAttName);
+
+								latestRevisionId = Helper::GetJSONValue<string>(attachmentCountJson, ATTRIBUTE_ID, true);
+								Logger::Logger("latestRevisionId===========" + latestRevisionId);
+
+							}
+
+							PublishToPLMData::GetInstance()->SetGLBLatestRevision(latestRevisionId);
+						}
 					}
 					//aditionalResultWidget->show();
 					ui_3DDesignsLayout->addWidget(aditionalResultWidget);

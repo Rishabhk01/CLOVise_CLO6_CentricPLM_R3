@@ -779,6 +779,16 @@ void PublishToPLMData::SetLatestRevision(string _latestRevisionId)
 {
 	m_latestDocRevisionId = _latestRevisionId;
 }
+
+string PublishToPLMData::GetGLBLatestRevision()
+{
+	return m_latestGLBRevisionId;
+}
+
+void PublishToPLMData::SetGLBLatestRevision(string _latestRevisionId)
+{
+	m_latestGLBRevisionId = _latestRevisionId;
+}
 void PublishToPLMData::SetIsCreateNewDocument(bool _isNewDocument)
 {
 	m_createNewDocument = _isNewDocument;
@@ -787,6 +797,16 @@ bool PublishToPLMData::GetIsCreateNewDocument()
 {
 	return m_createNewDocument;
 }
+void PublishToPLMData::SetIsCreateNewGLBDocument(bool _isNewGLBDocument)
+{
+	m_createNewGLBDocument = _isNewGLBDocument;
+}
+bool PublishToPLMData::GetIsCreateNewGLBDocument()
+{
+	return m_createNewGLBDocument;
+}
+
+
 
 /*
 * Description - ResetPublishData() method is reset the publish data.

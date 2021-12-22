@@ -82,8 +82,12 @@ class PublishToPLMData
 		 void SetUpdateStyleCacheData(json _upsateStyleJson);
 		 string GetLatestRevision();
 		 void  SetLatestRevision(string _latestRevisionId);
+		 string GetGLBLatestRevision();
+		 void  SetGLBLatestRevision(string _latestRevisionId);
 		 void SetIsCreateNewDocument(bool _isNewDocument);
 		 bool GetIsCreateNewDocument();
+		 void SetIsCreateNewGLBDocument(bool _isNewGLBDocument);
+		 bool GetIsCreateNewGLBDocument();
 		 
 		 void ResetPublishData();
 
@@ -111,5 +115,7 @@ class PublishToPLMData
 		bool m_productIdKeyExists = false;
 		int m_maxZPRJUploadFileSize = 0;
 		string m_latestDocRevisionId;
+		string m_latestGLBRevisionId;
 		bool m_createNewDocument;
+		bool m_createNewGLBDocument=false;
 };
