@@ -895,6 +895,7 @@ namespace CLOVise
 					exportTurntableImages();
 					uploadColorwayImages();
 					LinkImagesToColorways(productId);
+					if(AddNewBom::GetInstance()->IsBomCreated())
 					CreateBom(productId);
 					//Logger::Debug("Create product onPublishToPLMClicked() 1....");
 					UTILITY_API->NewProject();
@@ -1970,15 +1971,20 @@ namespace CLOVise
 				else
 					m_isCreateColorSpec = false;
 
-				if (m_selectedStyleTypeIndex != m_prevSelectedStyleTypeIndex && ui_colorwayTable->rowCount() > 0)
+				if ((m_selectedStyleTypeIndex != m_prevSelectedStyleTypeIndex && ui_colorwayTable->rowCount() > 0) || (m_selectedStyleTypeIndex != m_prevSelectedStyleTypeIndex && AddNewBom::GetInstance()->IsBomCreated()))
 				{
 					if (m_selectedStyleTypeIndex != 0)
 					{
+						QString message;
+						QString bomMessage = "";
 						QMessageBox* deleteMessage = new QMessageBox();
 						deleteMessage->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
 						deleteMessage->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 						deleteMessage->setIcon(QMessageBox::Question);
-						deleteMessage->setText("Changing the Style Type will delete the existing information on the Colorway. Are you sure you want to proceed? ");
+						if (AddNewBom::GetInstance()->IsBomCreated())
+							bomMessage = " and BOM tab";
+						message = "Changing the Style Type will delete the existing information on the Colorway" + bomMessage +". Are you sure you want to proceed? ";
+						deleteMessage->setText(message);
 
 						if (deleteMessage->exec() == QMessageBox::Yes)
 						{
@@ -2861,7 +2867,11 @@ namespace CLOVise
 			m_colorSpecList.clear();
 			ui_tabWidget->setCurrentIndex(OVERVIEW_TAB);
 			m_totalCountLabel->setText("Total count: 0");
-
+			m_CloAndPLMColorwayMap.clear();
+			ClearBomSectionLayout();
+			AddNewBom::GetInstance()->ClearBomData();
+			m_bomAddButton->show();
+			m_bomAddButton->setEnabled(true);
 
 			//ui_sectionLayout->removeWidget();
 
@@ -3207,7 +3217,7 @@ namespace CLOVise
 		bomData.erase("bom_template");
 		bomData["style_id"] = _productId;
 		string bomMetaData = to_string(bomData);
-		UTILITY_API->DisplayMessageBox(to_string(bomData));
+		//UTILITY_API->DisplayMessageBox(to_string(bomData));
 		string response = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::CREATE_BOM_API + "/" + bomTemplateId, &bomMetaData, headerNameAndValueList, "Loading");
 		if (!FormatHelper::HasContent(response))
 		{

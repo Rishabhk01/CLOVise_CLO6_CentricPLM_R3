@@ -48,6 +48,7 @@ namespace CLOVise
 		void populateTechPackDataInBom();
 		void RestoreBomDetails();
 		bool ValidateBomFields();
+		bool IsBomCreated();
 		map<string, QTableWidget*> m_bomSectionTableInfoMap;
 		map<QPushButton*, QTableWidget*> m_addMaterialButtonAndTableMap;
 		map<QPushButton*, QTableWidget*> m_addSpecialMaterialButtonAndTableMap;
@@ -87,8 +88,9 @@ namespace CLOVise
 		QStringList m_bomTableColumnlist;
 		QStringList m_bomTableColumnKeys;
 		QStringList m_materialTypeList;
+		QStringList m_ColorwaysAddedInBom;
 		json m_bomTableColumnJson;
-		
+		bool m_bomCreated;
 		
 	private slots:
 		void onBackButtonClicked();
