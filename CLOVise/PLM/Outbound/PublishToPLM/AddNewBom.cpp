@@ -560,7 +560,11 @@ namespace CLOVise
 		Logger::Debug("AddNewBom onCreateButtonClicked() End....");
 	}
 
-
+	/*Description - IsBomCreated() method is to get information BOM created or not
+		* Parameter -
+		*Exception -
+		*Return -
+		*/
 	bool AddNewBom::IsBomCreated()
 	{
 		return m_bomCreated;
@@ -817,6 +821,13 @@ namespace CLOVise
 		}
 		return table;
 	}
+
+	/*
+Description - GetMaterialTypeForSection(string _sectionName) method used to get material type for section.
+	* Parameter -string
+	* Exception -
+	*Return -
+	*/
 	json AddNewBom::GetMaterialTypeForSection(string _sectionName)
 	{
 		auto itr = m_bomSectionNameAndTypeMap.find(_sectionName);
@@ -827,6 +838,13 @@ namespace CLOVise
 		}
 		return materialTypeJson;
 	}
+
+	/*
+Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString _tableName, json _placementMateriaTypeJson, bool _userAddedRow) method used to add row in bom table.
+	* Parameter -string
+	* Exception -
+	*Return -
+	*/
 	void AddNewBom::AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString _tableName, json _placementMateriaTypeJson, bool _userAddedRow)
 	{
 
@@ -2259,6 +2277,9 @@ Description - ClearBomData() method used to clear all the bom related variables.
 		m_BomMetaData.clear();
 		m_sectionMaterialTypeMap.clear();
 		m_bomCreated = false;
+		CreateProduct::GetInstance()->m_bomName->setText("");
+		CreateProduct::GetInstance()->m_bomTemplateName->setText("");
+		CreateProduct::GetInstance()->ClearAllFields(m_createBomTreeWidget);
 		Logger::Debug("AddNewBom -> ClearBomData() -> End");
 	}
 
