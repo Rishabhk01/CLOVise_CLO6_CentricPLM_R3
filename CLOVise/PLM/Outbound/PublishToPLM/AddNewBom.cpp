@@ -72,6 +72,7 @@ namespace CLOVise
 		m_deleteButtonSignalMapper = new QSignalMapper();
 		m_mappedColorwaysArr = json::array();
 		m_colorwayOverridesJson = json::array();
+		m_bomCreated = false;
 		m_createButton = CVWidgetGenerator::CreatePushButton("Create", ADD_HOVER_ICON_PATH, "Create", PUSH_BUTTON_STYLE, 30, true);
 		m_backButton = CVWidgetGenerator::CreatePushButton("Back", BACK_HOVER_PATH, "Back", PUSH_BUTTON_STYLE, 30, true);
 
@@ -515,13 +516,14 @@ namespace CLOVise
 				populateTechPackDataInBom();
 			}
 
-			UTILITY_API->DisplayMessageBox("m_BomMetaData" + to_string(m_BomMetaData));
+			//UTILITY_API->DisplayMessageBox("m_BomMetaData" + to_string(m_BomMetaData));
 			CreateProduct::GetInstance()->m_bomAddButton->hide();
 			if (FormatHelper::HasContent(bomName))
 				CreateProduct::GetInstance()->m_bomName->setText(QString::fromStdString(bomName));
 			else
 				CreateProduct::GetInstance()->m_bomName->setText("");
 
+			m_bomCreated = true;
 			UTILITY_API->DeleteProgressBar(true);
 			CreateProduct::GetInstance()->setModal(true);
 			CreateProduct::GetInstance()->show();
@@ -558,7 +560,15 @@ namespace CLOVise
 		Logger::Debug("AddNewBom onCreateButtonClicked() End....");
 	}
 
-
+	/*Description - IsBomCreated() method is to get information BOM created or not
+		* Parameter -
+		*Exception -
+		*Return -
+		*/
+	bool AddNewBom::IsBomCreated()
+	{
+		return m_bomCreated;
+	}
 	/*
 * Description - CreateTableforEachSection() method is to create sections as per the template selected for create Bom.
 * Parameter -
@@ -711,7 +721,7 @@ namespace CLOVise
 			json colorwayListJson = json::parse(cwlStrVal);
 			json rowDataJson = json::object();
 			QString tableName;
-			QTableWidget* table;
+			QTableWidget* table= nullptr;
 			if (materialCountJson.contains("apiMetaData"))// For In Library Materials
 			{
 
@@ -760,6 +770,12 @@ namespace CLOVise
 
 
 				}
+				else
+				{
+					name = Helper::GetJSONValue<string>(materialCountJson, "name", true);
+					table = GetSectionTable("Blank");;
+					tableName = "Blank";
+				}
 
 
 			}
@@ -805,6 +821,13 @@ namespace CLOVise
 		}
 		return table;
 	}
+
+	/*
+Description - GetMaterialTypeForSection(string _sectionName) method used to get material type for section.
+	* Parameter -string
+	* Exception -
+	*Return -
+	*/
 	json AddNewBom::GetMaterialTypeForSection(string _sectionName)
 	{
 		auto itr = m_bomSectionNameAndTypeMap.find(_sectionName);
@@ -815,6 +838,13 @@ namespace CLOVise
 		}
 		return materialTypeJson;
 	}
+
+	/*
+Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString _tableName, json _placementMateriaTypeJson, bool _userAddedRow) method used to add row in bom table.
+	* Parameter -string
+	* Exception -
+	*Return -
+	*/
 	void AddNewBom::AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString _tableName, json _placementMateriaTypeJson, bool _userAddedRow)
 	{
 
@@ -1466,33 +1496,36 @@ namespace CLOVise
 			Logger::Logger("frontJsonfrontJsonfrontJson - " + to_string(frontJson));
 			string cloColorName = Helper::GetJSONValue<string>(frontJson, "baseColorName", true);
 			string colorApiMetadataStr = Helper::GetJSONValue<string>(frontJson, TECHPACK_API_META_DATA_KEY, false);
-			json colorApimetaDataJson = json::parse(colorApiMetadataStr);
-			Logger::Logger("colorApimetaDataJsoncolorApimetaDataJsoncolorApimetaDataJson - " + to_string(colorApimetaDataJson));
-			string colorId = Helper::GetJSONValue<string>(colorApimetaDataJson, "CLOVISE_COLOR_ID", true);
-			for (int mappedColorwaysCount = 0; mappedColorwaysCount < m_mappedColorwaysArr.size(); mappedColorwaysCount++)
+			if (FormatHelper::HasContent(colorApiMetadataStr))
 			{
-				string mappedColorwaysStr = m_mappedColorwaysArr[mappedColorwaysCount].dump();
-				json mappedColorwaysJson = json::parse(mappedColorwaysStr);
-				Logger::Logger("mappedColorwaysJsonmappedColorwaysJsonmappedColorwaysJson - " + to_string(mappedColorwaysJson));
-				string colorwayIndex = Helper::GetJSONValue<string>(mappedColorwaysJson, "colorwayIndex", true);
-				string colorwayName = Helper::GetJSONValue<string>(mappedColorwaysJson, "colorwayName", true);
-				Logger::Logger("colorwayIndexcolorwayIndex - " + (colorwayIndex));
-				if (to_string(colorwayListCount) == colorwayIndex)
+				json colorApimetaDataJson = json::parse(colorApiMetadataStr);
+				Logger::Logger("colorApimetaDataJsoncolorApimetaDataJsoncolorApimetaDataJson - " + to_string(colorApimetaDataJson));
+				string colorId = Helper::GetJSONValue<string>(colorApimetaDataJson, "CLOVISE_COLOR_ID", true);
+				for (int mappedColorwaysCount = 0; mappedColorwaysCount < m_mappedColorwaysArr.size(); mappedColorwaysCount++)
 				{
-					string colorwayObjectId = Helper::GetJSONValue<string>(mappedColorwaysJson, "plmColorwayObjId", true);
-					Logger::Logger("colorwayObjectIdcolorwayObjectId - " + (colorwayObjectId));
-					/*colorwayJson["colorwayObjectId"] = colorwayObjectId;
-					colorwayJson["colorwayName"] = colorwayName;
-					colorwayJson["colorObjectId"] = colorId;
-					colorwayJson["colorName"] = colorwayName;*/
-					colorJson["colorObjectId"] = colorId;
-					colorJson["colorwayName"] = colorwayName;
-					colorJson["colorName"] = cloColorName;
-					_rowDataJson["color"][count++] = colorJson;
+					string mappedColorwaysStr = m_mappedColorwaysArr[mappedColorwaysCount].dump();
+					json mappedColorwaysJson = json::parse(mappedColorwaysStr);
+					Logger::Logger("mappedColorwaysJsonmappedColorwaysJsonmappedColorwaysJson - " + to_string(mappedColorwaysJson));
+					string colorwayIndex = Helper::GetJSONValue<string>(mappedColorwaysJson, "colorwayIndex", true);
+					string colorwayName = Helper::GetJSONValue<string>(mappedColorwaysJson, "colorwayName", true);
+					Logger::Logger("colorwayIndexcolorwayIndex - " + (colorwayIndex));
+					if (to_string(colorwayListCount) == colorwayIndex)
+					{
+						string colorwayObjectId = Helper::GetJSONValue<string>(mappedColorwaysJson, "plmColorwayObjId", true);
+						Logger::Logger("colorwayObjectIdcolorwayObjectId - " + (colorwayObjectId));
+						/*colorwayJson["colorwayObjectId"] = colorwayObjectId;
+						colorwayJson["colorwayName"] = colorwayName;
+						colorwayJson["colorObjectId"] = colorId;
+						colorwayJson["colorName"] = colorwayName;*/
+						colorJson["colorObjectId"] = colorId;
+						colorJson["colorwayName"] = colorwayName;
+						colorJson["colorName"] = cloColorName;
+						_rowDataJson["color"][count++] = colorJson;
 
 
-					MaterialColorwayDetailsJson[colorwayName] = colorJson;
-					//m_colorwayOverridesJson.push_back(colorwayJson);
+						MaterialColorwayDetailsJson[colorwayName] = colorJson;
+						//m_colorwayOverridesJson.push_back(colorwayJson);
+					}
 				}
 			}
 		}
@@ -1519,6 +1552,9 @@ namespace CLOVise
 		QStringList bomTableColumnKeys;
 		tablecolumnList = m_bomTableColumnlist;
 		bomTableColumnKeys = m_bomTableColumnKeys;
+		QStringList bomColorwayColumns;
+		
+
 		if (CreateProduct::GetInstance()->m_mappedColorways.size() && m_bomSectionTableInfoMap.size() > 0)
 		{
 
@@ -1540,6 +1576,10 @@ namespace CLOVise
 				while (diff)
 				{
 					int columnNumber = bomColumnCountWOColorway + diff;
+					Logger::Debug("AddNewBom -> UpdateColorwayColumns () columnNumber" + to_string(columnNumber));
+					QString columnName = sectionTable->horizontalHeaderItem(columnNumber - 1)->text();
+					bomColorwayColumns.append(columnName);
+					if(!CreateProduct::GetInstance()->m_mappedColorways.contains(columnName))
 					sectionTable->removeColumn(columnNumber - 1);
 					diff--;
 				}
@@ -1554,6 +1594,7 @@ namespace CLOVise
 			//Logger::Debug("AddNewBom -> UpdateColorwayColumns () 11");
 			sectionTable->setColumnCount(bomTableColumnKeys.size());
 			sectionTable->setHorizontalHeaderLabels(tablecolumnList);
+			
 			Logger::Debug("AddNewBom -> UpdateColorwayColumns () sectionTable->rowCount()" + to_string(sectionTable->rowCount()));
 			for (int rowCount = 0; rowCount < sectionTable->rowCount(); rowCount++)
 			{
@@ -1568,65 +1609,119 @@ namespace CLOVise
 				for (int columnIndex = 0; columnIndex < sectionTable->columnCount(); columnIndex++)
 				{
 					QString columnName = sectionTable->horizontalHeaderItem(columnIndex)->text();
-					if (FormatHelper::HasContent(matrialId.toStdString()))
+					Logger::Debug("AddNewBom -> UpdateColorwayColumns1 () columnName" + columnName.toStdString());
+					Logger::Debug("AddNewBom -> UpdateColorwayColumns1 () bomColorwayColumns" + bomColorwayColumns.join(',').toStdString());
+
+					if (!bomColorwayColumns.contains(columnName))
 					{
-
-						//sectionTabl
-						Logger::Debug("AddNewBom -> UpdateColorwayColumns () 2");
-						if (CreateProduct::GetInstance()->m_mappedColorways.contains(columnName))
+						if (FormatHelper::HasContent(matrialId.toStdString()))
 						{
-							Logger::Debug("AddNewBom -> UpdateColorwayColumns () columnName" + columnName.toStdString());
-							auto colorwayJsonItr = m_colorwayMapForBom.find(matrialId.toStdString());
-							if (colorwayJsonItr != m_colorwayMapForBom.end())
-							{
-								json colorwayJson = colorwayJsonItr->second;
-								Logger::Debug("AddNewBom -> UpdateColorwayColumns () colorwayJson" + to_string(colorwayJson));
-								string colorwayNameStr = Helper::GetJSONValue<string>(colorwayJson, columnName.toStdString(), false);
-								json colorwayNameJson1 = json::parse(colorwayNameStr);
-								Logger::Debug("AddNewBom -> UpdateColorwayColumns () colorwayNameJson1" + to_string(colorwayNameJson1));
-								string colorObjId = Helper::GetJSONValue<string>(colorwayNameJson1, "colorObjectId", true);
-								Logger::Debug("AddNewBom -> UpdateColorwayColumns () colorObjId" + colorObjId);
-								if (FormatHelper::HasContent(colorObjId))
-								{
-									//json dependentFieldJson = Helper::makeRestcallGet("csi-requesthandler/api/v2/color_specifications/", "&skip=0&limit=100", "" + colorId, "");
-									string resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_COLOR_API + "/" + colorObjId, APPLICATION_JSON_TYPE, "");
-									Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> resultResponse" + resultResponse);
-									json ColoreResultJson = json::parse(resultResponse);
-									Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> ColoreResultJson" + to_string(ColoreResultJson));
-									string rgbValue = Helper::GetJSONValue<string>(ColoreResultJson, RGB_VALUE_KEY, true);
-									string colorName = Helper::GetJSONValue<string>(ColoreResultJson, ATTRIBUTE_NAME, true);
-									Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> rgbValue" + rgbValue);
 
-									rgbValue = Helper::FindAndReplace(rgbValue, "(", "");
-									rgbValue = Helper::FindAndReplace(rgbValue, ")", "");
-									rgbValue = Helper::FindAndReplace(rgbValue, " ", "");
-									Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> 3");
-									if (FormatHelper::HasContent(rgbValue))
+							//sectionTabl
+							Logger::Debug("AddNewBom -> UpdateColorwayColumns () 2");
+							if (CreateProduct::GetInstance()->m_mappedColorways.contains(columnName))
+							{
+								Logger::Debug("AddNewBom -> UpdateColorwayColumns () columnName" + columnName.toStdString());
+								auto colorwayJsonItr = m_colorwayMapForBom.find(matrialId.toStdString());
+								if (colorwayJsonItr != m_colorwayMapForBom.end())
+								{
+									json colorwayJson = colorwayJsonItr->second;
+									Logger::Debug("AddNewBom -> UpdateColorwayColumns () colorwayJson" + to_string(colorwayJson));
+									string colorwayNameStr = Helper::GetJSONValue<string>(colorwayJson, columnName.toStdString(), false);
+									json colorwayNameJson1 = json::parse(colorwayNameStr);
+									Logger::Debug("AddNewBom -> UpdateColorwayColumns () colorwayNameJson1" + to_string(colorwayNameJson1));
+									string colorObjId = Helper::GetJSONValue<string>(colorwayNameJson1, "colorObjectId", true);
+									Logger::Debug("AddNewBom -> UpdateColorwayColumns () colorObjId" + colorObjId);
+									if (FormatHelper::HasContent(colorObjId))
 									{
-										QStringList listRGB;
+										//json dependentFieldJson = Helper::makeRestcallGet("csi-requesthandler/api/v2/color_specifications/", "&skip=0&limit=100", "" + colorId, "");
+										string resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_COLOR_API + "/" + colorObjId, APPLICATION_JSON_TYPE, "");
+										Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> resultResponse" + resultResponse);
+										json ColoreResultJson = json::parse(resultResponse);
+										Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> ColoreResultJson" + to_string(ColoreResultJson));
+										string rgbValue = Helper::GetJSONValue<string>(ColoreResultJson, RGB_VALUE_KEY, true);
+										string colorName = Helper::GetJSONValue<string>(ColoreResultJson, ATTRIBUTE_NAME, true);
+										Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> rgbValue" + rgbValue);
+
+										rgbValue = Helper::FindAndReplace(rgbValue, "(", "");
+										rgbValue = Helper::FindAndReplace(rgbValue, ")", "");
+										rgbValue = Helper::FindAndReplace(rgbValue, " ", "");
+										Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> 3");
+										if (FormatHelper::HasContent(rgbValue))
+										{
+											QStringList listRGB;
+											QWidget* p_widget = new QWidget(sectionTable);
+											QGridLayout* gridLayout = new QGridLayout(sectionTable);
+											gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+											gridLayout->setContentsMargins(0, 0, 0, 0);
+											QString colorRGB = QString::fromStdString(rgbValue);
+											listRGB = colorRGB.split(',');
+											int red = listRGB.at(0).toInt();
+											int green = listRGB.at(1).toInt();
+											int blue = listRGB.at(2).toInt();
+											QColor color(red, green, blue);
+											QImage image(20, 20, QImage::Format_ARGB32);
+											image.fill(color);
+											QPixmap pixmap;
+											Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> 4");
+											QLabel* label = new QLabel();
+											label->setToolTip(QString::fromStdString(colorName));
+											pixmap = QPixmap::fromImage(image);
+											label->setPixmap(QPixmap(pixmap));
+											Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> 5");
+
+											QWidget *colorchip = nullptr;
+											colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
+											colorchip->setProperty("colorId", colorObjId.c_str());
+
+											gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
+											QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
+											pushButton_2->setFixedHeight(20);
+											pushButton_2->setFixedWidth(20);
+											if (m_addColorButtonSignalMapper != nullptr)
+											{
+												m_addColorButtonSignalMapper->setProperty("TableName", tableName);
+												connect(pushButton_2, SIGNAL(clicked()), m_addColorButtonSignalMapper, SLOT(map()));
+												//int number = rowCount * 10 + columnIndex;
+												m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2-%3").arg(rowCount).arg(columnIndex).arg(tableName));
+												//m_buttonSignalMapper->setMapping(pushButton_2, number);
+											}
+											pushButton_2->setProperty("TableName", tableName);
+											gridLayout->addWidget(pushButton_2, 0, 1, 1, 1, Qt::AlignHCenter);
+											p_widget->setLayout(gridLayout);
+											p_widget->setProperty("colorId", colorObjId.c_str());
+											sectionTable->setCellWidget(rowCount, columnIndex, p_widget);
+											Logger::Debug("AddNewBom -> AddBomRows() -> 7");
+											//colorChip = true;
+										}
+									}
+								}
+								else
+								{
+									if (CreateProduct::GetInstance()->m_mappedColorways.contains(columnName))
+									{
 										QWidget* p_widget = new QWidget(sectionTable);
 										QGridLayout* gridLayout = new QGridLayout(sectionTable);
 										gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
 										gridLayout->setContentsMargins(0, 0, 0, 0);
-										QString colorRGB = QString::fromStdString(rgbValue);
-										listRGB = colorRGB.split(',');
-										int red = listRGB.at(0).toInt();
-										int green = listRGB.at(1).toInt();
-										int blue = listRGB.at(2).toInt();
-										QColor color(red, green, blue);
-										QImage image(20, 20, QImage::Format_ARGB32);
-										image.fill(color);
-										QPixmap pixmap;
-										Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> 4");
-										QLabel* label = new QLabel();
-										label->setToolTip(QString::fromStdString(colorName));
-										pixmap = QPixmap::fromImage(image);
-										label->setPixmap(QPixmap(pixmap));
-										Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> 5");
 
+										QPixmap pixmap;
+										Logger::Debug("AddNewBom -> AddBomRows() -> 2");
+										QLabel* label = new QLabel();
+
+										QImage styleIcon;
+										QImageReader imageReader(":/CLOVise/PLM/Images/NoImage.png");
+										imageReader.setDecideFormatFromContent(true);
+										styleIcon = imageReader.read();
+										pixmap = QPixmap::fromImage(styleIcon);
+
+										label->setMaximumSize(QSize(20, 20));
+										int w = label->width();
+										int h = label->height();
+										label->setPixmap(QPixmap(pixmap.scaled(w, h, Qt::KeepAspectRatio)));
+										Logger::Debug("AddNewBom -> AddBomRows() -> 3");
 										QWidget *colorchip = nullptr;
 										colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
-										colorchip->setProperty("colorId", colorObjId.c_str());
 
 										gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
 										QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
@@ -1643,109 +1738,61 @@ namespace CLOVise
 										pushButton_2->setProperty("TableName", tableName);
 										gridLayout->addWidget(pushButton_2, 0, 1, 1, 1, Qt::AlignHCenter);
 										p_widget->setLayout(gridLayout);
-										p_widget->setProperty("colorId", colorObjId.c_str());
+
+										Logger::Debug("AddNewBom -> AddBomRows() -> 10");
 										sectionTable->setCellWidget(rowCount, columnIndex, p_widget);
-										Logger::Debug("AddNewBom -> AddBomRows() -> 7");
-										//colorChip = true;
 									}
 								}
-							}
-							else
-							{
-								if (CreateProduct::GetInstance()->m_mappedColorways.contains(columnName))
-								{
-									QWidget* p_widget = new QWidget(sectionTable);
-									QGridLayout* gridLayout = new QGridLayout(sectionTable);
-									gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-									gridLayout->setContentsMargins(0, 0, 0, 0);
 
-									QPixmap pixmap;
-									Logger::Debug("AddNewBom -> AddBomRows() -> 2");
-									QLabel* label = new QLabel();
-
-									QImage styleIcon;
-									QImageReader imageReader(":/CLOVise/PLM/Images/NoImage.png");
-									imageReader.setDecideFormatFromContent(true);
-									styleIcon = imageReader.read();
-									pixmap = QPixmap::fromImage(styleIcon);
-
-									label->setMaximumSize(QSize(20, 20));
-									int w = label->width();
-									int h = label->height();
-									label->setPixmap(QPixmap(pixmap.scaled(w, h, Qt::KeepAspectRatio)));
-									Logger::Debug("AddNewBom -> AddBomRows() -> 3");
-									QWidget *colorchip = nullptr;
-									colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
-
-									gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
-									QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
-									pushButton_2->setFixedHeight(20);
-									pushButton_2->setFixedWidth(20);
-									if (m_addColorButtonSignalMapper != nullptr)
-									{
-										m_addColorButtonSignalMapper->setProperty("TableName", tableName);
-										connect(pushButton_2, SIGNAL(clicked()), m_addColorButtonSignalMapper, SLOT(map()));
-										//int number = rowCount * 10 + columnIndex;
-										m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2-%3").arg(rowCount).arg(columnIndex).arg(tableName));
-										//m_buttonSignalMapper->setMapping(pushButton_2, number);
-									}
-									pushButton_2->setProperty("TableName", tableName);
-									gridLayout->addWidget(pushButton_2, 0, 1, 1, 1, Qt::AlignHCenter);
-									p_widget->setLayout(gridLayout);
-
-									Logger::Debug("AddNewBom -> AddBomRows() -> 10");
-									sectionTable->setCellWidget(rowCount, columnIndex, p_widget);
-								}
 							}
 
 						}
-
-					}
-					else
-					{
-						if (CreateProduct::GetInstance()->m_mappedColorways.contains(columnName))
+						else
 						{
-							QWidget* p_widget = new QWidget(sectionTable);
-							QGridLayout* gridLayout = new QGridLayout(sectionTable);
-							gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-							gridLayout->setContentsMargins(0, 0, 0, 0);
-
-							QPixmap pixmap;
-							Logger::Debug("AddNewBom -> AddBomRows() -> 2");
-							QLabel* label = new QLabel();
-
-							QImage styleIcon;
-							QImageReader imageReader(":/CLOVise/PLM/Images/NoImage.png");
-							imageReader.setDecideFormatFromContent(true);
-							styleIcon = imageReader.read();
-							pixmap = QPixmap::fromImage(styleIcon);
-
-							label->setMaximumSize(QSize(20, 20));
-							int w = label->width();
-							int h = label->height();
-							label->setPixmap(QPixmap(pixmap.scaled(w, h, Qt::KeepAspectRatio)));
-							Logger::Debug("AddNewBom -> AddBomRows() -> 3");
-							QWidget *colorchip = nullptr;
-							colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
-
-							gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
-							QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
-							pushButton_2->setFixedHeight(20);
-							pushButton_2->setFixedWidth(20);
-							if (m_addColorButtonSignalMapper != nullptr)
+							if (CreateProduct::GetInstance()->m_mappedColorways.contains(columnName))
 							{
-								m_addColorButtonSignalMapper->setProperty("TableName", tableName);
-								connect(pushButton_2, SIGNAL(clicked()), m_addColorButtonSignalMapper, SLOT(map()));
-								//int number = rowCount * 10 + columnIndex;
-								m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2-%3").arg(rowCount).arg(columnIndex).arg(tableName));
-								//m_buttonSignalMapper->setMapping(pushButton_2, number);
-							}
-							pushButton_2->setProperty("TableName", tableName);
-							gridLayout->addWidget(pushButton_2, 0, 1, 1, 1, Qt::AlignHCenter);
-							p_widget->setLayout(gridLayout);
+								QWidget* p_widget = new QWidget(sectionTable);
+								QGridLayout* gridLayout = new QGridLayout(sectionTable);
+								gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+								gridLayout->setContentsMargins(0, 0, 0, 0);
 
-							Logger::Debug("AddNewBom -> AddBomRows() -> 10");
-							sectionTable->setCellWidget(rowCount, columnIndex, p_widget);
+								QPixmap pixmap;
+								Logger::Debug("AddNewBom -> AddBomRows() -> 2");
+								QLabel* label = new QLabel();
+
+								QImage styleIcon;
+								QImageReader imageReader(":/CLOVise/PLM/Images/NoImage.png");
+								imageReader.setDecideFormatFromContent(true);
+								styleIcon = imageReader.read();
+								pixmap = QPixmap::fromImage(styleIcon);
+
+								label->setMaximumSize(QSize(20, 20));
+								int w = label->width();
+								int h = label->height();
+								label->setPixmap(QPixmap(pixmap.scaled(w, h, Qt::KeepAspectRatio)));
+								Logger::Debug("AddNewBom -> AddBomRows() -> 3");
+								QWidget *colorchip = nullptr;
+								colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
+
+								gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
+								QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
+								pushButton_2->setFixedHeight(20);
+								pushButton_2->setFixedWidth(20);
+								if (m_addColorButtonSignalMapper != nullptr)
+								{
+									m_addColorButtonSignalMapper->setProperty("TableName", tableName);
+									connect(pushButton_2, SIGNAL(clicked()), m_addColorButtonSignalMapper, SLOT(map()));
+									//int number = rowCount * 10 + columnIndex;
+									m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2-%3").arg(rowCount).arg(columnIndex).arg(tableName));
+									//m_buttonSignalMapper->setMapping(pushButton_2, number);
+								}
+								pushButton_2->setProperty("TableName", tableName);
+								gridLayout->addWidget(pushButton_2, 0, 1, 1, 1, Qt::AlignHCenter);
+								p_widget->setLayout(gridLayout);
+
+								Logger::Debug("AddNewBom -> AddBomRows() -> 10");
+								sectionTable->setCellWidget(rowCount, columnIndex, p_widget);
+							}
 						}
 					}
 				}
@@ -2056,7 +2103,46 @@ Description - BackupBomDetails() method used backup bom data in a data structure
 						QWidget* qcolumnWidget = (QWidget*)sectionTable->cellWidget(rowCount, columnCount)->children().last();
 						string attInternalName = qcolumnWidget->property("rest_api_name").toString().toStdString();
 						Logger::Debug("Create product CreateBom() attInternalName" + attInternalName);
-						if (QLineEdit* qLineEditC1 = qobject_cast<QLineEdit*>(qcolumnWidget))
+						QString columnName = sectionTable->horizontalHeaderItem(columnCount)->text();
+						Logger::Debug("Create product CreateBom() columnName" + columnName.toStdString());
+
+						if (CreateProduct::GetInstance()->m_mappedColorways.contains(columnName))
+						{
+							Logger::Debug("Create product CreateBom() colorways1");
+
+							if (QWidget* widget = sectionTable->cellWidget(rowCount, columnCount))
+							{
+
+								string colorId, colorId2;
+								string colorId1 = widget->property("colorId").toString().toStdString();
+
+
+								Logger::Debug("Create product CreateBom() colorId1" + colorId1);
+								Logger::Debug("CreateProduct -> CreateBom () 8");
+								if (QLayout* layout = widget->layout())
+								{
+									Logger::Debug("CreateProduct -> CreateBom () 9");
+									{
+										auto gridLayout = dynamic_cast<QGridLayout*>(widget->layout());
+										QWidget *childwidget = gridLayout->itemAtPosition(0, 0)->widget();
+										//attInternalName = columnName.toStdString();
+										colorId2 = childwidget->property("colorId").toString().toStdString();
+										Logger::Debug("Create product CreateBom() colorId2" + colorId2);
+
+									}
+								}
+
+								if (FormatHelper::HasContent(colorId1))
+									colorId = colorId1;
+								else
+									colorId = colorId2;
+
+								attInternalName = columnName.toStdString();
+								fieldValue = colorId;
+							}
+
+						}
+						else if (QLineEdit* qLineEditC1 = qobject_cast<QLineEdit*>(qcolumnWidget))
 						{
 
 							fieldValue = qLineEditC1->text().toStdString();
@@ -2190,6 +2276,10 @@ Description - ClearBomData() method used to clear all the bom related variables.
 		m_colorwayOverridesJson.clear();
 		m_BomMetaData.clear();
 		m_sectionMaterialTypeMap.clear();
+		m_bomCreated = false;
+		CreateProduct::GetInstance()->m_bomName->setText("");
+		CreateProduct::GetInstance()->m_bomTemplateName->setText("");
+		CreateProduct::GetInstance()->ClearAllFields(m_createBomTreeWidget);
 		Logger::Debug("AddNewBom -> ClearBomData() -> End");
 	}
 
