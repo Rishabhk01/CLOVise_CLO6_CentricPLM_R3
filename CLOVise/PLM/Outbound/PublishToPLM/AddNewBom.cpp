@@ -2337,7 +2337,7 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 		//sectionTable->horizontalHeader()->setMinimumHeight(10);
 		sectionTable->verticalHeader()->setDefaultSectionSize(30);
 		sectionTable->setShowGrid(false);
-		sectionTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+		sectionTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 		//sectionTable->setSelectionMode(QAbstractItemView::NoSelection);
 		sectionTable->horizontalHeader()->setStretchLastSection(true);
 

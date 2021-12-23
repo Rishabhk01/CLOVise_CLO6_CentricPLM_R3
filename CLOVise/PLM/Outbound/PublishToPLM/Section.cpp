@@ -37,7 +37,7 @@ Section::Section(const QString & title, const int animationDuration, QWidget* pa
 	headerLine->setFrameShadow(QFrame::Sunken);
 	headerLine->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 
-	contentArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+	contentArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 	Logger::Debug("Section constructor() 3");
 	// start out collapsed
 	contentArea->setMaximumHeight(0);
