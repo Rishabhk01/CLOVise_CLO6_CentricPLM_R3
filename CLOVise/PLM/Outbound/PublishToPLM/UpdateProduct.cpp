@@ -106,6 +106,7 @@ namespace CLOVise
 		m_SaveAndCloseButton = nullptr;
 		ui_colorwayTable = nullptr;
 		m_colorwayAddButton = nullptr;
+		m_updateColorwayDeleteButton = nullptr;
 		m_downloadedColorway = false;
 		m_multipartFilesParams = "";
 		m_perveiouselySelectedId = "";
@@ -114,6 +115,7 @@ namespace CLOVise
 		m_updateColorButtonSignalMapper = new QSignalMapper();
 		m_editButtonSignalMapper = new QSignalMapper();
 		m_deleteSignalMapper = new QSignalMapper();
+		m_updateColorwayDeleteSignalMapper = new QSignalMapper();
 		m_createActionSignalMapper = new QSignalMapper();
 		m_printActionSignalMapper = new QSignalMapper();
 		m_updateProductTreeWidget_1 = CVWidgetGenerator::CreatePublishTreeWidget("QTreeWidget { background-color: #262628; border: 1px solid #000;}""QTreeWidget::item { padding :5px; height: 20px; color: #FFFFFF; font-face: ArialMT; font-size: 10px; width: 90px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; border: none;}""QTreeWidget::item:hover{background-color: #262628;}", true);
@@ -340,6 +342,7 @@ namespace CLOVise
 			QObject::connect(ui_tabWidget, SIGNAL(currentChanged(int)), this, SLOT(onTabClicked(int)));
 			QObject::connect(ui_colorwayTable, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(onContextMenuClicked(const QPoint&)));
 			QObject::connect(m_updateColorButtonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickUpdateColorButton(int)));
+			QObject::connect(m_updateColorwayDeleteSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnColorwaysTableDeleteButtonClicked(int)));
 			QObject::connect(m_createActionSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnCreateColorSpecClicked(int)));
 			QObject::connect(m_printActionSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnSearchPrintClicked(int)));
 			QObject::connect(m_editButtonSignalMapper, SIGNAL(mapped(int)), this, SLOT(onImageIntentsTableEditButtonClicked(int)));
@@ -361,6 +364,7 @@ namespace CLOVise
 			QObject::disconnect(m_addImageIntentButton, SIGNAL(clicked()), this, SLOT(onAddImageIntentClicked()));
 			QObject::disconnect(ui_tabWidget, SIGNAL(currentChanged(int)), this, SLOT(onTabClicked(int)));
 			QObject::disconnect(m_updateColorButtonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickUpdateColorButton(int)));
+			QObject::disconnect(m_updateColorwayDeleteSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnColorwaysTableDeleteButtonClicked(int)));
 			QObject::disconnect(m_printActionSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnSearchPrintClicked(int)));
 			QObject::disconnect(m_createActionSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnCreateColorSpecClicked(int)));
 			QObject::disconnect(m_editButtonSignalMapper, SIGNAL(mapped(int)), this, SLOT(onImageIntentsTableEditButtonClicked(int)));
@@ -1866,8 +1870,20 @@ namespace CLOVise
 			connect(printAction, SIGNAL(triggered()), m_printActionSignalMapper, SLOT(map()));
 			m_printActionSignalMapper->setMapping(printAction, m_colorwayRowcount);
 		}
-		ui_colorwayTable->setCellWidget(_count + m_colorwayRowcount, CHECKBOX_COLUMN, pWidget);
-		ui_colorwayTable->setColumnWidth(CHECKBOX_COLUMN, COLUMN_SIZE);
+
+		QPushButton *deleteButton= CVWidgetGenerator::CreatePushButton("", ":/CLOVise/PLM/Images/icon_delete_over.svg", "Delete", PUSH_BUTTON_STYLE, 30, true);
+		QWidget *pdeleteWidget = CVWidgetGenerator::InsertWidgetInCenter(deleteButton);
+		if(m_updateColorwayDeleteSignalMapper != nullptr)
+		{
+			connect(deleteButton, SIGNAL(clicked()), m_updateColorwayDeleteSignalMapper, SLOT(map()));
+			m_updateColorwayDeleteSignalMapper->setMapping(deleteButton, m_colorwayRowcount);
+		}
+		ui_colorwayTable->setCellWidget(_count + m_colorwayRowcount, COLORWAYDELETE_COLUMN, pdeleteWidget);
+		ui_colorwayTable->setColumnWidth(COLORWAYDELETE_COLUMN, 50);
+		ui_colorwayTable->setWordWrap(true);
+
+		ui_colorwayTable->setCellWidget(_count + m_colorwayRowcount, UPDATE_BTN_COLUMN, pWidget);
+		ui_colorwayTable->setColumnWidth(UPDATE_BTN_COLUMN, COLUMN_SIZE);
 		string defaultDescption;
 		string defaultPLMColorwayName;
 		string colorSpecId;
@@ -4354,5 +4370,145 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 	Logger::Debug("UpdateProduct -> FillNonCloImageMap() -> End ");
 	Logger::Debug("UpdateProduct -> FillNonCloImageMap() -> End " + to_string(m_nonCloStyleImageLabelsMap.size()));
 }
-}
+	void UpdateProduct::OnColorwaysTableDeleteButtonClicked(int _row)
+	{
+		Logger::Debug("UpdateProduct -> OnColorwaysTableDeleteButtonClicked() -> Start");
+		//QModelIndex index = ui_colorwayTable->indexAt(_pos);
+		//if ((index.column() != CHECKBOX_COLUMN) && (index.column() != CLO_COLORWAY_COLUMN) && (index.column() != UNI_2_DIGIT_CODE_COLUMN) && (index.column() != COLOR_CHIP_COLUMN) && (index.column() != PLM_COLORWAY_COLUMN)) // Disabling right click context menu for 0th and 1st colum in the colorway result table
+		//{
+			//QMenu menu;
+		map<string, UpdateImageIntent::ColorwayViews>::iterator it;
+		//QAction* removeAction = menu.addAction(QString::fromStdString("Delete"));
+		//QAction* rightClickAction = menu.exec(ui_colorwayTable->viewport()->mapToGlobal(_pos));
+		//if (removeAction == rightClickAction)
+		//{
+		bool isConfirmed = false;
 
+		QMessageBox* deleteMessage = new QMessageBox();
+		deleteMessage->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
+		deleteMessage->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+		deleteMessage->setIcon(QMessageBox::Question);
+		deleteMessage->setText("Deleting the colorway and associated Image Intents. Are you sure you want to proceed? ");
+
+		if (deleteMessage->exec() != QMessageBox::Yes)
+		{
+			isConfirmed = false;
+		}
+		else
+		{
+			//QTableWidgetItem* item = ui_colorwayTable->itemAt(_pos);
+			//if (item)
+			//{
+
+				//int rowIndex = ui_colorwayTable->row(item);
+			QWidget* widget = ui_colorwayTable->cellWidget(_row, 1);
+			QComboBox *colorwayNameCombo = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(_row, CLO_COLORWAY_COLUMN)->children().last());
+			QLineEdit *plmColorwayTextBox = static_cast<QLineEdit*>(ui_colorwayTable->cellWidget(_row, PLM_COLORWAY_COLUMN)->children().last());
+			QString plmColorwayName = colorwayNameCombo->currentText();
+
+			string colorwayId = colorwayNameCombo->property("colorwayId").toString().toStdString();
+			string colorSpecId = colorwayNameCombo->property("Id").toString().toStdString();
+
+			if (!colorwayId.empty())
+			{
+				Logger::Debug("UpdateProduct -> OnColorwaysTableDeleteButtonClicked() -> size 1:" + to_string(UpdateImageIntent::GetInstance()->m_ColorwayViewMap.size()));
+				m_DeletedColorwayList.append(QString::fromStdString(colorwayId));
+
+				it = UpdateImageIntent::GetInstance()->m_ColorwayViewMap.find(plmColorwayName.toStdString());
+				if (it != UpdateImageIntent::GetInstance()->m_ColorwayViewMap.end())
+					UpdateImageIntent::GetInstance()->m_ColorwayViewMap.erase(plmColorwayName.toStdString());
+
+				Logger::Debug("UpdateProduct -> OnColorwaysTableDeleteButtonClicked() -> size2:" + to_string(UpdateImageIntent::GetInstance()->m_ColorwayViewMap.size()));
+			}
+			if (!colorSpecId.empty())
+			{
+				m_colorSpecList.removeOne(QString::fromStdString(colorSpecId));
+			}
+			ui_colorwayTable->removeRow(_row);
+			int count = 0;
+			int size = m_imageIntentTable->rowCount();
+			QStringList selectedIndexs;
+			for (int index = 0; index < size; index++)
+			{
+				QPushButton *deleteButoon = static_cast<QPushButton*>(m_imageIntentTable->cellWidget(index, DELETE_COLUMN)->children().last());
+				QString colorwayName = deleteButoon->property("colorwayName").toString();
+				Logger::Debug("UpdateProduct -> OnColorwaysTableDeleteButtonClicked() -> plmColorwayName:" + plmColorwayName.toStdString());
+				Logger::Debug("UpdateProduct -> OnColorwaysTableDeleteButtonClicked() -> colorwayName:" + colorwayName.toStdString());
+
+				if (plmColorwayName == colorwayName)
+				{
+					selectedIndexs.append(QString::fromStdString(to_string(index)));	//Storing row index corresponding to colorway which user want to delete							
+				}
+			}
+			for (int index = selectedIndexs.size() - 1; index >= 0; index--)
+			{
+				m_imageIntentTable->removeRow(selectedIndexs[index].toInt()); //deleting row from table, in reverse order
+				m_imageIntentRowcount--;
+			}
+
+			SetTotalImageCount();
+			if (m_updateColorButtonSignalMapper != nullptr)
+			{
+				for (int i = 0; i < ui_colorwayTable->rowCount(); i++)
+				{
+					QPushButton *colorButoon = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, 0);
+					if (colorButoon)
+						m_updateColorButtonSignalMapper->setMapping(colorButoon, i);
+					if (m_updateColorButtonSignalMapper != nullptr)
+					{
+						QPushButton *CreateButoon = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, 1);
+						if (CreateButoon)
+						{
+							QList<QAction*> actions;
+							actions = CreateButoon->menu()->actions();
+							m_createActionSignalMapper->setMapping(actions.at(0), i);
+						}
+						if (m_printActionSignalMapper != nullptr)
+						{
+							if (CreateButoon)
+							{
+								QList<QAction*> actions;
+								actions = CreateButoon->menu()->actions();
+								m_createActionSignalMapper->setMapping(actions.at(FIRST_INDEX), i);
+							}
+						}
+					}
+				}
+				if (m_updateColorwayDeleteSignalMapper != nullptr)
+				{
+					for (int index = 0; index < ui_colorwayTable->rowCount(); index++)
+					{
+						QPushButton *deleteButton = static_cast<QPushButton*>(ui_colorwayTable->cellWidget(index, COLORWAYDELETE_COLUMN)->children().last());
+						m_updateColorwayDeleteSignalMapper->setMapping(deleteButton, index);
+						//QPushButton *editButton = static_cast<QPushButton*>(ui_colorwayTab->cellWidget(index, COLORWAYDELETE_COLUMN)->children().last());
+						//m_colorwayDeleteSignalMapper->setMapping(editButton, index);
+					}
+				}
+			}
+			if (m_deleteSignalMapper != nullptr)
+			{
+				for (int index = 0; index < m_imageIntentTable->rowCount(); index++)
+				{
+					QPushButton *deleteButoon = static_cast<QPushButton*>(m_imageIntentTable->cellWidget(index, DELETE_COLUMN)->children().last());
+					m_deleteSignalMapper->setMapping(deleteButoon, index);
+					QPushButton *editButoon = static_cast<QPushButton*>(m_imageIntentTable->cellWidget(index, EDIT_COLUMN)->children().last());
+					m_editButtonSignalMapper->setMapping(editButoon, index);
+				}
+			}
+			//}
+			//else
+			//{
+			//	UTILITY_API->DisplayMessageBox("Select Image To Delete");
+			//}
+		//}
+	//}
+			for (int count = 0; count < ui_colorwayTable->rowCount(); count++)
+			{
+				QComboBox * digiCodeCombo = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(count, UNI_2_DIGIT_CODE_COLUMN)->children().last());
+				digiCodeCombo->setProperty("row", count);
+			}
+			//}
+			Logger::Debug("UpdateProduct -> OnColorwaysTableDeleteButtonClicked() -> End");
+		}
+	}
+}
