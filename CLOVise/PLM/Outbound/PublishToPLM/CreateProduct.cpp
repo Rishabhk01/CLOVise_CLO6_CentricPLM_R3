@@ -1385,9 +1385,7 @@ namespace CLOVise
 									m_buttonSignalMapper->setMapping(colorButton, i);
 								QPushButton *CreateButton = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, FIRST_INDEX);
 								if (m_createActionSignalMapper != nullptr)
-								{
-									if (CreateButoon)
-								{									
+								{								
 									if (CreateButton)
 									{
 										QList<QAction*> actions;
