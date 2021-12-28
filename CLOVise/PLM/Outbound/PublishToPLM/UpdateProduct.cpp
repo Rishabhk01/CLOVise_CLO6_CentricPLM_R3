@@ -2922,6 +2922,7 @@ namespace CLOVise
 			for (auto colorwayIterator = UpdateImageIntent::GetInstance()->m_ColorwayViewMap.begin(); colorwayIterator != UpdateImageIntent::GetInstance()->m_ColorwayViewMap.end(); colorwayIterator++)
 			{
 				bool colorwayImageAdded = false;
+				bool defaultImageAdded = false;
 				string str = colorwayIterator->first;
 				Logger::Debug("UpdateProduct -> LinkImagesToColorways() -> str" + str);
 
@@ -2935,6 +2936,7 @@ namespace CLOVise
 					if (!colorwayIterator->second.viewUploadId[colorwayIterator->second.defaultImage].empty())
 					{
 						colorwayImageAdded = true;
+						defaultImageAdded = true;
 						data += "\n\"\":\"" + colorwayIterator->second.viewUploadId[colorwayIterator->second.defaultImage] + "\",";
 						Logger::Debug("UpdateProduct -> LinkImagesToColorways () ===========-----1   " + data);
 					}
@@ -2953,6 +2955,7 @@ namespace CLOVise
 						{
 							if (colorwayIterator->second.viewLabelMap[i][labelIterator].toStdString() == "default")
 							{
+								defaultImageAdded = true;
 								data += "\n\"\":\"" + colorwayIterator->second.viewUploadId[i] + "\",";
 							}
 							else
@@ -2995,6 +2998,7 @@ namespace CLOVise
 						{
 							if (labelList[i].toStdString() == "default")
 							{
+								if(!defaultImageAdded)
 								data += "\n\"\":\"" + imageID.toStdString() + "\",";
 								//Logger::Debug("UpdateProduct -> LinkImagesToColorways () ============1    " + data);
 							}
@@ -3037,8 +3041,9 @@ namespace CLOVise
 								for (int j = 0; j < labelList.size(); j++)
 								{
 									Logger::Debug("UpdateProduct -> LinkImagesToColorways () labelList    " + labelList[j].toStdString());
-									if (labelList[j].toStdString() == "default")
+									if (labelList[j].toStdString() == "default" )
 									{
+										if(!defaultImageAdded)
 										newdata += "\n\"\":\"" + imageId + "\",";
 									}
 									else
