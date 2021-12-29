@@ -896,7 +896,7 @@ namespace CLOVise
 					exportZPRJ(revisionId);
 					uploadGLBFile(productId);
 					//UploadStyleThumbnail(productId);
-					exportTurntableImages();
+					//exportTurntableImages();
 					uploadColorwayImages();
 					LinkImagesToColorways(productId);
 					if(AddNewBom::GetInstance()->IsBomCreated())
@@ -911,8 +911,10 @@ namespace CLOVise
 					//Logger::Debug("Create product onPublishToPLMClicked() 4....");
 					DownloadDialogObject->setModal(true);
 					DownloadDialogObject->show();
-					Helper::RemoveDirectory(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_TEMP_DIRECTORY));
-					dir.mkpath(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_TEMP_DIRECTORY));
+					Helper::RemoveDirectory(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_WITH_AVATAR_TEMP_DIRECTORY));
+					Helper::RemoveDirectory(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_WITHOUT_AVATAR_TEMP_DIRECTORY));
+					dir.mkpath(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_WITH_AVATAR_TEMP_DIRECTORY));
+					dir.mkpath(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_WITHOUT_AVATAR_TEMP_DIRECTORY));
 					//Logger::Debug("Create product onPublishToPLMClicked() 5....");
 					ClearAllFields(m_createProductTreeWidget_1);
 					ClearAllFields(m_createProductTreeWidget_2);
@@ -1898,81 +1900,98 @@ namespace CLOVise
 		}
 		if (_index == IMAGE_INTENT_TAB /*&& m_colorwayRowcount > 0*/)//Image Intent tab
 		{
-			int imageRowCount = m_ImageIntentList->count();
-			if (imageRowCount != 0)
-			{
-				UTILITY_API->CreateProgressBar();
-				RESTAPI::SetProgressBarData(20, "Loading Latest Image Intents... ", true);
-				UTILITY_API->SetProgress("Loading Latest Image Intents...", (qrand() % 101));
-			}
-
-			if (ValidateColorwayNameField() && imageRowCount != 0)
-			{
-				exportTurntableImages();
-
-				string colorwayName;
-				string viewName;
-				int view;
-				Logger::Debug("CreateProduct -> onTabClicked() -> Item" + to_string(imageRowCount));
-
-				string temporaryPath = UTILITY_API->GetCLOTemporaryFolderPath();
-
-				for (int index = 0; index < imageRowCount; index++)
-				{
-					QListWidgetItem* listImageItem = new QListWidgetItem();
-					QListWidgetItem* item = m_ImageIntentList->item(index);
-					QListWidget *listItem = qobject_cast<QListWidget*>(m_ImageIntentList->itemWidget(item));
-					for (int itemIndex = 0; itemIndex < listItem->count(); itemIndex++)
-					{
-						string text = listItem->item(itemIndex)->text().toStdString();
-						Logger::Debug("CreateProduct -> onTabClicked() -> Item" + text);
-						if (itemIndex == 0)
-						{
-							int length = text.length();
-							int indexOfColon = text.find(":");
-							colorwayName = text.substr(indexOfColon + 2, length);
-							Logger::Debug("CreateProduct -> onTabClicked() -> clorwayname" + colorwayName);
-
-						}
-						if (itemIndex == 1)
-						{
-							int length = text.length();
-							int indexOfColon = text.find(":");
-							viewName = text.substr(indexOfColon + 1, length);
-							Logger::Debug("CreateProduct -> onTabClicked() -> viewName" + viewName);
-
-							if (viewName == " Back")
-								view = BACK_VIEW;
-							else if (viewName == " Front")
-								view = FRONT_VIEW;
-							else if (viewName == " Left")
-								view = LEFT_VIEW;
-							else
-								view = RIGHT_VIEW;
-						}
-					}
-					QString filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
-					Logger::Debug("CreateProduct -> onTabClicked() -> filepath" + filepath.toStdString());
-
-					item->setTextAlignment(Qt::AlignLeft);
-					QPixmap pix(filepath);
-					pix.scaled(QSize(80, 80), Qt::KeepAspectRatio);
-					QIcon newIcon;
-					newIcon.addPixmap(pix);
-					Logger::Debug("CreateProduct -> onTabClicked() -> 1");
-					item->setIcon(newIcon);
-					item->setSizeHint(QSize(80, 80));
-					m_ImageIntentList->addItem(item);
-					Logger::Debug("CreateProduct -> onTabClicked() -> 3");
-					CreateProduct::GetInstance()->m_ImageIntentList->setIconSize(QSize(80, 80));
-					//m_ImageIntentList->takeItem(index);
-					m_ImageIntentList->addItem(item);
-					CreateProduct::GetInstance()->m_ImageIntentList->setItemWidget(item, listItem);
-				}
-			}
-
-			RESTAPI::SetProgressBarData(0, "", false);
+			ValidateColorwayNameField();
 		}
+		//	int imageRowCount = m_ImageIntentList->count();
+		//	if (imageRowCount != 0)
+		//	{
+		//		UTILITY_API->CreateProgressBar();
+		//		RESTAPI::SetProgressBarData(20, "Loading Latest Image Intents... ", true);
+		//		UTILITY_API->SetProgress("Loading Latest Image Intents...", (qrand() % 101));
+		//	}
+
+		//	if (ValidateColorwayNameField() && imageRowCount != 0)
+		//	{
+		//		exportTurntableImages();
+
+		//		string colorwayName;
+		//		string includeAvatar;
+		//		string viewName;
+		//		int view;
+		//		Logger::Debug("CreateProduct -> onTabClicked() -> Item" + to_string(imageRowCount));
+
+		//		string temporaryPath = UTILITY_API->GetCLOTemporaryFolderPath();
+
+		//		for (int index = 0; index < imageRowCount; index++)
+		//		{
+		//			QListWidgetItem* listImageItem = new QListWidgetItem();
+		//			QListWidgetItem* item = m_ImageIntentList->item(index);
+		//			QListWidget *listItem = qobject_cast<QListWidget*>(m_ImageIntentList->itemWidget(item));
+		//			for (int itemIndex = 0; itemIndex < listItem->count(); itemIndex++)
+		//			{
+		//				string text = listItem->item(itemIndex)->text().toStdString();
+		//				Logger::Debug("CreateProduct -> onTabClicked() -> Item" + text);
+		//				if (itemIndex == 0)
+		//				{
+		//					int length = text.length();
+		//					int indexOfColon = text.find(":");
+		//					colorwayName = text.substr(indexOfColon + 2, length);
+		//					Logger::Debug("CreateProduct -> onTabClicked() -> clorwayname" + colorwayName);
+
+		//				}
+		//				if (itemIndex == 1)
+		//				{
+		//					int length = text.length();
+		//					int indexOfColon = text.find(":");
+		//					viewName = text.substr(indexOfColon + 1, length);
+		//					Logger::Debug("CreateProduct -> onTabClicked() -> viewName" + viewName);
+
+		//					if (viewName == " Back")
+		//						view = BACK_VIEW;
+		//					else if (viewName == " Front")
+		//						view = FRONT_VIEW;
+		//					else if (viewName == " Left")
+		//						view = LEFT_VIEW;
+		//					else
+		//						view = RIGHT_VIEW;
+		//				}
+		//				if (itemIndex == 4)
+		//				{
+		//					int length = text.length();
+		//					int indexOfColon = text.find(":");
+		//					includeAvatar = text.substr(indexOfColon + 2, length);
+		//					Logger::Debug("CreateImageIntent -> onTabClicked() -> includeAvatar" + includeAvatar);
+
+		//				}
+		//			}
+
+		//			QString filepath;
+		//			if (includeAvatar == "Yes")
+		//				filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithAvatar/" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
+		//			else
+		//				filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithoutAvatar/" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
+
+		//			Logger::Debug("CreateImageIntent -> onTabClicked() -> filepath" + filepath.toStdString());
+
+		//			item->setTextAlignment(Qt::AlignLeft);
+		//			QPixmap pix(filepath);
+		//			pix.scaled(QSize(80, 80), Qt::KeepAspectRatio);
+		//			QIcon newIcon;
+		//			newIcon.addPixmap(pix);
+		//			Logger::Debug("CreateProduct -> onTabClicked() -> 1");
+		//			item->setIcon(newIcon);
+		//			item->setSizeHint(QSize(80, 80));
+		//			m_ImageIntentList->addItem(item);
+		//			Logger::Debug("CreateProduct -> onTabClicked() -> 3");
+		//			CreateProduct::GetInstance()->m_ImageIntentList->setIconSize(QSize(80, 80));
+		//			//m_ImageIntentList->takeItem(index);
+		//			m_ImageIntentList->addItem(item);
+		//			CreateProduct::GetInstance()->m_ImageIntentList->setItemWidget(item, listItem);
+		//		}
+		//	}
+
+		//	RESTAPI::SetProgressBarData(0, "", false);
+		//}
 
 		if (_index == BOM_TAB)
 		{
@@ -1983,7 +2002,8 @@ namespace CLOVise
 			}
 			else
 			{
-				if (PublishToPLMData::GetInstance()->m_isSaveClicked && m_updateBomTab)
+
+				if (PublishToPLMData::GetInstance()->m_isSaveClicked && m_updateBomTab && AddNewBom::GetInstance()->IsBomCreated())
 				{
 
 					AddNewBom::GetInstance()->RestoreBomDetails();
@@ -2603,6 +2623,7 @@ namespace CLOVise
 		int rowCount = ui_colorwayTable->rowCount();
 		try
 		{
+			Logger::Debug("CreateProduct -> ExtractColorwayDetails () 1");
 			for (int row = 0; row < rowCount; row++)
 			{
 				//QComboBox* colorwayNameCombo = qobject_cast<QComboBox*>(ui_colorwayTable->cellWidget(row, 1));
@@ -2614,6 +2635,7 @@ namespace CLOVise
 				QLineEdit *plmColorwayName = static_cast<QLineEdit*>(ui_colorwayTable->cellWidget(row, PLM_COLORWAY_COLUMN)->children().last());
 				if (colorwayNameCombo)
 				{
+					Logger::Debug("CreateProduct -> ExtractColorwayDetails () 2");
 					QString id = colorwayNameCombo->property("Id").toString();
 					vector<pair<string, string>> headerNameAndValueList;
 					json request = json::object();
@@ -2633,7 +2655,7 @@ namespace CLOVise
 					request["node_name"] = plmColorwayName->text().toStdString();
 
 					//UTILITY_API->DisplayMessageBox("colorwayName" + colorwayName);
-
+					Logger::Debug("CreateProduct -> ExtractColorwayDetails () 3");
 					headerNameAndValueList.push_back(make_pair("content-Type", "application/json"));
 					headerNameAndValueList.push_back(make_pair("Cookie", Configuration::GetInstance()->GetBearerToken()));
 
@@ -2649,7 +2671,7 @@ namespace CLOVise
 					}
 					int colorwayCount = UTILITY_API->GetColorwayCount();
 					QString selectedCLOColorwayName = colorwayNameCombo->currentText();
-
+					Logger::Debug("CreateProduct -> ExtractColorwayDetails () 4");
 					for (int count = 0; count < colorwayCount; count++)
 					{
 						string colorwayName = UTILITY_API->GetColorwayName(count);
@@ -2661,7 +2683,7 @@ namespace CLOVise
 
 					json detailJson = Helper::GetJsonFromResponse(response, "{");
 					string colorwayId = Helper::GetJSONValue<string>(detailJson, ATTRIBUTE_ID, true);
-
+					Logger::Debug("CreateProduct -> ExtractColorwayDetails () 5");
 					//ColorwayViews colorwayView;
 					QString selectedColorway = colorwayNameCombo->currentText();
 
@@ -2732,11 +2754,14 @@ namespace CLOVise
 				{
 					if (colorwayIterator->second.viewUploadId[i].compare("") != 0)
 					{
-						string filepath = temporaryPath + "CLOViseTurntableImages/" + str + "_" + to_string(i) + ".png";
+						string filepath;
+						if(colorwayIterator->second.includeAvatar[i] == 1)
+						 filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/" + str + "_" + to_string(i) + ".png";
+						else
+						filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/" + str + "_" + to_string(i) + ".png";
 						//UTILITY_API->DisplayMessageBox("filepath  " + filepath + "image name  " + str + "_" + to_string(i) + ".png");
 						string postField = getPublishRequestParameter(filepath, str + "_" + to_string(i) + ".png");
-						//UTILITY_API->DisplayMessageBox("postField" + postField);
-						//Logger::Debug(" CreateProduct -> postField" + postField);
+
 						string resultJsonString;
 
 
@@ -3156,18 +3181,29 @@ namespace CLOVise
 
 		Logger::Debug("CreateProduct->exportTurntableImages() temporaryPath" + temporaryPath);
 		QStringList imageNameList;
+		string filepath;
 		for (colorwayIndex = 0; colorwayIndex < colorwayCount; colorwayIndex++)
 		{
 			string colorwayName = UTILITY_API->GetColorwayName(colorwayIndex);
 
+			UTILITY_API->SetShowHideAvatar(true);
 			UTILITY_API->SetCurrentColorwayIndex(colorwayIndex);
-			string filepath = temporaryPath + "CLOViseTurntableImages/" + colorwayName + ".png";
-			Logger::Debug("CreateProduct -> exportTurntableImages() filepath" + filepath);
-
+			filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/" + colorwayName + ".png";
+			EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
+			filepath.clear();
+			UTILITY_API->SetShowHideAvatar(false);
+			filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/" + colorwayName + ".png";
 			EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
 		}
+
+		filepath.clear();
 		UTILITY_API->SetCurrentColorwayIndex(cloColorwaySelectedIndex);
-		string filepath = temporaryPath + "CLOViseTurntableImages/" + "No Colorway(Default)" + ".png";
+		UTILITY_API->SetShowHideAvatar(true);
+		filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/No Colorway(Default).png";
+		EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
+		filepath.clear();
+		UTILITY_API->SetShowHideAvatar(false);
+		filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/No Colorway(Default).png";
 		EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
 
 		Logger::Debug("CreateProduct -> exportTurntableImages() -> End ");
@@ -3757,4 +3793,98 @@ namespace CLOVise
 
 		Logger::Debug("CreateProduct -> onContextMenu_Clicked() -> End");
 	}
+
+	void CreateProduct:: refreshImageIntents()
+	{
+			int imageRowCount = m_ImageIntentList->count();
+			if (imageRowCount != 0)
+			{
+				UTILITY_API->CreateProgressBar();
+				RESTAPI::SetProgressBarData(20, "Loading Latest Image Intents... ", true);
+				UTILITY_API->SetProgress("Loading Latest Image Intents...", (qrand() % 101));
+			}
+
+			if (/*ValidateColorwayNameField() && */imageRowCount != 0)
+			{
+				exportTurntableImages();
+
+				string colorwayName;
+				string includeAvatar;
+				string viewName;
+				int view;
+				Logger::Debug("CreateProduct -> onTabClicked() -> Item" + to_string(imageRowCount));
+
+				string temporaryPath = UTILITY_API->GetCLOTemporaryFolderPath();
+
+				for (int index = 0; index < imageRowCount; index++)
+				{
+					QListWidgetItem* listImageItem = new QListWidgetItem();
+					QListWidgetItem* item = m_ImageIntentList->item(index);
+					QListWidget *listItem = qobject_cast<QListWidget*>(m_ImageIntentList->itemWidget(item));
+					for (int itemIndex = 0; itemIndex < listItem->count(); itemIndex++)
+					{
+						string text = listItem->item(itemIndex)->text().toStdString();
+						Logger::Debug("CreateProduct -> onTabClicked() -> Item" + text);
+						if (itemIndex == 0)
+						{
+							int length = text.length();
+							int indexOfColon = text.find(":");
+							colorwayName = text.substr(indexOfColon + 2, length);
+							Logger::Debug("CreateProduct -> onTabClicked() -> clorwayname" + colorwayName);
+
+						}
+						if (itemIndex == 1)
+						{
+							int length = text.length();
+							int indexOfColon = text.find(":");
+							viewName = text.substr(indexOfColon + 1, length);
+							Logger::Debug("CreateProduct -> onTabClicked() -> viewName" + viewName);
+
+							if (viewName == " Back")
+								view = BACK_VIEW;
+							else if (viewName == " Front")
+								view = FRONT_VIEW;
+							else if (viewName == " Left")
+								view = LEFT_VIEW;
+							else
+								view = RIGHT_VIEW;
+						}
+						if (itemIndex == 4)
+						{
+							int length = text.length();
+							int indexOfColon = text.find(":");
+							includeAvatar = text.substr(indexOfColon + 2, length);
+							Logger::Debug("CreateImageIntent -> onTabClicked() -> includeAvatar" + includeAvatar);
+
+						}
+					}
+
+					QString filepath;
+					if (includeAvatar == "Yes")
+						filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithAvatar/" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
+					else
+						filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithoutAvatar/" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
+
+					Logger::Debug("CreateImageIntent -> onTabClicked() -> filepath" + filepath.toStdString());
+
+					item->setTextAlignment(Qt::AlignLeft);
+					QPixmap pix(filepath);
+					pix.scaled(QSize(80, 80), Qt::KeepAspectRatio);
+					QIcon newIcon;
+					newIcon.addPixmap(pix);
+					Logger::Debug("CreateProduct -> onTabClicked() -> 1");
+					item->setIcon(newIcon);
+					item->setSizeHint(QSize(80, 80));
+					m_ImageIntentList->addItem(item);
+					Logger::Debug("CreateProduct -> onTabClicked() -> 3");
+					CreateProduct::GetInstance()->m_ImageIntentList->setIconSize(QSize(80, 80));
+					//m_ImageIntentList->takeItem(index);
+					m_ImageIntentList->addItem(item);
+					CreateProduct::GetInstance()->m_ImageIntentList->setItemWidget(item, listItem);
+				}
+			}
+
+			RESTAPI::SetProgressBarData(0, "", false);
+		}
+	
 }

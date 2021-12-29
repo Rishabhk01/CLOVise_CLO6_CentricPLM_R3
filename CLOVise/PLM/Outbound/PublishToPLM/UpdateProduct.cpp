@@ -947,8 +947,10 @@ namespace CLOVise
 					DownloadDialogObject->DisplyMessage("Successfully published to PLM.");
 					DownloadDialogObject->setModal(true);
 					DownloadDialogObject->show();
-					Helper::RemoveDirectory(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_TEMP_DIRECTORY));
-					dir.mkpath(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_TEMP_DIRECTORY));
+					Helper::RemoveDirectory(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_WITH_AVATAR_TEMP_DIRECTORY));
+					dir.mkpath(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_WITH_AVATAR_TEMP_DIRECTORY));
+					Helper::RemoveDirectory(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_WITHOUT_AVATAR_TEMP_DIRECTORY));
+					dir.mkpath(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_WITHOUT_AVATAR_TEMP_DIRECTORY));
 					ClearAllFields(m_updateProductTreeWidget_1);
 					ClearAllFields(m_updateProductTreeWidget_2);
 					ui_colorwayTable->clear();

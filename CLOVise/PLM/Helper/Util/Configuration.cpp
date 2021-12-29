@@ -208,12 +208,14 @@ void Configuration::CreateTemporaryFolderPath()
 	PRODUCTS_TEMP_DIRECTORY = temporaryPath + "TempProducts/";
 	TRIMS_TEMP_DIRECTORY = temporaryPath + "TempTrims/";
 	COLORS_TEMP_DIRECTORY = temporaryPath + "TempColors/";
-	TURNTABLE_IMAGES_TEMP_DIRECTORY = temporaryPath + "CLOViseTurntableImages/";
+	TURNTABLE_IMAGES_WITH_AVATAR_TEMP_DIRECTORY = temporaryPath + "CLOViseTurntableImages/WithAvatar";
+	TURNTABLE_IMAGES_WITHOUT_AVATAR_TEMP_DIRECTORY = temporaryPath + "CLOViseTurntableImages/WithoutAvatar";
 	dir.mkpath(QString::fromStdString(MATERIALS_TEMP_DIRECTORY));
 	dir.mkpath(QString::fromStdString(PRODUCTS_TEMP_DIRECTORY));
 	dir.mkpath(QString::fromStdString(TRIMS_TEMP_DIRECTORY));
     dir.mkpath(QString::fromStdString(COLORS_TEMP_DIRECTORY));	
-    dir.mkpath(QString::fromStdString(TURNTABLE_IMAGES_TEMP_DIRECTORY));
+    dir.mkpath(QString::fromStdString(TURNTABLE_IMAGES_WITH_AVATAR_TEMP_DIRECTORY));
+    dir.mkpath(QString::fromStdString(TURNTABLE_IMAGES_WITHOUT_AVATAR_TEMP_DIRECTORY));
 }
 
 /*
