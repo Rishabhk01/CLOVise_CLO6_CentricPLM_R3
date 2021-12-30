@@ -76,6 +76,7 @@ namespace CLOVise
 		QStringList m_mappedColorways;
 		string m_currentlySelectedStyleTypeId;
 		json collectCriteriaFields(QTreeWidget* _documentPushToPLMTree_1, QTreeWidget* _documentPushToPLMTree_2);
+		void refreshImageIntents();
 	private:
 		CreateProduct(QWidget* parent = nullptr);
 		virtual ~CreateProduct();

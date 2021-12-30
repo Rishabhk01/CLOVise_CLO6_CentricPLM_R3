@@ -704,8 +704,6 @@ namespace CLOVise
 			UTILITY_API->DeleteProgressBar(true);
 			Logger::Error("Copy product-> Copy product Exception - " + string(e.what()));
 			UTILITY_API->DisplayMessageBox(e.what());
-			Helper::RemoveDirectory(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_TEMP_DIRECTORY));
-			dir.mkpath(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_TEMP_DIRECTORY));
 
 			this->show();
 		}
@@ -715,8 +713,6 @@ namespace CLOVise
 			wstring wstr(msg, msg + strlen(msg));
 			UTILITY_API->DeleteProgressBar(true);
 			UTILITY_API->DisplayMessageBoxW(wstr);
-			Helper::RemoveDirectory(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_TEMP_DIRECTORY));
-			dir.mkpath(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_TEMP_DIRECTORY));
 
 			this->show();
 		}
@@ -725,9 +721,6 @@ namespace CLOVise
 			UTILITY_API->DeleteProgressBar(true);
 			Logger::Error("Copy product-> Copy product Exception - " + str);
 			UTILITY_API->DisplayMessageBox(str);
-			Helper::RemoveDirectory(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_TEMP_DIRECTORY));
-			dir.mkpath(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_TEMP_DIRECTORY));
-
 			this->show();
 		}
 
