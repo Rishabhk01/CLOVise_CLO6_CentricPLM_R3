@@ -4419,14 +4419,20 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 			if (!colorwayId.empty())
 			{
 				Logger::Debug("UpdateProduct -> OnColorwaysTableDeleteButtonClicked() -> size 1:" + to_string(UpdateImageIntent::GetInstance()->m_ColorwayViewMap.size()));
-				m_DeletedColorwayList.append(QString::fromStdString(colorwayId));
-
+					m_DeletedColorwayList.append(QString::fromStdString(colorwayId));
+							
 				it = UpdateImageIntent::GetInstance()->m_ColorwayViewMap.find(plmColorwayName.toStdString());
 				if (it != UpdateImageIntent::GetInstance()->m_ColorwayViewMap.end())
 					UpdateImageIntent::GetInstance()->m_ColorwayViewMap.erase(plmColorwayName.toStdString());
 
 				Logger::Debug("UpdateProduct -> OnColorwaysTableDeleteButtonClicked() -> size2:" + to_string(UpdateImageIntent::GetInstance()->m_ColorwayViewMap.size()));
 			}
+			else
+			{
+				it = UpdateImageIntent::GetInstance()->m_ColorwayViewMap.find(plmColorwayName.toStdString());
+				if (it != UpdateImageIntent::GetInstance()->m_ColorwayViewMap.end())
+					UpdateImageIntent::GetInstance()->m_ColorwayViewMap.erase(plmColorwayName.toStdString());
+			}			
 			if (!colorSpecId.empty())
 			{
 				m_colorSpecList.removeOne(QString::fromStdString(colorSpecId));
