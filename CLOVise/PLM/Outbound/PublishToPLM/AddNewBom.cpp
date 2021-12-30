@@ -725,8 +725,6 @@ namespace CLOVise
 			if (materialCountJson.contains("apiMetaData"))// For In Library Materials
 			{
 
-
-
 				string apiMetadataStr = Helper::GetJSONValue<string>(materialCountJson, "apiMetaData", false);
 				json apimetaDataJson = json::parse(apiMetadataStr);
 
@@ -741,13 +739,16 @@ namespace CLOVise
 
 				getColorInfo(materialCountJson, rowDataJson, objectId, _isFabric);
 
+#ifdef __APPLE__
+				auto result = std::find_if(std::begin(m_materialTypeNameIdMap), std::end(m_materialTypeNameIdMap), [&](const std::pair<string, string> &pair) { return pair.second == materialType; });
+#else
 				auto result = std::find_if(m_materialTypeNameIdMap.begin(), m_materialTypeNameIdMap.end(), [materialType](const auto& mo) {return mo.second == materialType; });
+#endif
+				
 				if (result != m_materialTypeNameIdMap.end())
 				{
 					Logger::Debug("UpdateProduct -> FillImageIntentIdAndLabeMap() -> label: " + result->first);
 					auto it = m_sectionMaterialTypeMap.find(result->first);
-
-
 
 					if (it != m_sectionMaterialTypeMap.end())
 					{
@@ -881,7 +882,8 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 				if (bomTableColumnKeys[columnIndex] == "Type")
 				{
 					ComboBoxItem* comboType = new ComboBoxItem();
-					comboType->setStyleSheet("QComboBox{max-height: 25px; min-width: 100px;}");
+					comboType->setStyleSheet("QComboBox{max-height: 25px; min-width: 80px;}");						
+					comboType->setAttribute(Qt::WA_MacShowFocusRect, false);
 					comboType->setFocusPolicy(Qt::StrongFocus);
 					QStringList materialType;
 					for (int i = 0; i < _placementMateriaTypeJson.size(); i++)
@@ -1340,6 +1342,7 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 					else
 					{
 						QLineEdit* newColumn = new QLineEdit();
+						newColumn->setAttribute(Qt::WA_MacShowFocusRect, false);
 						newColumn->setStyleSheet(LINEEDIT_STYLE);
 						if (FormatHelper::HasContent(text))
 							newColumn->setText(QString::fromStdString(text));
@@ -1834,7 +1837,7 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 
 		ColorConfig::GetInstance()->m_mode = "Search";
 
-		boolean  isFromConstructor = false;
+		bool  isFromConstructor = false;
 		if (!ColorConfig::GetInstance()->GetIsModelExecuted())
 		{
 			ColorConfig::GetInstance()->InitializeColorData();
@@ -2386,9 +2389,7 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 		Logger::Debug("AddNewBom -> ValidateBomFields() -> Start");
 
 		QStringList list;
-		bool duplicateColrwayName = false;
-
-
+		bool duplicateColrwayName = true;
 
 		for (auto itr = m_bomSectionTableInfoMap.begin(); itr != m_bomSectionTableInfoMap.end(); itr++)
 		{
@@ -2405,7 +2406,7 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 					{
 						UTILITY_API->DisplayMessageBox("Name field cannot be blank in " + itr->first + " Section");
 						CreateProduct::GetInstance()->ui_tabWidget->setCurrentIndex(BOM_TAB);
-						return false;
+						duplicateColrwayName = false;
 					}
 				}
 				if (materialTypeCombo)
@@ -2415,13 +2416,13 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 					{
 						UTILITY_API->DisplayMessageBox("Type field cannot be blank in " + itr->first + " Section");
 						CreateProduct::GetInstance()->ui_tabWidget->setCurrentIndex(BOM_TAB);
-						return false;
+						duplicateColrwayName = false;
 					}
 				}
 			}
 		}
 
-
+		return duplicateColrwayName;
 		Logger::Debug("AddNewBom -> ValidateBomFields() -> End");
 	}
 }

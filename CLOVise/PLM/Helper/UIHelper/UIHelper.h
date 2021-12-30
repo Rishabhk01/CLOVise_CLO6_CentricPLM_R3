@@ -1210,6 +1210,30 @@ namespace UIHelper
 						json attachmentjson;
 						if (FormatHelper::HasContent(attachmentResponse))
 							attachmentjson = json::parse(attachmentResponse);
+
+						if (_module == PRINT_MODULE && attachmentjson.empty())
+						{
+							string parentId = Helper::GetJSONValue<string>(fieldsJson, "parent", true);
+							if (FormatHelper::HasContent(parentId))
+							{
+								attachemntRevisionApi = Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::ATTACHMENTS_LATEST_REVISION_RESULTS_API + parentId + "?revision_details=true";
+								attachmentResponse = RESTAPI::CentricRestCallGet(attachemntRevisionApi + "&decode=true", APPLICATION_JSON_TYPE, "");
+								if (!FormatHelper::HasContent(attachmentResponse))
+								{
+									throw "Unable to download, please try again or contact your System Administrator.";
+								}
+								if (FormatHelper::HasError(attachmentResponse))
+								{
+									Helper::GetCentricErrorMessage(attachmentResponse);
+									throw runtime_error(attachmentResponse);
+								}
+								if (FormatHelper::HasContent(attachmentResponse))
+								{
+									attachmentjson = json::parse(attachmentResponse);
+								}
+							}
+						}
+
 						for (int attachmenAarrayCount = 0; attachmenAarrayCount < attachmentjson.size(); attachmenAarrayCount++)
 						{
 							json attachmentCountJson = Helper::GetJSONParsedValue<int>(attachmentjson, attachmenAarrayCount, false);
