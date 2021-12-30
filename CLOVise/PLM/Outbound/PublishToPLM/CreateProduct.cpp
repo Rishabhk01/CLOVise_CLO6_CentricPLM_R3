@@ -1983,7 +1983,7 @@ namespace CLOVise
 			}
 			else
 			{
-				if (PublishToPLMData::GetInstance()->m_isSaveClicked && m_updateBomTab)
+				if (PublishToPLMData::GetInstance()->m_isSaveClicked && m_updateBomTab && AddNewBom::GetInstance()->IsBomCreated())
 				{
 
 					AddNewBom::GetInstance()->RestoreBomDetails();
