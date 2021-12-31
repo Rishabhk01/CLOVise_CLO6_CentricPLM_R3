@@ -335,7 +335,6 @@ namespace CLOVise
 			QObject::connect(m_SaveAndCloseButton, SIGNAL(clicked()), this, SLOT(onSaveAndCloseClicked()));
 			QObject::connect(m_addImageIntentButton, SIGNAL(clicked()), this, SLOT(onAddImageIntentClicked()));
 			QObject::connect(ui_tabWidget, SIGNAL(currentChanged(int)), this, SLOT(onTabClicked(int)));
-			QObject::connect(ui_colorwayTable, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(onContextMenuClicked(const QPoint&)));
 			QObject::connect(m_colorwayDeleteSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnColorwaysTableDeleteButtonClicked(int)));
 			QObject::connect(m_buttonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickAddColorButton(int)));
 			QObject::connect(m_createActionSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnCreateColorSpecClicked(int)));
@@ -352,7 +351,6 @@ namespace CLOVise
 			QObject::disconnect(m_cancelButton, SIGNAL(clicked()), this, SLOT(onBackButtonClicked()));
 			QObject::disconnect(m_colorwayAddButton, SIGNAL(clicked()), this, SLOT(onAddColorwaysClicked()));
 			QObject::disconnect(m_SaveAndCloseButton, SIGNAL(clicked()), this, SLOT(onSaveAndCloseClicked()));
-			QObject::disconnect(ui_colorwayTable, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(onContextMenuClicked(const QPoint&)));
 			QObject::disconnect(m_colorwayDeleteSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnColorwaysTableDeleteButtonClicked(int)));
 			QObject::disconnect(m_addImageIntentButton, SIGNAL(clicked()), this, SLOT(onAddImageIntentClicked()));
 			QObject::disconnect(ui_tabWidget, SIGNAL(currentChanged(int)), this, SLOT(onTabClicked(int)));
@@ -1336,149 +1334,6 @@ namespace CLOVise
 		Logger::Debug("CreateProduct -> AddColorwayDetails() -> End");
 	}
 
-	void CreateProduct::onContextMenuClicked(const QPoint & _pos)
-	{
-		Logger::Debug("CreateProduct -> onContextMenu_Clicked() -> Start");
-
-		QModelIndex index = ui_colorwayTable->indexAt(_pos);
-		if ((index.column() != CHECKBOX_COLUMN) && (index.column() != CLO_COLORWAY_COLUMN) && (index.column() != UNI_2_DIGIT_CODE_COLUMN) && (index.column() != COLOR_CHIP_COLUMN) && (index.column() != PLM_COLORWAY_COLUMN))
-		{
-			QMenu menu;
-			map<string, CreateImageIntent::ColorwayViews>::iterator it;
-			QAction* removeAction = menu.addAction(QString::fromStdString("Delete"));
-			QAction* rightClickAction = menu.exec(ui_colorwayTable->viewport()->mapToGlobal(_pos));
-			if (removeAction == rightClickAction)
-			{
-				bool isConfirmed = false;
-
-				QMessageBox* deleteMessage = new QMessageBox();
-				deleteMessage->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
-				deleteMessage->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-				deleteMessage->setIcon(QMessageBox::Question);
-				deleteMessage->setText("Deleting the colorway and associated Image Intents. Are you sure you want to proceed? ");
-
-				if (deleteMessage->exec() != QMessageBox::Yes)
-				{
-					isConfirmed = false;
-				}
-				else
-				{
-					QTableWidgetItem* item = ui_colorwayTable->itemAt(_pos);
-					if (item)
-					{
-						int rowIndex = ui_colorwayTable->row(item);
-						QComboBox *colorwayNameCombo = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(rowIndex, CLO_COLORWAY_COLUMN)->children().last());
-						string colorSpecId = colorwayNameCombo->property("Id").toString().toStdString();
-						QString plmColorwayName = colorwayNameCombo->currentText();
-						if (!colorSpecId.empty())
-						{
-							m_colorSpecList.removeOne(QString::fromStdString(colorSpecId));
-							it = CreateImageIntent::GetInstance()->m_ColorwayViewMap.find(plmColorwayName.toStdString());
-							if (it != CreateImageIntent::GetInstance()->m_ColorwayViewMap.end())
-								CreateImageIntent::GetInstance()->m_ColorwayViewMap.erase(plmColorwayName.toStdString());
-						}
-						ui_colorwayTable->removeRow(rowIndex);
-						if (m_buttonSignalMapper != nullptr)
-						{
-							for (int i = 0; i < ui_colorwayTable->rowCount(); i++)
-							{
-								QPushButton *colorButton = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, STARTING_INDEX);
-								if (colorButton)
-									m_buttonSignalMapper->setMapping(colorButton, i);
-								QPushButton *CreateButton = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, FIRST_INDEX);
-								if (m_createActionSignalMapper != nullptr)
-								{								
-									if (CreateButton)
-									{
-										QList<QAction*> actions;
-										actions = CreateButton->menu()->actions();
-										m_createActionSignalMapper->setMapping(actions.at(STARTING_INDEX), i);
-									}
-								}
-								if (m_printActionSignalMapper != nullptr)
-								{
-									if (CreateButton)
-									{
-										QList<QAction*> actions;
-										actions = CreateButton->menu()->actions();
-										m_createActionSignalMapper->setMapping(actions.at(FIRST_INDEX), i);
-									}
-								}
-							}
-						}
-						QStringList selectedIndexs;
-						int rowCount = m_ImageIntentList->count();
-						for (int index = 0; index < rowCount; index++)
-						{
-							QListWidgetItem* listImageItem = new QListWidgetItem();
-							QListWidgetItem* item = m_ImageIntentList->item(index);
-							QListWidget *listItem = qobject_cast<QListWidget*>(m_ImageIntentList->itemWidget(item));
-							for (int itemIndex = 0; itemIndex < listItem->count(); itemIndex++)
-							{
-								string text = listItem->item(itemIndex)->text().toStdString();
-								Logger::Debug("CreateProduct -> onContextMenu_Clicked() -> Item" + text);
-								if (itemIndex == 0)
-								{
-									int length = text.length();
-									int indexOfColon = text.find(":");
-									string colorwayName = text.substr(indexOfColon + 2, length);
-									Logger::Debug("CreateProduct -> onContextMenu_Clicked() -> clorwayname" + colorwayName);
-									Logger::Debug("CreateProduct -> onContextMenu_Clicked() -> clorwayname" + plmColorwayName.toStdString());
-									if (colorwayName == plmColorwayName.toStdString())
-									{
-										Logger::Debug("CreateProduct -> onContextMenu_Clicked() Matched");
-										selectedIndexs.append(QString::fromStdString(to_string(index)));
-									}
-
-								}
-							}
-						}
-						for (int index = selectedIndexs.size() - 1; index >= 0; index--)
-						{
-							m_ImageIntentList->takeItem(selectedIndexs[index].toInt()); //deleting row from table, in reverse order
-
-						}
-						string currentViewName;
-						for (int index = 0; index < 4; index++)
-						{
-							switch (index)
-							{
-							case BACK_VIEW:
-								currentViewName = "Back";
-								break;
-							case FRONT_VIEW:
-								currentViewName = "Front";
-								break;
-							case LEFT_VIEW:
-								currentViewName = "Left";
-								break;
-							case RIGHT_VIEW:
-								currentViewName = "Right";
-								break;
-							}
-							if (CreateImageIntent::GetInstance()->m_colorwayViewQueue.contains(plmColorwayName + QString::fromStdString(currentViewName))) //deleting row from table, in reverse order
-								CreateImageIntent::GetInstance()->m_colorwayViewQueue.removeAll(plmColorwayName + QString::fromStdString(currentViewName));
-						}
-					}
-
-					else
-					{
-						UTILITY_API->DisplayMessageBox("Select Image To Delete");
-					}
-
-				}
-				for (int count = 0; count < ui_colorwayTable->rowCount(); count++)
-				{
-					QComboBox * digiCodeCombo = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(count, UNI_2_DIGIT_CODE_COLUMN)->children().last());
-					if (digiCodeCombo != nullptr)
-						digiCodeCombo->setProperty("row", count);
-				}
-			}
-		}
-
-		Logger::Debug("CreateProduct -> onContextMenu_Clicked() -> End");
-	}
-
 	bool CreateProduct::ValidateColorwayNameField()
 	{
 		Logger::Debug("createProduct -> ValidateColorwayNameField() -> Start");
@@ -2083,9 +1938,18 @@ namespace CLOVise
 							{
 								ui_colorwayTable->removeRow(rowCount);
 							}
+							if (AddNewBom::GetInstance()->IsBomCreated())
+							{
+								m_CloAndPLMColorwayMap.clear();
+								ClearBomSectionLayout();
+								AddNewBom::GetInstance()->ClearBomData();
+								m_bomAddButton->show();
+								m_bomAddButton->setEnabled(true);
+							}
 						}
 						else
 						{
+							m_bomAddButton->hide();
 							comboBox->setCurrentIndex(m_prevSelectedStyleTypeIndex);
 							m_selectedStyleTypeIndex = m_prevSelectedStyleTypeIndex;
 						}
