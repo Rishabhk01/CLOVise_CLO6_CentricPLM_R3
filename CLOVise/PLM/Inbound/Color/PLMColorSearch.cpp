@@ -787,31 +787,46 @@ namespace CLOVise
 		{
 			ColorConfig::GetInstance()->SetDateFlag(false);
 			QStringList attScops = ColorConfig::GetInstance()->GetAttScopes();
+			json attributesJson = json::object();
+
 			/*if (!CVWidgetGenerator::DrawFilterAndSearchCriteriaWidget(ColorConfig::GetInstance()->GetColorFilterJSON(), m_filterComboBox, m_searchTreeWidget, _selectType, _selectedFilter, attScops, _drawFilter))
 			{	*/	
 			/*if (ColorConfig::GetInstance()->GetIsModelExecuted())
 				Configuration::GetInstance()->SetProgressBarProgress(RESTAPI::SetProgressBarProgress(Configuration::GetInstance()->GetProgressBarProgress(), 10, "Loading Color Search"));*/
-				FlexTypeHelper::DrawDefaultSearchCriteriaWidget(_fieldsJson, _selectType.toStdString(), m_searchTreeWidget_1, m_searchTreeWidget_2, attScops);
-		  //}
-				m_searchTreeWidget_1->setColumnCount(2);
-				m_searchTreeWidget_1->setHeaderHidden(true);
-				m_searchTreeWidget_1->setWordWrap(true);
-				m_searchTreeWidget_1->setDropIndicatorShown(false);
-				m_searchTreeWidget_1->setRootIsDecorated(false);
-				m_searchTreeWidget_1->setSelectionMode(QAbstractItemView::NoSelection);
-				m_searchTreeWidget_1->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; outline: 0;}""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
-				m_searchTreeWidget_2->setColumnCount(2);
-				m_searchTreeWidget_2->setHeaderHidden(true);
-				m_searchTreeWidget_2->setWordWrap(true);
-				m_searchTreeWidget_2->setDropIndicatorShown(false);
-				m_searchTreeWidget_2->setRootIsDecorated(false);
-				m_searchTreeWidget_2->setSelectionMode(QAbstractItemView::NoSelection);
-				m_searchTreeWidget_2->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; outline: 0;}""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
+			FlexTypeHelper::DrawDefaultSearchCriteriaWidget(_fieldsJson, _selectType.toStdString(), m_searchTreeWidget_1, m_searchTreeWidget_2, attScops);
+		//}
+			m_searchTreeWidget_1->setColumnCount(2);
+			m_searchTreeWidget_1->setHeaderHidden(true);
+			m_searchTreeWidget_1->setWordWrap(true);
+			m_searchTreeWidget_1->setDropIndicatorShown(false);
+			m_searchTreeWidget_1->setRootIsDecorated(false);
+			m_searchTreeWidget_1->setSelectionMode(QAbstractItemView::NoSelection);
+			m_searchTreeWidget_1->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; outline: 0;}""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
+			m_searchTreeWidget_2->setColumnCount(2);
+			m_searchTreeWidget_2->setHeaderHidden(true);
+			m_searchTreeWidget_2->setWordWrap(true);
+			m_searchTreeWidget_2->setDropIndicatorShown(false);
+			m_searchTreeWidget_2->setRootIsDecorated(false);
+			m_searchTreeWidget_2->setSelectionMode(QAbstractItemView::NoSelection);
+			m_searchTreeWidget_2->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; outline: 0;}""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
 
-				/*if (!m_searchTreeWidget_2->isHidden())
-					this->setMinimumSize(850, 650);*/ // this commented because, when two widget apear on the searchtable one widget overon anothere widget.
-			//if (!ColorConfig::GetInstance()->GetDateFlag())
-				m_dateResetButton->hide();
+			for (int searchFeildsCount = 0; searchFeildsCount < MaterialConfig::GetInstance()->GetMaterialFieldsJSON().size(); searchFeildsCount++)
+			{
+				json feildsJson = Helper::GetJSONParsedValue<int>(MaterialConfig::GetInstance()->GetMaterialFieldsJSON(), searchFeildsCount, false);
+				for (int searchFeildsCount = 0; searchFeildsCount < feildsJson.size(); searchFeildsCount++)
+					attributesJson = Helper::GetJSONParsedValue<string>(feildsJson, FILTER_ATTRIBUTES_KEY, false);
+			}
+
+			if (attributesJson.size() < 10)
+				m_searchTreeWidget_2->setVisible(false);
+			else
+				m_searchTreeWidget_2->setVisible(true);
+
+			if (m_searchTreeWidget_2->isVisible())
+				this->setMinimumSize(850, 650); // this commented because, when two widget apear on the searchtable one widget overon anothere widget.
+
+			//if (!MaterialConfig::GetInstance()->GetDateFlag())
+			m_dateResetButton->hide();
 			/*else
 				m_dateResetButton->show();*/
 

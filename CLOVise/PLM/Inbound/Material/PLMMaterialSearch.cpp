@@ -683,6 +683,7 @@ namespace CLOVise
 		{
 			MaterialConfig::GetInstance()->SetDateFlag(false);
 			QStringList attScops = MaterialConfig::GetInstance()->GetAttScopes();
+			json attributesJson = json::object();
 			
 			if (MaterialConfig::GetInstance()->GetIsModelExecuted())
 				Configuration::GetInstance()->SetProgressBarProgress(RESTAPI::SetProgressBarProgress(Configuration::GetInstance()->GetProgressBarProgress(), 10, "Loading Material Search"));
@@ -707,11 +708,23 @@ namespace CLOVise
 			m_searchTreeWidget_2->setSelectionMode(QAbstractItemView::NoSelection);
 			m_searchTreeWidget_2->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; padding-top: 10px; outline: 0; }""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
 
-			/*if (!m_searchTreeWidget_2->isHidden())
-				this->setMinimumSize(850, 650);*/ // this commented because, when two widget apear on the searchtable one widget overon anothere widget.
+			for (int searchFeildsCount = 0; searchFeildsCount < MaterialConfig::GetInstance()->GetMaterialFieldsJSON().size(); searchFeildsCount++)
+			{
+				json feildsJson = Helper::GetJSONParsedValue<int>(MaterialConfig::GetInstance()->GetMaterialFieldsJSON(), searchFeildsCount, false);
+				for (int searchFeildsCount = 0; searchFeildsCount < feildsJson.size(); searchFeildsCount++)
+					attributesJson = Helper::GetJSONParsedValue<string>(feildsJson, FILTER_ATTRIBUTES_KEY, false);
+			}
+
+			if (attributesJson.size() < 10)
+				m_searchTreeWidget_2->setVisible(false);
+			else
+				m_searchTreeWidget_2->setVisible(true);
+
+			if (m_searchTreeWidget_2->isVisible())
+				this->setMinimumSize(850, 650); // this commented because, when two widget apear on the searchtable one widget overon anothere widget.
 
 			//if (!MaterialConfig::GetInstance()->GetDateFlag())
-				m_dateResetButton->hide();
+			m_dateResetButton->hide();
 			/*else
 				m_dateResetButton->show();*/
 		}
