@@ -679,11 +679,13 @@ namespace CLOVise
 		{
 			ProductConfig::GetInstance()->SetDateFlag(false);
 			QStringList attScops = ProductConfig::GetInstance()->GetAttScopes();
+			json attributesJson = json::object();
+
 			if (MaterialConfig::GetInstance()->GetIsModelExecuted())
 				Configuration::GetInstance()->SetProgressBarProgress(RESTAPI::SetProgressBarProgress(Configuration::GetInstance()->GetProgressBarProgress(), 10, "Loading Style Search"));
 			/*if (!CVWidgetGenerator::DrawFilterAndSearchCriteriaWidget(ProductConfig::GetInstance()->GetProductFilterJSON(), m_filterComboBox, m_searchTreeWidget, _selectType, _selectedFilter, attScops, _drawFilter))
 			{*/
-				FlexTypeHelper::DrawDefaultSearchCriteriaWidget(ProductConfig::GetInstance()->GetProductFieldsJSON(), _selectType.toStdString(), m_searchTreeWidget_1, m_searchTreeWidget_2, attScops);
+			FlexTypeHelper::DrawDefaultSearchCriteriaWidget(ProductConfig::GetInstance()->GetProductFieldsJSON(), _selectType.toStdString(), m_searchTreeWidget_1, m_searchTreeWidget_2, attScops);
 			//}
 			m_searchTreeWidget_1->setSelectionMode(QAbstractItemView::NoSelection);
 			m_searchTreeWidget_1->setColumnCount(2);
@@ -741,10 +743,24 @@ namespace CLOVise
 				}
 
 			}
-			//if (!ProductConfig::GetInstance()->GetDateFlag())
-				m_dateResetButton->hide();
 
-			
+			for (int searchFeildsCount = 0; searchFeildsCount < MaterialConfig::GetInstance()->GetMaterialFieldsJSON().size(); searchFeildsCount++)
+			{
+				json feildsJson = Helper::GetJSONParsedValue<int>(MaterialConfig::GetInstance()->GetMaterialFieldsJSON(), searchFeildsCount, false);
+				for (int searchFeildsCount = 0; searchFeildsCount < feildsJson.size(); searchFeildsCount++)
+					attributesJson = Helper::GetJSONParsedValue<string>(feildsJson, FILTER_ATTRIBUTES_KEY, false);
+			}
+
+			if (attributesJson.size() < 10)
+				m_searchTreeWidget_2->setVisible(false);
+			else
+				m_searchTreeWidget_2->setVisible(true);
+
+			if (m_searchTreeWidget_2->isVisible())
+				this->setMinimumSize(850, 650); // this commented because, when two widget apear on the searchtable one widget overon anothere widget.
+
+			//if (!MaterialConfig::GetInstance()->GetDateFlag())
+			m_dateResetButton->hide();		
 		}
 		catch (string msg)
 		{

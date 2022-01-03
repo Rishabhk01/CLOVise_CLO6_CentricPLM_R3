@@ -695,7 +695,7 @@ void CVWidgetGenerator::CreateSearchCriteriaWidget(QTreeWidget* _searchTree_1, Q
 	if (_attributeJson.size() < 10)
 	{
 		UIHelper::CreateWidgetsOnTreeWidget(_searchTree_1, STARTING_INDEX, _attributeJson.size(), _attributeJson, _noFilter, _isTemplateType);
-		_searchTree_2->hide();
+		_searchTree_2->setVisible(false);
 	}
 	else
 	{
