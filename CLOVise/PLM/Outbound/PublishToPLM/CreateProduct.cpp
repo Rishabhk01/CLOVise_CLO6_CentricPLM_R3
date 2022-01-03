@@ -3757,4 +3757,12 @@ namespace CLOVise
 
 		Logger::Debug("CreateProduct -> onContextMenu_Clicked() -> End");
 	}
+
+	void CreateProduct::ClearBOMData()
+	{
+		ClearBomSectionLayout();
+		AddNewBom::GetInstance()->ClearBomData();
+		m_bomAddButton->show();
+		m_bomAddButton->setEnabled(true);
+	}
 }
