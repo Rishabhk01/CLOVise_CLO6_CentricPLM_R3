@@ -925,7 +925,7 @@ namespace CLOVise
 					CreateAndUpdateColorways(productId);
 					exportZPRJ(documentId);
 					//UploadStyleThumbnail(productId);
-					exportTurntableImages();
+					//exportTurntableImages();
 					DeleteColorwayFromPLM();
 					uploadColorwayImages();
 					LinkImagesToColorways(productId);
@@ -2036,6 +2036,22 @@ namespace CLOVise
 		m_isSaveClicked = true;
 
 		GetUpdatedColorwayNames();
+		for (int row = 0; row < ui_colorwayTable->rowCount(); row++)
+		{
+			QComboBox *colorwayNameCombo = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(row, CLO_COLORWAY_COLUMN)->children().last());
+			QLineEdit *plmColorwayName = static_cast<QLineEdit*>(ui_colorwayTable->cellWidget(row, PLM_COLORWAY_COLUMN)->children().last());
+			int colorwayCount = UTILITY_API->GetColorwayCount();
+			QString selectedCLOColorwayName = colorwayNameCombo->currentText();
+			Logger::Debug("CreateProduct -> ExtractColorwayDetails () 4");
+			for (int count = 0; count < colorwayCount; count++)
+			{
+				string colorwayName = UTILITY_API->GetColorwayName(count);
+				if (selectedCLOColorwayName.toStdString() == colorwayName)
+				{
+					UTILITY_API->SetColorwayName(count, plmColorwayName->text().toStdString());
+				}
+			}
+		}
 		//if (ExtractAllUIValues())
 		{
 			//CreateProductCreateMap();
@@ -2046,6 +2062,11 @@ namespace CLOVise
 			if (UTILITY_API)
 				UTILITY_API->DisplayMessageBox(Configuration::GetInstance()->GetLocalizedStyleClassName() + " Metadata Saved");
 		}
+		QDir dir;
+		Helper::RemoveDirectory(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_WITH_AVATAR_TEMP_DIRECTORY));
+		dir.mkpath(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_WITH_AVATAR_TEMP_DIRECTORY));
+		Helper::RemoveDirectory(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_WITHOUT_AVATAR_TEMP_DIRECTORY));
+		dir.mkpath(QString::fromStdString(Configuration::GetInstance()->TURNTABLE_IMAGES_WITHOUT_AVATAR_TEMP_DIRECTORY));
 		Logger::Debug("UpdateProduct -> SaveClicked() -> End");
 	}
 
@@ -2065,7 +2086,8 @@ namespace CLOVise
 			int imageRowCount = m_imageIntentTable->rowCount();
 			m_imageIntentTable->setColumnCount(m_ImageIntentsColumnsNames.size());
 			m_imageIntentTable->setHorizontalHeaderLabels(m_ImageIntentsColumnsNames);
-			if (imageRowCount != 0)
+			ValidateColorwayNameField();
+			/*if (imageRowCount != 0)
 			{
 				UTILITY_API->CreateProgressBar();
 				RESTAPI::SetProgressBarData(20, "Loading Latest Image Intents... ", true);
@@ -2124,8 +2146,8 @@ namespace CLOVise
 					pColorWidget = CVWidgetGenerator::InsertWidgetInCenter(label);
 					m_imageIntentTable->setCellWidget(index, IMAGE_INTENT_COLUMN, pColorWidget);
 
-				}
-			}
+				}*/
+			
 		}
 		RESTAPI::SetProgressBarData(0, "", false);
 		Logger::Debug("UpdateProduct onTabClicked() End");
@@ -2757,8 +2779,11 @@ namespace CLOVise
 					if (colorwayIterator->second.viewUploadId[i].compare("") != 0)
 					{
 						Logger::Debug("UpdateProduct -> uploadColorwayImages () 2");
-
-						string filepath = temporaryPath + "CLOViseTurntableImages/" + str + "_" + to_string(i) + ".png";
+						string filepath;
+						if (colorwayIterator->second.includeAvatar[i] == 1)
+							filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/Avatar_" + str + "_" + to_string(i) + ".png";
+						else
+							filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/" + str + "_" + to_string(i) + ".png";
 						//UTILITY_API->DisplayMessageBox(filepath);
 						string postField = getPublishRequestParameter(filepath, str + "_" + to_string(i) + ".png");
 						Logger::Debug("UpdateProduct -> uploadColorwayImages () postField" + postField);
@@ -3548,6 +3573,7 @@ namespace CLOVise
 				filePath = filePath + "CLOViseTurntableImages/";
 				filePath = filePath + imageName;
 
+				Logger::Debug("UpdateProduct -> drawColorwayImageList() -> filePath " + filePath);
 				Helper::DownloadFilesFromURL(imageUrl, filePath);// Downloading Image
 
 				it = m_imageIntentIdAndLabeMap.find(imageId);
@@ -3639,6 +3665,17 @@ namespace CLOVise
 				else
 					colorwayView.defaultImage = -1;
 				colorwayView.viewUploadId[view] = imageId;
+
+				int includeAvatar=-1;
+				QString includeAvaterStr = "No";
+				if (imageName.find("Avatar_") !=- 1)
+				{
+					includeAvatar = 1;
+					includeAvaterStr = "Yes";
+					Logger::Debug("UpdateProduct -> drawColorwayImageList() -> includeAvaterStr" + includeAvaterStr.toStdString());
+				}
+				imageIntentsDetails.isAvatar = includeAvaterStr;
+				colorwayView.includeAvatar[view]= includeAvatar;
 				colorwayView.viewLabelMap.insert(make_pair(view, labelsList));
 
 				//QString displayDetails = "Colorway : " + QString::fromStdString(_colorwayName) + "\nView : " + QString::fromStdString(viewName) + "\n Image Labels: " + labels + "\n Default: " + defaultImage;
@@ -3755,13 +3792,14 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 		return m_isSaveClicked;
 	}
 
-	void UpdateProduct::FillImageIntentsStruct(string _colorway, string _view, string _viewName, string _labels, string _default)
+	void UpdateProduct::FillImageIntentsStruct(string _colorway, string _view, string _viewName, string _labels, string _default, string _includeAvatar)
 	{
 		m_imageIntentsDetails.colorwayName = QString::fromStdString(_colorway);
 		m_imageIntentsDetails.view = QString::fromStdString(_view);
 		m_imageIntentsDetails.viewName = QString::fromStdString(_viewName);
 		m_imageIntentsDetails.labels = QString::fromStdString(_labels);
 		m_imageIntentsDetails.isdefault = QString::fromStdString(_default);
+		m_imageIntentsDetails.isAvatar = QString::fromStdString(_includeAvatar);
 	}
 
 	void UpdateProduct::AddRowInImageIntentTab(QPixmap _pixMap, ImageIntentsDetails _imageIntentsDetails, string _imageId)
@@ -3804,6 +3842,12 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 		m_imageIntentTable->setItem(m_imageIntentRowcount, DEFAULT_COLUMN, defaultWidget);
 		m_imageIntentTable->setColumnWidth(DEFAULT_COLUMN, 90);
 
+		/*QTableWidgetItem* avatarWidget = new QTableWidgetItem(_imageIntentsDetails.isdefault);
+		avatarWidget->setTextAlignment(Qt::AlignCenter);
+		avatarWidget->setToolTip(QString::fromStdString(""));
+		m_imageIntentTable->setItem(m_imageIntentRowcount,AVATAR_COLUMN, avatarWidget);
+		m_imageIntentTable->setColumnWidth(AVATAR_COLUMN, 90);*/
+
 		QPushButton *editButton = CVWidgetGenerator::CreatePushButton("", ":/CLOVise/PLM/Images/icon_draw_over.svg", "Edit", PUSH_BUTTON_STYLE, 30, true);
 		editButton->setProperty("colorwayName", _imageIntentsDetails.colorwayName);
 		editButton->setProperty("view", _imageIntentsDetails.view);
@@ -3824,6 +3868,7 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 		deleteButton->setProperty("view", _imageIntentsDetails.view);
 		deleteButton->setProperty("imageId", QString::fromStdString(_imageId));
 		deleteButton->setProperty("defaultImage", _imageIntentsDetails.isdefault);
+		deleteButton->setProperty("includeAvatar", _imageIntentsDetails.isAvatar);
 		QWidget *pDeleteWidget = CVWidgetGenerator::InsertWidgetInCenter(deleteButton);
 		if (m_deleteSignalMapper != nullptr)
 		{
@@ -3847,6 +3892,8 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 			m_ImageIntentRowIndexForEdit = _rowIndex;
 			Logger::Debug("UpdateProduct -> onImageIntentsTableEditButtonClicked() Start 1 _rowIndex  " + to_string(_rowIndex));
 			QPushButton *editButoon = static_cast<QPushButton*>(m_imageIntentTable->cellWidget(_rowIndex, EDIT_COLUMN)->children().last());
+			QPushButton *deleteButton = static_cast<QPushButton*>(m_imageIntentTable->cellWidget(_rowIndex, DELETE_COLUMN)->children().last());
+			string includeAvatar = deleteButton->property("includeAvatar").toString().toStdString();
 			string colorwayName = editButoon->property("colorwayName").toString().toStdString();
 			string colorwayView = editButoon->property("view").toString().toStdString();
 			string imageId = editButoon->property("imageId").toString().toStdString();
@@ -3856,6 +3903,15 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 				UpdateImageIntent::GetInstance()->m_setDefaultCheckBox->setChecked(false);
 				UpdateImageIntent::GetInstance()->m_setDefaultCheckBox->setChecked(true);
 			}
+			if (includeAvatar == "Yes")
+			{
+
+				UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setChecked(false);
+				UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setChecked(true);
+			}
+			else
+				UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setChecked(false);
+
 			Logger::Debug("UpdateProduct -> onImageIntentsTableEditButtonClicked() Start 2 imageId" + imageId);
 			if (colorwayName.find("No Colorway") != -1)
 			{
@@ -4126,28 +4182,40 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 		Logger::Debug("UpdateProduct -> exportTurntableImages() -> Start ");
 
 		int cloColorwaySelectedIndex = UTILITY_API->GetCurrentColorwayIndex();
-		Logger::Debug("UpdateProduct -> onTabClicked() -> cloColorwaySelectedIndex" + to_string(cloColorwaySelectedIndex));
 		int colorwayCount = UTILITY_API->GetColorwayCount();
-		Logger::Debug("UpdateProduct onTabClicked() colorwayCount" + to_string(colorwayCount));
+		Logger::Debug("UpdateProduct -> exportTurntableImages() colorwayCount" + to_string(colorwayCount));
 
 		int colorwayIndex = 0;
 
 		string temporaryPath = UTILITY_API->GetCLOTemporaryFolderPath();
-		Logger::Debug("UpdateProduct onTabClicked() temporaryPath" + temporaryPath);
+
+		Logger::Debug("UpdateProduct->exportTurntableImages() temporaryPath" + temporaryPath);
 		QStringList imageNameList;
+		string filepath;
 		for (colorwayIndex = 0; colorwayIndex < colorwayCount; colorwayIndex++)
 		{
 			string colorwayName = UTILITY_API->GetColorwayName(colorwayIndex);
 
+			UTILITY_API->SetShowHideAvatar(true);
 			UTILITY_API->SetCurrentColorwayIndex(colorwayIndex);
-			string filepath = temporaryPath + "CLOViseTurntableImages/" + colorwayName + ".png";
-			Logger::Debug("UpdateProduct onTabClicked() filepath" + filepath);
-
+			filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/Avatar_" + colorwayName + ".png";
+			EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
+			filepath.clear();
+			UTILITY_API->SetShowHideAvatar(false);
+			filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/" + colorwayName + ".png";
 			EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
 		}
+
+		filepath.clear();
 		UTILITY_API->SetCurrentColorwayIndex(cloColorwaySelectedIndex);
-		string filepath = temporaryPath + "CLOViseTurntableImages/" + "No Colorway(Default)" + ".png";
+		UTILITY_API->SetShowHideAvatar(true);
+		filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/Avatar_No Colorway(Default).png";
 		EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
+		filepath.clear();
+		UTILITY_API->SetShowHideAvatar(false);
+		filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/No Colorway(Default).png";
+		EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
+
 		Logger::Debug("UpdateProduct -> exportTurntableImages() -> End ");
 	}
 
@@ -4385,4 +4453,82 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 			Logger::Debug("UpdateProduct -> OnColorwaysTableDeleteButtonClicked() -> End");
 		}
 	}
+
+	void UpdateProduct::refreshImageIntents()
+	{
+
+			int imageRowCount = m_imageIntentTable->rowCount();
+			m_imageIntentTable->setColumnCount(m_ImageIntentsColumnsNames.size());
+			m_imageIntentTable->setHorizontalHeaderLabels(m_ImageIntentsColumnsNames);
+			if (imageRowCount != 0)
+			{
+				UTILITY_API->CreateProgressBar();
+				RESTAPI::SetProgressBarData(20, "Loading Latest Image Intents... ", true);
+				UTILITY_API->SetProgress("Loading Latest Image Intents...", (qrand() % 101));
+			}
+
+			if (/*ValidateColorwayNameField() && */imageRowCount != 0)
+			{
+				exportTurntableImages();
+
+				string colorwayName;
+				string viewName;
+				int view;
+				int rowCount = m_imageIntentTable->rowCount();
+				string temporaryPath = UTILITY_API->GetCLOTemporaryFolderPath();
+
+				for (int index = 0; index < rowCount; index++)
+				{
+
+					QTableWidgetItem* item = m_imageIntentTable->item(index, COLORWAY_COLUMN);
+					Logger::Debug("UpdateProduct -> onTabClicked() -> Item" + item->text().toStdString());
+					colorwayName = item->text().toStdString();
+
+					Logger::Debug("UpdateProduct -> onTabClicked() -> clorwayname" + colorwayName);
+
+
+					QTableWidgetItem* viewItem = m_imageIntentTable->item(index, IMAGE_VIEW_COLUMN);
+					Logger::Debug("UpdateProduct -> onTabClicked() -> Item" + viewItem->text().toStdString());
+					string ViewText;
+					ViewText = viewItem->text().toStdString();
+					int length = ViewText.length();
+					int indexOfColon = ViewText.find(":");
+					viewName = ViewText.substr(indexOfColon + 1, length);
+					Logger::Debug("UpdateProduct -> onTabClicked() -> viewName" + viewName);
+
+					if (viewName.find("Back") != -1)
+						view = BACK_VIEW;
+					else if (viewName.find("Front") != -1)
+						view = FRONT_VIEW;
+					else if (viewName.find("Left") != -1)
+						view = LEFT_VIEW;
+					else
+						view = RIGHT_VIEW;
+
+					QPushButton *deleteButton = static_cast<QPushButton*>(m_imageIntentTable->cellWidget(index, DELETE_COLUMN)->children().last());
+					string includeAvatar = deleteButton->property("includeAvatar").toString().toStdString();
+					Logger::Debug("UpdateProduct -> refreshImageIntents() -> includeAvatar" + includeAvatar);
+					QString filepath;
+					if (includeAvatar == "Yes")
+						filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithAvatar/Avatar_" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
+					else
+						filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithoutAvatar/" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
+
+					Logger::Debug("UpdateProduct -> refreshImageIntents() -> filepath" + filepath.toStdString());
+
+
+					QPixmap pix(filepath);
+					pix.scaled(QSize(80, 80), Qt::KeepAspectRatio);
+					QWidget *pColorWidget = nullptr;
+					QLabel* label = new QLabel();
+					label->setMaximumSize(QSize(80, 80));
+					int w = label->width();
+					int h = label->height();
+					label->setPixmap(QPixmap(pix.scaled(w, h, Qt::KeepAspectRatio)));
+					pColorWidget = CVWidgetGenerator::InsertWidgetInCenter(label);
+					m_imageIntentTable->setCellWidget(index, IMAGE_INTENT_COLUMN, pColorWidget);
+
+				}
+			}
 }
+	}

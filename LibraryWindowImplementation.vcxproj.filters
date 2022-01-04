@@ -362,9 +362,6 @@
     <ClCompile Include="CLOVise\PLM\Outbound\UpdateMaterial\UpdateMaterialConfig.cpp">
       <Filter>CLOVise\PLM\Outbound\UpdateMaterial</Filter>
     </ClCompile>
-    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_UpdateImageIntent.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -411,6 +408,9 @@
       <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
     </ClCompile>
     <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\CreateImageIntent.cpp">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.cpp">
       <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
     </ClCompile>
   </ItemGroup>
@@ -637,6 +637,9 @@
     </ClInclude>
     <ClInclude Include="CLOVise\PLM\Outbound\PublishToPLM\Section.h">
       <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\CLOViseSuite\CLOViseSuite.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -871,6 +874,9 @@
     </CustomBuild>
     <CustomBuild Include="CLOVise\PLM\CLOViseSuite\CLOViseSuite.h">
       <Filter>CLOVise\PLM\CLOViseSuite</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
+      <Filter>Generated Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

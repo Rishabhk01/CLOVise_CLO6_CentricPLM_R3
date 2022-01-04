@@ -966,6 +966,8 @@ namespace CLOVise
 						UpdateProduct::GetInstance()->GetcolorwayDetails();
 				}
 
+				if (UpdateProduct::GetInstance()->GetIsSaveClicked())
+					UpdateProduct::GetInstance()->refreshImageIntents();
 				UpdateProduct::GetInstance()->setModal(true);					
 				Configuration::GetInstance()->SetIsNewStyleDownloaded(false);
 				UTILITY_API->DeleteProgressBar(true);
