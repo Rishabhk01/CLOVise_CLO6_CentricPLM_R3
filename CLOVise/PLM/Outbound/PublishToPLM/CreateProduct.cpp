@@ -1136,6 +1136,8 @@ namespace CLOVise
 
 			Marvelous::ImportExportOption option;
 			option.bSaveInZip = true;
+			option.bSaveColorWaysSingleFile = true;
+			option.bSaveColorWays = true;
 			EXPORT_API->ExportGLTF(m_GLBFilePath + GLB, option, true);
 			Logger::Debug("m_GLBFilePath::" + m_GLBFilePath);
 			RESTAPI::SetProgressBarData(20, "Uploading GLB file to PLM...", true);

@@ -120,6 +120,7 @@ namespace CLOVise
 		//void collect3DTurntablesData();
 		void collectCreateProductFieldsData();
 		void exportZPRJ(string _productId);
+		void exportGLBFile(string _productId);
 		void exportGLB(bool _isGLBExportable);
 		string getPublishRequestParameter(string _path, string _imageName);
 		void connectSignalSlots(bool _b) override;
