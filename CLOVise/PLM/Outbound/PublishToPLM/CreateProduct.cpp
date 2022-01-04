@@ -3654,6 +3654,7 @@ namespace CLOVise
 			//}
 
 		}
+		SetTotalImageCount();
 		for (int count = 0; count < ui_colorwayTable->rowCount(); count++)
 		{
 			QComboBox * digiCodeCombo = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(count, UNI_2_DIGIT_CODE_COLUMN)->children().last());
