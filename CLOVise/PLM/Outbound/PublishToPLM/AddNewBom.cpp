@@ -604,8 +604,9 @@ namespace CLOVise
 			sectionId += "id=" + section + "&";
 		}
 		sectionId = sectionId.substr(0, sectionId.length() - 1);
-
-		string sectionDefinitions = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_SECTION_DEFINITION_API + "?" + sectionId + "&sort=sort_order&limit=1000", APPLICATION_JSON_TYPE, "");
+		string sectionDefinitions;
+		if(!sectionId.empty())
+		 sectionDefinitions = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_SECTION_DEFINITION_API + "?" + sectionId + "&sort=sort_order&limit=1000", APPLICATION_JSON_TYPE, "");
 		Logger::Debug("AddNewBom -> CreateTableforEachSection() -> resultResponse" + sectionDefinitions);
 
 		//QStringList sectionList;
@@ -624,59 +625,62 @@ namespace CLOVise
 
 		}
 		int sectionCountOnBomTab = 0;
-		json sectionDefinitionsJson = json::parse(sectionDefinitions);
 		json placementProductTypeJson;
-		for (int sectionCount = 0; sectionCount < sectionDefinitionsJson.size(); sectionCount++)
+		if (!sectionDefinitions.empty())
 		{
-			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> 1");
-			json sectionCountJson = Helper::GetJSONParsedValue<int>(sectionDefinitionsJson, sectionCount, false);;///use new method
-			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> 1");
-			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionCountJson" + to_string(sectionCountJson));
-			string sectionId = Helper::GetJSONValue<string>(sectionCountJson, ATTRIBUTE_ID, true);
-			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionId" + sectionId);
-			string sectionName = Helper::GetJSONValue<string>(sectionCountJson, "node_name", true);
-			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionName" + sectionName);
-			json bomProductTypeJson = Helper::GetJSONParsedValue<string>(sectionCountJson, "bom_product_types", false);
-			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> bomProductTypeJson" + to_string(bomProductTypeJson));
-			placementProductTypeJson = Helper::GetJSONParsedValue<string>(sectionCountJson, "placement_product_types", false);
-			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> placementProductTypeJson" + to_string(placementProductTypeJson));
-			bool isSectionValidForStyleType = false;
-
-
-			for (int itr = 0; itr < bomProductTypeJson.size(); itr++)
+			json sectionDefinitionsJson = json::parse(sectionDefinitions);
+			
+			for (int sectionCount = 0; sectionCount < sectionDefinitionsJson.size(); sectionCount++)
 			{
-				string bomProductType = Helper::GetJSONValue<int>(bomProductTypeJson, itr, true);
-				if (bomProductType == CreateProduct::GetInstance()->m_currentlySelectedStyleTypeId)
-					isSectionValidForStyleType = true;
-			}
+				Logger::Debug("AddNewBom -> CreateTableforEachSection() -> 1");
+				json sectionCountJson = Helper::GetJSONParsedValue<int>(sectionDefinitionsJson, sectionCount, false);;///use new method
+				Logger::Debug("AddNewBom -> CreateTableforEachSection() -> 1");
+				Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionCountJson" + to_string(sectionCountJson));
+				string sectionId = Helper::GetJSONValue<string>(sectionCountJson, ATTRIBUTE_ID, true);
+				Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionId" + sectionId);
+				string sectionName = Helper::GetJSONValue<string>(sectionCountJson, "node_name", true);
+				Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionName" + sectionName);
+				json bomProductTypeJson = Helper::GetJSONParsedValue<string>(sectionCountJson, "bom_product_types", false);
+				Logger::Debug("AddNewBom -> CreateTableforEachSection() -> bomProductTypeJson" + to_string(bomProductTypeJson));
+				placementProductTypeJson = Helper::GetJSONParsedValue<string>(sectionCountJson, "placement_product_types", false);
+				Logger::Debug("AddNewBom -> CreateTableforEachSection() -> placementProductTypeJson" + to_string(placementProductTypeJson));
+				bool isSectionValidForStyleType = false;
 
-			if (!isSectionValidForStyleType)
-				continue;
 
-			map<string, QStringList>::iterator it;
-
-			for (int itr = 0; itr < placementProductTypeJson.size(); itr++)
-			{
-				QStringList sectionNamelist;
-				string bomPlacementProductTypeId = Helper::GetJSONValue<int>(placementProductTypeJson, itr, true);
-
-				it = m_sectionMaterialTypeMap.find(bomPlacementProductTypeId);
-				if (it != m_sectionMaterialTypeMap.end())
+				for (int itr = 0; itr < bomProductTypeJson.size(); itr++)
 				{
-					sectionNamelist = it->second;
-					m_sectionMaterialTypeMap.erase(bomPlacementProductTypeId);
+					string bomProductType = Helper::GetJSONValue<int>(bomProductTypeJson, itr, true);
+					if (bomProductType == CreateProduct::GetInstance()->m_currentlySelectedStyleTypeId)
+						isSectionValidForStyleType = true;
 				}
-				sectionNamelist.append(QString::fromStdString(sectionName));
 
-				m_sectionMaterialTypeMap.insert(make_pair(bomPlacementProductTypeId, sectionNamelist));
+				if (!isSectionValidForStyleType)
+					continue;
+
+				map<string, QStringList>::iterator it;
+
+				for (int itr = 0; itr < placementProductTypeJson.size(); itr++)
+				{
+					QStringList sectionNamelist;
+					string bomPlacementProductTypeId = Helper::GetJSONValue<int>(placementProductTypeJson, itr, true);
+
+					it = m_sectionMaterialTypeMap.find(bomPlacementProductTypeId);
+					if (it != m_sectionMaterialTypeMap.end())
+					{
+						sectionNamelist = it->second;
+						m_sectionMaterialTypeMap.erase(bomPlacementProductTypeId);
+					}
+					sectionNamelist.append(QString::fromStdString(sectionName));
+
+					m_sectionMaterialTypeMap.insert(make_pair(bomPlacementProductTypeId, sectionNamelist));
+				}
+
+				CreateSectionInBom(sectionName, sectionId, tablecolumnList, sectionCountOnBomTab, placementProductTypeJson);
+				sectionCountOnBomTab++;
+
+
 			}
-
-			CreateSectionInBom(sectionName, sectionId, tablecolumnList, sectionCountOnBomTab, placementProductTypeJson);
-			sectionCountOnBomTab++;
-
-
 		}
-
 		// Create blank section
 		CreateSectionInBom("Blank", "", tablecolumnList, sectionCountOnBomTab, placementProductTypeJson);
 
