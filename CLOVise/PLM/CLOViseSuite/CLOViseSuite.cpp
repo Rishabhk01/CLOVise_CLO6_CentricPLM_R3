@@ -1273,6 +1273,7 @@ namespace CLOVise
 				//UpdateProduct::GetInstance()->Destroy();
 				
 				PublishToPLMData::GetInstance()->ResetPublishData();
+				CreateProduct::GetInstance()->ClearBOMData();
 				Logger::Info("DesignSuite -> ResetPublishData -> after");
 				/*ColorConfig::Destroy();
 				PLMDocumentSearch::Destroy();

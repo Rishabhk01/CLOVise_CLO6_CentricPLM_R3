@@ -57,6 +57,7 @@ namespace CLOVise
 		void ExportTechPack();
 		void ClearBomSectionLayout();
 		void CreateBom(string _productId);
+		void ClearBOMData();
 		struct ColorwayViews
 		{
 			string viewUploadId[4];
