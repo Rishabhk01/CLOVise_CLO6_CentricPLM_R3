@@ -954,7 +954,17 @@ namespace CLOVise
 			AddConnectorForRadioButton();
 		else
 			AddConnectorForCheckbox();
-		m_downloadButton->setText("Download");
+		if (Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED)
+		{
+			m_downloadButton->setText("Add");
+			m_downloadButton->setIcon(QIcon(QString(ADD_HOVER_ICON_PATH)));
+		}
+		else
+		{
+			m_downloadButton->setText("Download");
+			m_downloadButton->setIcon(QIcon(QString(DOWNLOAD_HOVER_ICON_PATH)));
+			
+		}
 		Logger::Info("PLMMaterialResult -> DrawResultWidget() -> End");
 	}
 }
