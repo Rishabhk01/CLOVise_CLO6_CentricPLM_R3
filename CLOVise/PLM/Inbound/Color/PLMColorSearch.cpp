@@ -944,9 +944,11 @@ namespace CLOVise
 	*/
 	void PLMColorSearch::CreateColorSpecWidget()
 	{
-		Logger::Info("INFO::PLMColorSearch -> SetCriteriaHeader() -> Start");
+		Logger::Info("INFO::PLMColorSearch -> SetCriteriaHeader() -> Start"); 
+		Logger::Info("INFO::PLMColorSearch -> SetCriteriaHeader() -> m_isSearchColor: " + to_string(ColorConfig::GetInstance()->m_isSearchColor));
 		if ((Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED && !ColorConfig::GetInstance()->m_isSearchColor) || (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED && !ColorConfig::GetInstance()->m_isSearchColor))
 		{
+			Logger::Info("INFO::PLMColorSearch -> SetCriteriaHeader() -> if true");
 			QString windowTitle = PLM_NAME + " PLM " + QString::fromStdString(Configuration::GetInstance()->GetLocalizedColorClassName()) + " Specification Creation";
 			this->setWindowTitle(windowTitle);
 #ifdef _WIN32
@@ -966,6 +968,7 @@ namespace CLOVise
 		}
 		else
 		{
+			Logger::Info("INFO::PLMColorSearch -> SetCriteriaHeader() -> else");
 			QString windowTitle = PLM_NAME + " PLM " + QString::fromStdString(Configuration::GetInstance()->GetLocalizedColorClassName()) + " Search Criteria ";
 			this->setWindowTitle(windowTitle);
 #ifdef _WIN32
