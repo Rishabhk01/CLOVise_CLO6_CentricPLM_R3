@@ -1572,16 +1572,22 @@ namespace CLOVise
 		}
 
 
+		if (_objectName == "null")
+			_objectName = " ";
 		QTableWidgetItem* ColorNameWidget = new QTableWidgetItem(QString::fromStdString(_objectName));
 		ColorNameWidget->setTextAlignment(Qt::AlignCenter);
 		ColorNameWidget->setToolTip(QString::fromStdString(_objectName));
 		ui_colorwayTable->setItem(m_colorwayRowcount, COLOR_NAME_COLUMN, ColorNameWidget);
 
+		if (_code == "null")
+			_code = " ";
 		QTableWidgetItem* ColorCodeWidget = new QTableWidgetItem(QString::fromStdString(_code));
 		ColorCodeWidget->setTextAlignment(Qt::AlignCenter);
 		ColorCodeWidget->setToolTip(QString::fromStdString(_objectId));
 		ui_colorwayTable->setItem(m_colorwayRowcount, COLOR_CODE_COLUMN, ColorCodeWidget);
 
+		if (_pantone == "null")
+			_pantone = " ";
 		QTableWidgetItem* ColorStatusWidget = new QTableWidgetItem(QString::fromStdString(_pantone));
 		ColorStatusWidget->setTextAlignment(Qt::AlignCenter);
 		ColorStatusWidget->setToolTip(QString::fromStdString(_pantone));
@@ -2964,6 +2970,8 @@ namespace CLOVise
 		}
 		if (tabIndex == COLORWAY_TAB)
 		{
+			if (!FormatHelper::HasContent(pantone))
+				pantone = BLANK;
 			ui_colorwayTable->item(m_selectedRow, COLOR_NAME_COLUMN)->setText(QString::fromStdString(objectName));
 			ui_colorwayTable->item(m_selectedRow, COLOR_CODE_COLUMN)->setText(QString::fromStdString(objectCode));
 			ui_colorwayTable->item(m_selectedRow, PANTONE_CODE_COLUMN)->setText(QString::fromStdString(pantone));
