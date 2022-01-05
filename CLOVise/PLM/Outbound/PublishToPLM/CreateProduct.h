@@ -57,6 +57,7 @@ namespace CLOVise
 		void ExportTechPack();
 		void ClearBomSectionLayout();
 		void CreateBom(string _productId);
+		void ClearBOMData();
 		struct ColorwayViews
 		{
 			string viewUploadId[4];
@@ -191,7 +192,6 @@ namespace CLOVise
 		void onBackButtonClicked();
 		void onPublishToPLMClicked();
 		void onAddColorwaysClicked();
-		void onContextMenuClicked(const QPoint & _pos);
 		void onSaveAndCloseClicked();
 		void OnHandleDropDownValue(const QString& _item);
 		void onAddImageIntentClicked();
