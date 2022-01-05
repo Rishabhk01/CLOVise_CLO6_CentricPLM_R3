@@ -751,9 +751,9 @@ namespace CLOVise
 			m_searchTreeWidget_2->setSelectionMode(QAbstractItemView::NoSelection);
 			m_searchTreeWidget_2->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; outline: 0;}""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
 
-			for (int searchFeildsCount = 0; searchFeildsCount < MaterialConfig::GetInstance()->GetMaterialFieldsJSON().size(); searchFeildsCount++)
+			for (int searchFeildsCount = 0; searchFeildsCount < PrintConfig::GetInstance()->GetPrintFieldsJSON().size(); searchFeildsCount++)
 			{
-				json feildsJson = Helper::GetJSONParsedValue<int>(MaterialConfig::GetInstance()->GetMaterialFieldsJSON(), searchFeildsCount, false);
+				json feildsJson = Helper::GetJSONParsedValue<int>(PrintConfig::GetInstance()->GetPrintFieldsJSON(), searchFeildsCount, false);
 				for (int searchFeildsCount = 0; searchFeildsCount < feildsJson.size(); searchFeildsCount++)
 					attributesJson = Helper::GetJSONParsedValue<string>(feildsJson, FILTER_ATTRIBUTES_KEY, false);
 			}

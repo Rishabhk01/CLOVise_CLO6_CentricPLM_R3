@@ -3757,4 +3757,12 @@ namespace CLOVise
 			RESTAPI::SetProgressBarData(0, "", false);
 		}
 	
+
+	void CreateProduct::ClearBOMData()
+	{
+		ClearBomSectionLayout();
+		AddNewBom::GetInstance()->ClearBomData();
+		m_bomAddButton->show();
+		m_bomAddButton->setEnabled(true);
+	}
 }
