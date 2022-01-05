@@ -3905,12 +3905,16 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 			}
 			if (includeAvatar == "Yes")
 			{
-
-				UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setChecked(false);
+				Logger::Debug("UpdateProduct -> onImageIntentsTableEditButtonClicked()includeAvatar:" + includeAvatar);
+				if(!UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->isChecked())
+				{
+				UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setAutoExclusive(false);
 				UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setChecked(true);
+				UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setAutoExclusive(true);
+				}
 			}
-			else
-				UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setChecked(false);
+			/*else
+				UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setChecked(false);*/
 
 			Logger::Debug("UpdateProduct -> onImageIntentsTableEditButtonClicked() Start 2 imageId" + imageId);
 			if (colorwayName.find("No Colorway") != -1)
