@@ -744,9 +744,9 @@ namespace CLOVise
 
 			}
 
-			for (int searchFeildsCount = 0; searchFeildsCount < MaterialConfig::GetInstance()->GetMaterialFieldsJSON().size(); searchFeildsCount++)
+			for (int searchFeildsCount = 0; searchFeildsCount < ProductConfig::GetInstance()->GetProductFieldsJSON().size(); searchFeildsCount++)
 			{
-				json feildsJson = Helper::GetJSONParsedValue<int>(MaterialConfig::GetInstance()->GetMaterialFieldsJSON(), searchFeildsCount, false);
+				json feildsJson = Helper::GetJSONParsedValue<int>(ProductConfig::GetInstance()->GetProductFieldsJSON(), searchFeildsCount, false);
 				for (int searchFeildsCount = 0; searchFeildsCount < feildsJson.size(); searchFeildsCount++)
 					attributesJson = Helper::GetJSONParsedValue<string>(feildsJson, FILTER_ATTRIBUTES_KEY, false);
 			}
