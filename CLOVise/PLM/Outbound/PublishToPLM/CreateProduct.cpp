@@ -1504,8 +1504,8 @@ namespace CLOVise
 			connect(deleteButton, SIGNAL(clicked()), m_colorwayDeleteSignalMapper, SLOT(map()));
 			m_colorwayDeleteSignalMapper->setMapping(deleteButton, m_colorwayRowcount);
 		}
-		ui_colorwayTable->setCellWidget(m_colorwayRowcount, COLORWAYDELETE_COLUMN, pdeleteWidget);
-		ui_colorwayTable->setColumnWidth(COLORWAYDELETE_COLUMN, 50);
+		ui_colorwayTable->setCellWidget(m_colorwayRowcount, COLORWAY_DELETE_COLUMN, pdeleteWidget);
+		ui_colorwayTable->setColumnWidth(COLORWAY_DELETE_COLUMN, 50);
 		ui_colorwayTable->setWordWrap(true);
 
 		ui_colorwayTable->setCellWidget(m_colorwayRowcount, UPDATE_BTN_COLUMN, pWidget);
@@ -3589,7 +3589,7 @@ namespace CLOVise
 				{
 					for (int index = 0; index < ui_colorwayTable->rowCount(); index++)
 					{
-						QPushButton *deleteButton = static_cast<QPushButton*>(ui_colorwayTable->cellWidget(index, COLORWAYDELETE_COLUMN)->children().last());
+						QPushButton *deleteButton = static_cast<QPushButton*>(ui_colorwayTable->cellWidget(index, COLORWAY_DELETE_COLUMN)->children().last());
 						m_colorwayDeleteSignalMapper->setMapping(deleteButton, index);
 						//QPushButton *editButton = static_cast<QPushButton*>(ui_colorwayTab->cellWidget(index, COLORWAYDELETE_COLUMN)->children().last());
 						//m_colorwayDeleteSignalMapper->setMapping(editButton, index);
