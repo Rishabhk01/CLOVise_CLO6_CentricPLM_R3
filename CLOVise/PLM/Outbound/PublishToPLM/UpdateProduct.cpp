@@ -672,6 +672,13 @@ namespace CLOVise
 				QTreeWidgetItem* topLevel = new QTreeWidgetItem();
 				ComboBoxItem* comboBox = new ComboBoxItem();
 
+#ifdef __APPLE__	// Settinng Windows OS style to QComboBox on MAC OS
+
+				comboBox->setStyle(QStyleFactory::create("Windows"));
+				comboBox->setItemDelegate(new QStyledItemDelegate());
+
+#endif
+
 				QStringList valueList;
 				valueList.append(QString::fromStdString(BLANK));
 				//json attJson = json::object();
@@ -1763,6 +1770,14 @@ namespace CLOVise
 		comboColorwayItem->setFocusPolicy(Qt::StrongFocus);
 		comboColorwayItem->addItems(_colorwayNamesList);
 		comboColorwayItem->setProperty("Id", QString::fromStdString(_objectId));
+
+#ifdef __APPLE__	// Settinng Windows OS style to QComboBox on MAC OS
+
+		comboColorwayItem->setStyle(QStyleFactory::create("Windows"));
+		comboColorwayItem->setItemDelegate(new QStyledItemDelegate());
+
+#endif
+
 		ui_colorwayTable->setColumnWidth(CLO_COLORWAY_COLUMN, 150);
 		if (m_downloadedColorway)
 		{
@@ -1901,6 +1916,14 @@ namespace CLOVise
 
 		ComboBoxItem* uni2digiCodes = new ComboBoxItem();
 		uni2digiCodes->setFocusPolicy(Qt::StrongFocus);
+
+#ifdef __APPLE__	// Settinng Windows OS style to QComboBox on MAC OS
+
+		uni2digiCodes->setStyle(QStyleFactory::create("Windows"));
+		uni2digiCodes->setItemDelegate(new QStyledItemDelegate());
+
+#endif
+
 		QStringList valueList;
 		int indexOfSelectedString;
 

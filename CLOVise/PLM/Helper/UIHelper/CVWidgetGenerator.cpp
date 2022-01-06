@@ -2834,6 +2834,14 @@ ComboBoxItem* CVWidgetGenerator::CreateComboBox(QString _toolTip, QString _style
 	comboBox->setToolTip(_toolTip);
 	comboBox->setStyleSheet(_styleSheet);
 	comboBox->setFocusPolicy(Qt::StrongFocus);
+
+#ifdef __APPLE__	// Settinng Windows OS style to QComboBox on MAC OS
+
+	comboBox->setStyle(QStyleFactory::create("Windows"));
+	comboBox->setItemDelegate(new QStyledItemDelegate());
+
+#endif
+
 	if (!_showWidget)
 		comboBox->hide();
 	return comboBox;
@@ -2858,6 +2866,8 @@ QLineEdit* CVWidgetGenerator::CreateLineEdit(QString _toolTip, QString _styleShe
 
 	lineEdit->setToolTip(_toolTip);
 	lineEdit->setStyleSheet(_styleSheet);
+	lineEdit->setAttribute(Qt::WA_MacShowFocusRect, false);
+
 	if (!_showWidget)
 		lineEdit->hide();
 	return lineEdit;
