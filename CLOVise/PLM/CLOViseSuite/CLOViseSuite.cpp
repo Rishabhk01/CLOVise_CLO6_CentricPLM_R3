@@ -430,37 +430,29 @@ namespace CLOVise
 		this->hide();
 		try
 		{
-			Logger::Info("CLOViseSuite -> ExecuteColorModule() -> Start");
-
 			if (IsModuleExecutable("Color")) 
 			{
-				Logger::Info("CLOViseSuite -> ExecuteColorModule() -> 1");
 				int isFromConstructor = false;
 				ColorConfig::GetInstance()->m_mode = "Search";
 				if (!ColorConfig::GetInstance()->GetIsModelExecuted())
 				{
-					Logger::Info("CLOViseSuite -> ExecuteColorModule() -> 2");
 					ColorConfig::GetInstance()->InitializeColorData();
 					PLMColorSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
 					isFromConstructor = true;
 				}
 				else
 				{
-					Logger::Info("CLOViseSuite -> ExecuteColorModule() -> 3");
 					PLMColorSearch::GetInstance()->DrawSearchWidget(true);
 				}
 
-				Logger::Info("CLOViseSuite -> ExecuteColorModule() -> 4");
 				if (ColorConfig::GetInstance()->m_colorLoggedOut && isFromConstructor)
 				{
-					Logger::Info("CLOViseSuite -> ExecuteColorModule() -> 5");
 					ColorConfig::GetInstance()->m_colorLoggedOut = false;
 					ColorConfig::GetInstance()->m_resultAfterLogout = true;
 					PLMColorSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
 				}
 				PLMColorSearch::GetInstance()->setModal(true);
 
-				Logger::Info("CLOViseSuite -> ExecuteColorModule() -> 6");
 				UTILITY_API->DeleteProgressBar(true);
 				PLMColorSearch::GetInstance()->exec();
 				ColorConfig::GetInstance()->SetIsModelExecuted(true);

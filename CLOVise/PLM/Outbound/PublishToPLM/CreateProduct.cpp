@@ -2898,19 +2898,16 @@ namespace CLOVise
 		QImage styleIcon;
 
 		int tabIndex = ui_tabWidget->currentIndex();
-		Logger::Debug("CreateProduct -> UpdateColorInColorways () tabIndex" + to_string(tabIndex));
+
 		if (tabIndex == COLORWAY_TAB)
 		{
 			if (!m_currentColorSpec.empty())
 				m_colorSpecList.removeOne(QString::fromStdString(m_currentColorSpec));
 		}
-		Logger::Debug("CreateProduct -> UpdateColorInColorways () 1");
-		Logger::Debug("CreateThumbnailWidget() _jsonarray - " + to_string(_jsonarray));
 		
 		for (int rowCount = 0; rowCount < _jsonarray.size(); rowCount++)
 		{
 			attachmentsJson = Helper::GetJSONParsedValue<int>(_jsonarray, rowCount, false);
-			Logger::Debug("CreateThumbnailWidget() attachmentsJson - " + to_string(attachmentsJson));
 			
 			attId = Helper::GetJSONValue<string>(attachmentsJson, ATTRIBUTE_ID, true);
 			if (_downloadIdList.contains(QString::fromStdString(attId)))
@@ -2928,12 +2925,10 @@ namespace CLOVise
 				rgbValue = Helper::GetJSONValue<string>(attachmentsJson, RGB_VALUE_KEY, true);
 				objectCode = Helper::GetJSONValue<string>(attachmentsJson, CODE_KEY, true);
 
-				Logger::Debug("CreateProduct -> UpdateColorInColorways () 2");
 				break;
 			}
 		}
 
-		Logger::Debug("CreateProduct -> UpdateColorInColorways () 3");
 		rgbValue = Helper::FindAndReplace(rgbValue, "(", "");
 		rgbValue = Helper::FindAndReplace(rgbValue, ")", "");
 		rgbValue = Helper::FindAndReplace(rgbValue, " ", "");
@@ -2944,7 +2939,6 @@ namespace CLOVise
 
 		if (FormatHelper::HasContent(rgbValue))
 		{
-			Logger::Debug("CreateProduct -> UpdateColorInColorways () 4");
 			QStringList listRGB;
 			QString colorRGB = QString::fromStdString(rgbValue);
 			listRGB = colorRGB.split(',');
@@ -2968,18 +2962,14 @@ namespace CLOVise
 
 			pixmap = QPixmap::fromImage(image);
 
-			Logger::Debug("CreateProduct -> UpdateColorInColorways () 5");
 		}
 		else
 		{
-			Logger::Debug("CreateThumbnailWidget() attId - " + attId);
-
 			string images = Helper::GetJSONValue<string>(attachmentsJson, "images", false);
 			json imageIDJson = json::parse(images);
 			string defaultImageID = Helper::GetJSONValue<string>(imageIDJson, "", true);
 
 			string thumbnail = UIHelper::GetPrintThumbnailUrl(defaultImageID);
-			Logger::Debug("CreateThumbnailWidget() thumbnail - " + thumbnail);
 			
 			if (FormatHelper::HasContent(thumbnail))
 			{
