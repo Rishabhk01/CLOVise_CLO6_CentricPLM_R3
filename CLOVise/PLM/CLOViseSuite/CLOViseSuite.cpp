@@ -437,6 +437,7 @@ namespace CLOVise
 				if (!ColorConfig::GetInstance()->GetIsModelExecuted())
 				{
 					ColorConfig::GetInstance()->InitializeColorData();
+					PLMColorSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
 					isFromConstructor = true;
 				}
 				else
@@ -451,7 +452,7 @@ namespace CLOVise
 					PLMColorSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
 				}
 				PLMColorSearch::GetInstance()->setModal(true);
-				
+
 				UTILITY_API->DeleteProgressBar(true);
 				PLMColorSearch::GetInstance()->exec();
 				ColorConfig::GetInstance()->SetIsModelExecuted(true);

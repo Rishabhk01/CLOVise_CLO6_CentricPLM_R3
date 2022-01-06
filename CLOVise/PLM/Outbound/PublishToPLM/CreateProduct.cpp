@@ -889,7 +889,7 @@ namespace CLOVise
 					//Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 2");
 					string productId = Helper::GetJSONValue<string>(detailJson, ATTRIBUTE_ID, true);
 					//Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 3");
-					string revisionId = uploadDocument(productId);					
+					string revisionId = uploadDocument(productId);
 					ExtractColorwayDetails(productId);
 					exportZPRJ(revisionId);
 					uploadGLBFile(productId);
@@ -897,8 +897,8 @@ namespace CLOVise
 					//exportTurntableImages();
 					uploadColorwayImages();
 					LinkImagesToColorways(productId);
-					if(AddNewBom::GetInstance()->IsBomCreated())
-					CreateBom(productId);
+					if (AddNewBom::GetInstance()->IsBomCreated())
+						CreateBom(productId);
 					//Logger::Debug("Create product onPublishToPLMClicked() 1....");
 					UTILITY_API->NewProject();
 					//Logger::Debug("Create product onPublishToPLMClicked() 2....");
@@ -1072,7 +1072,7 @@ namespace CLOVise
 		string fileStream = Helper::GetFilestream(_path);
 		string contentLength = Helper::getFileLength(_path);
 		string postField = "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"file\"; filename=" + _fileName + "\r\nContent-Type: " + contentType + "\r\n" + contentLength + "\r\n\r\n" + fileStream + "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW";
-	    if (_fileName.find(".png") != -1)
+		if (_fileName.find(".png") != -1)
 		{
 			postField += "\r\nContent-Disposition: form-data; name=\"generated_by\"\r\n\r\n";
 			postField += "CLO3D";
@@ -1080,12 +1080,12 @@ namespace CLOVise
 			postField += "------WebKitFormBoundary7MA4YWxkTrZu0gW--";
 			Logger::Debug("Create product getPublishRequestParameter(string _path, string _imageName) end....");
 		}
-		else if ( _fileName.find(".zip") != -1)
-		{		
+		else if (_fileName.find(".zip") != -1)
+		{
 			postField += "\r\nContent-Disposition: form-data; name=\"is_3d\"\r\n\r\n";
 			postField += "true";
 			postField += "\r\n";
-			postField += "------WebKitFormBoundary7MA4YWxkTrZu0gW--";		
+			postField += "------WebKitFormBoundary7MA4YWxkTrZu0gW--";
 		}
 		else
 			postField += "--";
@@ -1125,7 +1125,7 @@ namespace CLOVise
 		*/
 	void CreateProduct::uploadGLBFile(string _productId)
 	{
-		Logger::Debug("CreateProduct uploadGLBFile() start....");	
+		Logger::Debug("CreateProduct uploadGLBFile() start....");
 		try {
 			string _3DModelFilePath = UTILITY_API->GetProjectFilePath();
 			Helper::EraseSubString(_3DModelFilePath, UTILITY_API->GetProjectName());
@@ -1409,7 +1409,7 @@ namespace CLOVise
 
 			if (colorwayNameCombo)
 			{
-				comboSize = colorwayNameCombo->count(); 
+				comboSize = colorwayNameCombo->count();
 				m_modifiedColorwayNames << colorwayNameCombo->currentText();
 				comboBoxIndex = colorwayNameCombo->currentIndex();
 				comboBoxIndexList.push_back(comboBoxIndex);
@@ -1934,7 +1934,7 @@ namespace CLOVise
 						deleteMessage->setIcon(QMessageBox::Question);
 						if (AddNewBom::GetInstance()->IsBomCreated())
 							bomMessage = " and BOM tab";
-						message = "Changing the Style Type will delete the existing information on the Colorway" + bomMessage +". Are you sure you want to proceed? ";
+						message = "Changing the Style Type will delete the existing information on the Colorway" + bomMessage + ". Are you sure you want to proceed? ";
 						deleteMessage->setText(message);
 
 						if (deleteMessage->exec() == QMessageBox::Yes)
@@ -2625,10 +2625,10 @@ namespace CLOVise
 					if (colorwayIterator->second.viewUploadId[i].compare("") != 0)
 					{
 						string filepath;
-						if(colorwayIterator->second.includeAvatar[i] == 1)
-						 filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/" + str + "_" + to_string(i) + ".png";
+						if (colorwayIterator->second.includeAvatar[i] == 1)
+							filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/" + str + "_" + to_string(i) + ".png";
 						else
-						filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/" + str + "_" + to_string(i) + ".png";
+							filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/" + str + "_" + to_string(i) + ".png";
 						//UTILITY_API->DisplayMessageBox("filepath  " + filepath + "image name  " + str + "_" + to_string(i) + ".png");
 						string postField = getPublishRequestParameter(filepath, str + "_" + to_string(i) + ".png");
 
@@ -2898,17 +2898,23 @@ namespace CLOVise
 		string rgbValue;
 		string objectCode;
 		string attId;
+		json attachmentsJson;
+
+		QPixmap pixmap;
+		QImage styleIcon;
+
 		int tabIndex = ui_tabWidget->currentIndex();
-		Logger::Debug("CreateProduct -> UpdateColorInColorways () tabIndex" + to_string(tabIndex));
+
 		if (tabIndex == COLORWAY_TAB)
 		{
 			if (!m_currentColorSpec.empty())
 				m_colorSpecList.removeOne(QString::fromStdString(m_currentColorSpec));
 		}
-		Logger::Debug("CreateProduct -> UpdateColorInColorways () 1");
+		
 		for (int rowCount = 0; rowCount < _jsonarray.size(); rowCount++)
 		{
-			json attachmentsJson = Helper::GetJSONParsedValue<int>(_jsonarray, rowCount, false);
+			attachmentsJson = Helper::GetJSONParsedValue<int>(_jsonarray, rowCount, false);
+			
 			attId = Helper::GetJSONValue<string>(attachmentsJson, ATTRIBUTE_ID, true);
 			if (_downloadIdList.contains(QString::fromStdString(attId)))
 			{
@@ -2924,21 +2930,21 @@ namespace CLOVise
 				pantone = Helper::GetJSONValue<string>(attachmentsJson, PANTONE_KEY, true);
 				rgbValue = Helper::GetJSONValue<string>(attachmentsJson, RGB_VALUE_KEY, true);
 				objectCode = Helper::GetJSONValue<string>(attachmentsJson, CODE_KEY, true);
-				Logger::Debug("CreateProduct -> UpdateColorInColorways () 2");
+
 				break;
 			}
 		}
 
-		Logger::Debug("CreateProduct -> UpdateColorInColorways () 3");
 		rgbValue = Helper::FindAndReplace(rgbValue, "(", "");
 		rgbValue = Helper::FindAndReplace(rgbValue, ")", "");
 		rgbValue = Helper::FindAndReplace(rgbValue, " ", "");
+
 		QLabel* label = new QLabel();
 		label->setToolTip(QString::fromStdString(objectName));
 		QWidget *pWidget = nullptr;
+
 		if (FormatHelper::HasContent(rgbValue))
 		{
-			Logger::Debug("CreateProduct -> UpdateColorInColorways () 4");
 			QStringList listRGB;
 			QString colorRGB = QString::fromStdString(rgbValue);
 			listRGB = colorRGB.split(',');
@@ -2959,22 +2965,69 @@ namespace CLOVise
 			}
 			QImage image(size, QImage::Format_ARGB32);
 			image.fill(color);
-			QPixmap pixmap;
 
 			pixmap = QPixmap::fromImage(image);
-			label->setPixmap(QPixmap(pixmap));
 
-			pWidget = CVWidgetGenerator::InsertWidgetInCenter(label);
-			pWidget->setProperty("colorId", attId.c_str());
-			Logger::Debug("CreateProduct -> UpdateColorInColorways () 5");
 		}
+		else
+		{
+			string images = Helper::GetJSONValue<string>(attachmentsJson, "images", false);
+			json imageIDJson = json::parse(images);
+			string defaultImageID = Helper::GetJSONValue<string>(imageIDJson, "", true);
+
+			string thumbnail = UIHelper::GetPrintThumbnailUrl(defaultImageID);
+			
+			if (FormatHelper::HasContent(thumbnail))
+			{
+				QByteArray imageBytes;
+				auto startTime = std::chrono::high_resolution_clock::now();
+				imageBytes = Helper::DownloadImageFromURL(thumbnail);
+				auto finishTime = std::chrono::high_resolution_clock::now();
+				std::chrono::duration<double> totalDuration = finishTime - startTime;
+				Logger::perfomance(PERFOMANCE_KEY + "Download Thumnail API :: " + to_string(totalDuration.count()));
+
+				QBuffer buffer(&imageBytes);
+				buffer.open(QIODevice::ReadOnly);
+				QImageReader imageReader(&buffer);
+				imageReader.setDecideFormatFromContent(true);
+				styleIcon = imageReader.read();
+				if (styleIcon.isNull())
+				{
+					Logger::Logger("FabricsSearchDialog -> CreateResultTable() Image is not loaded.  ");
+				}
+				else
+				{
+					pixmap = QPixmap::fromImage(styleIcon);
+				}
+			}
+
+			//if (pixmap.isNull())
+			//{
+			//	QImageReader imageReader(":/CLOVise/PLM/Images/NoImage.png");
+			//	imageReader.setDecideFormatFromContent(true);
+			//	styleIcon = imageReader.read();
+			//	pixmap = QPixmap::fromImage(styleIcon);
+			//}
+		}
+
+		if (tabIndex == COLORWAY_TAB)
+			label->setPixmap(QPixmap(pixmap.scaled(60, 60, Qt::KeepAspectRatio)));
+		if (tabIndex == BOM_TAB)
+			label->setPixmap(QPixmap(pixmap.scaled(20, 20, Qt::KeepAspectRatio)));
+
+		pWidget = CVWidgetGenerator::InsertWidgetInCenter(label);
+		pWidget->setProperty("colorId", attId.c_str());
+
 		if (tabIndex == COLORWAY_TAB)
 		{
 			if (!FormatHelper::HasContent(pantone))
 				pantone = BLANK;
 			ui_colorwayTable->item(m_selectedRow, COLOR_NAME_COLUMN)->setText(QString::fromStdString(objectName));
 			ui_colorwayTable->item(m_selectedRow, COLOR_CODE_COLUMN)->setText(QString::fromStdString(objectCode));
-			ui_colorwayTable->item(m_selectedRow, PANTONE_CODE_COLUMN)->setText(QString::fromStdString(pantone));
+			if (FormatHelper::HasContent(pantone))
+				ui_colorwayTable->item(m_selectedRow, PANTONE_CODE_COLUMN)->setText(QString::fromStdString(pantone));
+			else
+				ui_colorwayTable->item(m_selectedRow, PANTONE_CODE_COLUMN)->setText(QString::fromStdString(BLANK));
 			QComboBox *colorwayName1 = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(m_selectedRow, CLO_COLORWAY_COLUMN)->children().last());
 			colorwayName1->setProperty("Id", attId.c_str());
 			QTableWidgetItem* iconItem = new QTableWidgetItem;
@@ -3085,7 +3138,7 @@ namespace CLOVise
 	{
 		Logger::Info("CreateProduct -> horizontalHeaderClicked() -> Start");
 		Logger::Debug("Column.." + to_string(_column));
-		if (_column == ASSOCIATE_COLOR_COLUMN || _column == PLM_COLORWAY_COLUMN || _column == CLO_COLORWAY_COLUMN || _column == COLOR_CHIP_COLUMN || _column == UNI_2_DIGIT_CODE_COLUMN || _column == DESCRIPTION_COLUMN)
+		if (_column == DELETE_BUTTON_COLUMN || _column == ASSOCIATE_COLOR_COLUMN || _column == PLM_COLORWAY_COLUMN || _column == CLO_COLORWAY_COLUMN || _column == COLOR_CHIP_COLUMN || _column == UNI_2_DIGIT_CODE_COLUMN || _column == DESCRIPTION_COLUMN)
 			ui_colorwayTable->setSortingEnabled(false);
 		else
 		{
@@ -3253,7 +3306,7 @@ namespace CLOVise
 
 						if (QWidget* widget = sectionTable->cellWidget(rowCount, columnCount))// Half cooked code for part material color
 						{
-							
+
 							string colorId, colorId2;
 							string colorId1 = widget->property("colorId").toString().toStdString();
 
@@ -3519,9 +3572,9 @@ namespace CLOVise
 	void CreateProduct::OnColorwaysTableDeleteButtonClicked(int _row)
 	{
 		Logger::Debug("CreateProduct -> onContextMenu_Clicked() -> Start");
-		
+
 		map<string, CreateImageIntent::ColorwayViews>::iterator it;
-		
+
 		bool isConfirmed = false;
 
 		QMessageBox* deleteMessage = new QMessageBox();
@@ -3540,50 +3593,50 @@ namespace CLOVise
 			//if (item)
 			//{
 				//int rowIndex = ui_colorwayTable->row(item);
-			Logger::Debug("1"+to_string(_row));
-				QComboBox *colorwayNameCombo = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(_row, CLO_COLORWAY_COLUMN)->children().last());
-				Logger::Debug("1");
-				string colorSpecId = colorwayNameCombo->property("Id").toString().toStdString();
-				Logger::Debug("1");
-				QString plmColorwayName = colorwayNameCombo->currentText();
-				Logger::Debug("1");
-				if (!colorSpecId.empty())
+			Logger::Debug("1" + to_string(_row));
+			QComboBox *colorwayNameCombo = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(_row, CLO_COLORWAY_COLUMN)->children().last());
+			Logger::Debug("1");
+			string colorSpecId = colorwayNameCombo->property("Id").toString().toStdString();
+			Logger::Debug("1");
+			QString plmColorwayName = colorwayNameCombo->currentText();
+			Logger::Debug("1");
+			if (!colorSpecId.empty())
+			{
+				m_colorSpecList.removeOne(QString::fromStdString(colorSpecId));
+				it = CreateImageIntent::GetInstance()->m_ColorwayViewMap.find(plmColorwayName.toStdString());
+				if (it != CreateImageIntent::GetInstance()->m_ColorwayViewMap.end())
+					CreateImageIntent::GetInstance()->m_ColorwayViewMap.erase(plmColorwayName.toStdString());
+			}
+			ui_colorwayTable->removeRow(_row);
+			m_colorwayRowcount--;
+			if (m_buttonSignalMapper != nullptr)
+			{
+				for (int i = 0; i < ui_colorwayTable->rowCount(); i++)
 				{
-					m_colorSpecList.removeOne(QString::fromStdString(colorSpecId));
-					it = CreateImageIntent::GetInstance()->m_ColorwayViewMap.find(plmColorwayName.toStdString());
-					if (it != CreateImageIntent::GetInstance()->m_ColorwayViewMap.end())
-						CreateImageIntent::GetInstance()->m_ColorwayViewMap.erase(plmColorwayName.toStdString());
-				}
-				ui_colorwayTable->removeRow(_row);
-				m_colorwayRowcount--;
-				if (m_buttonSignalMapper != nullptr)
-				{
-					for (int i = 0; i < ui_colorwayTable->rowCount(); i++)
+					QPushButton *colorButton = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, STARTING_INDEX);
+					if (colorButton)
+						m_buttonSignalMapper->setMapping(colorButton, i);
+					QPushButton *CreateButton = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, FIRST_INDEX);
+					if (m_createActionSignalMapper != nullptr)
 					{
-						QPushButton *colorButton = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, STARTING_INDEX);
-						if (colorButton)
-							m_buttonSignalMapper->setMapping(colorButton, i);
-						QPushButton *CreateButton = UIHelper::GetButtonWidgetFromCell(ui_colorwayTable, i, UPDATE_BTN_COLUMN, FIRST_INDEX);
-						if (m_createActionSignalMapper != nullptr)
+						if (CreateButton)
 						{
-							if (CreateButton)
-							{
-								QList<QAction*> actions;
-								actions = CreateButton->menu()->actions();
-								m_createActionSignalMapper->setMapping(actions.at(STARTING_INDEX), i);
-							}
+							QList<QAction*> actions;
+							actions = CreateButton->menu()->actions();
+							m_createActionSignalMapper->setMapping(actions.at(STARTING_INDEX), i);
 						}
-						if (m_printActionSignalMapper != nullptr)
+					}
+					if (m_printActionSignalMapper != nullptr)
+					{
+						if (CreateButton)
 						{
-							if (CreateButton)
-							{
-								QList<QAction*> actions;
-								actions = CreateButton->menu()->actions();
-								m_createActionSignalMapper->setMapping(actions.at(FIRST_INDEX), i);
-							}
+							QList<QAction*> actions;
+							actions = CreateButton->menu()->actions();
+							m_createActionSignalMapper->setMapping(actions.at(FIRST_INDEX), i);
 						}
 					}
 				}
+			}
 
 				if (m_colorwayDeleteSignalMapper != nullptr)
 				{
@@ -3596,59 +3649,59 @@ namespace CLOVise
 					}
 				}
 
-				QStringList selectedIndexs;
-				int rowCount = m_ImageIntentList->count();
-				for (int index = 0; index < rowCount; index++)
+			QStringList selectedIndexs;
+			int rowCount = m_ImageIntentList->count();
+			for (int index = 0; index < rowCount; index++)
+			{
+				QListWidgetItem* listImageItem = new QListWidgetItem();
+				QListWidgetItem* item = m_ImageIntentList->item(index);
+				QListWidget *listItem = qobject_cast<QListWidget*>(m_ImageIntentList->itemWidget(item));
+				for (int itemIndex = 0; itemIndex < listItem->count(); itemIndex++)
 				{
-					QListWidgetItem* listImageItem = new QListWidgetItem();
-					QListWidgetItem* item = m_ImageIntentList->item(index);
-					QListWidget *listItem = qobject_cast<QListWidget*>(m_ImageIntentList->itemWidget(item));
-					for (int itemIndex = 0; itemIndex < listItem->count(); itemIndex++)
+					string text = listItem->item(itemIndex)->text().toStdString();
+					Logger::Debug("CreateProduct -> onContextMenu_Clicked() -> Item" + text);
+					if (itemIndex == 0)
 					{
-						string text = listItem->item(itemIndex)->text().toStdString();
-						Logger::Debug("CreateProduct -> onContextMenu_Clicked() -> Item" + text);
-						if (itemIndex == 0)
+						int length = text.length();
+						int indexOfColon = text.find(":");
+						string colorwayName = text.substr(indexOfColon + 2, length);
+						Logger::Debug("CreateProduct -> onContextMenu_Clicked() -> clorwayname" + colorwayName);
+						Logger::Debug("CreateProduct -> onContextMenu_Clicked() -> clorwayname" + plmColorwayName.toStdString());
+						if (colorwayName == plmColorwayName.toStdString())
 						{
-							int length = text.length();
-							int indexOfColon = text.find(":");
-							string colorwayName = text.substr(indexOfColon + 2, length);
-							Logger::Debug("CreateProduct -> onContextMenu_Clicked() -> clorwayname" + colorwayName);
-							Logger::Debug("CreateProduct -> onContextMenu_Clicked() -> clorwayname" + plmColorwayName.toStdString());
-							if (colorwayName == plmColorwayName.toStdString())
-							{
-								Logger::Debug("CreateProduct -> onContextMenu_Clicked() Matched");
-								selectedIndexs.append(QString::fromStdString(to_string(index)));
-							}
-
+							Logger::Debug("CreateProduct -> onContextMenu_Clicked() Matched");
+							selectedIndexs.append(QString::fromStdString(to_string(index)));
 						}
-					}
-				}
-				for (int index = selectedIndexs.size() - 1; index >= 0; index--)
-				{
-					m_ImageIntentList->takeItem(selectedIndexs[index].toInt()); //deleting row from table, in reverse order
 
-				}
-				string currentViewName;
-				for (int index = 0; index < 4; index++)
-				{
-					switch (index)
-					{
-					case BACK_VIEW:
-						currentViewName = "Back";
-						break;
-					case FRONT_VIEW:
-						currentViewName = "Front";
-						break;
-					case LEFT_VIEW:
-						currentViewName = "Left";
-						break;
-					case RIGHT_VIEW:
-						currentViewName = "Right";
-						break;
 					}
-					if (CreateImageIntent::GetInstance()->m_colorwayViewQueue.contains(plmColorwayName + QString::fromStdString(currentViewName))) //deleting row from table, in reverse order
-						CreateImageIntent::GetInstance()->m_colorwayViewQueue.removeAll(plmColorwayName + QString::fromStdString(currentViewName));
 				}
+			}
+			for (int index = selectedIndexs.size() - 1; index >= 0; index--)
+			{
+				m_ImageIntentList->takeItem(selectedIndexs[index].toInt()); //deleting row from table, in reverse order
+
+			}
+			string currentViewName;
+			for (int index = 0; index < 4; index++)
+			{
+				switch (index)
+				{
+				case BACK_VIEW:
+					currentViewName = "Back";
+					break;
+				case FRONT_VIEW:
+					currentViewName = "Front";
+					break;
+				case LEFT_VIEW:
+					currentViewName = "Left";
+					break;
+				case RIGHT_VIEW:
+					currentViewName = "Right";
+					break;
+				}
+				if (CreateImageIntent::GetInstance()->m_colorwayViewQueue.contains(plmColorwayName + QString::fromStdString(currentViewName))) //deleting row from table, in reverse order
+					CreateImageIntent::GetInstance()->m_colorwayViewQueue.removeAll(plmColorwayName + QString::fromStdString(currentViewName));
+			}
 			//}
 
 			//else
@@ -3667,99 +3720,99 @@ namespace CLOVise
 		Logger::Debug("CreateProduct -> onContextMenu_Clicked() -> End");
 	}
 
-	void CreateProduct:: refreshImageIntents()
+	void CreateProduct::refreshImageIntents()
 	{
-			int imageRowCount = m_ImageIntentList->count();
-			if (imageRowCount != 0)
-			{
-				UTILITY_API->CreateProgressBar();
-				RESTAPI::SetProgressBarData(20, "Loading Latest Image Intents... ", true);
-				UTILITY_API->SetProgress("Loading Latest Image Intents...", (qrand() % 101));
-			}
-
-			if (/*ValidateColorwayNameField() && */imageRowCount != 0)
-			{
-				exportTurntableImages();
-
-				string colorwayName;
-				string includeAvatar;
-				string viewName;
-				int view;
-				Logger::Debug("CreateProduct -> onTabClicked() -> Item" + to_string(imageRowCount));
-
-				string temporaryPath = UTILITY_API->GetCLOTemporaryFolderPath();
-
-				for (int index = 0; index < imageRowCount; index++)
-				{
-					QListWidgetItem* listImageItem = new QListWidgetItem();
-					QListWidgetItem* item = m_ImageIntentList->item(index);
-					QListWidget *listItem = qobject_cast<QListWidget*>(m_ImageIntentList->itemWidget(item));
-					for (int itemIndex = 0; itemIndex < listItem->count(); itemIndex++)
-					{
-						string text = listItem->item(itemIndex)->text().toStdString();
-						Logger::Debug("CreateProduct -> onTabClicked() -> Item" + text);
-						if (itemIndex == 0)
-						{
-							int length = text.length();
-							int indexOfColon = text.find(":");
-							colorwayName = text.substr(indexOfColon + 2, length);
-							Logger::Debug("CreateProduct -> onTabClicked() -> clorwayname" + colorwayName);
-
-						}
-						if (itemIndex == 1)
-						{
-							int length = text.length();
-							int indexOfColon = text.find(":");
-							viewName = text.substr(indexOfColon + 1, length);
-							Logger::Debug("CreateProduct -> onTabClicked() -> viewName" + viewName);
-
-							if (viewName == " Back")
-								view = BACK_VIEW;
-							else if (viewName == " Front")
-								view = FRONT_VIEW;
-							else if (viewName == " Left")
-								view = LEFT_VIEW;
-							else
-								view = RIGHT_VIEW;
-						}
-						if (itemIndex == 4)
-						{
-							int length = text.length();
-							int indexOfColon = text.find(":");
-							includeAvatar = text.substr(indexOfColon + 2, length);
-							Logger::Debug("CreateImageIntent -> onTabClicked() -> includeAvatar" + includeAvatar);
-
-						}
-					}
-
-					QString filepath;
-					if (includeAvatar == "Yes")
-						filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithAvatar/" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
-					else
-						filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithoutAvatar/" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
-
-					Logger::Debug("CreateImageIntent -> onTabClicked() -> filepath" + filepath.toStdString());
-
-					item->setTextAlignment(Qt::AlignLeft);
-					QPixmap pix(filepath);
-					pix.scaled(QSize(80, 80), Qt::KeepAspectRatio);
-					QIcon newIcon;
-					newIcon.addPixmap(pix);
-					Logger::Debug("CreateProduct -> onTabClicked() -> 1");
-					item->setIcon(newIcon);
-					item->setSizeHint(QSize(80, 80));
-					m_ImageIntentList->addItem(item);
-					Logger::Debug("CreateProduct -> onTabClicked() -> 3");
-					CreateProduct::GetInstance()->m_ImageIntentList->setIconSize(QSize(80, 80));
-					//m_ImageIntentList->takeItem(index);
-					m_ImageIntentList->addItem(item);
-					CreateProduct::GetInstance()->m_ImageIntentList->setItemWidget(item, listItem);
-				}
-			}
-
-			RESTAPI::SetProgressBarData(0, "", false);
+		int imageRowCount = m_ImageIntentList->count();
+		if (imageRowCount != 0)
+		{
+			UTILITY_API->CreateProgressBar();
+			RESTAPI::SetProgressBarData(20, "Loading Latest Image Intents... ", true);
+			UTILITY_API->SetProgress("Loading Latest Image Intents...", (qrand() % 101));
 		}
-	
+
+		if (/*ValidateColorwayNameField() && */imageRowCount != 0)
+		{
+			exportTurntableImages();
+
+			string colorwayName;
+			string includeAvatar;
+			string viewName;
+			int view;
+			Logger::Debug("CreateProduct -> onTabClicked() -> Item" + to_string(imageRowCount));
+
+			string temporaryPath = UTILITY_API->GetCLOTemporaryFolderPath();
+
+			for (int index = 0; index < imageRowCount; index++)
+			{
+				QListWidgetItem* listImageItem = new QListWidgetItem();
+				QListWidgetItem* item = m_ImageIntentList->item(index);
+				QListWidget *listItem = qobject_cast<QListWidget*>(m_ImageIntentList->itemWidget(item));
+				for (int itemIndex = 0; itemIndex < listItem->count(); itemIndex++)
+				{
+					string text = listItem->item(itemIndex)->text().toStdString();
+					Logger::Debug("CreateProduct -> onTabClicked() -> Item" + text);
+					if (itemIndex == 0)
+					{
+						int length = text.length();
+						int indexOfColon = text.find(":");
+						colorwayName = text.substr(indexOfColon + 2, length);
+						Logger::Debug("CreateProduct -> onTabClicked() -> clorwayname" + colorwayName);
+
+					}
+					if (itemIndex == 1)
+					{
+						int length = text.length();
+						int indexOfColon = text.find(":");
+						viewName = text.substr(indexOfColon + 1, length);
+						Logger::Debug("CreateProduct -> onTabClicked() -> viewName" + viewName);
+
+						if (viewName == " Back")
+							view = BACK_VIEW;
+						else if (viewName == " Front")
+							view = FRONT_VIEW;
+						else if (viewName == " Left")
+							view = LEFT_VIEW;
+						else
+							view = RIGHT_VIEW;
+					}
+					if (itemIndex == 4)
+					{
+						int length = text.length();
+						int indexOfColon = text.find(":");
+						includeAvatar = text.substr(indexOfColon + 2, length);
+						Logger::Debug("CreateImageIntent -> onTabClicked() -> includeAvatar" + includeAvatar);
+
+					}
+				}
+
+				QString filepath;
+				if (includeAvatar == "Yes")
+					filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithAvatar/" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
+				else
+					filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithoutAvatar/" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
+
+				Logger::Debug("CreateImageIntent -> onTabClicked() -> filepath" + filepath.toStdString());
+
+				item->setTextAlignment(Qt::AlignLeft);
+				QPixmap pix(filepath);
+				pix.scaled(QSize(80, 80), Qt::KeepAspectRatio);
+				QIcon newIcon;
+				newIcon.addPixmap(pix);
+				Logger::Debug("CreateProduct -> onTabClicked() -> 1");
+				item->setIcon(newIcon);
+				item->setSizeHint(QSize(80, 80));
+				m_ImageIntentList->addItem(item);
+				Logger::Debug("CreateProduct -> onTabClicked() -> 3");
+				CreateProduct::GetInstance()->m_ImageIntentList->setIconSize(QSize(80, 80));
+				//m_ImageIntentList->takeItem(index);
+				m_ImageIntentList->addItem(item);
+				CreateProduct::GetInstance()->m_ImageIntentList->setItemWidget(item, listItem);
+			}
+		}
+
+		RESTAPI::SetProgressBarData(0, "", false);
+	}
+
 
 	void CreateProduct::ClearBOMData()
 	{
