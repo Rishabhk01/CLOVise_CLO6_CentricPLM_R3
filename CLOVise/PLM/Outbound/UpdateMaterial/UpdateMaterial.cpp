@@ -552,13 +552,6 @@ namespace CLOVise
 					comboBox->addItem(QString::fromStdString(BLANK));
 					comboBox->setProperty(ATTRIBUTE_INITIAL_VALUE.c_str(), QString::fromStdString(attValue));
 
-#ifdef __APPLE__	// Settinng Windows OS style to QComboBox on MAC OS
-
-					comboBox->setStyle(QStyleFactory::create("Windows"));
-					comboBox->setItemDelegate(new QStyledItemDelegate());
-
-#endif
-
 					for (int i = 0; i < attEnumsJson.size(); i++)
 					{
 						attJson = Helper::GetJSONParsedValue<int>(attEnumsJson, i, false);///use new method

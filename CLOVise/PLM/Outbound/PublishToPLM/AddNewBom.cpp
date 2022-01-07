@@ -345,13 +345,6 @@ namespace CLOVise
 				valueList.append(QString::fromStdString(BLANK));
 				comboBox->setFocusPolicy(Qt::StrongFocus);
 
-#ifdef __APPLE__	// Settinng Windows OS style to QComboBox on MAC OS
-
-				comboBox->setStyle(QStyleFactory::create("Windows"));
-				comboBox->setItemDelegate(new QStyledItemDelegate());
-
-#endif
-
 				map<string, string> enumKeyValueMap;
 				if (attributeType == ENUM_ATT_TYPE_KEY)
 				{
@@ -896,13 +889,6 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 					comboType->setStyleSheet("QComboBox{max-height: 25px; min-width: 80px;}");						
 					comboType->setAttribute(Qt::WA_MacShowFocusRect, false);
 					comboType->setFocusPolicy(Qt::StrongFocus);
-
-#ifdef __APPLE__	// Settinng Windows OS style to QComboBox on MAC OS
-
-					comboType->setStyle(QStyleFactory::create("Windows"));
-					comboType->setItemDelegate(new QStyledItemDelegate());
-
-#endif
 
 					QStringList materialType;
 					for (int i = 0; i < _placementMateriaTypeJson.size(); i++)

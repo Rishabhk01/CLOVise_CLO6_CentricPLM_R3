@@ -2282,13 +2282,6 @@ namespace UIHelper
 						comboBox->setStyleSheet(COMBOBOX_STYLE);
 						comboBox->addItem(QString::fromStdString(BLANK));
 
-#ifdef __APPLE__	// Settinng Windows OS style to QComboBox on MAC OS
-
-						comboBox->setStyle(QStyleFactory::create("Windows"));
-						comboBox->setItemDelegate(new QStyledItemDelegate());
-
-#endif
-
 						for (int attEnumCount = 0; attEnumCount < attributeEnumJson.size(); attEnumCount++)
 						{
 							attEnumListStrJson = Helper::GetJSONParsedValue<int>(attributeEnumJson, attEnumCount, false);;///use new method
@@ -2518,13 +2511,6 @@ namespace UIHelper
 						comboBox->setFocusPolicy(Qt::StrongFocus);
 						comboBox->setStyleSheet(COMBOBOX_STYLE);
 						comboBox->addItem(QString::fromStdString(BLANK));
-
-#ifdef __APPLE__	// Settinng Windows OS style to QComboBox on MAC OS
-
-						comboBox->setStyle(QStyleFactory::create("Windows"));
-						comboBox->setItemDelegate(new QStyledItemDelegate());
-
-#endif
 
 						for (int attEnumCount = 0; attEnumCount < attributeEnumJson.size(); attEnumCount++)
 						{
@@ -2845,13 +2831,6 @@ namespace UIHelper
 					comboBox->setStyleSheet(COMBOBOX_STYLE);
 					comboBox->addItem(QString::fromStdString(BLANK));
 					comboBox->setProperty(ATTRIBUTE_INITIAL_VALUE.c_str(), QString::fromStdString(attValue));
-
-#ifdef __APPLE__	// Settinng Windows OS style to QComboBox on MAC OS
-
-					comboBox->setStyle(QStyleFactory::create("Windows"));
-					comboBox->setItemDelegate(new QStyledItemDelegate());
-
-#endif
 
 					for (int i = 0; i < attEnumsJson.size(); i++)
 					{

@@ -483,13 +483,6 @@ namespace CLOVise
 				ComboBoxItem* comboBox = new ComboBoxItem();
 				comboBox->setFocusPolicy(Qt::StrongFocus);
 
-#ifdef __APPLE__	// Settinng Windows OS style to QComboBox on MAC OS
-
-				comboBox->setStyle(QStyleFactory::create("Windows"));
-				comboBox->setItemDelegate(new QStyledItemDelegate());
-
-#endif
-
 				QStringList valueList;
 				valueList.append(QString::fromStdString(BLANK));
 	

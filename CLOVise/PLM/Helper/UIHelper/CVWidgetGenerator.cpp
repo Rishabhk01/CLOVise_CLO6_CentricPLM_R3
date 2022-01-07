@@ -2835,13 +2835,6 @@ ComboBoxItem* CVWidgetGenerator::CreateComboBox(QString _toolTip, QString _style
 	comboBox->setStyleSheet(_styleSheet);
 	comboBox->setFocusPolicy(Qt::StrongFocus);
 
-#ifdef __APPLE__	// Settinng Windows OS style to QComboBox on MAC OS
-
-	comboBox->setStyle(QStyleFactory::create("Windows"));
-	comboBox->setItemDelegate(new QStyledItemDelegate());
-
-#endif
-
 	if (!_showWidget)
 		comboBox->hide();
 	return comboBox;

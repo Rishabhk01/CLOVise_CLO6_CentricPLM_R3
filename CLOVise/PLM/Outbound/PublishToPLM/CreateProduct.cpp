@@ -683,14 +683,6 @@ namespace CLOVise
 					valueList.append(QString::fromStdString(BLANK));
 					comboBox->setFocusPolicy(Qt::StrongFocus);
 
-#ifdef __APPLE__	// Settinng Windows OS style to QComboBox on MAC OS
-
-					comboBox->setStyle(QStyleFactory::create("Windows"));
-					comboBox->setItemDelegate(new QStyledItemDelegate());
-
-#endif
-
-
 					map<string, string> enumKeyValueMap;
 					if (attributeType == ENUM_ATT_TYPE_KEY)
 					{
@@ -1524,13 +1516,6 @@ namespace CLOVise
 		comboColorwayItem->addItems(_colorwayNamesList);
 		comboColorwayItem->setProperty("Id", QString::fromStdString(_objectId));
 
-#ifdef __APPLE__	// Settinng Windows OS style to QComboBox on MAC OS
-
-		comboColorwayItem->setStyle(QStyleFactory::create("Windows"));
-		comboColorwayItem->setItemDelegate(new QStyledItemDelegate());
-
-#endif
-
 		ui_colorwayTable->setColumnWidth(CLO_COLORWAY_COLUMN, 150);
 		pWidget = CVWidgetGenerator::InsertWidgetInCenter(comboColorwayItem);
 		ui_colorwayTable->setColumnWidth(CLO_COLORWAY_COLUMN, 150);
@@ -1605,13 +1590,6 @@ namespace CLOVise
 
 		ComboBoxItem* uni2digiCodes = new ComboBoxItem();
 		uni2digiCodes->setFocusPolicy(Qt::StrongFocus);
-
-#ifdef __APPLE__	// Settinng Windows OS style to QComboBox on MAC OS
-
-		uni2digiCodes->setStyle(QStyleFactory::create("Windows"));
-		uni2digiCodes->setItemDelegate(new QStyledItemDelegate());
-
-#endif
 
 		QStringList valueList;
 		for (auto it = m_digiCodeNamesMap.begin(); it != m_digiCodeNamesMap.end(); it++)
