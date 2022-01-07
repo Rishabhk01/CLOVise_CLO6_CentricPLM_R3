@@ -742,14 +742,14 @@ namespace CLOVise
 			m_searchTreeWidget_1->setDropIndicatorShown(false);
 			m_searchTreeWidget_1->setRootIsDecorated(false);
 			m_searchTreeWidget_1->setSelectionMode(QAbstractItemView::NoSelection);
-			m_searchTreeWidget_1->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; outline: 0;}""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
+			m_searchTreeWidget_1->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; padding-top: 10px; outline: 0; }""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
 			m_searchTreeWidget_2->setColumnCount(2);
 			m_searchTreeWidget_2->setHeaderHidden(true);
 			m_searchTreeWidget_2->setWordWrap(true);
 			m_searchTreeWidget_2->setDropIndicatorShown(false);
 			m_searchTreeWidget_2->setRootIsDecorated(false);
 			m_searchTreeWidget_2->setSelectionMode(QAbstractItemView::NoSelection);
-			m_searchTreeWidget_2->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; min-width: 400px; outline: 0;}""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
+			m_searchTreeWidget_2->setStyleSheet("QTreeWidget { background-color: #262628; border: 1px solid #000; padding-left: 20px; padding-top: 10px; outline: 0; }""QTreeWidget::item {height: 20px; width: 200px; margin-right: 20px; margin-top: 5px; margin-bottom: 5px; border: none; }""QTreeWidget::item:hover{ background-color: #262628; }""QTreeView{outline: 0;}");
 
 			for (int searchFeildsCount = 0; searchFeildsCount < PrintConfig::GetInstance()->GetPrintFieldsJSON().size(); searchFeildsCount++)
 			{

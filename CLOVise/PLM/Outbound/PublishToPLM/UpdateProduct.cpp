@@ -1543,14 +1543,22 @@ namespace CLOVise
 			for (int index = 0; index < headerlist.count(); index++)
 			{
 				if (index == CHECKBOX_COLUMN)
+				{
 					ui_colorwayTable->setColumnWidth(index, COLUMN_SIZE);
+				}
 				else if (index == CLO_COLORWAY_COLUMN || index == UNI_2_DIGIT_CODE_COLUMN)
 				{
 					ui_colorwayTable->resizeColumnToContents(1);
 				}
-
+				if (index == COLORWAY_DELETE_COLUMN)
+				{
+					Logger::Debug("entering eleseif COLORWAY_DELETE_COLUMN-");
+					ui_colorwayTable->setColumnWidth(index, 50);
+				}
 				else
+				{
 					ui_colorwayTable->setColumnWidth(index, 80);
+				}
 			}
 		}
 		catch (string msg)
@@ -1702,7 +1710,7 @@ namespace CLOVise
 			ui_colorwayTable->setRowCount(m_colorwayRowcount);
 			ui_colorwayTable->insertRow(m_colorwayRowcount);
 		}
-		QPushButton* updateColorButton = CVWidgetGenerator::CreatePushButton("Update Color", "", "Update Color", PUSH_BUTTON_STYLE, 30, true);	
+		QPushButton* updateColorButton = CVWidgetGenerator::CreatePushButton("Update Color", "", "Update Color", PUSH_BUTTON_STYLE, 30, true);
 		QPushButton* ColorCreateButton = new QPushButton();
 		ColorCreateButton->setStyleSheet("QPushButton{max-height: 20px; max-width: 10px;} ::menu-indicator{ image: none; }");
 		ColorCreateButton->setIcon(QIcon(":/CLOVise/PLM/Images/ui_spin_icon_minus_none.svg"));
@@ -1740,15 +1748,22 @@ namespace CLOVise
 			m_printActionSignalMapper->setMapping(printAction, m_colorwayRowcount);
 		}
 
-		QPushButton *deleteButton= CVWidgetGenerator::CreatePushButton("", ":/CLOVise/PLM/Images/icon_delete_over.svg", "Delete", PUSH_BUTTON_STYLE, 30, true);
+		QPushButton *deleteButton = CVWidgetGenerator::CreatePushButton("", ":/CLOVise/PLM/Images/icon_delete_over.svg", "Delete", PUSH_BUTTON_STYLE, 30, true);
 		QWidget *pdeleteWidget = CVWidgetGenerator::InsertWidgetInCenter(deleteButton);
-		if(m_updateColorwayDeleteSignalMapper != nullptr)
+
+		if (m_updateColorwayDeleteSignalMapper != nullptr)
 		{
 			connect(deleteButton, SIGNAL(clicked()), m_updateColorwayDeleteSignalMapper, SLOT(map()));
+			//QPushButton *deleteButton = static_cast<QPushButton*>(ui_colorwayTable->cellWidget(index, COLORWAY_DELETE_COLUMN)->children().last());
 			m_updateColorwayDeleteSignalMapper->setMapping(deleteButton, m_colorwayRowcount);
+			for (int index = 0; index < ui_colorwayTable->rowCount(); index++)
+			{
+				m_updateColorwayDeleteSignalMapper->setMapping(deleteButton, index);
+			}
 		}
-		ui_colorwayTable->setCellWidget(_count + m_colorwayRowcount, COLORWAYDELETE_COLUMN, pdeleteWidget);
-		ui_colorwayTable->setColumnWidth(COLORWAYDELETE_COLUMN, 50);
+
+		ui_colorwayTable->setCellWidget(_count + m_colorwayRowcount, COLORWAY_DELETE_COLUMN, pdeleteWidget);
+		ui_colorwayTable->setColumnWidth(COLORWAY_DELETE_COLUMN, 50);
 		ui_colorwayTable->setWordWrap(true);
 
 		ui_colorwayTable->setCellWidget(_count + m_colorwayRowcount, UPDATE_BTN_COLUMN, pWidget);
@@ -4360,9 +4375,9 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 				{
 					for (int index = 0; index < ui_colorwayTable->rowCount(); index++)
 					{
-						QPushButton *deleteButton = static_cast<QPushButton*>(ui_colorwayTable->cellWidget(index, COLORWAYDELETE_COLUMN)->children().last());
+						QPushButton *deleteButton = static_cast<QPushButton*>(ui_colorwayTable->cellWidget(index, COLORWAY_DELETE_COLUMN)->children().last());
 						m_updateColorwayDeleteSignalMapper->setMapping(deleteButton, index);
-						//QPushButton *editButton = static_cast<QPushButton*>(ui_colorwayTab->cellWidget(index, COLORWAYDELETE_COLUMN)->children().last());
+						//QPushButton *editButton = static_cast<QPushButton*>(ui_colorwayTab->cellWidget(index, COLORWAY_DELETE_COLUMN)->children().last());
 						//m_colorwayDeleteSignalMapper->setMapping(editButton, index);
 					}
 				}
