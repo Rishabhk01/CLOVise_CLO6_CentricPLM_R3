@@ -63,7 +63,7 @@ using namespace zipper;
 #include "CLOVise/PLM/Helper/Util/CustomSpinBox.h"
 #include "CLOVise/PLM/Inbound/Print/PLMPrintSearch.h"
 #include "CLOVise/PLM/Inbound/Print/PrintConfig.h"
-
+#include "CLOVise/PLM/Outbound/PublishToPLM/CreateProduct.h"
 using namespace std;
 
 namespace CLOVise
@@ -1094,7 +1094,8 @@ namespace CLOVise
 	string UpdateProduct::getPublishRequestParameter(string _path, string _fileName)
 	{
 		Logger::Debug("Update product getPublishRequestParameter() start....");
-
+		Logger::Debug("Update product getPublishRequestParameter_path" + _path);
+		Logger::Debug("Create product getPublishRequestParameter_fileName" + _fileName);
 		string contentType = Helper::GetFileContetType(_path);
 		//UTILITY_API->DisplayMessageBox("contentType:" + contentType);
 		string fileStream = Helper::GetFilestream(_path);
@@ -2769,7 +2770,6 @@ namespace CLOVise
 				{
 					int currentColorwayIndex = UTILITY_API->GetCurrentColorwayIndex();
 					str = UTILITY_API->GetColorwayName(currentColorwayIndex);
-
 				}*/
 
 				Logger::Debug("UpdateProduct -> uploadColorwayImages () str" + str);
@@ -2778,17 +2778,23 @@ namespace CLOVise
 					Logger::Debug("UpdateProduct -> uploadColorwayImages () colorwayIterator->second.viewUploadId[i]" + colorwayIterator->second.viewUploadId[i]);
 					if (colorwayIterator->second.viewUploadId[i].compare("") != 0)
 					{
-						Logger::Debug("UpdateProduct -> uploadColorwayImages () 2");
 						string filepath;
+						string postField;
 						if (colorwayIterator->second.includeAvatar[i] == 1)
+						{
 							filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/Avatar_" + str + "_" + to_string(i) + ".png";
+							postField = postField = getPublishRequestParameter(filepath, "Avatar_" + str + "_" + to_string(i) + ".png");
+						}
 						else
+						{
 							filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/" + str + "_" + to_string(i) + ".png";
-						//UTILITY_API->DisplayMessageBox(filepath);
-						string postField = getPublishRequestParameter(filepath, str + "_" + to_string(i) + ".png");
-						Logger::Debug("UpdateProduct -> uploadColorwayImages () postField" + postField);
-						string resultJsonString = RESTAPI::PostRestCall(postField, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::UPLOAD_IMAGE_API, "content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
-						//UTILITY_API->DisplayMessageBox(resultJsonString);
+							postField = getPublishRequestParameter(filepath, str + "_" + to_string(i) + ".png");
+						}
+
+						string resultJsonString;
+
+
+						resultJsonString = RESTAPI::PostRestCall(postField, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::UPLOAD_IMAGE_API, "content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 						json detailJson = Helper::GetJsonFromResponse(resultJsonString, "{");
 						//UTILITY_API->DisplayMessageBox(to_string(detailJson));
 						Logger::Debug("UpdateProduct -> uploadColorwayImages () 4");
@@ -2804,7 +2810,6 @@ namespace CLOVise
 		}
 		Logger::Debug("UpdateProduct -> uploadColorwayImages () End");
 	}
-
 	void UpdateProduct::LinkImagesToColorways(string _productId)
 	{
 		Logger::Debug("UpdateProduct -> LinkImagesToColorways () Start");
@@ -3570,7 +3575,11 @@ namespace CLOVise
 				imageUrl = Helper::FindAndReplace(imageUrl, "%s", thumbnail);
 
 				string filePath = UTILITY_API->GetCLOTemporaryFolderPath();
-				filePath = filePath + "CLOViseTurntableImages/";
+				if (imageName.find("Avatar_") != -1)
+				filePath = filePath + "CLOViseTurntableImages/WithAvatar/";
+				else
+				filePath = filePath + "CLOViseTurntableImages/WithoutAvatar/";
+				
 				filePath = filePath + imageName;
 
 				Logger::Debug("UpdateProduct -> drawColorwayImageList() -> filePath " + filePath);

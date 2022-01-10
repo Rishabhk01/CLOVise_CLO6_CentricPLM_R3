@@ -78,6 +78,8 @@ namespace CLOVise
 		string m_currentlySelectedStyleTypeId;
 		json collectCriteriaFields(QTreeWidget* _documentPushToPLMTree_1, QTreeWidget* _documentPushToPLMTree_2);
 		void refreshImageIntents();
+
+		string getPublishRequestParameter(string _path, string _imageName);
 	private:
 		CreateProduct(QWidget* parent = nullptr);
 		virtual ~CreateProduct();
@@ -96,7 +98,6 @@ namespace CLOVise
 		void collectCreateProductFieldsData();
 		void exportZPRJ(string _productId);
 		void exportGLB(bool _isGLBExportable);
-		string getPublishRequestParameter(string _path, string _imageName);
 		void connectSignalSlots(bool _b) override;
 		bool ValidateColorwayNameField();
 		void AddRows(int _count, string _objectId, string _objectName, string _rgbValue, string _code, string _pantone, QStringList _colorwayNamesList);
