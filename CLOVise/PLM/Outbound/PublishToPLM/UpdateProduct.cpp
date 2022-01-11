@@ -1803,6 +1803,7 @@ namespace CLOVise
 		comboColorwayItem->setFocusPolicy(Qt::StrongFocus);
 		comboColorwayItem->addItems(_colorwayNamesList);
 		comboColorwayItem->setProperty("Id", QString::fromStdString(_objectId));
+
 		ui_colorwayTable->setColumnWidth(CLO_COLORWAY_COLUMN, 150);
 		if (m_downloadedColorway)
 		{
@@ -1941,6 +1942,7 @@ namespace CLOVise
 
 		ComboBoxItem* uni2digiCodes = new ComboBoxItem();
 		uni2digiCodes->setFocusPolicy(Qt::StrongFocus);
+
 		QStringList valueList;
 		int indexOfSelectedString;
 

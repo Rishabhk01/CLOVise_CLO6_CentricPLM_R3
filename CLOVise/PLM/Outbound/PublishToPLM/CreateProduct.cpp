@@ -1517,6 +1517,7 @@ namespace CLOVise
 		comboColorwayItem->setFocusPolicy(Qt::StrongFocus);
 		comboColorwayItem->addItems(_colorwayNamesList);
 		comboColorwayItem->setProperty("Id", QString::fromStdString(_objectId));
+
 		ui_colorwayTable->setColumnWidth(CLO_COLORWAY_COLUMN, 150);
 		pWidget = CVWidgetGenerator::InsertWidgetInCenter(comboColorwayItem);
 		ui_colorwayTable->setColumnWidth(CLO_COLORWAY_COLUMN, 150);
@@ -1597,6 +1598,7 @@ namespace CLOVise
 
 		ComboBoxItem* uni2digiCodes = new ComboBoxItem();
 		uni2digiCodes->setFocusPolicy(Qt::StrongFocus);
+
 		QStringList valueList;
 		for (auto it = m_digiCodeNamesMap.begin(); it != m_digiCodeNamesMap.end(); it++)
 		{

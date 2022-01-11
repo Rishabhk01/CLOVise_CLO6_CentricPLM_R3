@@ -889,6 +889,7 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 					comboType->setStyleSheet("QComboBox{max-height: 25px; min-width: 80px;}");						
 					comboType->setAttribute(Qt::WA_MacShowFocusRect, false);
 					comboType->setFocusPolicy(Qt::StrongFocus);
+
 					QStringList materialType;
 					for (int i = 0; i < _placementMateriaTypeJson.size(); i++)
 					{
@@ -1058,6 +1059,7 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 
 					QLineEdit* newColumn = new QLineEdit();
 					newColumn->setStyleSheet(LINEEDIT_STYLE);
+					newColumn->setAttribute(Qt::WA_MacShowFocusRect, false);
 					if (FormatHelper::HasContent(text))
 						newColumn->setText(QString::fromStdString(text));
 					else
