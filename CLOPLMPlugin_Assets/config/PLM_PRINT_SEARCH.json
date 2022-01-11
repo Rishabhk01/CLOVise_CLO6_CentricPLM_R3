@@ -122,6 +122,27 @@
           "url": "/csi-requesthandler/api/v2/print_designs",
 		  "rest_api_exposed": true,
           "userList": []
+        },
+        {
+          "attCurrencyCode": null,
+          "attDecimalFigures": 0,
+          "attDefaultValue": null,
+          "attKey": "lib_color_specifications",
+          "attName": "Libraries",
+          "attObjectLevel": null,
+          "attScope": "COLOR",
+          "attSearchDefaultValue": null,
+          "attType": "ref",
+          "enumList": [],
+          "isAttEnabled": true,
+          "isAttInSearchResults": true,
+          "isAttRequired": false,
+          "isAttSearchable": true,
+          "isAttSettable": "0",
+          "isAttUpdatable": true,
+          "url": "/csi-requesthandler/api/v2/lib_color_specifications",
+		  "rest_api_exposed": true,
+          "userList": []
         }
       ]
     }
