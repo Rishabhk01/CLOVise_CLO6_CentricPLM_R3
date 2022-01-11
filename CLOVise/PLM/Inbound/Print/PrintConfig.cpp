@@ -373,14 +373,31 @@ void  PrintConfig::UpdateResultJson(json& _listjson)
 		string objectName = Helper::GetJSONValue<string>(_listjson, NODE_NAME_KEY, true);
 		string objectId = Helper::GetJSONValue<string>(_listjson, "id", true);
 		string printDesignId = Helper::GetJSONValue<string>(_listjson, "parent", true);
+		json  libraryIds = Helper::GetJSONParsedValue<string>(_listjson, "libraries", false);
+		string libraryname = "";
+		for (int i = 0; i < libraryIds.size(); i++)
+		{
+			string printDesignLibId = Helper::GetJSONValue<int>(libraryIds, i, true);
+
+			auto iterator = m_printDesignlibNameMap.find(printDesignLibId);
+			if (iterator != m_printDesignIdNameMap.end())
+			{
+				libraryname = libraryname + ", " + iterator->second;
+			}
+		}
+		if (!libraryname.empty())
+		{
+			libraryname = libraryname.erase(0, 1);//To remove the "," from begining of library names
+		}
 		string printDesignName = "";
 		auto itr = m_printDesignIdNameMap.find(printDesignId);
 		if (itr != m_printDesignIdNameMap.end())
 		{
 			printDesignName = itr->second;
-		}
+		}		
 
 		_listjson["print_design"] = printDesignName;
+		_listjson["lib_name"] = libraryname;
 		_listjson[OBJECT_NAME_KEY] = objectName;
 		_listjson[OBJECT_ID_KEY] = objectId;
 		Logger::Info("PrintConfig -> UpdateResultJson() End");
@@ -702,8 +719,9 @@ void PrintConfig::SetDataFromResponse(json _param)
 	try
 	{
 		//string resultJsonString = RESTAPI::RESTMethodSubmit(RESTAPI::SEARCH_RESULTS_API, _param);
-		string parameter = "";
+		string parameter = "";	
 		string matLibValue = "";
+		bool isLibrarySearch = false;
 		bool isPrintDesignSearch = false;
 		json attributesJson = Helper::GetJSONParsedValue<string>(_param, ATTRIBUTES_KEY, false);
 		for (int attributesJsonCount = 0; attributesJsonCount < attributesJson.size(); attributesJsonCount++)
@@ -716,6 +734,11 @@ void PrintConfig::SetDataFromResponse(json _param)
 				isPrintDesignSearch = true;
 				continue;
 			}*/
+			if (attKey == "lib_color_specifications") {
+			     matLibValue = attValue;
+				isLibrarySearch = true;
+				continue;
+			}
 			if (FormatHelper::HasContent(attValue))
 			{
 				if (FormatHelper::HasContent(parameter))
@@ -735,6 +758,13 @@ void PrintConfig::SetDataFromResponse(json _param)
 		}
 		else {*/
 		
+		if (isLibrarySearch)
+		{
+			resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_PRINT_DESIGN_COLOR_API + "?libraries=" + matLibValue+"&", APPLICATION_JSON_TYPE, parameter + "&decode=true&limit=" + PrintConfig::GetInstance()->GetMaximumLimitForPrintResult());
+			Logger::Debug("PrintDesign Library response ::" + resultResponse);
+		}
+		else
+		{
 			auto startTime = std::chrono::high_resolution_clock::now();
 			resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_PRINT_DESIGN_COLOR_API + "?", APPLICATION_JSON_TYPE, parameter + "&decode=true&limit=" + PrintConfig::GetInstance()->GetMaximumLimitForPrintResult());
 			Logger::Debug("Print response ::" + resultResponse);
@@ -742,6 +772,7 @@ void PrintConfig::SetDataFromResponse(json _param)
 			std::chrono::duration<double> totalDuration = finishTime - startTime;
 			Logger::perfomance(PERFOMANCE_KEY + "Search Results API :: " + to_string(totalDuration.count()));
 			Logger::RestAPIDebug("resultResponse main::" + resultResponse);
+		}
 
 		if (!FormatHelper::HasContent(resultResponse))
 		{
@@ -753,7 +784,18 @@ void PrintConfig::SetDataFromResponse(json _param)
 			Helper::GetCentricErrorMessage(resultResponse);
 			throw runtime_error(resultResponse);
 		}
+		json colorLibResultResponse = Helper::makeRestcallGet(RESTAPI::COLOR_SEARCH_API_LIB, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading print design libraries..");
 
+		for (int i = 0; i < colorLibResultResponse.size(); i++)
+		{
+			json attJson = Helper::GetJSONParsedValue<int>(colorLibResultResponse, i, false);
+			string attName = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_NAME, true);
+			Logger::Debug("PublishToPLMData -> Node Name " + attName);
+			string attId = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_ID, true);
+			Logger::Debug("PublishToPLMData -> attId" + attId);				
+			m_printDesignlibNameMap.insert(make_pair(attId, attName));			
+		}
+		
 		json printDesignResponseJson = Helper::makeRestcallGet(RESTAPI::SEARCH_PRINT_DESIGN_API, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading print design details..");
 		
 		for (int i = 0; i < printDesignResponseJson.size(); i++)
@@ -773,9 +815,9 @@ void PrintConfig::SetDataFromResponse(json _param)
 		{
 			string resultListStr = Helper::GetJSONValue<int>(printResults, i, false);
 			json resultListJson = json::parse(resultListStr);
-		
-	        PrintConfig::GetInstance()->UpdateResultJson(resultListJson);
-			m_printResults.push_back(resultListJson);
+			
+			PrintConfig::GetInstance()->UpdateResultJson(resultListJson);
+			m_printResults.push_back(resultListJson);       
 		}
 		string resultsCount = to_string(m_printResults.size());
 		
