@@ -3041,6 +3041,16 @@ QImage CVWidgetGenerator::ReadQImage(json _resultListJson, string _objectId, str
 		try
 		{
 			string rgbValue = Helper::GetJSONValue<string>(_resultListJson, RGB_VALUE_KEY, true);
+			size_t found = rgbValue.find(".");
+			if (found != string::npos)
+			{
+				Logger::Error("LOGGER::CVWidgetGenerator: CreateIconWidget() -> Image is not loaded.");
+				QImageReader imageReader(":/CLOVise/PLM/Images/NoImage.png");
+				imageReader.setDecideFormatFromContent(true);
+				styleIcon = imageReader.read();
+
+				return styleIcon;
+			}
 			rgbValue = Helper::FindAndReplace(rgbValue, "(", "");
 			rgbValue = Helper::FindAndReplace(rgbValue, ")", "");
 			rgbValue = Helper::FindAndReplace(rgbValue, " ", "");
