@@ -2413,6 +2413,7 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 						UTILITY_API->DisplayMessageBox("Name field cannot be blank in " + itr->first + " Section");
 						CreateProduct::GetInstance()->ui_tabWidget->setCurrentIndex(BOM_TAB);
 						duplicateColrwayName = false;
+						break;
 					}
 				}
 				if (materialTypeCombo)
@@ -2423,6 +2424,7 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 						UTILITY_API->DisplayMessageBox("Type field cannot be blank in " + itr->first + " Section");
 						CreateProduct::GetInstance()->ui_tabWidget->setCurrentIndex(BOM_TAB);
 						duplicateColrwayName = false;
+						break;
 					}
 				}
 			}
