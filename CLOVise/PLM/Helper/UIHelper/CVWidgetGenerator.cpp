@@ -377,6 +377,7 @@ QSpinBox* CVWidgetGenerator::CreateSpinBoxWidget(QString _defaultPresetValue, bo
 	spinBox->setMaximumHeight(SPINBOX_HEIGHT);
 	spinBox->setStyleSheet(SPINBOX_STYLE);
 	spinBox->setRange(0, 10000000000000);
+	spinBox->setAttribute(Qt::WA_MacShowFocusRect, false);
 	spinBox->setPrefix(QString::fromStdString(_input));
 	spinBox->setValue(0);
 	spinBox->setFocusPolicy(Qt::StrongFocus);
@@ -406,6 +407,7 @@ QSpinBox* CVWidgetGenerator::CreateSpinBoxWidgetForRGB(QString _defaultPresetVal
 	spinBox->setMaximumHeight(SPINBOX_HEIGHT);
 	spinBox->setStyleSheet(SPINBOX_STYLE);
 	spinBox->setRange(_min, _max);
+	spinBox->setAttribute(Qt::WA_MacShowFocusRect, false);
 	spinBox->setPrefix(QString::fromStdString(_input));
 	spinBox->setValue(0);
 	spinBox->setCorrectionMode(QAbstractSpinBox::CorrectToNearestValue);
@@ -435,6 +437,7 @@ QSpinBox* CVWidgetGenerator::CreateSpinBoxWidget(QString _defaultPresetValue, st
 	spinBox->setMaximumHeight(SPINBOX_HEIGHT);
 	spinBox->setStyleSheet(SPINBOX_STYLE);
 	spinBox->setRange(0, 10000000000000);
+	spinBox->setAttribute(Qt::WA_MacShowFocusRect, false);
 	spinBox->setPrefix(QString::fromStdString(_input));
 	spinBox->setValue(0);
 	spinBox->setFocusPolicy(Qt::StrongFocus);
@@ -474,6 +477,7 @@ ComboBoxItem* CVWidgetGenerator::CreateBooleanWidget(QString _defaultValue, bool
 	comboBox->setProperty(TrueValue.c_str(), QString::fromStdString(TrueValue));
 	comboBox->setProperty(FalseValue.c_str(), QString::fromStdString(FalseValue));
 	comboBox->setFocusPolicy(Qt::StrongFocus);
+	comboBox->setAttribute(Qt::WA_MacShowFocusRect, false);
 
 	if (FormatHelper::HasContent(_defaultValue.toStdString()))
 	{
@@ -517,6 +521,7 @@ QComboBox* CVWidgetGenerator::CreateComboBox(bool _disable, QComboBox* _comboBox
 	_comboBox->addItems(_itemList);
 	_comboBox->setCurrentIndex(_defaultIndext);
 	_comboBox->setFocusPolicy(Qt::StrongFocus);
+	_comboBox->setAttribute(Qt::WA_MacShowFocusRect, false);
 
 	if (_disable)
 	{
@@ -541,6 +546,7 @@ ComboBoxItem* CVWidgetGenerator::CreateComboBoxItem(bool _disable, ComboBoxItem*
 	_comboBox->addItems(_itemList);
 	_comboBox->setCurrentIndex(_defaultIndext);
 	_comboBox->setFocusPolicy(Qt::StrongFocus);
+	_comboBox->setAttribute(Qt::WA_MacShowFocusRect, false);
 
 	if (_disable)
 	{

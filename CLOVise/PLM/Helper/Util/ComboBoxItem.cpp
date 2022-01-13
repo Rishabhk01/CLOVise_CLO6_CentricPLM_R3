@@ -22,6 +22,8 @@ ComboBoxItem::ComboBoxItem()
 	this->setItemDelegate(new QStyledItemDelegate());;
 
 #endif
+
+	this->setAttribute(Qt::WA_MacShowFocusRect, false);
 	m_defaultValue = "";
 }
 /*
