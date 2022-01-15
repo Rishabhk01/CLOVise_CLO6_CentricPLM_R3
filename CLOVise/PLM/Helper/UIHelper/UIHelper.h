@@ -1128,7 +1128,7 @@ namespace UIHelper
 			{
 				if (_downloadIdList[i] == QString::fromStdString(objectId))
 				{
-					if (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_MATERIAL_CLICKED || Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED)
+					if (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_MATERIAL_CLICKED || Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED || Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED)
 					{
 						MaterialConfig::GetInstance()->SetUpdateMaterialCacheData(fieldsJson);
 						return "";

@@ -1535,3 +1535,22 @@ bool Configuration::GetIsUpdateColorClicked()
  {
 	 m_queryParamsForMaterial = _queryParamsForMaterial;
  }
+
+ void Configuration::ExportTechPackJson()
+ {
+	 m_techPackJson.clear();
+	 Logger::Debug("Configuration -> ExportTechPackJson() -> Start");
+	 string filePath = "d:/exportBom.json";
+	 string jsonBOMDetails = EXPORT_API->ExportTechPackToStream(filePath);
+	 stringstream ssBOMInfo;
+	 ssBOMInfo.str(jsonBOMDetails);
+	 string json_value = ssBOMInfo.str();
+	 m_techPackJson = json::parse(json_value);
+	 Logger::Debug("Configuration -> ExportTechPackJson() -> m_techPackJson" + to_string(m_techPackJson));
+	 Logger::Debug("Configuration -> ExportTechPackJson() -> End");
+ }
+
+ json Configuration::GetTechPackJson()
+ {
+	 return m_techPackJson;
+ }

@@ -722,7 +722,7 @@ namespace CLOVise
 					CreateProduct::GetInstance()->GetUpdatedColorwayNames();
 				}
 				CreateProduct::GetInstance()->addCreateProductDetailsWidgetData();
-				CreateProduct::GetInstance()->ExportTechPack();
+				Configuration::GetInstance()->ExportTechPackJson();
 				CreateProduct::GetInstance()->refreshImageIntents();
 				CreateProduct::GetInstance()->SetUpdateBomFlag(true);
 				CreateProduct::GetInstance()->setModal(true);
@@ -966,7 +966,8 @@ namespace CLOVise
 					if(!UpdateProduct::GetInstance()->GetIsSaveClicked())
 						UpdateProduct::GetInstance()->GetcolorwayDetails();
 				}
-
+				Configuration::GetInstance()->ExportTechPackJson();
+				UpdateProduct::GetInstance()->SetUpdateBomFlag(true);
 				UpdateProduct::GetInstance()->setModal(true);					
 				Configuration::GetInstance()->SetIsNewStyleDownloaded(false);
 				UTILITY_API->DeleteProgressBar(true);

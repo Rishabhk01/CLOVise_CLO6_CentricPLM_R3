@@ -407,11 +407,20 @@
     <ClCompile Include="GeneratedFiles\Release\moc_AddNewBom.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\AddNewBom.cpp">
-      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
-    </ClCompile>
     <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\CreateImageIntent.cpp">
       <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\BOM\AddNewBom.cpp">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM\BOM</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\BOM\CreateProductBOMHandler.cpp">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM\BOM</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\BOM\UpdateProductBOMHandler.cpp">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM\BOM</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_UpdateProductBOMHandler.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -638,6 +647,21 @@
     <ClInclude Include="CLOVise\PLM\Outbound\PublishToPLM\Section.h">
       <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
     </ClInclude>
+    <ClInclude Include="CLOVise\PLM\CLOViseSuite\CLOViseSuite.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Outbound\PublishToPLM\BOM\AddNewBom.h">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM\BOM</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Outbound\PublishToPLM\BOM\BOMUtility.h">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM\BOM</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Outbound\PublishToPLM\BOM\CreateProductBOMHandler.h">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM\BOM</Filter>
+    </ClInclude>
+    <ClInclude Include="CLOVise\PLM\Outbound\PublishToPLM\BOM\UpdateProductBOMHandler.h">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM\BOM</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="classes\APISearchDialogSample.h">
@@ -847,13 +871,9 @@
     <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
       <Filter>Generated Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\AddNewBom.h">
-      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
-    </CustomBuild>
     <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
       <Filter>Generated Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\AddNewBom.ui" />
     <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
       <Filter>Generated Files</Filter>
     </CustomBuild>
@@ -871,6 +891,19 @@
     </CustomBuild>
     <CustomBuild Include="CLOVise\PLM\CLOViseSuite\CLOViseSuite.h">
       <Filter>CLOVise\PLM\CLOViseSuite</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\BOM\AddNewBom.ui" />
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\BOM\UpdateProductBOMHandler.h">
+      <Filter>Generated Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -979,6 +1012,9 @@
     </Filter>
     <Filter Include="CLOVise\PLM\Inbound\Print">
       <UniqueIdentifier>{56da6e43-0acb-4951-ba80-1ee478e6ed09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CLOVise\PLM\Outbound\PublishToPLM\BOM">
+      <UniqueIdentifier>{5a0e45c4-e5f6-4a94-972d-d8928bef09e2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1126,6 +1162,9 @@
       <Filter>CLOVise\PLM\CLOViseSuite</Filter>
     </None>
     <None Include="CloLibraryAPI_Plugin.pro" />
+    <None Include="CLOVise\PLM\Outbound\PublishToPLM\BOM\AddNewBom.ui">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM\BOM</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LibraryWindowImplementation.rc" />

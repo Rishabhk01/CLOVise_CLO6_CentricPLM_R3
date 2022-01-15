@@ -71,7 +71,6 @@ namespace CLOVise
 		QLabel *m_bomName;
 		QLabel *m_bomTemplateName;
 		QPushButton* m_bomAddButton;
-		json m_techPackJson;
 		bool m_updateBomTab;
 		void SetUpdateBomFlag(bool _flag);
 		QStringList m_mappedColorways;
