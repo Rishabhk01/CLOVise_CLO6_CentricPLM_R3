@@ -50,7 +50,7 @@ namespace CLOVise
 		void AddMaterialInBom();
 		void populateTechPackDataInBom();
 		void CreateBom(string _productId, json _BomMetaData, map<string, string> _CloAndPLMColorwayMap);
-		//void ClearBomData();
+		void ClearBomData();
 		void BackupBomDetails();
 		void RestoreBomDetails();
 		void UpdateColorwayColumnsInBom();
@@ -71,6 +71,8 @@ namespace CLOVise
 		string m_currentTableName;
 		int m_currentRow;
 		int m_currentColumn;
+		bool m_bomCreated;
+		bool IsBomCreated();
 		void connectSignalSlots(bool _b);
 	private slots:
 		void OnClickDeleteButton(const QString &position);

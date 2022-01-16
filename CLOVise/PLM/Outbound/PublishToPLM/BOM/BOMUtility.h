@@ -36,44 +36,21 @@ using namespace std;
 namespace BOMUtility
 {
 	static json m_mappedColorwaysArr;
-	static QStringList m_materialTypeList;
+	//static QStringList m_materialTypeList;
 	
 	
-	static QSignalMapper *m_addColorButtonSignalMapper;
-	static QSignalMapper *m_deleteButtonSignalMapper;
-	static map<string, json> m_bomSectionNameAndTypeMap;
-	static map<string, QTableWidget*> m_bomSectionTableInfoMap;
-	static QStringList m_mappedColorways;
-	static QStringList m_bomTableColumnlist;
-	static QStringList m_bomTableColumnKeys;
 
-	inline  void SetBomTableColumnNameAndKey(QStringList& _bomTableColumnlist, QStringList& _bomTableColumnKeys)
-	{
-		m_bomTableColumnlist = _bomTableColumnlist;
-		m_bomTableColumnKeys = _bomTableColumnKeys;
-	}
-	inline  void SetSignalMappers(QSignalMapper* _deleteButtonMapper, QSignalMapper* _AddColorButtonMapper )
-	{
-		m_addColorButtonSignalMapper = _AddColorButtonMapper;
-		m_deleteButtonSignalMapper = _deleteButtonMapper;
-	}
-	inline void SetTableInfoMap(map<string, QTableWidget*>& _bomSectionTableInfoMap, map<string, json>& _bomSectionNameAndTypeMap, QStringList _mappedColorways)
-	{
-		m_bomSectionTableInfoMap = _bomSectionTableInfoMap;
-		m_bomSectionNameAndTypeMap = _bomSectionNameAndTypeMap;
-		m_mappedColorways = _mappedColorways;
-	}
 	inline QTableWidget* GetSectionTable(map<string, QTableWidget*> _map, string _sectionName)
 	{
-		Logger::Debug("AddNewBom -> AddBomRows() -> Start");
-		Logger::Debug("AddNewBom -> AddBomRows() -> m_bomSectionTableInfoMap.size()" + to_string(m_bomSectionTableInfoMap.size()));
+		Logger::Debug("BOMUtility -> GetSectionTable() -> Start");
+		Logger::Debug("BOMUtility -> GetSectionTable() -> m_bomSectionTableInfoMap.size()" + to_string(_map.size()));
 		auto itr = _map.find(_sectionName);
 		QTableWidget* table = nullptr;
-		if (itr != m_bomSectionTableInfoMap.end())
+		if (itr != _map.end())
 		{
 			table = itr->second;
 		}
-		Logger::Debug("AddNewBom -> AddBomRows() -> end");
+		Logger::Debug("BOMUtility -> GetSectionTable() -> end");
 		return table;
 	}
 	static json GetMaterialTypeForSection(map<string, json> _map,string _sectionName)
@@ -97,14 +74,14 @@ namespace BOMUtility
 		map<string, string> materialTypeMap;
 		json responseJson = Helper::makeRestcallGet(RESTAPI::MATERIAL_TYPE_SEARCH_API, "?&limit=100", "", "Loading materail type details..");
 
-		m_materialTypeList.append(QString::fromStdString(BLANK));
+		//m_materialTypeList.append(QString::fromStdString(BLANK));
 		for (int i = 0; i < responseJson.size(); i++)
 		{
 			json attJson = Helper::GetJSONParsedValue<int>(responseJson, i, false);;///use new method
 			string attName = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_NAME, true);
-			Logger::Debug("AddNewBom -> AddNewBom attName: " + attName);
+			Logger::Debug("BOMUtility -> AddNewBom attName: " + attName);
 			string attId = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_ID, true);
-			Logger::Debug("AddNewBom -> AddNewBom attId: " + attId);
+			Logger::Debug("BOMUtility -> AddNewBom attId: " + attId);
 			materialTypeMap.insert(make_pair(attId, attName));
 		}
 		return materialTypeMap;
@@ -180,7 +157,7 @@ namespace BOMUtility
 
 	inline void CreateTableforEachSection(QVBoxLayout* _mainLayout, json _sectionIdsjson, map<string, QTableWidget*>& _bomSectionTableInfoMap, map<string, json>& _bomSectionNameAndTypeMap, map<string, QStringList>& m_sectionMaterialTypeMap, map<QPushButton*, QTableWidget*>& _addMaterialButtonAndTableMap, map<QPushButton*, QTableWidget*>& _addSpecialMaterialButtonAndTableMap, QStringList _mappedColorways, string _styleTypeId, QStringList& _bomTableColumnlist, QStringList& _bomTableColumnKeys)
 	{
-		Logger::Debug("AddNewBom CreateTableforEachSection Start: ");
+		Logger::Debug("BOMUtility CreateTableforEachSection Start: ");
 
 		json colorwayListJsonArr = json::array();
 		string colorwayList = Helper::GetJSONValue<string>(Configuration::GetInstance()->GetTechPackJson(), "colorwayList", false);
@@ -203,14 +180,14 @@ namespace BOMUtility
 		for (int sectionCount = 0; sectionCount < _sectionIdsjson.size(); sectionCount++)
 		{
 			string section = Helper::GetJSONValue<int>(_sectionIdsjson, sectionCount, true);
-			Logger::Debug("AddNewBom -> CreateTableforEachSection() -> apiMetadataStr" + sectionId);
+			Logger::Debug("BOMUtility -> CreateTableforEachSection() -> apiMetadataStr" + sectionId);
 			sectionId += "id=" + section + "&";
 		}
 		sectionId = sectionId.substr(0, sectionId.length() - 1);
 		string sectionDefinitions;
 		if (!sectionId.empty())
 			sectionDefinitions = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_SECTION_DEFINITION_API + "?" + sectionId + "&sort=sort_order&limit=1000", APPLICATION_JSON_TYPE, "");
-		Logger::Debug("AddNewBom -> CreateTableforEachSection() -> resultResponse" + sectionDefinitions);
+		Logger::Debug("BOMUtility -> CreateTableforEachSection() -> resultResponse" + sectionDefinitions);
 
 		//QStringList sectionList;
 		//sectionList << "FABRICS" << "TRIMS" << "LABELS";
@@ -219,7 +196,7 @@ namespace BOMUtility
 		QStringList bomTableColumnKeys;
 		tablecolumnList = _bomTableColumnlist;
 		bomTableColumnKeys = _bomTableColumnKeys;
-		Logger::Debug("AddNewBom -> CreateTableforEachSection() -> 1");
+		Logger::Debug("BOMUtility -> CreateTableforEachSection() -> 1");
 		if (_mappedColorways.size())
 		{
 
@@ -235,18 +212,18 @@ namespace BOMUtility
 
 			for (int sectionCount = 0; sectionCount < sectionDefinitionsJson.size(); sectionCount++)
 			{
-				Logger::Debug("AddNewBom -> CreateTableforEachSection() -> 1");
+				Logger::Debug("BOMUtility -> CreateTableforEachSection() -> 1");
 				json sectionCountJson = Helper::GetJSONParsedValue<int>(sectionDefinitionsJson, sectionCount, false);;///use new method
-				Logger::Debug("AddNewBom -> CreateTableforEachSection() -> 1");
-				Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionCountJson" + to_string(sectionCountJson));
+				Logger::Debug("BOMUtility -> CreateTableforEachSection() -> 1");
+				Logger::Debug("BOMUtility -> CreateTableforEachSection() -> sectionCountJson" + to_string(sectionCountJson));
 				string sectionId = Helper::GetJSONValue<string>(sectionCountJson, ATTRIBUTE_ID, true);
-				Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionId" + sectionId);
+				Logger::Debug("BOMUtility -> CreateTableforEachSection() -> sectionId" + sectionId);
 				string sectionName = Helper::GetJSONValue<string>(sectionCountJson, "node_name", true);
-				Logger::Debug("AddNewBom -> CreateTableforEachSection() -> sectionName" + sectionName);
+				Logger::Debug("BOMUtility -> CreateTableforEachSection() -> sectionName" + sectionName);
 				json bomProductTypeJson = Helper::GetJSONParsedValue<string>(sectionCountJson, "bom_product_types", false);
-				Logger::Debug("AddNewBom -> CreateTableforEachSection() -> bomProductTypeJson" + to_string(bomProductTypeJson));
+				Logger::Debug("BOMUtility -> CreateTableforEachSection() -> bomProductTypeJson" + to_string(bomProductTypeJson));
 				placementProductTypeJson = Helper::GetJSONParsedValue<string>(sectionCountJson, "placement_product_types", false);
-				Logger::Debug("AddNewBom -> CreateTableforEachSection() -> placementProductTypeJson" + to_string(placementProductTypeJson));
+				Logger::Debug("BOMUtility -> CreateTableforEachSection() -> placementProductTypeJson" + to_string(placementProductTypeJson));
 				bool isSectionValidForStyleType = false;
 
 
@@ -291,7 +268,7 @@ namespace BOMUtility
 	}
 	inline void getColorInfo(json _FabricJson, json& _rowDataJson, string _materailId, bool _isFabric, map<string, json>& _colorwayMapForBom)
 	{
-		Logger::Debug("AddNewBom -> getColorInfo () Start");
+		Logger::Debug("BOMUtility -> getColorInfo () Start");
 
 		json colorwayJson = json::object();
 		json colorJson = json::object();
@@ -352,273 +329,12 @@ namespace BOMUtility
 				}
 			}
 		}
-		Logger::Debug("AddNewBom -> getColorInfo () _materailId" + _materailId);
-		Logger::Debug("AddNewBom -> getColorInfo () MaterialColorwayDetailsJson" + to_string(MaterialColorwayDetailsJson));
+		Logger::Debug("BOMUtility -> getColorInfo () _materailId" + _materailId);
+		Logger::Debug("BOMUtility -> getColorInfo () MaterialColorwayDetailsJson" + to_string(MaterialColorwayDetailsJson));
 		_colorwayMapForBom.insert(make_pair(_materailId, MaterialColorwayDetailsJson));
-		//Logger::Debug("AddNewBom -> getColorInfo () m_colorwayOverridesJson" + to_string(m_colorwayOverridesJson));
-		Logger::Debug("AddNewBom -> getColorInfo () End");
+		Logger::Debug("BOMUtility -> getColorInfo () End");
 	}
 
-	inline void UpdateColorwayColumns(map<string, json> _colorwayMapForBom)
-	{
-
-		Logger::Debug("AddNewBom -> UpdateColorwayColumns () Start");
-
-
-		QStringList tablecolumnList;
-		QStringList bomTableColumnKeys;
-		tablecolumnList = m_bomTableColumnlist;
-		bomTableColumnKeys = m_bomTableColumnKeys;
-		QStringList bomColorwayColumns;
-
-
-		if (m_mappedColorways.size() && m_bomSectionTableInfoMap.size() > 0)
-		{
-
-			tablecolumnList.append(m_mappedColorways);
-			bomTableColumnKeys.append(m_mappedColorways);
-
-		}
-		int rowCount = 0;
-		for (auto itr = m_bomSectionTableInfoMap.begin(); itr != m_bomSectionTableInfoMap.end(); itr++)// map contain section name and corresponding table pointer  
-		{
-			Logger::Debug("AddNewBom -> UpdateColorwayColumns () 1");
-			QTableWidget* sectionTable = itr->second;
-			int columnCount = sectionTable->columnCount();
-			int bomColumnCountWOColorway = m_bomTableColumnlist.size();
-			if (columnCount > bomColumnCountWOColorway)// means colorway column in table
-			{
-				int diff = columnCount - bomColumnCountWOColorway;
-				Logger::Debug("AddNewBom -> UpdateColorwayColumns () diff" + to_string(diff));
-				while (diff)
-				{
-					int columnNumber = bomColumnCountWOColorway + diff;
-					Logger::Debug("AddNewBom -> UpdateColorwayColumns () columnNumber" + to_string(columnNumber));
-					QString columnName = sectionTable->horizontalHeaderItem(columnNumber - 1)->text();
-					bomColorwayColumns.append(columnName);
-					if (!m_mappedColorways.contains(columnName))
-						sectionTable->removeColumn(columnNumber - 1);
-					diff--;
-				}
-			}
-		}
-		Logger::Debug("AddNewBom -> UpdateColorwayColumns () m_bomSectionTableInfoMap.size()" + to_string(m_bomSectionTableInfoMap.size()));
-		for (auto itr = m_bomSectionTableInfoMap.begin(); itr != m_bomSectionTableInfoMap.end(); itr++)// map contain section name and corresponding table pointer  
-		{
-			QTableWidget* sectionTable = itr->second;
-			Logger::Debug("AddNewBom -> UpdateColorwayColumns () itr->first" + itr->first);
-			QString tableName = QString::fromStdString(itr->first);
-			//Logger::Debug("AddNewBom -> UpdateColorwayColumns () 11");
-			sectionTable->setColumnCount(bomTableColumnKeys.size());
-			sectionTable->setHorizontalHeaderLabels(tablecolumnList);
-
-			Logger::Debug("AddNewBom -> UpdateColorwayColumns () sectionTable->rowCount()" + to_string(sectionTable->rowCount()));
-			for (int rowCount = 0; rowCount < sectionTable->rowCount(); rowCount++)
-			{
-				QComboBox* typeCombo;
-				typeCombo = static_cast<QComboBox*>(sectionTable->cellWidget(rowCount, MATERIAL_TYPE_COLUMN)->children().last());
-				if (typeCombo == nullptr)
-					continue;
-				QString matrialId = typeCombo->property("materialId").toString();
-				Logger::Debug("AddNewBom -> UpdateColorwayColumns () matrialId" + matrialId.toStdString());
-
-				Logger::Debug("AddNewBom -> UpdateColorwayColumns () sectionTable->columnCount()" + to_string(sectionTable->columnCount()));
-				for (int columnIndex = 0; columnIndex < sectionTable->columnCount(); columnIndex++)
-				{
-					QString columnName = sectionTable->horizontalHeaderItem(columnIndex)->text();
-					Logger::Debug("AddNewBom -> UpdateColorwayColumns1 () columnName" + columnName.toStdString());
-					Logger::Debug("AddNewBom -> UpdateColorwayColumns1 () bomColorwayColumns" + bomColorwayColumns.join(',').toStdString());
-
-					if (!bomColorwayColumns.contains(columnName))
-					{
-						if (FormatHelper::HasContent(matrialId.toStdString()))
-						{
-
-							//sectionTabl
-							Logger::Debug("AddNewBom -> UpdateColorwayColumns () 2");
-							if (m_mappedColorways.contains(columnName))
-							{
-								Logger::Debug("AddNewBom -> UpdateColorwayColumns () columnName" + columnName.toStdString());
-								auto colorwayJsonItr = _colorwayMapForBom.find(matrialId.toStdString());
-								if (colorwayJsonItr != _colorwayMapForBom.end())
-								{
-									json colorwayJson = colorwayJsonItr->second;
-									Logger::Debug("AddNewBom -> UpdateColorwayColumns () colorwayJson" + to_string(colorwayJson));
-									string colorwayNameStr = Helper::GetJSONValue<string>(colorwayJson, columnName.toStdString(), false);
-									json colorwayNameJson1 = json::parse(colorwayNameStr);
-									Logger::Debug("AddNewBom -> UpdateColorwayColumns () colorwayNameJson1" + to_string(colorwayNameJson1));
-									string colorObjId = Helper::GetJSONValue<string>(colorwayNameJson1, "colorObjectId", true);
-									Logger::Debug("AddNewBom -> UpdateColorwayColumns () colorObjId" + colorObjId);
-									if (FormatHelper::HasContent(colorObjId))
-									{
-										//json dependentFieldJson = Helper::makeRestcallGet("csi-requesthandler/api/v2/color_specifications/", "&skip=0&limit=100", "" + colorId, "");
-										string resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_COLOR_API + "/" + colorObjId, APPLICATION_JSON_TYPE, "");
-										Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> resultResponse" + resultResponse);
-										json ColoreResultJson = json::parse(resultResponse);
-										Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> ColoreResultJson" + to_string(ColoreResultJson));
-										string rgbValue = Helper::GetJSONValue<string>(ColoreResultJson, RGB_VALUE_KEY, true);
-										string colorName = Helper::GetJSONValue<string>(ColoreResultJson, ATTRIBUTE_NAME, true);
-										Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> rgbValue" + rgbValue);
-
-										rgbValue = Helper::FindAndReplace(rgbValue, "(", "");
-										rgbValue = Helper::FindAndReplace(rgbValue, ")", "");
-										rgbValue = Helper::FindAndReplace(rgbValue, " ", "");
-										Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> 3");
-										if (FormatHelper::HasContent(rgbValue))
-										{
-											QStringList listRGB;
-											QWidget* p_widget = new QWidget(sectionTable);
-											QGridLayout* gridLayout = new QGridLayout(sectionTable);
-											gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-											gridLayout->setContentsMargins(0, 0, 0, 0);
-											QString colorRGB = QString::fromStdString(rgbValue);
-											listRGB = colorRGB.split(',');
-											int red = listRGB.at(0).toInt();
-											int green = listRGB.at(1).toInt();
-											int blue = listRGB.at(2).toInt();
-											QColor color(red, green, blue);
-											QImage image(20, 20, QImage::Format_ARGB32);
-											image.fill(color);
-											QPixmap pixmap;
-											Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> 4");
-											QLabel* label = new QLabel();
-											label->setToolTip(QString::fromStdString(colorName));
-											pixmap = QPixmap::fromImage(image);
-											label->setPixmap(QPixmap(pixmap));
-											Logger::Debug("AddNewBom -> UpdateColorwayColumns() -> 5");
-
-											QWidget *colorchip = nullptr;
-											colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
-											colorchip->setProperty("colorId", colorObjId.c_str());
-
-											gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
-											QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
-											pushButton_2->setFixedHeight(20);
-											pushButton_2->setFixedWidth(20);
-											if (m_addColorButtonSignalMapper != nullptr)
-											{
-												m_addColorButtonSignalMapper->setProperty("TableName", tableName);
-												//connect(pushButton_2, SIGNAL(clicked()), m_addColorButtonSignalMapper, SLOT(map()));
-												//int number = rowCount * 10 + columnIndex;
-												m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2-%3").arg(rowCount).arg(columnIndex).arg(tableName));
-												//m_buttonSignalMapper->setMapping(pushButton_2, number);
-											}
-											pushButton_2->setProperty("TableName", tableName);
-											gridLayout->addWidget(pushButton_2, 0, 1, 1, 1, Qt::AlignHCenter);
-											p_widget->setLayout(gridLayout);
-											p_widget->setProperty("colorId", colorObjId.c_str());
-											sectionTable->setCellWidget(rowCount, columnIndex, p_widget);
-											Logger::Debug("AddNewBom -> AddBomRows() -> 7");
-											//colorChip = true;
-										}
-									}
-								}
-								else
-								{
-									if (m_mappedColorways.contains(columnName))
-									{
-										QWidget* p_widget = new QWidget(sectionTable);
-										QGridLayout* gridLayout = new QGridLayout(sectionTable);
-										gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-										gridLayout->setContentsMargins(0, 0, 0, 0);
-
-										QPixmap pixmap;
-										Logger::Debug("AddNewBom -> AddBomRows() -> 2");
-										QLabel* label = new QLabel();
-
-										QImage styleIcon;
-										QImageReader imageReader(":/CLOVise/PLM/Images/NoImage.png");
-										imageReader.setDecideFormatFromContent(true);
-										styleIcon = imageReader.read();
-										pixmap = QPixmap::fromImage(styleIcon);
-
-										label->setMaximumSize(QSize(20, 20));
-										int w = label->width();
-										int h = label->height();
-										label->setPixmap(QPixmap(pixmap.scaled(w, h, Qt::KeepAspectRatio)));
-										Logger::Debug("AddNewBom -> AddBomRows() -> 3");
-										QWidget *colorchip = nullptr;
-										colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
-
-										gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
-										QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
-										pushButton_2->setFixedHeight(20);
-										pushButton_2->setFixedWidth(20);
-										if (m_addColorButtonSignalMapper != nullptr)
-										{
-											m_addColorButtonSignalMapper->setProperty("TableName", tableName);
-											//connect(pushButton_2, SIGNAL(clicked()), m_addColorButtonSignalMapper, SLOT(map()));
-											//int number = rowCount * 10 + columnIndex;
-											m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2-%3").arg(rowCount).arg(columnIndex).arg(tableName));
-											//m_buttonSignalMapper->setMapping(pushButton_2, number);
-										}
-										pushButton_2->setProperty("TableName", tableName);
-										gridLayout->addWidget(pushButton_2, 0, 1, 1, 1, Qt::AlignHCenter);
-										p_widget->setLayout(gridLayout);
-
-										Logger::Debug("AddNewBom -> AddBomRows() -> 10");
-										sectionTable->setCellWidget(rowCount, columnIndex, p_widget);
-									}
-								}
-
-							}
-
-						}
-						else
-						{
-							if (m_mappedColorways.contains(columnName))
-							{
-								QWidget* p_widget = new QWidget(sectionTable);
-								QGridLayout* gridLayout = new QGridLayout(sectionTable);
-								gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-								gridLayout->setContentsMargins(0, 0, 0, 0);
-
-								QPixmap pixmap;
-								Logger::Debug("AddNewBom -> AddBomRows() -> 2");
-								QLabel* label = new QLabel();
-
-								QImage styleIcon;
-								QImageReader imageReader(":/CLOVise/PLM/Images/NoImage.png");
-								imageReader.setDecideFormatFromContent(true);
-								styleIcon = imageReader.read();
-								pixmap = QPixmap::fromImage(styleIcon);
-
-								label->setMaximumSize(QSize(20, 20));
-								int w = label->width();
-								int h = label->height();
-								label->setPixmap(QPixmap(pixmap.scaled(w, h, Qt::KeepAspectRatio)));
-								Logger::Debug("AddNewBom -> AddBomRows() -> 3");
-								QWidget *colorchip = nullptr;
-								colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
-
-								gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
-								QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
-								pushButton_2->setFixedHeight(20);
-								pushButton_2->setFixedWidth(20);
-								if (m_addColorButtonSignalMapper != nullptr)
-								{
-									m_addColorButtonSignalMapper->setProperty("TableName", tableName);
-									//connect(pushButton_2, SIGNAL(clicked()), m_addColorButtonSignalMapper, SLOT(map()));
-									//int number = rowCount * 10 + columnIndex;
-									m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2-%3").arg(rowCount).arg(columnIndex).arg(tableName));
-									//m_buttonSignalMapper->setMapping(pushButton_2, number);
-								}
-								pushButton_2->setProperty("TableName", tableName);
-								gridLayout->addWidget(pushButton_2, 0, 1, 1, 1, Qt::AlignHCenter);
-								p_widget->setLayout(gridLayout);
-
-								Logger::Debug("AddNewBom -> AddBomRows() -> 10");
-								sectionTable->setCellWidget(rowCount, columnIndex, p_widget);
-							}
-						}
-					}
-				}
-
-			}
-		}
-
-		Logger::Debug("AddNewBom -> UpdateColorwayColumns () End");
-	}
 	
 
 	inline json AddMaterialInBom()
@@ -652,13 +368,13 @@ namespace BOMUtility
 	
 	inline void CreateBom(string _productId, json _BomMetaData, map<string, QTableWidget*> _bomSectionTableInfoMap, QStringList _mappedColorways, map<string, string> _CloAndPLMColorwayMap)
 	{
-		Logger::Debug("CreateProduct -> CreateBom() -> Start");
+		Logger::Debug("BOMUtility -> CreateBom() -> Start");
 		vector<pair<string, string>> headerNameAndValueList;
 		headerNameAndValueList.push_back(make_pair("content-Type", "application/json"));
 		headerNameAndValueList.push_back(make_pair("Accept", "application/json"));
 		headerNameAndValueList.push_back(make_pair("Cookie", Configuration::GetInstance()->GetBearerToken()));
 
-		Logger::Debug("CreateProduct -> CreateBom() -> AddNewBom::GetInstance()->m_BomMetaData" + to_string(_BomMetaData));
+		Logger::Debug("BOMUtility -> CreateBom() -> m_BomMetaData" + to_string(_BomMetaData));
 		json bomData = _BomMetaData;
 		string bomTemplateId = Helper::GetJSONValue<string>(bomData, "bom_template", true);
 		bomData.erase("bom_template");
@@ -678,16 +394,16 @@ namespace BOMUtility
 			//Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 1");
 			throw runtime_error(response);
 		}
-		Logger::Debug("CreateProduct -> CreateBom() -> response" + response);
+		Logger::Debug("BOMUtility -> CreateBom() -> response" + response);
 		json bomJson = Helper::GetJsonFromResponse(response, "{");
 		string bomLatestRevision = Helper::GetJSONValue<string>(bomJson, "latest_revision", true);
 
 		if (FormatHelper::HasContent(bomLatestRevision))
 		{
 			string modifiedbyFlag = "{\"modified_by_application\":\"CLO3D\"}";
-			Logger::Debug("AddNewBom -> CreateBom() -> modifiedbyFlag" + modifiedbyFlag);
+			Logger::Debug("BOMUtility -> CreateBom() -> modifiedbyFlag" + modifiedbyFlag);
 			string resultJsonString = RESTAPI::PutRestCall(modifiedbyFlag, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API + "/" + bomLatestRevision, "content-type: application/json");
-			Logger::Debug("CreateProduct -> CreateBom() -> resultJsonStringModifiedBy" + resultJsonString);
+			Logger::Debug("BOMUtility -> CreateBom() -> resultJsonStringModifiedBy" + resultJsonString);
 		}
 		for (auto itr = _bomSectionTableInfoMap.begin(); itr != _bomSectionTableInfoMap.end(); itr++)
 		{
@@ -844,13 +560,13 @@ namespace BOMUtility
 				if (FormatHelper::HasContent(commonColorId))
 					attJson["common_color"] = commonColorId;
 
-				Logger::Debug("Create product CreateBom() attJson" + to_string(attJson));
+				Logger::Debug("BOMUtility CreateBom() attJson" + to_string(attJson));
 				string materialId = Helper::GetJSONValue<string>(attJson, "actual", true);
-				Logger::Debug("Create product CreateBom() materialId" + materialId);
+				Logger::Debug("BOMUtility CreateBom() materialId" + materialId);
 				string materialType = Helper::GetJSONValue<string>(attJson, "Type", true);
-				Logger::Debug("Create product CreateBom() materialType" + materialType);
+				Logger::Debug("BOMUtility CreateBom() materialType" + materialType);
 				string materialName = Helper::GetJSONValue<string>(attJson, "material_name", true);
-				Logger::Debug("Create product CreateBom() mayerialName" + materialName);
+				Logger::Debug("BOMUtility CreateBom() mayerialName" + materialName);
 				if (FormatHelper::HasContent(bomLatestRevision))
 				{
 					string partMaterialResponse;
@@ -861,10 +577,10 @@ namespace BOMUtility
 						attJson.erase("material_name");
 						attJson.erase("uom");
 						string placementData = to_string(attJson);
-						Logger::Debug("Create product CreateBom() placementData" + placementData);
+						Logger::Debug("BOMUtility CreateBom() placementData" + placementData);
 						partMaterialResponse = RESTAPI::PostRestCall(placementData, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API_V3 + "/" + bomLatestRevision + "/items/part_materials", "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 						//response = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API_V3 + "/" + bomLatestRevision + "/items/part_materials", &placementData, headerNameAndValueList, "Loading");
-						Logger::Debug("Create product CreateBom() response material" + partMaterialResponse);
+						Logger::Debug("BOMUtility CreateBom() response material" + partMaterialResponse);
 
 					}
 					else
@@ -886,22 +602,22 @@ namespace BOMUtility
 							queryParam = queryParam + "&material_name=" + materialName;
 						}
 						string api = Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API_V3 + "/" + bomLatestRevision + "/items/special_part_materials" + queryParam;
-						Logger::Debug("Create product CreateBom() queryParam" + queryParam);
-						Logger::Debug("Create product CreateBom() placementData" + placementData);
-						Logger::Debug("Create product CreateBom() queryParam" + api);
+						Logger::Debug("BOMUtility CreateBom() queryParam" + queryParam);
+						Logger::Debug("BOMUtility CreateBom() placementData" + placementData);
+						Logger::Debug("BOMUtility CreateBom() queryParam" + api);
 
 						partMaterialResponse = RESTAPI::PostRestCall(placementData, api, "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 						//response = REST_API->CallRESTPost(api, &placementData, headerNameAndValueList, "Loading");
-						Logger::Debug("Create product CreateBom() response Special" + partMaterialResponse);
+						Logger::Debug("BOMUtility CreateBom() response Special" + partMaterialResponse);
 
 					}
 
 					json detailJson = Helper::GetJsonFromResponse(partMaterialResponse, "{");
 
-					Logger::Debug("Create product CreateBom() detailJson" + to_string(detailJson));
+					Logger::Debug("BOMUtility CreateBom() detailJson" + to_string(detailJson));
 
 					string partMaterialId = Helper::GetJSONValue<string>(detailJson, ATTRIBUTE_ID, true);
-					Logger::Debug("Create product CreateBom() partMaterialId" + partMaterialId);
+					Logger::Debug("BOMUtility CreateBom() partMaterialId" + partMaterialId);
 					if (FormatHelper::HasContent(partMaterialId) && partMaterialColorsMap.size())
 					{
 						json partMaterailColorJson = Helper::GetJSONParsedValue<string>(detailJson, "part_material_colors", false);
@@ -910,27 +626,27 @@ namespace BOMUtility
 						for (int partMaterailColorCount = 0; partMaterailColorCount < partMaterailColorJson.size(); partMaterailColorCount++)
 						{
 							string partMaterailColorId = Helper::GetJSONValue<int>(partMaterailColorJson, partMaterailColorCount, true);
-							Logger::Debug("CreateProduct -> CreateBom() -> apiMetadataStr" + sectionId);
+							Logger::Debug("BOMUtility -> CreateBom() -> apiMetadataStr" + sectionId);
 							partMaterailColorIds += "id=" + partMaterailColorId + "&";
 						}
 						partMaterailColorIds = partMaterailColorIds.substr(0, partMaterailColorIds.length() - 1);
 
 						string partMaterialDefinitions = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::PART_MATERIAL_COLOR_API + "?" + partMaterailColorIds + "&limit=1000", APPLICATION_JSON_TYPE, "");
-						Logger::Debug("CreateProduct -> CreateBom() -> partMaterialDefinitions" + partMaterialDefinitions);
+						Logger::Debug("BOMUtility -> CreateBom() -> partMaterialDefinitions" + partMaterialDefinitions);
 
 						json partMaterialDefinitionsJson = json::parse(partMaterialDefinitions);
 
 						for (int partMaterailColorCount = 0; partMaterailColorCount < partMaterialDefinitionsJson.size(); partMaterailColorCount++)
 						{
-							Logger::Debug("CreateProduct -> CreateBom() -> 1");
+							Logger::Debug("BOMUtility -> CreateBom() -> 1");
 							json partMaterailColor = Helper::GetJSONParsedValue<int>(partMaterialDefinitionsJson, partMaterailColorCount, false);;///use new method
-							Logger::Debug("CreateProduct -> CreateBom() -> 1");
-							Logger::Debug("CreateProduct -> CreateBom() -> sectionCountJson" + to_string(partMaterailColor));
+							Logger::Debug("BOMUtility -> CreateBom() -> 1");
+							Logger::Debug("BOMUtility -> CreateBom() -> sectionCountJson" + to_string(partMaterailColor));
 							string partMaterailColorId = Helper::GetJSONValue<string>(partMaterailColor, ATTRIBUTE_ID, true);
-							Logger::Debug("CreateProduct -> CreateBom() -> sectionId" + partMaterailColorId);
+							Logger::Debug("BOMUtility -> CreateBom() -> sectionId" + partMaterailColorId);
 							string partMaterailColorName = Helper::GetJSONValue<string>(partMaterailColor, "node_name", true);
-							Logger::Debug("CreateProduct -> CreateBom()-> partMaterailColorName" + partMaterailColorName);
-							Logger::Debug("CreateProduct -> CreateBom()-> partMaterialColorsMap.size()" + partMaterialColorsMap.size());
+							Logger::Debug("BOMUtility -> CreateBom()-> partMaterailColorName" + partMaterailColorName);
+							Logger::Debug("BOMUtility -> CreateBom()-> partMaterialColorsMap.size()" + partMaterialColorsMap.size());
 							auto it = _CloAndPLMColorwayMap.find(partMaterailColorName);
 							if (it != _CloAndPLMColorwayMap.end())
 							{
@@ -940,11 +656,11 @@ namespace BOMUtility
 								if (itr != partMaterialColorsMap.end())
 								{
 									string colorid = itr->second;
-									Logger::Debug("CreateProduct -> CreateBom()-> colorid" + colorid);
+									Logger::Debug("BOMUtility -> CreateBom()-> colorid" + colorid);
 									if (FormatHelper::HasContent(colorid))
 									{
 										string data = "{\"pmc_color\":\"" + colorid + "\"}";
-										Logger::Debug("AddNewBom -> CreateTableforEachSection() -> data" + data);
+										Logger::Debug("BOMUtility -> CreateTableforEachSection() -> data" + data);
 										string resultJsonString = RESTAPI::PutRestCall(data, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::PART_MATERIAL_COLOR_API + "/" + partMaterailColorId, "content-type: application/json");
 
 									}
@@ -963,27 +679,27 @@ namespace BOMUtility
 
 
 		}
-		Logger::Debug("CreateProduct -> CreateBom() -> End");
+		Logger::Debug("BOMUtility -> CreateBom() -> End");
 	}
 
 	inline void ClearBomSectionLayout(QVBoxLayout *_sectionLayout)
 	{
-		Logger::Debug("CreateProduct -> ClearBomSectionLayout -> Start");
+		Logger::Debug("BOMUtility -> ClearBomSectionLayout -> Start");
 		while (_sectionLayout->count() > 0)
 		{
-			Logger::Debug("CreateProduct -> ClearBomSectionLayout -> 2");
+			Logger::Debug("BOMUtility -> ClearBomSectionLayout -> 2");
 			QWidget *item = _sectionLayout->itemAt(0)->widget();
-			Logger::Debug("CreateProduct -> ClearBomSectionLayout -> 3");
+			Logger::Debug("BOMUtility -> ClearBomSectionLayout -> 3");
 			if (item != nullptr)
 				delete item;
-			Logger::Debug("CreateProduct -> ClearBomSectionLayout -> 4");
+			Logger::Debug("BOMUtility -> ClearBomSectionLayout -> 4");
 		}
 
-		Logger::Debug("CreateProduct -> ClearBomSectionLayout -> End");
+		Logger::Debug("BOMUtility -> ClearBomSectionLayout -> End");
 	}
 	inline map<string, json> BackupBomDetails(map<string, QTableWidget*> _bomSectionTableInfoMap, QStringList _mappedColorways)
 	{
-		Logger::Debug("AddNewBom -> BackupBomDetails() -> Start");
+		Logger::Debug("BOMUtility -> BackupBomDetails() -> Start");
 		map<string, json> backupBomDataMap;
 			for (auto itr = _bomSectionTableInfoMap.begin(); itr != _bomSectionTableInfoMap.end(); itr++)
 			{
@@ -1001,13 +717,13 @@ namespace BOMUtility
 
 						QWidget* qcolumnWidget = (QWidget*)sectionTable->cellWidget(rowCount, columnCount)->children().last();
 						string attInternalName = qcolumnWidget->property("rest_api_name").toString().toStdString();
-						Logger::Debug("Create product CreateBom() attInternalName" + attInternalName);
+						Logger::Debug("BOMUtility BackupBomDetails() attInternalName" + attInternalName);
 						QString columnName = sectionTable->horizontalHeaderItem(columnCount)->text();
-						Logger::Debug("Create product CreateBom() columnName" + columnName.toStdString());
+						Logger::Debug("BOMUtility BackupBomDetails() columnName" + columnName.toStdString());
 
 						if (_mappedColorways.contains(columnName))
 						{
-							Logger::Debug("Create product CreateBom() colorways1");
+							Logger::Debug("BOMUtility BackupBomDetails() colorways1");
 
 							if (QWidget* widget = sectionTable->cellWidget(rowCount, columnCount))
 							{
@@ -1016,17 +732,17 @@ namespace BOMUtility
 								string colorId1 = widget->property("colorId").toString().toStdString();
 
 
-								Logger::Debug("Create product CreateBom() colorId1" + colorId1);
-								Logger::Debug("CreateProduct -> CreateBom () 8");
+								Logger::Debug("BOMUtility BackupBomDetails() colorId1" + colorId1);
+								Logger::Debug("BOMUtility -> BackupBomDetails () 8");
 								if (QLayout* layout = widget->layout())
 								{
-									Logger::Debug("CreateProduct -> CreateBom () 9");
+									Logger::Debug("BOMUtility -> BackupBomDetails () 9");
 									{
 										auto gridLayout = dynamic_cast<QGridLayout*>(widget->layout());
 										QWidget *childwidget = gridLayout->itemAtPosition(0, 0)->widget();
 										//attInternalName = columnName.toStdString();
 										colorId2 = childwidget->property("colorId").toString().toStdString();
-										Logger::Debug("Create product CreateBom() colorId2" + colorId2);
+										Logger::Debug("BOMUtility BackupBomDetails() colorId2" + colorId2);
 
 									}
 								}
@@ -1109,16 +825,16 @@ namespace BOMUtility
 						{
 							fieldValue = qComboBoxC1->currentText().toStdString();
 
-							Logger::Debug("AddNewBom BackupBomDetails() QComboBox->fieldLabel" + attInternalName);
+							Logger::Debug("BOMUtility BackupBomDetails() QComboBox->fieldLabel" + attInternalName);
 							//Logger::Debug("Create product ReadVisualUIFieldValue() QComboBox->labelText" + labelText);
 
 							string fieldVal = qComboBoxC1->property(fieldValue.c_str()).toString().toStdString();
-							Logger::Debug("Create product BackupBomDetails() QComboBox->fieldVal" + fieldVal);
+							Logger::Debug("BOMUtility BackupBomDetails() QComboBox->fieldVal" + fieldVal);
 							if (!fieldVal.empty())
 							{
 								fieldValue = fieldVal;
 							}
-							Logger::Debug("AddNewBom BackupBomDetails() QComboBox->fieldValue" + fieldValue);
+							Logger::Debug("BOMUtility BackupBomDetails() QComboBox->fieldValue" + fieldValue);
 						}
 						if (!attInternalName.empty() && !fieldValue.empty())
 						{
@@ -1127,14 +843,14 @@ namespace BOMUtility
 							else
 								attJson[attInternalName] = fieldValue;
 						}
-						Logger::Debug("AddNewBom BackupBomDetails() fieldValue" + fieldValue);
+						Logger::Debug("BOMUtility BackupBomDetails() fieldValue" + fieldValue);
 					}
 					attJson["ds_section"] = sectionId;
 					attJson["common_color"] = commonColorId;
 
 					if (isRowAddedByUser == "true")
 						backupBomDataMap.insert(make_pair(itr->first, attJson));
-					Logger::Debug("AddNewBom BackupBomDetails() attJson" + to_string(attJson));
+					Logger::Debug("BOMUtility BackupBomDetails() attJson" + to_string(attJson));
 
 
 					//UTILITY_API->DisplayMessageBox("attJson" + to_string(attJson));
@@ -1145,7 +861,7 @@ namespace BOMUtility
 				//sectionTable->clear();
 
 			}
-			Logger::Debug("AddNewBom -> BackupBomDetails() -> End");
+			Logger::Debug("BOMUtility -> BackupBomDetails() -> End");
 			return backupBomDataMap;
 	}
 }

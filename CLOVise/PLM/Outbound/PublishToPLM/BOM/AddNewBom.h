@@ -38,9 +38,8 @@ namespace CLOVise
 
 	public:
 		static AddNewBom* GetInstance();
-		//void getFabricTrimDetails(stringstream& _ssBOMDetails);
 		void getMaterialDetails(string _str, json _techPackJson, bool _isFabric);
-		//void CreateTableforEachSection(json _sectionIdsjson);
+		void CreateTableforEachSection(json _sectionIdsjson);
 		void AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString _tableName, json _placementMateriaTypeJson, bool _userAddedRow=false);
 		void getColorInfo(json _FabricJson, json& rowDataJson, string _materailId, bool _isFabric);
 		void UpdateColorwayColumns();
@@ -71,7 +70,7 @@ namespace CLOVise
 		void ClearBomData();
 		QTableWidget* GetSectionTable(string _sectionName);
 		json GetMaterialTypeForSection(string _sectionName);
-		//void CreateSectionInBom(string _sectionName, string _sectionId, QStringList _tablecolumnList, int& _sectionCount, json _placementProductTypeJson);
+		void CreateSectionInBom(string _sectionName, string _sectionId, QStringList _tablecolumnList, int& _sectionCount, json _placementProductTypeJson);
 		//QWidget* CreateCustomWidget(string _rgbValue, string _colorName, QTableWidget* _sectionTable, QString _tableName, int _row, int _column);
 		json m_BomMetaData = json::object();
 
