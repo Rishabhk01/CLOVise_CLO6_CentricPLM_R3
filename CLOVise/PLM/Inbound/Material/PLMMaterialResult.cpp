@@ -853,7 +853,7 @@ namespace CLOVise
 				}
 				if (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED)
 				{
-					RESTAPI::SetProgressBarData(20, "Loading Create Product..", true);
+					RESTAPI::SetProgressBarData(20, "Loading Update Product..", true);
 					UTILITY_API->SetProgress("Loading Create Product..", (qrand() % 101));
 					UpdateProduct::GetInstance()->AddMaterialInBom();
 					UpdateProduct::GetInstance()->setModal(true);

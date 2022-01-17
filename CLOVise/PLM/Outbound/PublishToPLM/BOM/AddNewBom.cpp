@@ -439,8 +439,16 @@ namespace CLOVise
 	{
 		Logger::Debug("AddNewBom onBackButtonClicked() Start....");
 		this->hide();
-		CreateProduct::GetInstance()->setModal(true);
-		CreateProduct::GetInstance()->show();
+		if (Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED)
+		{
+			CreateProduct::GetInstance()->setModal(true);
+			CreateProduct::GetInstance()->show();
+		}
+		if (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED)
+		{
+			UpdateProduct::GetInstance()->setModal(true);
+			UpdateProduct::GetInstance()->show();
+		}
 		Logger::Debug("AddNewBom onBackButtonClicked() End....");
 	}
 
