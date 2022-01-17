@@ -978,7 +978,7 @@ namespace CLOVise
 					DeleteColorwayFromPLM();
 					uploadColorwayImages();
 					LinkImagesToColorways(productId);
-					if (AddNewBom::GetInstance()->IsBomCreated())
+					if (UpdateProductBOMHandler::GetInstance()->IsBomCreated())
 						UpdateProductBOMHandler::GetInstance()->CreateBom(productId, AddNewBom::GetInstance()->m_BomMetaData, m_CloAndPLMColorwayMap);
 					m_colorSpecList.clear();
 					UTILITY_API->NewProject();

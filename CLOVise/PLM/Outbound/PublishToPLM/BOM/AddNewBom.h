@@ -38,16 +38,8 @@ namespace CLOVise
 
 	public:
 		static AddNewBom* GetInstance();
-		void getMaterialDetails(string _str, json _techPackJson, bool _isFabric);
-		void CreateTableforEachSection(json _sectionIdsjson);
-		void AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString _tableName, json _placementMateriaTypeJson, bool _userAddedRow=false);
-		void getColorInfo(json _FabricJson, json& rowDataJson, string _materailId, bool _isFabric);
-		void UpdateColorwayColumns();
-		void BackupBomDetails();
-		void populateTechPackDataInBom();
-		void RestoreBomDetails();
+
 		bool ValidateBomFields();
-		bool IsBomCreated();
 		map<string, QTableWidget*> m_bomSectionTableInfoMap;
 		map<QPushButton*, QTableWidget*> m_addMaterialButtonAndTableMap;
 		map<QPushButton*, QTableWidget*> m_addSpecialMaterialButtonAndTableMap;
@@ -67,11 +59,6 @@ namespace CLOVise
 		int m_currentColumn;
 		QTreeWidget* m_createBomTreeWidget;
 		//vector<Section*> m_sectionVector;
-		void ClearBomData();
-		QTableWidget* GetSectionTable(string _sectionName);
-		json GetMaterialTypeForSection(string _sectionName);
-		void CreateSectionInBom(string _sectionName, string _sectionId, QStringList _tablecolumnList, int& _sectionCount, json _placementProductTypeJson);
-		//QWidget* CreateCustomWidget(string _rgbValue, string _colorName, QTableWidget* _sectionTable, QString _tableName, int _row, int _column);
 		json m_BomMetaData = json::object();
 
 	private:
@@ -89,16 +76,10 @@ namespace CLOVise
 		QStringList m_materialTypeList;
 		QStringList m_ColorwaysAddedInBom;
 		json m_bomTableColumnJson;
-		bool m_bomCreated;
 		
 	private slots:
 		void onBackButtonClicked();
 		void onCreateButtonClicked();
-		void onClickAddFromMaterialButton();
-		void onClickAddSpecialMaterialButton();
-		void OnClickAddColorButton(const QString &string);
-		void OnClickDeleteButton(const QString &string);
-		//void OnClickDeleteButton(int _rowCount);
 		void OnHandleDropDownValue(const QString& _item);
 	};
 }
