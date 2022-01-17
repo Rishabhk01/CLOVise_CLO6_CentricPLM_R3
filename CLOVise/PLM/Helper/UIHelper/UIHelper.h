@@ -1305,19 +1305,17 @@ namespace UIHelper
 							string images = Helper::GetJSONValue<string>(printDesignColorResponseJson, "images", false);
 							json imageIDJson = json::parse(images);
 							defaultImageID = Helper::GetJSONValue<string>(imageIDJson, "", true);
-							if (!FormatHelper::HasContent(defaultImageID))
+							if (!FormatHelper::HasContent(defaultImageID))//Checking only if PDC images are empty
 							{
 								string printDesignResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_PRINT_DESIGN_API + "/" + parentId + "?decode=true", APPLICATION_JSON_TYPE, "");
 								json printDesignResponseJson = json::parse(printDesignResponse);
 								string images = Helper::GetJSONValue<string>(printDesignResponseJson, "images", false);
-								objectName = Helper::GetJSONValue<string>(printDesignResponseJson, "node_name", true);
-								description = Helper::GetJSONValue<string>(printDesignResponseJson, "description", true);
 								code = "";//No code for Print Design
 								json imageIDJson = json::parse(images);
 								defaultImageID = Helper::GetJSONValue<string>(imageIDJson, "", true);
 							}
 
-							if (FormatHelper::HasContent(defaultImageID))
+							if (FormatHelper::HasContent(defaultImageID))//Checking For both PD or PDC image ID should not not null,NUL,etc
 							{
 								string imageResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::PRINT_IMAGE_API + "/" + defaultImageID, APPLICATION_JSON_TYPE, BLANK);
 								auto finishTime = std::chrono::high_resolution_clock::now();
@@ -1335,12 +1333,7 @@ namespace UIHelper
 									latestVersionAttUrl = Helper::FindAndReplace(latestVersionAttUrl, "%s", latestVersionAttId);
 									
 									Logger::Logger("latestVersionAttName::" + latestVersionAttName + "::latestVersionAttId::" + latestVersionAttId + "  ::latestVersionAttUrl::" + latestVersionAttUrl);
-									documentId = latestRevisionId;
-									//If print Design Image downloaded updating PD object name code
-									searchArrayFields["Name"] = objectName;
-									searchArrayFields["Code"] = code;									
-									searchArrayFields["Description"] = description;
-									searchArray["SearchResults"][i] = searchArrayFields;
+									documentId = latestRevisionId;									
 									
 								}
 							}
