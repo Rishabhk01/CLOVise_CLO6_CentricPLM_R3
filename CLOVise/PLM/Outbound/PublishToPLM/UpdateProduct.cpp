@@ -428,6 +428,9 @@ namespace CLOVise
 		ui_tabWidget->setCurrentIndex(0);
 		
 		ui_tabWidget->setStyleSheet(" QTabWidget::pane { border: none; color: #FFFFFF; font-size: 10px; background-color: #262628; }""QTabBar::tab { width: 100px; padding: 2px; }""QTabBar::tab:selected { border: none; color: #FFFFFF; background-color: \"" + DEFAULT_TAB_BG_COLOR + "\"; }""QTabBar::tab:!selected { color:#FFFFFF; background-color:\"" + SELECTED_TAB_BG_COLOR + "\"; }");
+
+		Configuration::GetInstance()->SetIsPrintSearchClicked(false);
+
 		this->close();
 		CLOVise::CLOViseSuite::GetInstance()->setModal(true);
 		CLOViseSuite::GetInstance()->show();
@@ -882,6 +885,8 @@ namespace CLOVise
 		string response;
 		try
 		{
+			Configuration::GetInstance()->SetIsPrintSearchClicked(false);
+
 			if (ValidateColorwayNameField())
 			{
 				this->hide();
@@ -2130,7 +2135,9 @@ namespace CLOVise
 	void UpdateProduct::onSaveAndCloseClicked()
 	{
 		Logger::Debug("UpdateProduct -> SaveClicked() -> Start");
-		m_isSaveClicked = true;
+		m_isSaveClicked = true;		
+		
+		Configuration::GetInstance()->SetIsPrintSearchClicked(false);
 
 		GetUpdatedColorwayNames();
 		//if (ExtractAllUIValues())
@@ -3160,7 +3167,9 @@ namespace CLOVise
 			m_CloAndPLMColorwayMap.clear();
 			m_bomAddButton->show();
 			m_bomAddButton->setEnabled(true);
-		}
+		}	
+		Configuration::GetInstance()->SetIsPrintSearchClicked(false);
+
 		SetTotalImageCount();
 		ui_tabWidget->setCurrentIndex(0);
 		ui_tabWidget->setStyleSheet(" QTabWidget::pane { border: none; color: #FFFFFF; font-size: 10px; background-color: #262628; }""QTabBar::tab { width: 100px; padding: 2px; }""QTabBar::tab:selected { border: none; color: #FFFFFF; background-color: \"" + DEFAULT_TAB_BG_COLOR + "\"; }""QTabBar::tab:!selected { color:#FFFFFF; background-color:\"" + SELECTED_TAB_BG_COLOR + "\"; }");

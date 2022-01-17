@@ -2140,6 +2140,7 @@ namespace UIHelper
 					}
 				}
 			}
+			listC1->setStyleSheet("QListWidget{border-bottom: 1px inset #262626; font-size: 10px; font-face: ArialMT; border-left: 1px inset #0D0D0D; max-height:90px; border-top: 1px inset #0D0D0D; border-right: 1px inset #262626; background-color: #222224; outline: 0; } QListView { outline: 0; } QListWidget::item{ background-color: #222224; margin: 2px;} QListWidget::item:hover { background-color: #222224; } QListWidget::indicator { width: 10px; height:10px; } QListWidget::indicator:unchecked {background-color: #343434 ; border: 1px solid #3B3B3B;} QListWidget::indicator:checked {image: url(:/CLOVise/PLM/Images/icon_ok_over.svg);background-color: #343434; border: 1px solid #3B3B3B;}");
 			listC1->sortItems(Qt::AscendingOrder);
 			UTILITY_API->DeleteProgressBar(true);
 		}
