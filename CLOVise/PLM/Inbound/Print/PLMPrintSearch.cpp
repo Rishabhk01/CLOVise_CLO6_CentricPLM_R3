@@ -417,10 +417,8 @@ namespace CLOVise
 		try
 		{
 			collectSearchUIFields();
-			Logger::Info("PLMPrintSearch=================m_searchCriteriaJson "+to_string( m_searchCriteriaJson));
 
 			UIHelper::ValidateForValidParams(m_searchCriteriaJson, PRINT_MODULE);
-			Logger::Info("PLMPrintSearch=================(m_viewComboBox->currentIndex() " + to_string(m_viewComboBox->currentIndex()));
 			PrintConfig::GetInstance()->SetSelectedViewIdx(m_viewComboBox->currentIndex());
 			PrintConfig::GetInstance()->SetSearchCriteriaJSON(m_searchCriteriaJson);
 			this->hide();
