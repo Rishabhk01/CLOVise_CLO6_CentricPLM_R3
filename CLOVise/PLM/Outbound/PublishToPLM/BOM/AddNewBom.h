@@ -38,7 +38,6 @@ namespace CLOVise
 
 	public:
 		static AddNewBom* GetInstance();
-		//void getFabricTrimDetails(stringstream& _ssBOMDetails);
 		void getMaterialDetails(string _str, json _techPackJson, bool _isFabric);
 		void CreateTableforEachSection(json _sectionIdsjson);
 		void AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString _tableName, json _placementMateriaTypeJson, bool _userAddedRow=false);

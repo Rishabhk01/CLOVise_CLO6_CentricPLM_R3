@@ -34,8 +34,11 @@
 #include "CLOVise/PLM/Inbound/Color/ColorConfig.h"
 #include "CLOVise/PLM/Outbound/PublishToPLM/Section.h"
 #include "CLOVise/PLM/Outbound/PublishToPLM/CreateProduct.h"
+#include "CLOVise/PLM/Outbound/PublishToPLM/UpdateProduct.h"
 #include "CLOVise/PLM/Inbound/Material/PLMMaterialSearch.h"
 #include "CLOVise/PLM/Inbound/Material/MaterialConfig.h"
+#include "CLOVise/PLM/Outbound/PublishToPLM/BOM/UpdateProductBOMHandler.h"
+#include "CLOVise/PLM/Outbound/PublishToPLM/BOM/CreateProductBOMHandler.h"
 
 using namespace std;
 
@@ -146,31 +149,6 @@ namespace CLOVise
 
 		drawWidget(mergedJsonArray, m_createBomTreeWidget);
 		connectSignalSlots(true);
-
-		m_bomTableColumnJson = json::object();
-		m_bomTableColumnJson = Helper::GetJSONParsedValue<string>(bomConfigjson, "BomTableColumns", false);
-
-		for (int i = 0; i < m_bomTableColumnJson.size(); i++)
-		{
-			json fieldsJson = Helper::GetJSONParsedValue<int>(m_bomTableColumnJson, i, false);
-			string displayName = Helper::GetJSONValue<string>(fieldsJson, "display_name", true);
-			string internalName = Helper::GetJSONValue<string>(fieldsJson, "internal_name", true);
-			m_bomTableColumnlist.append(QString::fromStdString(displayName));
-			m_bomTableColumnKeys.append(QString::fromStdString(internalName));
-		}
-
-		json responseJson = Helper::makeRestcallGet(RESTAPI::MATERIAL_TYPE_SEARCH_API, "?&limit=100", "", "Loading materail type details..");
-
-		m_materialTypeList.append(QString::fromStdString(BLANK));
-		for (int i = 0; i < responseJson.size(); i++)
-		{
-			json attJson = Helper::GetJSONParsedValue<int>(responseJson, i, false);;///use new method
-			string attName = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_NAME, true);
-			Logger::Debug("AddNewBom -> AddNewBom attName: " + attName);
-			string attId = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_ID, true);
-			Logger::Debug("AddNewBom -> AddNewBom attId: " + attId);
-			m_materialTypeNameIdMap.insert(make_pair(attId, attName));
-		}
 
 		Logger::Debug("AddNewBom -> Constructor() -> End");
 		/*if (!PublishToPLMData::GetInstance()->isModelExecuted)*/
@@ -461,8 +439,16 @@ namespace CLOVise
 	{
 		Logger::Debug("AddNewBom onBackButtonClicked() Start....");
 		this->hide();
-		CreateProduct::GetInstance()->setModal(true);
-		CreateProduct::GetInstance()->show();
+		if (Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED)
+		{
+			CreateProduct::GetInstance()->setModal(true);
+			CreateProduct::GetInstance()->show();
+		}
+		if (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED)
+		{
+			UpdateProduct::GetInstance()->setModal(true);
+			UpdateProduct::GetInstance()->show();
+		}
 		Logger::Debug("AddNewBom onBackButtonClicked() End....");
 	}
 
@@ -512,21 +498,45 @@ namespace CLOVise
 				Logger::Debug("AddNewBom onCreateButtonClicked() responseJson...." + to_string(responseJson));
 				json sectionIdsJson = Helper::GetJSONParsedValue<string>(responseJson, "all_sections", false);
 				Logger::Debug("AddNewBom onCreateButtonClicked() sectionIdsJson...." + to_string(sectionIdsJson));
-				CreateTableforEachSection(sectionIdsJson);
-				populateTechPackDataInBom();
+				//CreateProductBOMHandler* section = new UpdateProductBOMHandler();
+				//UpdateProductBOMHandler* updateBomHandler = new UpdateProductBOMHandler();
+				if (Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED)
+				{
+					CreateTableforEachSection(sectionIdsJson);
+					populateTechPackDataInBom();
+				}
+				if (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED)
+					UpdateProductBOMHandler::GetInstance()->CreateBom(sectionIdsJson);
+				//populateTechPackDataInBom();
 			}
 
 			//UTILITY_API->DisplayMessageBox("m_BomMetaData" + to_string(m_BomMetaData));
-			CreateProduct::GetInstance()->m_bomAddButton->hide();
-			if (FormatHelper::HasContent(bomName))
-				CreateProduct::GetInstance()->m_bomName->setText(QString::fromStdString(bomName));
-			else
-				CreateProduct::GetInstance()->m_bomName->setText("");
+			if (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED)
 
-			m_bomCreated = true;
-			UTILITY_API->DeleteProgressBar(true);
-			CreateProduct::GetInstance()->setModal(true);
-			CreateProduct::GetInstance()->show();
+			{
+				UpdateProduct::GetInstance()->m_bomAddButton->hide();
+				if (FormatHelper::HasContent(bomName))
+					UpdateProduct::GetInstance()->m_bomName->setText(QString::fromStdString(bomName));
+				else
+					UpdateProduct::GetInstance()->m_bomName->setText("");
+				UpdateProductBOMHandler::GetInstance()->m_bomCreated = true;
+				UTILITY_API->DeleteProgressBar(true);
+				UpdateProduct::GetInstance()->setModal(true);
+				UpdateProduct::GetInstance()->show();
+			}
+			if (Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED)
+
+			{
+				CreateProduct::GetInstance()->m_bomAddButton->hide();
+				if (FormatHelper::HasContent(bomName))
+					CreateProduct::GetInstance()->m_bomName->setText(QString::fromStdString(bomName));
+				else
+					CreateProduct::GetInstance()->m_bomName->setText("");
+				m_bomCreated = true;
+				UTILITY_API->DeleteProgressBar(true);
+				CreateProduct::GetInstance()->setModal(true);
+				CreateProduct::GetInstance()->show();
+			}
 		}
 		catch (exception& e)
 		{
@@ -580,7 +590,7 @@ namespace CLOVise
 		Logger::Debug("AddNewBom CreateTableforEachSection Start: ");
 
 		json colorwayListJsonArr = json::array();
-		string colorwayList = Helper::GetJSONValue<string>(CreateProduct::GetInstance()->m_techPackJson, "colorwayList", false);
+		string colorwayList = Helper::GetJSONValue<string>(Configuration::GetInstance()->GetTechPackJson(), "colorwayList", false);
 		colorwayListJsonArr = json::parse(colorwayList);
 		for (int colorwayListCount = 0; colorwayListCount < colorwayListJsonArr.size(); colorwayListCount++)
 		{
@@ -689,10 +699,10 @@ namespace CLOVise
 	void AddNewBom::populateTechPackDataInBom()
 	{
 
-		getMaterialDetails("fabricList", CreateProduct::GetInstance()->m_techPackJson, true);
-		getMaterialDetails("buttonHeadList", CreateProduct::GetInstance()->m_techPackJson, false);
-		getMaterialDetails("buttonHoleList", CreateProduct::GetInstance()->m_techPackJson, false);
-		getMaterialDetails("zipperList", CreateProduct::GetInstance()->m_techPackJson, false);
+		getMaterialDetails("fabricList", Configuration::GetInstance()->GetTechPackJson(), true);
+		getMaterialDetails("buttonHeadList", Configuration::GetInstance()->GetTechPackJson(), false);
+		getMaterialDetails("buttonHoleList", Configuration::GetInstance()->GetTechPackJson(), false);
+		getMaterialDetails("zipperList", Configuration::GetInstance()->GetTechPackJson(), false);
 
 	}
 
@@ -2301,10 +2311,10 @@ Description - RestoreBomDetails() method used to store bom data.
 	void AddNewBom::RestoreBomDetails()
 	{
 		Logger::Debug("AddNewBom -> RestoreBomDetails() -> Start");
-		getMaterialDetails("fabricList", CreateProduct::GetInstance()->m_techPackJson, true);
-		getMaterialDetails("buttonHeadList", CreateProduct::GetInstance()->m_techPackJson, false);
-		getMaterialDetails("buttonHoleList", CreateProduct::GetInstance()->m_techPackJson, false);
-		getMaterialDetails("zipperList", CreateProduct::GetInstance()->m_techPackJson, false);
+		getMaterialDetails("fabricList", Configuration::GetInstance()->GetTechPackJson(), true);
+		getMaterialDetails("buttonHeadList", Configuration::GetInstance()->GetTechPackJson(), false);
+		getMaterialDetails("buttonHoleList", Configuration::GetInstance()->GetTechPackJson(), false);
+		getMaterialDetails("zipperList", Configuration::GetInstance()->GetTechPackJson(), false);
 		for (auto itr = m_backupBomDataMap.begin(); itr != m_backupBomDataMap.end(); itr++)
 		{
 			json rowDataJson = itr->second;

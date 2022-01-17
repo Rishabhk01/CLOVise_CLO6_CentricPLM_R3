@@ -61,7 +61,7 @@ using namespace zipper;
 #include "CLOVise/PLM/Inbound/Color/ColorConfig.h"
 #include "CLOVise/PLM/Inbound/Print/PrintConfig.h"
 #include "CLOVise/PLM/Outbound/PublishToPLM/CreateImageIntent.h"
-#include "CLOVise/PLM/Outbound/PublishToPLM/AddNewBom.h"
+#include "CLOVise/PLM/Outbound/PublishToPLM/BOM/AddNewBom.h"
 #include "CLOVise/PLM/Outbound/PublishToPLM/Section.h"
 
 using namespace std;
@@ -3224,19 +3224,7 @@ namespace CLOVise
 	{
 		AddNewBom::GetInstance()->UpdateColorwayColumns();
 	}
-	void CreateProduct::ExportTechPack()
-	{
-		Logger::Debug("CreateProduct -> ExportTechPack() -> Start");
-		string filePath = "d:/exportBom.json";
 
-		string jsonBOMDetails = EXPORT_API->ExportTechPackToStream(filePath);
-		stringstream ssBOMInfo;
-		ssBOMInfo.str(jsonBOMDetails);
-		string json_value = ssBOMInfo.str();
-		m_techPackJson = json::parse(json_value);
-		Logger::Debug("CreateProduct -> ExportTechPack() -> m_techPackJson" + to_string(m_techPackJson));
-		Logger::Debug("CreateProduct -> ExportTechPack() -> End");
-	}
 
 	void CreateProduct::CreateBom(string _productId)
 	{
