@@ -79,6 +79,7 @@
 #include "CLOVise/PLM/Helper/UIHelper/CVDisplayMessageBox.h"
 #include "CLOVise/PLM/Inbound/Document/DocumentConfig.h"
 #include "CLOVise/PLM/Inbound/Product/ProductConfig.h"
+#include "CLOVise/PLM/Inbound/Print/PrintConfig.h"
 #include "CLOVise/PLM/Outbound/PublishToPLM/PublishToPLMData.h"
 #include "CLOVise/PLM/Helper/Util/Logger.h"
 
@@ -1122,6 +1123,7 @@ namespace UIHelper
 			documentId = BLANK;
 			json fieldsJson = Helper::GetJSONParsedValue<int>(_resultJsonArray, ResultsjsonCount, false);
 			string objectId = Helper::GetJSONValue<string>(fieldsJson, "objectId", true);
+			string parentId = Helper::GetJSONValue<string>(fieldsJson, "parent", true);
 			string defaultAttachmentId = Helper::GetJSONValue<string>(fieldsJson, DFAULT_ASSET_KEY, true);
 
 			for (int i = 0; i < _downloadIdList.size(); i++)
@@ -1213,7 +1215,6 @@ namespace UIHelper
 
 						if (_module == PRINT_MODULE && attachmentjson.empty())
 						{
-							string parentId = Helper::GetJSONValue<string>(fieldsJson, "parent", true);
 							if (FormatHelper::HasContent(parentId))
 							{
 								attachemntRevisionApi = Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::ATTACHMENTS_LATEST_REVISION_RESULTS_API + parentId + "?revision_details=true";
@@ -1286,6 +1287,62 @@ namespace UIHelper
 									break;
 								}
 								break;
+							}
+						}
+						//If there is no Documents in Print Design/Print Design Colors, Downloading Print Design or Print Design Color Default Images 
+						if (_module == PRINT_MODULE && attachmentjson.empty())
+						{
+							json imageResultJson = json::object();
+							auto startTime = std::chrono::high_resolution_clock::now();
+							string defaultImageID;
+						
+							string printDesignColorResponseAPI = Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_PRINT_DESIGN_COLOR_API + "/"+objectId;
+
+							string printDesignColorResponse = RESTAPI::CentricRestCallGet(printDesignColorResponseAPI + "?decode=true", APPLICATION_JSON_TYPE, "");
+							Logger::Debug("printDesignColorResponse ::" + printDesignColorResponse);
+							json printDesignColorResponseJson = json::parse(printDesignColorResponse);
+
+							string images = Helper::GetJSONValue<string>(printDesignColorResponseJson, "images", false);
+							json imageIDJson = json::parse(images);
+							defaultImageID = Helper::GetJSONValue<string>(imageIDJson, "", true);
+							if (!FormatHelper::HasContent(defaultImageID))
+							{
+								string printDesignResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_PRINT_DESIGN_API + "/" + parentId + "?decode=true", APPLICATION_JSON_TYPE, "");
+								json printDesignResponseJson = json::parse(printDesignResponse);
+								string images = Helper::GetJSONValue<string>(printDesignResponseJson, "images", false);
+								objectName = Helper::GetJSONValue<string>(printDesignResponseJson, "node_name", true);
+								description = Helper::GetJSONValue<string>(printDesignResponseJson, "description", true);
+								code = "";//No code for Print Design
+								json imageIDJson = json::parse(images);
+								defaultImageID = Helper::GetJSONValue<string>(imageIDJson, "", true);
+							}
+
+							if (FormatHelper::HasContent(defaultImageID))
+							{
+								string imageResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::PRINT_IMAGE_API + "/" + defaultImageID, APPLICATION_JSON_TYPE, BLANK);
+								auto finishTime = std::chrono::high_resolution_clock::now();
+								std::chrono::duration<double> totalDuration = finishTime - startTime;
+								Logger::perfomance(PERFOMANCE_KEY + "Get Thambnail API :: " + to_string(totalDuration.count()));
+								Logger::RestAPIDebug("resultResponse::" + imageResponse);
+								if (!FormatHelper::HasError(imageResponse))
+								{
+									imageResultJson = json::parse(imageResponse);
+
+									string latestRevisionId = Helper::GetJSONValue<string>(imageResultJson, "id", true);
+									string latestVersionAttId = Helper::GetJSONValue<string>(imageResultJson, THUMBNAIL_KEY, true);
+									latestVersionAttName = Helper::GetJSONValue<string>(imageResultJson, "node_name", true);
+									latestVersionAttUrl = Helper::GetJSONValue<string>(imageResultJson, "_url_base_template", true);
+									latestVersionAttUrl = Helper::FindAndReplace(latestVersionAttUrl, "%s", latestVersionAttId);
+									
+									Logger::Logger("latestVersionAttName::" + latestVersionAttName + "::latestVersionAttId::" + latestVersionAttId + "  ::latestVersionAttUrl::" + latestVersionAttUrl);
+									documentId = latestRevisionId;
+									//If print Design Image downloaded updating PD object name code
+									searchArrayFields["Name"] = objectName;
+									searchArrayFields["Code"] = code;									
+									searchArrayFields["Description"] = description;
+									searchArray["SearchResults"][i] = searchArrayFields;
+									
+								}
 							}
 						}
 						
