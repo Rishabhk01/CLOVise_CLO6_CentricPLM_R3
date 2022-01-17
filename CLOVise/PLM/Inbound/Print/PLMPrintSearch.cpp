@@ -873,7 +873,8 @@ namespace CLOVise
 	* Return -
 	*/
 	void PLMPrintSearch::reject()
-	{		
+	{
+		Configuration::GetInstance()->SetIsPrintSearchClicked(false);
 		this->accept();
 	}
 
