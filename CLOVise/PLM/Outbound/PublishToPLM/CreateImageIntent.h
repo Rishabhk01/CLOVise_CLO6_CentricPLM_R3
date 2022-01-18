@@ -61,6 +61,7 @@ namespace CLOVise
 		CreateImageIntent(QWidget* parent = nullptr);
 		virtual ~CreateImageIntent();
 		void connectSignalSlots(bool _b) override;
+		void reject();
 		
 		QStringList m_exportedColorwayImages;
 		

@@ -668,6 +668,7 @@ namespace CLOVise
 			}
 		}
 		m_setDefaultCheckBox->setChecked(false);
+		m_includeAvatarCheckBox->setChecked(false);
 		this->hide();
 		CreateProduct::GetInstance()->setModal(true);
 		CreateProduct::GetInstance()->show();
@@ -702,6 +703,7 @@ namespace CLOVise
 			}
 		}
 		m_setDefaultCheckBox->setChecked(false);
+		m_includeAvatarCheckBox->setChecked(false);
 		this->hide();
 		CreateProduct::GetInstance()->setModal(true);
 		CreateProduct::GetInstance()->show();
@@ -717,6 +719,7 @@ namespace CLOVise
 		m_colorwayComboBox->setCurrentText(QString::fromStdString("No Colorway(Default)"));
 		Logger::Debug("CreateImageIntent -> fillSelectedList() -> End");
 	}
+
 	void CreateImageIntent::ClearAllFields()
 	{
 		Logger::Debug("CreateImageIntent -> ClearAllFields() -> Start");
@@ -741,6 +744,7 @@ namespace CLOVise
 
 		}
 		m_setDefaultCheckBox->setChecked(false);
+		m_includeAvatarCheckBox->setChecked(false);
 		m_colorwayViewQueue.clear();
 		m_imageQueueTable->clear();
 		m_colorwayselectedList.clear();
@@ -769,8 +773,12 @@ namespace CLOVise
 			}
 		}
 
-
 		Logger::Debug("CreateImageIntent -> ClearAllFields() -> End");
 	}
 
+	void CreateImageIntent::reject()
+	{
+		ClearAllFields();
+		this->accept();
+	}
 }

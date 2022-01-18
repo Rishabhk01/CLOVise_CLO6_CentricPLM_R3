@@ -3677,7 +3677,8 @@ namespace CLOVise
 
 				int includeAvatar=-1;
 				QString includeAvaterStr = "No";
-				if (imageName.find("Avatar_") !=- 1)
+				size_t found = imageName.find("Avatar_");
+				if (found != string::npos)
 				{
 					includeAvatar = 1;
 					includeAvaterStr = "Yes";
@@ -3915,15 +3916,23 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 			if (includeAvatar == "Yes")
 			{
 				Logger::Debug("UpdateProduct -> onImageIntentsTableEditButtonClicked()includeAvatar:" + includeAvatar);
-				if(!UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->isChecked())
+				if (!UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->isChecked())
 				{
-				UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setAutoExclusive(false);
-				UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setChecked(true);
-				UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setAutoExclusive(true);
+					UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setAutoExclusive(false);
+					UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setChecked(false);
+					UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setChecked(true);
+					UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setAutoExclusive(true);
 				}
 			}
-			/*else
-				UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setChecked(false);*/
+			else
+			{
+				if (UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->isChecked())
+				{
+					UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setAutoExclusive(false);
+					UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setChecked(false);
+					UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setAutoExclusive(true);
+				}
+			}
 
 			Logger::Debug("UpdateProduct -> onImageIntentsTableEditButtonClicked() Start 2 imageId" + imageId);
 			if (colorwayName.find("No Colorway") != -1)
