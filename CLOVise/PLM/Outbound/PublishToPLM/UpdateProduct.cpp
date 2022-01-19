@@ -4113,7 +4113,12 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 		Logger::Debug("UpdateProduct -> onImageIntentsTableDeleteButtonClicked() Start");
 		bool isConfirmed = false;
 
-		QMessageBox* deleteMessage = new QMessageBox();
+		QMessageBox* deleteMessage = new QMessageBox(this);
+#ifdef __APPLE__
+		deleteMessage->setModal(true);
+		deleteMessage->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+		deleteMessage->setWindowModality(Qt::WindowModal);
+#endif // __APPLE__
 		deleteMessage->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
 		deleteMessage->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 		deleteMessage->setIcon(QMessageBox::Question);
@@ -4443,7 +4448,12 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 		//{
 		bool isConfirmed = false;
 
-		QMessageBox* deleteMessage = new QMessageBox();
+		QMessageBox* deleteMessage = new QMessageBox(this);
+#ifdef __APPLE__
+		deleteMessage->setModal(true);
+		deleteMessage->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+		deleteMessage->setWindowModality(Qt::WindowModal);
+#endif // __APPLE__
 		deleteMessage->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
 		deleteMessage->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 		deleteMessage->setIcon(QMessageBox::Question);

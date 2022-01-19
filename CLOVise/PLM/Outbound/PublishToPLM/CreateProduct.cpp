@@ -1936,7 +1936,12 @@ namespace CLOVise
 					{
 						QString message;
 						QString bomMessage = "";
-						QMessageBox* deleteMessage = new QMessageBox();
+						QMessageBox* deleteMessage = new QMessageBox(this);
+#ifdef __APPLE__
+						deleteMessage->setModal(true);
+						deleteMessage->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+						deleteMessage->setWindowModality(Qt::WindowModal);
+#endif // __APPLE__
 						deleteMessage->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
 						deleteMessage->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 						deleteMessage->setIcon(QMessageBox::Question);
@@ -3574,7 +3579,12 @@ namespace CLOVise
 
 		bool isConfirmed = false;
 
-		QMessageBox* deleteMessage = new QMessageBox();
+		QMessageBox* deleteMessage = new QMessageBox(this);
+#ifdef __APPLE__
+		deleteMessage->setModal(true);
+		deleteMessage->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+		deleteMessage->setWindowModality(Qt::WindowModal);
+#endif // __APPLE__
 		deleteMessage->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::CustomizeWindowHint);
 		deleteMessage->setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 		deleteMessage->setIcon(QMessageBox::Question);
