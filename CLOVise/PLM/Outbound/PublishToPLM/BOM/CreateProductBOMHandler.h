@@ -33,7 +33,7 @@ using namespace std;
 
 namespace CLOVise
 {
-	class CreateProductBOMHandler 
+	class CreateProductBOMHandler : public QObject
 	{
 		Q_OBJECT
 
