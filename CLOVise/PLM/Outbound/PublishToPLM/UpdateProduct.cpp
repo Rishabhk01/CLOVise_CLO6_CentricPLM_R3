@@ -4560,6 +4560,12 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 		}
 	}
 
+	/*
+Description - onAddNewBomClicked() called when add new bom btton clicked 
+	* Parameter -
+	* Exception -
+	*Return -
+	*/
 	void UpdateProduct::onAddNewBomClicked()
 	{
 		this->hide();
@@ -4567,7 +4573,12 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 		AddNewBom::GetInstance()->exec();
 
 	}
-
+	/*
+Description - GetMappedColorway() used read and set mapped colorway from colorway tab
+	* Parameter -
+	* Exception -
+	*Return -
+	*/
 	void UpdateProduct::GetMappedColorway()
 	{
 		Logger::Debug("UpdateProduct -> GetMappedColorway() -> Start");
@@ -4590,11 +4601,23 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 		Logger::Debug("UpdateProduct -> GetMappedColorway() -> End");
 	}
 
+	/*
+Description - SetUpdateBomFlag() used set bom need to be updated
+	* Parameter -
+	* Exception -
+	*Return -
+	*/
+
 	void UpdateProduct::SetUpdateBomFlag(bool _flag)
 	{
 		m_updateBomTab = _flag;
 	}
-
+	/*
+Description - AddMaterialInBom() used to add material in bom table
+	* Parameter -
+	* Exception -
+	*Return -
+	*/
 	void UpdateProduct::AddMaterialInBom()
 	{
 		Logger::Debug("UpdateProduct -> AddMaterialInBom() -> Start");
@@ -4602,6 +4625,12 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 		Logger::Debug("UpdateProduct -> AddMaterialInBom() -> End");
 	}
 
+	/*
+Description - ClearBOMData() used to clear bom tab data and UI
+	* Parameter -
+	* Exception -
+	*Return -
+	*/
 	void UpdateProduct::ClearBOMData()
 	{
 		Logger::Debug("UpdateProduct -> ClearBOMData() -> Start");

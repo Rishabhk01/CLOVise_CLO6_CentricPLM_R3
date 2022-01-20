@@ -3750,7 +3750,12 @@ namespace CLOVise
 		RESTAPI::SetProgressBarData(0, "", false);
 	}
 
-
+	/*
+Description - ClearBOMData() used to clear bom tab data and UI
+	* Parameter -
+	* Exception -
+	*Return -
+	*/
 	void CreateProduct::ClearBOMData()
 	{
 		CreateProductBOMHandler::GetInstance()->ClearBomData();

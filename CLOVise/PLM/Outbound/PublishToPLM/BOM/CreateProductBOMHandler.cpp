@@ -1,14 +1,14 @@
 /*
 * Copyright 2021-2022 CLO-Vise. All rights reserved
 *
-* @file AddNewBom.cpp
+* @file CreateProductBOMHandler.cpp
 *
 * @brief Class implementation for create Bom table on tab.
 * This class has all the variable and methods implementation which are used to create bom table and publish bom lines from CLO to PLM.
 *
 * @author GoVise
 *
-* @date 10-OCT-2021
+* @date 18-JAN-2021
 */
 #include "CreateProductBOMHandler.h"
 
@@ -52,6 +52,11 @@ namespace CLOVise
 		return _instance;
 	}
 
+	/*Description - CreateBom(json) method used to create BOM on bom tab in create style
+		* Parameter -json
+		*Exception -
+		*Return -
+		*/
 	void CreateProductBOMHandler::CreateBom(json _sectionIdsJson)
 	{
 		//json _sectionIdsjson;
@@ -126,6 +131,12 @@ namespace CLOVise
 			QObject::disconnect(m_deleteButtonSignalMapper, SIGNAL(mapped(const QString &)), this, SLOT(OnClickDeleteButton(const QString &)));
 		}
 	}
+
+	/* Description - readBomTableColumnJson() method used read json file to get bom table columns
+	* Parameter -
+	* Exception -
+	* Return -
+	*/
 	void CreateProductBOMHandler::readBomTableColumnJson()
 	{
 		m_bomTableColumnlist.clear();
@@ -362,6 +373,14 @@ Description - OnClickDeleteButton() method used to delete a bom line from table.
 		Logger::Debug("CreateProductBOMHandler -> OnClickAddColorButton () End");
 
 	}
+
+
+	/*
+	Description - populateTechPackDataInBom() method used read tech pack and show data on bom table
+		* Parameter -QString
+		* Exception -
+		*Return -
+		*/
 	void CreateProductBOMHandler::populateTechPackDataInBom()
 	{
 
@@ -1017,6 +1036,13 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 		}
 	}
 
+
+	/*
+Description - AddMaterialInBom method used to add a material in bom table.
+	* Parameter -string
+	* Exception -
+	*Return -
+	*/
 	void CreateProductBOMHandler::AddMaterialInBom()
 	{
 		QTableWidget* sectionTable;
@@ -1073,6 +1099,12 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 		BOMUtility::CreateBom(_productId, _BomMetaData, m_bomSectionTableInfoMap, CreateProduct::GetInstance()->m_mappedColorways, _CloAndPLMColorwayMap);
 	}
 
+	/*
+Description - BackupBomDetails() used to store bom data on click of save button
+	* Parameter -
+	* Exception -
+	*Return -
+	*/
 	void CreateProductBOMHandler::BackupBomDetails()
 	{
 		m_backupBomDataMap = BOMUtility::BackupBomDetails(m_bomSectionTableInfoMap, CreateProduct::GetInstance()->m_mappedColorways);
