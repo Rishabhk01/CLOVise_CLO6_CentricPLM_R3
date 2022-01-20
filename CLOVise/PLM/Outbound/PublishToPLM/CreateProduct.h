@@ -54,8 +54,6 @@ namespace CLOVise
 		void AddMaterialInBom();
 		void GetMappedColorway();
 		void UpdateColorwayColumnsInBom();
-		void ExportTechPack();
-		void ClearBomSectionLayout();
 		void CreateBom(string _productId);
 		void ClearBOMData();
 		struct ColorwayViews

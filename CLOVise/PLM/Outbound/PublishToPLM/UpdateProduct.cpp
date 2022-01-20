@@ -416,12 +416,8 @@ namespace CLOVise
 			m_imageIntentTable->clear();
 			ui_tabWidget->setCurrentIndex(0);
 			m_colorSpecList.clear();
-			ClearAllFields(AddNewBom::GetInstance()->m_createBomTreeWidget);
-			BOMUtility::ClearBomSectionLayout(ui_sectionLayout);
-			UpdateProductBOMHandler::GetInstance()->ClearBomData();
+			ClearBOMData();
 			m_CloAndPLMColorwayMap.clear();
-			m_bomAddButton->show();
-			m_bomAddButton->setEnabled(true);
 			m_totalCountLabel->setText("Total count: 0");
 		}
 		SetTotalImageCount();
@@ -764,7 +760,7 @@ namespace CLOVise
 						valueList.append(QString::fromStdString(attName));
 						m_seasonNameIdMap.insert(make_pair(attName, attId));
 						//m_styleTypeNameIdMap.insert(make_pair(attName, attId));
-						if (attributeName == "Style Type")
+						if (attributeName == "Style Type" && attId == attDefaultValue.toStdString())
 						{
 							string tdsmapString = Helper::GetJSONValue<string>(attJson, "tds_map", false);
 							Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON tdsmapString: " + tdsmapString);
@@ -886,8 +882,7 @@ namespace CLOVise
 		try
 		{
 			Configuration::GetInstance()->SetIsPrintSearchClicked(false);
-
-			if (ValidateColorwayNameField())
+			if (ValidateColorwayNameField() && UpdateProductBOMHandler::GetInstance()->ValidateBomFields())
 			{
 				this->hide();
 				collectCreateProductFieldsData();
@@ -983,8 +978,8 @@ namespace CLOVise
 					DeleteColorwayFromPLM();
 					uploadColorwayImages();
 					LinkImagesToColorways(productId);
-					if (AddNewBom::GetInstance()->IsBomCreated())
-						UpdateProductBOMHandler::GetInstance()->CreateBom(productId, AddNewBom::GetInstance()->m_BomMetaData, m_CloAndPLMColorwayMap);
+					if (UpdateProductBOMHandler::GetInstance()->IsBomCreated())
+						UpdateProductBOMHandler::GetInstance()->CreateBom(productId, AddNewBom::GetInstance()->m_BOMMetaData, m_CloAndPLMColorwayMap);
 					m_colorSpecList.clear();
 					UTILITY_API->NewProject();
 					//Clearing cached data post successful publish toii plm
@@ -1026,12 +1021,8 @@ namespace CLOVise
 					ui_tabWidget->setCurrentIndex(0);
 					PublishToPLMData::GetInstance()->SetIsCreateNewGLBDocument(false);
 					m_totalCountLabel->setText("Total count: 0");
-					ClearAllFields(AddNewBom::GetInstance()->m_createBomTreeWidget);
-					BOMUtility::ClearBomSectionLayout(ui_sectionLayout);
-					UpdateProductBOMHandler::GetInstance()->ClearBomData();
+					ClearBOMData();
 					m_CloAndPLMColorwayMap.clear();
-					m_bomAddButton->show();
-					m_bomAddButton->setEnabled(true);
 					RESTAPI::SetProgressBarData(0, "", false);
 					//this->hide();
 					this->close();
@@ -1734,8 +1725,9 @@ namespace CLOVise
 		int comboSize;
 		int comboBoxIndex;;
 		vector<int> comboBoxIndexList;
+		Logger::Debug("UpdateProduct -> GetUpdatedColorwayNames() -> Start");
 		int noOfRows = ui_colorwayTable->rowCount();
-
+		Logger::Debug("UpdateProduct -> GetUpdatedColorwayNames() -> 1");
 		for (int rowIndex = 0; rowIndex < noOfRows; rowIndex++)
 		{
 			QComboBox *colorwayNameCombo = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(rowIndex, CLO_COLORWAY_COLUMN)->children().last());
@@ -1748,6 +1740,7 @@ namespace CLOVise
 				comboBoxIndexList.push_back(comboBoxIndex);
 			}
 		}
+		Logger::Debug("UpdateProduct -> GetUpdatedColorwayNames() -> 2");
 		m_modifiedColorwayNames.clear();
 		QStringList colorwayNamesList;
 		int colorwayCount = UTILITY_API->GetColorwayCount();
@@ -1757,9 +1750,10 @@ namespace CLOVise
 			string colorwayName = UTILITY_API->GetColorwayName(count);
 			colorwayNamesList.append(QString::fromStdString(colorwayName));
 		}
-
+		Logger::Debug("UpdateProduct -> GetUpdatedColorwayNames() -> 3");
 		for (int rowIndex = 0; rowIndex < ui_colorwayTable->rowCount(); rowIndex++)
 		{
+			Logger::Debug("UpdateProduct -> GetUpdatedColorwayNames() -> 4");
 			QComboBox *colorwayNameCombo = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(rowIndex, CLO_COLORWAY_COLUMN)->children().last());
 
 			if (colorwayNameCombo)
@@ -3161,15 +3155,11 @@ namespace CLOVise
 			ui_tabWidget->setCurrentIndex(0);
 			m_colorSpecList.clear();
 			m_totalCountLabel->setText("Total count: 0");
-			ClearAllFields(AddNewBom::GetInstance()->m_createBomTreeWidget);
-			BOMUtility::ClearBomSectionLayout(ui_sectionLayout);
-			UpdateProductBOMHandler::GetInstance()->ClearBomData();
+			ClearBOMData();
 			m_CloAndPLMColorwayMap.clear();
-			m_bomAddButton->show();
-			m_bomAddButton->setEnabled(true);
-		}	
+			
+		}
 		Configuration::GetInstance()->SetIsPrintSearchClicked(false);
-
 		SetTotalImageCount();
 		ui_tabWidget->setCurrentIndex(0);
 		ui_tabWidget->setStyleSheet(" QTabWidget::pane { border: none; color: #FFFFFF; font-size: 10px; background-color: #262628; }""QTabBar::tab { width: 100px; padding: 2px; }""QTabBar::tab:selected { border: none; color: #FFFFFF; background-color: \"" + DEFAULT_TAB_BG_COLOR + "\"; }""QTabBar::tab:!selected { color:#FFFFFF; background-color:\"" + SELECTED_TAB_BG_COLOR + "\"; }");
@@ -4587,6 +4577,12 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 		}
 	}
 
+	/*
+Description - onAddNewBomClicked() called when add new bom btton clicked 
+	* Parameter -
+	* Exception -
+	*Return -
+	*/
 	void UpdateProduct::onAddNewBomClicked()
 	{
 		this->hide();
@@ -4594,7 +4590,12 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 		AddNewBom::GetInstance()->exec();
 
 	}
-
+	/*
+Description - GetMappedColorway() used read and set mapped colorway from colorway tab
+	* Parameter -
+	* Exception -
+	*Return -
+	*/
 	void UpdateProduct::GetMappedColorway()
 	{
 		Logger::Debug("UpdateProduct -> GetMappedColorway() -> Start");
@@ -4617,15 +4618,44 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 		Logger::Debug("UpdateProduct -> GetMappedColorway() -> End");
 	}
 
+	/*
+Description - SetUpdateBomFlag() used set bom need to be updated
+	* Parameter -
+	* Exception -
+	*Return -
+	*/
+
 	void UpdateProduct::SetUpdateBomFlag(bool _flag)
 	{
 		m_updateBomTab = _flag;
 	}
-
+	/*
+Description - AddMaterialInBom() used to add material in bom table
+	* Parameter -
+	* Exception -
+	*Return -
+	*/
 	void UpdateProduct::AddMaterialInBom()
 	{
-		Logger::Debug("CreateProduct -> AddMaterialInBom() -> Start");
+		Logger::Debug("UpdateProduct -> AddMaterialInBom() -> Start");
 		UpdateProductBOMHandler::GetInstance()->AddMaterialInBom();
-		Logger::Debug("CreateProduct -> AddMaterialInBom() -> End");
+		Logger::Debug("UpdateProduct -> AddMaterialInBom() -> End");
+	}
+
+	/*
+Description - ClearBOMData() used to clear bom tab data and UI
+	* Parameter -
+	* Exception -
+	*Return -
+	*/
+	void UpdateProduct::ClearBOMData()
+	{
+		Logger::Debug("UpdateProduct -> ClearBOMData() -> Start");
+		UpdateProductBOMHandler::GetInstance()->ClearBomData();
+		ClearAllFields(AddNewBom::GetInstance()->m_createBOMTreeWidget);
+		BOMUtility::ClearBomSectionLayout(ui_sectionLayout);
+		m_bomAddButton->show();
+		m_bomAddButton->setEnabled(true);
+		Logger::Debug("UpdateProduct -> ClearBOMData() -> End");
 	}
 }

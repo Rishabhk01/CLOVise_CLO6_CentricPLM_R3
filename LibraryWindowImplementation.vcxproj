@@ -449,6 +449,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CreateProductBOMHandler.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_UpdateImageIntent.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -1109,6 +1113,24 @@
     <ClInclude Include="CLOVise\PLM\Outbound\PublishToPLM\BOM\UpdateProductBOMHandler.h" />
     <ClInclude Include="CLOVise\PLM\Outbound\PublishToPLM\PublishToPLMData.h" />
     <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\BOM\UpdateProductBOMHandler.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp" "-fstdafx.h" "-f../../CLOVise/PLM/Helper/UIHelper/%(Filename)%(Extension)"  -DUNICODE -DWIN32 -DQT_DLL -DLIBRARYAPIIMPLEMENTATION_LIB -D%(PreprocessorDefinitions) "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DLIBRARYAPIIMPLEMENTATION_LIB -DCLO_SCENE_LIB_STATIC -DCURL_STATICLIB -DBUILDING_LIBCURL -DUSE_WINDOWS_SSPI -DUSE_SCHANNEL -D%(PreprocessorDefinitions) "-I.\GeneratedFiles" "-I." "-I.\..\.." "-I.\..\..\..\ExternLib\Qt\4.8.7\include" "-I.\..\..\..\ExternLib\Qt\4.8.7\include\QtCore" "-I.\..\..\..\ExternLib\Qt\4.8.7\include\QtGui" "-I$(INHERIT)" "-I.\..\..\.." "-I.\..\..\..\include" "-I.\CLO_PLUGIN\PLM\Libraries\curl\include"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp" "-fstdafx.h" "-f../../CLOVise/PLM/Helper/UIHelper/%(Filename)%(Extension)"  -DUNICODE -DWIN32 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DLIBRARYAPIIMPLEMENTATION_LIB -D%(PreprocessorDefinitions) "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DLIBRARYAPIIMPLEMENTATION_LIB -DCLO_SCENE_LIB_STATIC -DCURL_STATICLIB -DBUILDING_LIBCURL -DUSE_WINDOWS_SSPI -DUSE_SCHANNEL -D%(PreprocessorDefinitions)  "-I.\GeneratedFiles" "-I." "-I.\GeneratedFiles\$(ConfigurationName)" "-I.\..\.." "-I.\..\..\..\ExternLib\Qt\Qt5.14.2\5.14.2\msvc2017_64\include" "-I.\..\..\..\ExternLib\Qt\Qt5.14.2\5.14.2\msvc2017_64\include\QtNetwork" "-I.\..\..\..\ExternLib\Qt\Qt5.14.2\5.14.2\msvc2017_64\include\QtCore" "-I.\..\..\..\ExternLib\Qt\Qt5.14.2\5.14.2\msvc2017_64\include\QtGui" "-I.\..\..\..\ExternLib\Qt\Qt5.14.2\5.14.2\msvc2017_64\include\QtWidgets" "-I$(INHERIT)" "-I.\..\..\.." "-I.\..\..\..\include"</Command>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\BOM\CreateProductBOMHandler.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>

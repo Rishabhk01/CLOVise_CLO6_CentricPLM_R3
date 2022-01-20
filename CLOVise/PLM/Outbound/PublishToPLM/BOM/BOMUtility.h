@@ -2,14 +2,14 @@
 /*
 * Copyright 2021-2022 CLO-Vise. All rights reserved
 *
-* @file AddNewBom.h
+* @file BOMUtility.h
 *
 * @brief Class implementation for create Bom table on tab.
 * This class has all the variable declarations and function declarations which are used to create bom table and publish bom lines from CLO to PLM.
 *
 * @author GoVise
 *
-* @date 10-OCT-2021
+* @date 18-JAN-2021
 */
 
 
@@ -39,7 +39,12 @@ namespace BOMUtility
 	//static QStringList m_materialTypeList;
 	
 	
-
+		/*
+* Description - AddBomRows() method is to add a single row ina table provided in the IN parameter
+* Parameter - QTableWidget* , json , QString
+* Exception -
+* Return -
+*/
 	inline QTableWidget* GetSectionTable(map<string, QTableWidget*> _map, string _sectionName)
 	{
 		Logger::Debug("BOMUtility -> GetSectionTable() -> Start");
@@ -53,6 +58,13 @@ namespace BOMUtility
 		Logger::Debug("BOMUtility -> GetSectionTable() -> end");
 		return table;
 	}
+
+	/*
+Description - GetMaterialTypeForSection(string _sectionName) method used to get material type for section.
+	* Parameter -string
+	* Exception -
+	*Return -
+	*/
 	static json GetMaterialTypeForSection(map<string, json> _map,string _sectionName)
 	{
 		Logger::Debug("BOMUtility -> GetMaterialTypeForSection() -> Start");
@@ -72,7 +84,7 @@ namespace BOMUtility
 	inline  map<string, string> GetCentricMaterialTypes()
 	{
 		map<string, string> materialTypeMap;
-		json responseJson = Helper::makeRestcallGet(RESTAPI::MATERIAL_TYPE_SEARCH_API, "?&limit=100", "", "Loading materail type details..");
+		json responseJson = Helper::makeRestcallGet(RESTAPI::MATERIAL_TYPE_SEARCH_API, "?limit=100", "", "Loading materail type details..");
 
 		//m_materialTypeList.append(QString::fromStdString(BLANK));
 		for (int i = 0; i < responseJson.size(); i++)
@@ -86,6 +98,13 @@ namespace BOMUtility
 		}
 		return materialTypeMap;
 	}
+
+	/*
+Description - CreateSectionInBom() method used to create one section/table on bom tab.
+	* Parameter -string , string , QStringList , int& , json
+	* Exception -
+	*Return -
+	*/
 	inline void CreateSectionInBom(QVBoxLayout* _mainLayout, string _sectionName, string _sectionId, QStringList _tablecolumnList, int& _sectionCount, json _placementProductTypeJson, map<string, QTableWidget*>& _bomSectionTableInfoMap, map<string, json>& _bomSectionNameAndTypeMap, map<QPushButton*, QTableWidget*>& _addMaterialButtonAndTableMap, map<QPushButton*, QTableWidget*>& _addSpecialMaterialButtonAndTableMap, QStringList& _bomTableColumnlist, QStringList& _bomTableColumnKeys)
 	{
 		Logger::Debug("BOMUtility CreateSectionInBom Start: ");
@@ -155,6 +174,13 @@ namespace BOMUtility
 		Logger::Debug("BOMUtility CreateSectionInBom End: ");
 	}
 
+
+	/*
+* Description - CreateTableforEachSection() method is to create sections as per the template selected for create Bom.
+* Parameter -
+* Exception -
+* Return -
+*/
 	inline void CreateTableforEachSection(QVBoxLayout* _mainLayout, json _sectionIdsjson, map<string, QTableWidget*>& _bomSectionTableInfoMap, map<string, json>& _bomSectionNameAndTypeMap, map<string, QStringList>& m_sectionMaterialTypeMap, map<QPushButton*, QTableWidget*>& _addMaterialButtonAndTableMap, map<QPushButton*, QTableWidget*>& _addSpecialMaterialButtonAndTableMap, QStringList _mappedColorways, string _styleTypeId, QStringList& _bomTableColumnlist, QStringList& _bomTableColumnKeys)
 	{
 		Logger::Debug("BOMUtility CreateTableforEachSection Start: ");
@@ -266,6 +292,14 @@ namespace BOMUtility
 
 
 	}
+
+
+	/*
+* Description - getColorInfo() get color information from CLO techpack
+* Parameter - json , json& , string , bool
+* Exception -
+* Return -
+*/
 	inline void getColorInfo(json _FabricJson, json& _rowDataJson, string _materailId, bool _isFabric, map<string, json>& _colorwayMapForBom)
 	{
 		Logger::Debug("BOMUtility -> getColorInfo () Start");
@@ -697,6 +731,13 @@ namespace BOMUtility
 
 		Logger::Debug("BOMUtility -> ClearBomSectionLayout -> End");
 	}
+
+	/*
+Description - BackupBomDetails() method used backup bom data in a data structure to again populate bom tab information.
+	* Parameter -
+	* Exception -
+	*Return -
+	*/
 	inline map<string, json> BackupBomDetails(map<string, QTableWidget*> _bomSectionTableInfoMap, QStringList _mappedColorways)
 	{
 		Logger::Debug("BOMUtility -> BackupBomDetails() -> Start");
@@ -863,5 +904,50 @@ namespace BOMUtility
 			}
 			Logger::Debug("BOMUtility -> BackupBomDetails() -> End");
 			return backupBomDataMap;
+	}
+
+
+	inline bool ValidateBomFields(map<string, QTableWidget*> _bomSectionTableInfoMap)
+	{
+		Logger::Debug("AddNewBom -> ValidateBomFields() -> Start");
+
+		QStringList list;
+		bool duplicateColrwayName = true;
+
+		for (auto itr = _bomSectionTableInfoMap.begin(); itr != _bomSectionTableInfoMap.end(); itr++)
+		{
+			QTableWidget* sectionTable = itr->second;
+			for (int rowCount = 0; rowCount < sectionTable->rowCount(); rowCount++)
+			{
+
+				QLineEdit *materialNameLineEdit = static_cast<QLineEdit*>(sectionTable->cellWidget(rowCount, MATERIAL_NAME_COLUMN)->children().last());
+				QComboBox *materialTypeCombo = static_cast<QComboBox*>(sectionTable->cellWidget(rowCount, MATERIAL_TYPE_COLUMN)->children().last());
+				if (materialNameLineEdit)
+				{
+					QString materialName = materialNameLineEdit->text();
+					if (!FormatHelper::HasContent(materialName.toStdString()))
+					{
+						UTILITY_API->DisplayMessageBox("Name field cannot be blank in " + itr->first + " Section");
+						//CreateProduct::GetInstance()->ui_tabWidget->setCurrentIndex(BOM_TAB);
+						duplicateColrwayName = false;
+						break;
+					}
+				}
+				if (materialTypeCombo)
+				{
+					QString materialType = materialTypeCombo->currentText();
+					if (!FormatHelper::HasContent(materialType.toStdString()))
+					{
+						UTILITY_API->DisplayMessageBox("Type field cannot be blank in " + itr->first + " Section");
+						//CreateProduct::GetInstance()->ui_tabWidget->setCurrentIndex(BOM_TAB);
+						duplicateColrwayName = false;
+						break;
+					}
+				}
+			}
+		}
+
+		return duplicateColrwayName;
+		Logger::Debug("AddNewBom -> ValidateBomFields() -> End");
 	}
 }

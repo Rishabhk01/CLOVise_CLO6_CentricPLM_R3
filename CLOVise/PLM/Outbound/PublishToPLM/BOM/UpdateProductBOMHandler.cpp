@@ -1,14 +1,14 @@
 /*
 * Copyright 2021-2022 CLO-Vise. All rights reserved
 *
-* @file AddNewBom.cpp
+* @file UpdateProductBOMHandler.cpp
 *
 * @brief Class implementation for create Bom table on tab.
 * This class has all the variable and methods implementation which are used to create bom table and publish bom lines from CLO to PLM.
 *
 * @author GoVise
 *
-* @date 10-OCT-2021
+* @date 18-JAN-2021
 */
 #include "UpdateProductBOMHandler.h"
 
@@ -52,6 +52,12 @@ namespace CLOVise
 		return _instance;
 	}
 
+
+	/*Description - CreateBom(json) method used to create BOM on bom tab in update style
+		* Parameter -json
+		*Exception -
+		*Return -
+		*/
 	void UpdateProductBOMHandler :: CreateBom(json _sectionIdsJson)
 	{
 		//json _sectionIdsjson;
@@ -82,6 +88,8 @@ namespace CLOVise
 		}
 		
 	}
+
+
 	UpdateProductBOMHandler::UpdateProductBOMHandler(QObject* parent)
 	{
 		m_addColorButtonSignalMapper = new QSignalMapper();
@@ -91,11 +99,24 @@ namespace CLOVise
 		m_bomCreated = false;
 
 	}
+
+
+	/*Description - IsBomCreated() method is to get information BOM created or not
+		* Parameter -
+		*Exception -
+		*Return -
+		*/
 	bool UpdateProductBOMHandler::IsBomCreated()
 	{
 		return m_bomCreated;
 	}
 
+
+	/* Description - connectSignalSlots() method used to connect and disconnect signal and slots.
+	* Parameter -  bool.
+	* Exception -
+	* Return -
+	*/
 	void UpdateProductBOMHandler::connectSignalSlots(bool _b)
 	{
 
@@ -113,9 +134,16 @@ namespace CLOVise
 			QObject::disconnect(m_deleteButtonSignalMapper, SIGNAL(mapped(const QString &)), this, SLOT(OnClickDeleteButton(const QString &)));
 		}
 	}
+
+	/* Description - readBomTableColumnJson() method used read json file to get bom table columns
+	* Parameter -  
+	* Exception -
+	* Return -
+	*/
 	void UpdateProductBOMHandler ::readBomTableColumnJson()
 	{
-		
+		m_bomTableColumnlist.clear();
+		m_bomTableColumnKeys.clear();
 		json bomConfigjson = json::object();
 		string attJson = DirectoryUtil::GetPLMPluginDirectory() + "BomConfig.json";//Reading Columns from json
 		bomConfigjson = Helper::ReadJSONFile(attJson);
@@ -131,6 +159,13 @@ namespace CLOVise
 		}
 	}
 
+
+	/*
+Description - OnClickDeleteButton() method used to delete a bom line from table.
+	* Parameter -QString
+	* Exception -
+	*Return -
+	*/
 	void UpdateProductBOMHandler::OnClickDeleteButton(const QString &position)
 	{
 		Logger::Debug("UpdateProductBOMHandler -> OnClickDeleteButton () Start");
@@ -227,6 +262,13 @@ namespace CLOVise
 		Logger::Debug("UpdateProductBOMHandler -> OnClickDeleteButton () End");
 	}
 
+
+	/*
+* Description - onClickAddFromMaterialButton() method is to add inLibrary material in bom table
+* Parameter -
+* Exception -
+* Return -
+*/
 	void UpdateProductBOMHandler::onClickAddFromMaterialButton()
 	{
 		Logger::Debug("UpdateProductBOMHandler -> onClickAddFromMaterialButton () Start");
@@ -283,6 +325,12 @@ namespace CLOVise
 		Logger::Debug("UpdateProductBOMHandler -> onClickAddFromMaterialButton () End");
 	}
 
+	/*
+	Description - UpdateColorwayColumns() method used to add color to the colorways.
+		* Parameter -QString
+		* Exception -
+		*Return -
+		*/
 	void UpdateProductBOMHandler::OnClickAddColorButton(const QString &position)
 	{
 		Logger::Debug("UpdateProductBOMHandler -> OnClickAddColorButton () Start");
@@ -327,6 +375,14 @@ namespace CLOVise
 		Logger::Debug("UpdateProductBOMHandler -> OnClickAddColorButton () End");
 
 	}
+
+
+	/*
+	Description - populateTechPackDataInBom() method used read tech pack and show data on bom table
+		* Parameter -QString
+		* Exception -
+		*Return -
+		*/
 	 void UpdateProductBOMHandler::populateTechPackDataInBom()
 	{
 
@@ -335,8 +391,16 @@ namespace CLOVise
 		getMaterialDetails("buttonHoleList", Configuration::GetInstance()->GetTechPackJson(), false);
 		getMaterialDetails("zipperList", Configuration::GetInstance()->GetTechPackJson(), false);
 
-	}
-	  void UpdateProductBOMHandler::getMaterialDetails(string _str, json _techPackJson, bool _isFabric)
+	}	
+	 
+	 
+	 /*
+* Description - getMaterialDetails() method is to populate CLO techpack data in Bom table.
+* Parameter -string , json , bool , QTableWidget* , QString , bool
+* Exception -
+* Return -
+*/
+  void UpdateProductBOMHandler::getMaterialDetails(string _str, json _techPackJson, bool _isFabric)
 	 {
 
 		 string fabStrValue = _techPackJson[_str].dump();
@@ -446,6 +510,14 @@ namespace CLOVise
 
 
 	 }
+	
+	 
+	 /*
+Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString _tableName, json _placementMateriaTypeJson, bool _userAddedRow) method used to add row in bom table.
+	* Parameter -string
+	* Exception -
+	*Return -
+	*/
 	 void UpdateProductBOMHandler::AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString _tableName, json _placementMateriaTypeJson, bool _userAddedRow)
 	 {
 
@@ -968,6 +1040,13 @@ namespace CLOVise
 		 }
 	 }
 
+
+	 /*
+Description - AddMaterialInBom method used to add a material in bom table.
+	* Parameter -string
+	* Exception -
+	*Return -
+	*/
 	  void UpdateProductBOMHandler:: AddMaterialInBom()
 	 {
 		  QTableWidget* sectionTable;
@@ -987,6 +1066,13 @@ namespace CLOVise
 		  }
 	 }
 
+
+	  /*
+* Description - onClickAddSpecialMaterialButton() method is to add special material in bom table
+* Parameter -
+* Exception -
+* Return -
+*/
 	  void UpdateProductBOMHandler::onClickAddSpecialMaterialButton()
 	  {
 		  Logger::Debug("UpdateProductBOMHandler -> onClickAddSpecialMaterialButton () Start");
@@ -1018,11 +1104,23 @@ namespace CLOVise
 		  BOMUtility::CreateBom(_productId, _BomMetaData, m_bomSectionTableInfoMap, UpdateProduct::GetInstance()->m_mappedColorways, _CloAndPLMColorwayMap);
 	  }
 
+	  /*
+Description - BackupBomDetails() used to store bom data on click of save button
+	* Parameter -
+	* Exception -
+	*Return -
+	*/
 	  void UpdateProductBOMHandler::BackupBomDetails()
 	  {
 		  m_backupBomDataMap = BOMUtility::BackupBomDetails(m_bomSectionTableInfoMap, UpdateProduct::GetInstance()->m_mappedColorways);
 	  }
 
+	  /*
+Description - RestoreBomDetails() method used to store bom data.
+	* Parameter -
+	* Exception -
+	*Return -
+	*/
 	  void UpdateProductBOMHandler::RestoreBomDetails()
 	  {
 		  Logger::Debug("UpdateProductBOMHandler -> RestoreBomDetails() -> Start");
@@ -1044,6 +1142,13 @@ namespace CLOVise
 		  Logger::Debug("UpdateProductBOMHandler -> RestoreBomDetails() -> End");
 	  }
 
+
+	  /*
+  Description - UpdateColorwayColumns() method used to add or remove colorways columns from bom table
+	  * Parameter -
+	  * Exception -
+	  *Return -
+	  */
 	  void UpdateProductBOMHandler::UpdateColorwayColumnsInBom()
 	  {
 
@@ -1304,6 +1409,13 @@ namespace CLOVise
 
 		  Logger::Debug("UpdateProductBOMHandler -> UpdateColorwayColumns () End");
 	  }
+
+	  /*
+Description - ClearBomData() method used to clear all the bom related variables.
+	* Parameter -
+	* Exception -
+	*Return -
+	*/
 	  void UpdateProductBOMHandler::ClearBomData()
 	  {
 		  Logger::Debug("UpdateProductBOMHandler -> ClearBomData() -> Start");
@@ -1312,11 +1424,16 @@ namespace CLOVise
 		  m_colorwayMapForBom.clear();
 		  m_bomSectionTableInfoMap.clear();
 		  BOMUtility::m_mappedColorwaysArr.clear();
-		  AddNewBom::GetInstance()->m_BomMetaData.clear();
+		  AddNewBom::GetInstance()->m_BOMMetaData.clear();
 		  m_sectionMaterialTypeMap.clear();
 		  m_bomCreated = false;
 		  UpdateProduct::GetInstance()->m_bomName->setText("");
 		  UpdateProduct::GetInstance()->m_bomTemplateName->setText("");	  
 		  Logger::Debug("UpdateProductBOMHandler -> ClearBomData() -> End");
+	  }
+
+	  bool UpdateProductBOMHandler::ValidateBomFields()
+	  {
+		  return BOMUtility::ValidateBomFields(m_bomSectionTableInfoMap);
 	  }
 }

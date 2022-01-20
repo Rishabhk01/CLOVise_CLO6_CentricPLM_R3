@@ -2,14 +2,14 @@
 /*
 * Copyright 2021-2022 CLO-Vise. All rights reserved
 *
-* @file AddNewBom.h
+* @file UpdateProductBOMHandler.h
 *
 * @brief Class implementation for create Bom table on tab.
 * This class has all the variable declarations and function declarations which are used to create bom table and publish bom lines from CLO to PLM.
 *
 * @author GoVise
 *
-* @date 10-OCT-2021
+* @date 18-JAN-2021
 */
 
 
@@ -74,6 +74,7 @@ namespace CLOVise
 		bool m_bomCreated;
 		bool IsBomCreated();
 		void connectSignalSlots(bool _b);
+		bool ValidateBomFields();
 	private slots:
 		void OnClickDeleteButton(const QString &position);
 		void onClickAddFromMaterialButton();
