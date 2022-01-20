@@ -71,17 +71,14 @@ namespace CLOVise
 		m_pTitleBar = new MVTitleBar(windowTitle, this);
 		layout()->setMenuBar(m_pTitleBar);
 #endif // !__APPLE__
-		m_addColorButtonSignalMapper = new QSignalMapper();
-		m_deleteButtonSignalMapper = new QSignalMapper();
-		m_mappedColorwaysArr = json::array();
-		m_colorwayOverridesJson = json::array();
+	
 		m_createButton = CVWidgetGenerator::CreatePushButton("Create", ADD_HOVER_ICON_PATH, "Create", PUSH_BUTTON_STYLE, 30, true);
 		m_backButton = CVWidgetGenerator::CreatePushButton("Back", BACK_HOVER_PATH, "Back", PUSH_BUTTON_STYLE, 30, true);
 
-		m_createBomTreeWidget = CVWidgetGenerator::CreatePublishTreeWidget("QTreeWidget { background-color: #262628; border: 1px solid #000;}""QTreeWidget::item { padding :5px; height: 20px; color: #FFFFFF; font-face: ArialMT; font-size: 10px; width: 90px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; border: none;}""QTreeWidget::item:hover{background-color: #262628;}", true);
-		m_createBomTreeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-		horizontalLayout->insertWidget(0, m_createBomTreeWidget);
-		m_createBomTreeWidget->setMinimumHeight(600);
+		m_createBOMTreeWidget = CVWidgetGenerator::CreatePublishTreeWidget("QTreeWidget { background-color: #262628; border: 1px solid #000;}""QTreeWidget::item { padding :5px; height: 20px; color: #FFFFFF; font-face: ArialMT; font-size: 10px; width: 90px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; border: none;}""QTreeWidget::item:hover{background-color: #262628;}", true);
+		m_createBOMTreeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+		horizontalLayout->insertWidget(0, m_createBOMTreeWidget);
+		m_createBOMTreeWidget->setMinimumHeight(600);
 		QSpacerItem *horizontalSpacer = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Expanding);
 		QSpacerItem *horizontalSpacer1 = new QSpacerItem(1, 1, QSizePolicy::Fixed, QSizePolicy::Fixed);
 
@@ -146,7 +143,7 @@ namespace CLOVise
 			}
 		}
 
-		drawWidget(mergedJsonArray, m_createBomTreeWidget);
+		drawWidget(mergedJsonArray, m_createBOMTreeWidget);
 		connectSignalSlots(true);
 
 		Logger::Debug("AddNewBom -> Constructor() -> End");
@@ -176,11 +173,6 @@ namespace CLOVise
 
 			QObject::connect(m_backButton, SIGNAL(clicked()), this, SLOT(onBackButtonClicked()));
 			QObject::connect(m_createButton, SIGNAL(clicked()), this, SLOT(onCreateButtonClicked()));
-			//QObject::connect(m_buttonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickAddColorButton(int)));
-			QObject::connect(m_addColorButtonSignalMapper, SIGNAL(mapped(const QString &)), this, SLOT(OnClickAddColorButton(const QString &)));
-			QObject::connect(m_deleteButtonSignalMapper, SIGNAL(mapped(const QString &)), this, SLOT(OnClickDeleteButton(const QString &)));
-			//	QObject::connect(m_deleteButtonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickDeleteButton(int)));
-
 
 
 		}
@@ -188,10 +180,6 @@ namespace CLOVise
 		{
 			QObject::disconnect(m_backButton, SIGNAL(clicked()), this, SLOT(onBackButtonClicked()));
 			QObject::disconnect(m_createButton, SIGNAL(clicked()), this, SLOT(onCreateButtonClicked()));
-			//QObject::disconnect(m_buttonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickAddColorButton(int)));
-			QObject::disconnect(m_addColorButtonSignalMapper, SIGNAL(mapped(const QString &)), this, SLOT(OnClickAddColorButton(const QString &)));
-			//QObject::disconnect(m_deleteButtonSignalMapper, SIGNAL(mapped(int)), this, SLOT(OnClickDeleteButton(int)));
-			QObject::disconnect(m_deleteButtonSignalMapper, SIGNAL(mapped(const QString &)), this, SLOT(OnClickDeleteButton(const QString &)));
 		}
 	}
 
@@ -335,7 +323,7 @@ namespace CLOVise
 					if (internalName == "bom_template")
 					{
 						responseJson = Helper::makeRestcallGet(RESTAPI::BOM_TEMPLATE_API, "?parent=centric:&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading template details..");
-						m_bomTemplateJson = responseJson;
+						m_BOMTemplateJson = responseJson;
 					}
 					else if (internalName == "subtype")
 					{
@@ -469,17 +457,15 @@ namespace CLOVise
 			Configuration::GetInstance()->SetProgressBarProgress(qrand() % 101);
 			RESTAPI::SetProgressBarData(20, "Loading BOM data ", true);
 			QTreeWidget *tree = new QTreeWidget();
-			UIHelper::ValidateRquired3DModelData(m_createBomTreeWidget);
-			m_BomMetaData = CreateProduct::GetInstance()->collectCriteriaFields(m_createBomTreeWidget, tree);
-			string bomName = Helper::GetJSONValue<string>(m_BomMetaData, "node_name", true);
-			string bomTemplateId = Helper::GetJSONValue<string>(m_BomMetaData, "bom_template", true);
+			UIHelper::ValidateRquired3DModelData(m_createBOMTreeWidget);
+			m_BOMMetaData = CreateProduct::GetInstance()->collectCriteriaFields(m_createBOMTreeWidget, tree);
+			string bomName = Helper::GetJSONValue<string>(m_BOMMetaData, "node_name", true);
+			string bomTemplateId = Helper::GetJSONValue<string>(m_BOMMetaData, "bom_template", true);
 			string latestRevision;
-			//CreateTableforEachSection();
-			for (int i = 0; i < m_bomTemplateJson.size(); i++)
+
+			for (int i = 0; i < m_BOMTemplateJson.size(); i++)
 			{
-				json attJson = Helper::GetJSONParsedValue<int>(m_bomTemplateJson, i, false);;///use new method
-				//attName = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_NAME, true);
-				//Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON attName: " + attName);
+				json attJson = Helper::GetJSONParsedValue<int>(m_BOMTemplateJson, i, false);;///use new method
 				string attId = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_ID, true);
 				Logger::Debug("PublishToPLMData -> SetDocumentConfigJSON attId: " + attId);
 				if (attId == bomTemplateId)
@@ -497,18 +483,15 @@ namespace CLOVise
 				Logger::Debug("AddNewBom onCreateButtonClicked() responseJson...." + to_string(responseJson));
 				json sectionIdsJson = Helper::GetJSONParsedValue<string>(responseJson, "all_sections", false);
 				Logger::Debug("AddNewBom onCreateButtonClicked() sectionIdsJson...." + to_string(sectionIdsJson));
-				//CreateProductBOMHandler* section = new UpdateProductBOMHandler();
-				//UpdateProductBOMHandler* updateBomHandler = new UpdateProductBOMHandler();
+
 				if (Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED)
-				{
 					CreateProductBOMHandler::GetInstance()->CreateBom(sectionIdsJson);
-				}
+
 				if (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED)
 					UpdateProductBOMHandler::GetInstance()->CreateBom(sectionIdsJson);
-				//populateTechPackDataInBom();
+				
 			}
 
-			//UTILITY_API->DisplayMessageBox("m_BomMetaData" + to_string(m_BomMetaData));
 			if (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED)
 
 			{
@@ -599,9 +582,9 @@ Description - OnHandleDropDownValue() method used to fill the dependecy fields o
 				Logger::Debug("PublishToPLMData -> OnHandleDropDownValue() _item: " + _item.toStdString());
 
 				string subtypeId;
-				for (int i = 0; i < m_bomTemplateJson.size(); i++)
+				for (int i = 0; i < m_BOMTemplateJson.size(); i++)
 				{
-					json attJson = Helper::GetJSONParsedValue<int>(m_bomTemplateJson, i, false);;///use new method
+					json attJson = Helper::GetJSONParsedValue<int>(m_BOMTemplateJson, i, false);;///use new method
 
 					string attId = Helper::GetJSONValue<string>(attJson, ATTRIBUTE_ID, true);
 					if (attId == Id)
@@ -614,11 +597,11 @@ Description - OnHandleDropDownValue() method used to fill the dependecy fields o
 				}
 
 
-				for (int itemIndex = 0; itemIndex < m_createBomTreeWidget->topLevelItemCount(); ++itemIndex)
+				for (int itemIndex = 0; itemIndex < m_createBOMTreeWidget->topLevelItemCount(); ++itemIndex)
 				{
-					QTreeWidgetItem* topItem = m_createBomTreeWidget->topLevelItem(itemIndex);
-					QWidget* qWidgetColumn_0 = m_createBomTreeWidget->itemWidget(topItem, 0);
-					QWidget* qWidgetColumn_1 = m_createBomTreeWidget->itemWidget(topItem, 1);
+					QTreeWidgetItem* topItem = m_createBOMTreeWidget->topLevelItem(itemIndex);
+					QWidget* qWidgetColumn_0 = m_createBOMTreeWidget->itemWidget(topItem, 0);
+					QWidget* qWidgetColumn_1 = m_createBOMTreeWidget->itemWidget(topItem, 1);
 					if (!qWidgetColumn_0 || !qWidgetColumn_1)
 					{
 						continue;
@@ -692,47 +675,5 @@ Description - OnHandleDropDownValue() method used to fill the dependecy fields o
 
 
 
-	bool AddNewBom::ValidateBomFields()
-	{
-		Logger::Debug("AddNewBom -> ValidateBomFields() -> Start");
-
-		QStringList list;
-		bool duplicateColrwayName = true;
-
-		for (auto itr = m_bomSectionTableInfoMap.begin(); itr != m_bomSectionTableInfoMap.end(); itr++)
-		{
-			QTableWidget* sectionTable = itr->second;
-			for (int rowCount = 0; rowCount < sectionTable->rowCount(); rowCount++)
-			{
-
-				QLineEdit *materialNameLineEdit = static_cast<QLineEdit*>(sectionTable->cellWidget(rowCount, MATERIAL_NAME_COLUMN)->children().last());
-				QComboBox *materialTypeCombo = static_cast<QComboBox*>(sectionTable->cellWidget(rowCount, MATERIAL_TYPE_COLUMN)->children().last());
-				if (materialNameLineEdit)
-				{
-					QString materialName = materialNameLineEdit->text();
-					if (!FormatHelper::HasContent(materialName.toStdString()))
-					{
-						UTILITY_API->DisplayMessageBox("Name field cannot be blank in " + itr->first + " Section");
-						CreateProduct::GetInstance()->ui_tabWidget->setCurrentIndex(BOM_TAB);
-						duplicateColrwayName = false;
-						break;
-					}
-				}
-				if (materialTypeCombo)
-				{
-					QString materialType = materialTypeCombo->currentText();
-					if (!FormatHelper::HasContent(materialType.toStdString()))
-					{
-						UTILITY_API->DisplayMessageBox("Type field cannot be blank in " + itr->first + " Section");
-						CreateProduct::GetInstance()->ui_tabWidget->setCurrentIndex(BOM_TAB);
-						duplicateColrwayName = false;
-						break;
-					}
-				}
-			}
-		}
-
-		return duplicateColrwayName;
-		Logger::Debug("AddNewBom -> ValidateBomFields() -> End");
-	}
+	
 }

@@ -395,10 +395,7 @@ namespace CLOVise
 					delete child;
 				}*/
 			m_CloAndPLMColorwayMap.clear();
-			ClearBomSectionLayout();
-			CreateProductBOMHandler::GetInstance()->ClearBomData();
-			m_bomAddButton->show();
-			m_bomAddButton->setEnabled(true);
+			ClearBOMData();
 		}
 
 
@@ -832,7 +829,7 @@ namespace CLOVise
 		string response;
 		try
 		{
-			if (ValidateColorwayNameField() && AddNewBom::GetInstance()->ValidateBomFields())
+			if (ValidateColorwayNameField() && CreateProductBOMHandler::GetInstance()->ValidateBomFields())
 			{
 				this->hide();
 				collectCreateProductFieldsData();
@@ -899,7 +896,7 @@ namespace CLOVise
 					uploadColorwayImages();
 					LinkImagesToColorways(productId);
 					if (CreateProductBOMHandler::GetInstance()->IsBomCreated())
-						CreateBom(productId);
+							CreateProductBOMHandler::GetInstance()->CreateBom(productId, AddNewBom::GetInstance()->m_BOMMetaData, m_CloAndPLMColorwayMap);
 					//Logger::Debug("Create product onPublishToPLMClicked() 1....");
 					UTILITY_API->NewProject();
 					//Logger::Debug("Create product onPublishToPLMClicked() 2....");
@@ -929,10 +926,7 @@ namespace CLOVise
 					m_ImageIntentList->clear();
 					m_colorSpecList.clear();
 					m_CloAndPLMColorwayMap.clear();
-					ClearBomSectionLayout();
-					CreateProductBOMHandler::GetInstance()->ClearBomData();
-					m_bomAddButton->show();
-					m_bomAddButton->setEnabled(true);
+					ClearBOMData();
 					PublishToPLMData::GetInstance()->m_isSaveClicked = false;
 					ui_tabWidget->setCurrentIndex(OVERVIEW_TAB);
 					m_totalCountLabel->setText("Total count: 0");
@@ -1952,10 +1946,7 @@ namespace CLOVise
 							if (CreateProductBOMHandler::GetInstance()->IsBomCreated())
 							{
 								m_CloAndPLMColorwayMap.clear();
-								ClearBomSectionLayout();
-								CreateProductBOMHandler::GetInstance()->ClearBomData();
-								m_bomAddButton->show();
-								m_bomAddButton->setEnabled(true);
+								ClearBOMData();
 							}
 						}
 						else
@@ -2838,10 +2829,7 @@ namespace CLOVise
 			ui_tabWidget->setCurrentIndex(OVERVIEW_TAB);
 			m_totalCountLabel->setText("Total count: 0");
 			m_CloAndPLMColorwayMap.clear();
-			ClearBomSectionLayout();
-			CreateProductBOMHandler::GetInstance()->ClearBomData();
-			m_bomAddButton->show();
-			m_bomAddButton->setEnabled(true);
+			ClearBOMData();
 
 			//ui_sectionLayout->removeWidget();
 
@@ -3045,20 +3033,20 @@ namespace CLOVise
 		if (tabIndex == BOM_TAB)
 		{
 			Logger::Debug("CreateProduct -> UpdateColorInColorways () 6");
-			Logger::Debug("CreateProduct -> UpdateColorInColorways () AddNewBom::GetInstance()->m_currentTableName" + AddNewBom::GetInstance()->m_currentTableName);
-			AddNewBom::GetInstance()->m_currentTableName;
-			auto itr = AddNewBom::GetInstance()->m_bomSectionTableInfoMap.find(AddNewBom::GetInstance()->m_currentTableName);
-			if (itr != AddNewBom::GetInstance()->m_bomSectionTableInfoMap.end())
+			Logger::Debug("CreateProduct -> UpdateColorInColorways () AddNewBom::GetInstance()->m_currentTableName" + CreateProductBOMHandler::GetInstance()->m_currentTableName);
+			CreateProductBOMHandler::GetInstance()->m_currentTableName;
+			auto itr = CreateProductBOMHandler::GetInstance()->m_bomSectionTableInfoMap.find(CreateProductBOMHandler::GetInstance()->m_currentTableName);
+			if (itr != CreateProductBOMHandler::GetInstance()->m_bomSectionTableInfoMap.end())
 			{
-				Logger::Debug("CreateProduct -> UpdateColorInColorways () AddNewBom::GetInstance()->m_currentRow" + to_string(AddNewBom::GetInstance()->m_currentRow));
+				Logger::Debug("CreateProduct -> UpdateColorInColorways () AddNewBom::GetInstance()->m_currentRow" + to_string(CreateProductBOMHandler::GetInstance()->m_currentRow));
 				QTableWidget* sectionTable = itr->second;
-				if (QWidget* widget = sectionTable->cellWidget(AddNewBom::GetInstance()->m_currentRow, AddNewBom::GetInstance()->m_currentColumn))
+				if (QWidget* widget = sectionTable->cellWidget(CreateProductBOMHandler::GetInstance()->m_currentRow, CreateProductBOMHandler::GetInstance()->m_currentColumn))
 				{
 
-					QString columnName = sectionTable->horizontalHeaderItem(AddNewBom::GetInstance()->m_currentColumn)->text();
+					QString columnName = sectionTable->horizontalHeaderItem(CreateProductBOMHandler::GetInstance()->m_currentColumn)->text();
 					if (columnName == "Common Color")
 					{
-						QPushButton* pushButton = static_cast<QPushButton*>(sectionTable->cellWidget(AddNewBom::GetInstance()->m_currentRow, 0)->children().last());;
+						QPushButton* pushButton = static_cast<QPushButton*>(sectionTable->cellWidget(CreateProductBOMHandler::GetInstance()->m_currentRow, 0)->children().last());;
 
 						if (pushButton != nullptr)
 						{
@@ -3206,8 +3194,8 @@ namespace CLOVise
 		headerNameAndValueList.push_back(make_pair("Accept", "application/json"));
 		headerNameAndValueList.push_back(make_pair("Cookie", Configuration::GetInstance()->GetBearerToken()));
 
-		Logger::Debug("CreateProduct -> CreateBom() -> AddNewBom::GetInstance()->m_BomMetaData" + to_string(AddNewBom::GetInstance()->m_BomMetaData));
-		json bomData = AddNewBom::GetInstance()->m_BomMetaData;
+		Logger::Debug("CreateProduct -> CreateBom() -> AddNewBom::GetInstance()->m_BomMetaData" + to_string(AddNewBom::GetInstance()->m_BOMMetaData));
+		json bomData = AddNewBom::GetInstance()->m_BOMMetaData;
 		string bomTemplateId = Helper::GetJSONValue<string>(bomData, "bom_template", true);
 		bomData.erase("bom_template");
 		bomData["style_id"] = _productId;
@@ -3237,7 +3225,7 @@ namespace CLOVise
 			string resultJsonString = RESTAPI::PutRestCall(modifiedbyFlag, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API + "/" + bomLatestRevision, "content-type: application/json");
 			Logger::Debug("CreateProduct -> CreateBom() -> resultJsonStringModifiedBy" + resultJsonString);
 		}
-		for (auto itr = AddNewBom::GetInstance()->m_bomSectionTableInfoMap.begin(); itr != AddNewBom::GetInstance()->m_bomSectionTableInfoMap.end(); itr++)
+		for (auto itr = CreateProductBOMHandler::GetInstance()->m_bomSectionTableInfoMap.begin(); itr != CreateProductBOMHandler::GetInstance()->m_bomSectionTableInfoMap.end(); itr++)
 		{
 			//AddNewBom::sectionInfo sectionInfoObj = itr->second;
 			QTableWidget* sectionTable = itr->second;
@@ -3513,22 +3501,7 @@ namespace CLOVise
 		}
 		Logger::Debug("CreateProduct -> CreateBom() -> End");
 	}
-	void CreateProduct::ClearBomSectionLayout()
-	{
-		Logger::Debug("CreateProduct -> ClearBomSectionLayout -> Start");
-		while (ui_sectionLayout->count() > 0)
-		{
-			Logger::Debug("CreateProduct -> ClearBomSectionLayout -> 2");
-			QWidget *item = ui_sectionLayout->itemAt(0)->widget();
-			Logger::Debug("CreateProduct -> ClearBomSectionLayout -> 3");
-			if (item != nullptr)
-				delete item;
-			Logger::Debug("CreateProduct -> ClearBomSectionLayout -> 4");
-		}
-
-		Logger::Debug("CreateProduct -> ClearBomSectionLayout -> End");
-	}
-
+	
 	void CreateProduct::SetUpdateBomFlag(bool _flag)
 	{
 		m_updateBomTab = _flag;
@@ -3780,8 +3753,9 @@ namespace CLOVise
 
 	void CreateProduct::ClearBOMData()
 	{
-		ClearBomSectionLayout();
 		CreateProductBOMHandler::GetInstance()->ClearBomData();
+		ClearAllFields(AddNewBom::GetInstance()->m_createBOMTreeWidget);
+		BOMUtility::ClearBomSectionLayout(ui_sectionLayout);
 		m_bomAddButton->show();
 		m_bomAddButton->setEnabled(true);
 	}

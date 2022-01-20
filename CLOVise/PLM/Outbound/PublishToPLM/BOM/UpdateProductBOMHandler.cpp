@@ -128,7 +128,8 @@ namespace CLOVise
 	}
 	void UpdateProductBOMHandler ::readBomTableColumnJson()
 	{
-		
+		m_bomTableColumnlist.clear();
+		m_bomTableColumnKeys.clear();
 		json bomConfigjson = json::object();
 		string attJson = DirectoryUtil::GetPLMPluginDirectory() + "BomConfig.json";//Reading Columns from json
 		bomConfigjson = Helper::ReadJSONFile(attJson);
@@ -1388,11 +1389,16 @@ Description - ClearBomData() method used to clear all the bom related variables.
 		  m_colorwayMapForBom.clear();
 		  m_bomSectionTableInfoMap.clear();
 		  BOMUtility::m_mappedColorwaysArr.clear();
-		  AddNewBom::GetInstance()->m_BomMetaData.clear();
+		  AddNewBom::GetInstance()->m_BOMMetaData.clear();
 		  m_sectionMaterialTypeMap.clear();
 		  m_bomCreated = false;
 		  UpdateProduct::GetInstance()->m_bomName->setText("");
 		  UpdateProduct::GetInstance()->m_bomTemplateName->setText("");	  
 		  Logger::Debug("UpdateProductBOMHandler -> ClearBomData() -> End");
+	  }
+
+	  bool UpdateProductBOMHandler::ValidateBomFields()
+	  {
+		  return BOMUtility::ValidateBomFields(m_bomSectionTableInfoMap);
 	  }
 }

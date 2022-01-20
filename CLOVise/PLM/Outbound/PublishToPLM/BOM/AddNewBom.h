@@ -35,32 +35,13 @@ namespace CLOVise
 	class AddNewBom : public MVDialog, public Ui::AddNewBom
 	{
 		Q_OBJECT
-
+			
 	public:
 		static AddNewBom* GetInstance();
-
-		bool ValidateBomFields();
-		map<string, QTableWidget*> m_bomSectionTableInfoMap;
-		map<QPushButton*, QTableWidget*> m_addMaterialButtonAndTableMap;
-		map<QPushButton*, QTableWidget*> m_addSpecialMaterialButtonAndTableMap;
-		map<string, json> m_backupBomDataMap;
-		map<string, json> m_colorwayMapForBom;
-		map<string, json> m_bomSectionNameAndTypeMap;
-		map<string, string> m_materialTypeNameIdMap;
-		map<string, QStringList> m_sectionMaterialTypeMap;
-		QPushButton* currentAddMaterialButtonClicked;
-		json m_mappedColorwaysArr;
-		json m_colorwayOverridesJson;
-		json m_bomTemplateJson;
-		string m_currentTableName;
-		QSignalMapper *m_addColorButtonSignalMapper;
-		QSignalMapper *m_deleteButtonSignalMapper;
-		int m_currentRow;
-		int m_currentColumn;
-		QTreeWidget* m_createBomTreeWidget;
+		QTreeWidget* m_createBOMTreeWidget;
 		//vector<Section*> m_sectionVector;
-		json m_BomMetaData = json::object();
-
+		json m_BOMMetaData = json::object();
+		json m_BOMTemplateJson = json::object();
 	private:
 		AddNewBom(QWidget* parent = nullptr);
 		~AddNewBom();
@@ -71,11 +52,7 @@ namespace CLOVise
 		static AddNewBom* _instance;
 		QPushButton* m_backButton;
 		QPushButton* m_createButton;
-		QStringList m_bomTableColumnlist;
-		QStringList m_bomTableColumnKeys;
-		QStringList m_materialTypeList;
-		QStringList m_ColorwaysAddedInBom;
-		json m_bomTableColumnJson;
+		
 		
 	private slots:
 		void onBackButtonClicked();

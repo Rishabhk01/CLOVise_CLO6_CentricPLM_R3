@@ -74,6 +74,7 @@ namespace CLOVise
 		bool m_bomCreated;
 		bool IsBomCreated();
 		void connectSignalSlots(bool _b);
+		bool ValidateBomFields();
 	private slots:
 		void OnClickDeleteButton(const QString &position);
 		void onClickAddFromMaterialButton();

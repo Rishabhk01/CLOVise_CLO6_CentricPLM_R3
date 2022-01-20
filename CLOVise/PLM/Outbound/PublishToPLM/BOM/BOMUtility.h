@@ -84,7 +84,7 @@ Description - GetMaterialTypeForSection(string _sectionName) method used to get 
 	inline  map<string, string> GetCentricMaterialTypes()
 	{
 		map<string, string> materialTypeMap;
-		json responseJson = Helper::makeRestcallGet(RESTAPI::MATERIAL_TYPE_SEARCH_API, "?&limit=100", "", "Loading materail type details..");
+		json responseJson = Helper::makeRestcallGet(RESTAPI::MATERIAL_TYPE_SEARCH_API, "?limit=100", "", "Loading materail type details..");
 
 		//m_materialTypeList.append(QString::fromStdString(BLANK));
 		for (int i = 0; i < responseJson.size(); i++)
@@ -904,5 +904,50 @@ Description - BackupBomDetails() method used backup bom data in a data structure
 			}
 			Logger::Debug("BOMUtility -> BackupBomDetails() -> End");
 			return backupBomDataMap;
+	}
+
+
+	inline bool ValidateBomFields(map<string, QTableWidget*> _bomSectionTableInfoMap)
+	{
+		Logger::Debug("AddNewBom -> ValidateBomFields() -> Start");
+
+		QStringList list;
+		bool duplicateColrwayName = true;
+
+		for (auto itr = _bomSectionTableInfoMap.begin(); itr != _bomSectionTableInfoMap.end(); itr++)
+		{
+			QTableWidget* sectionTable = itr->second;
+			for (int rowCount = 0; rowCount < sectionTable->rowCount(); rowCount++)
+			{
+
+				QLineEdit *materialNameLineEdit = static_cast<QLineEdit*>(sectionTable->cellWidget(rowCount, MATERIAL_NAME_COLUMN)->children().last());
+				QComboBox *materialTypeCombo = static_cast<QComboBox*>(sectionTable->cellWidget(rowCount, MATERIAL_TYPE_COLUMN)->children().last());
+				if (materialNameLineEdit)
+				{
+					QString materialName = materialNameLineEdit->text();
+					if (!FormatHelper::HasContent(materialName.toStdString()))
+					{
+						UTILITY_API->DisplayMessageBox("Name field cannot be blank in " + itr->first + " Section");
+						//CreateProduct::GetInstance()->ui_tabWidget->setCurrentIndex(BOM_TAB);
+						duplicateColrwayName = false;
+						break;
+					}
+				}
+				if (materialTypeCombo)
+				{
+					QString materialType = materialTypeCombo->currentText();
+					if (!FormatHelper::HasContent(materialType.toStdString()))
+					{
+						UTILITY_API->DisplayMessageBox("Type field cannot be blank in " + itr->first + " Section");
+						//CreateProduct::GetInstance()->ui_tabWidget->setCurrentIndex(BOM_TAB);
+						duplicateColrwayName = false;
+						break;
+					}
+				}
+			}
+		}
+
+		return duplicateColrwayName;
+		Logger::Debug("AddNewBom -> ValidateBomFields() -> End");
 	}
 }
