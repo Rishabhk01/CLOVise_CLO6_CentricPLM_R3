@@ -73,8 +73,17 @@ namespace CLOVise
 			Logger::Debug("CreateProductBOMHandler -> CreateBom loop");
 			QTableWidget* key = itr->second;
 			Logger::Debug("CreateProductBOMHandler -> CreateBom () m_addMaterialButtonAndTableMap.size()" + to_string(m_addMaterialButtonAndTableMap.size()));
+#ifdef __APPLE__
+			auto result = std::find_if(std::begin(m_addMaterialButtonAndTableMap), std::end(m_addMaterialButtonAndTableMap), [&](const std::pair<QPushButton*, QTableWidget*> &pair) { return pair.second == key; });
+#else
 			auto result = std::find_if(m_addMaterialButtonAndTableMap.begin(), m_addMaterialButtonAndTableMap.end(), [key](const auto& mo) {return mo.second == key; });
+#endif
+
+#ifdef __APPLE__
+			auto result1 = std::find_if(std::begin(m_addSpecialMaterialButtonAndTableMap), std::end(m_addSpecialMaterialButtonAndTableMap), [&](const std::pair<QPushButton*, QTableWidget*> &pair) { return pair.second == key; });
+#else
 			auto result1 = std::find_if(m_addSpecialMaterialButtonAndTableMap.begin(), m_addSpecialMaterialButtonAndTableMap.end(), [key](const auto& mo) {return mo.second == key; });
+#endif
 			Logger::Debug("CreateProductBOMHandler -> CreateBom () 2");
 
 			QPushButton* materialbutton = result->first;
