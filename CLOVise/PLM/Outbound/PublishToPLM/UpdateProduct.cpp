@@ -2187,7 +2187,7 @@ namespace CLOVise
 			m_imageIntentTable->setColumnCount(m_ImageIntentsColumnsNames.size());
 			m_imageIntentTable->setHorizontalHeaderLabels(m_ImageIntentsColumnsNames);
 			ValidateColorwayNameField();
-			/*if (imageRowCount != 0)
+			if (imageRowCount != 0)
 			{
 				UTILITY_API->CreateProgressBar();
 				RESTAPI::SetProgressBarData(20, "Loading Latest Image Intents... ", true);
@@ -2536,8 +2536,8 @@ namespace CLOVise
 				Logger::Debug("Update product ReadVisualUIFieldValue() QLineEdit->fieldVal" + fieldVal);
 				if (!fieldVal.empty())
 					fieldValue = fieldVal;
-				/*if (labelText == "Style")
-					_data += "\n\"" + fieldLabel + "\":\"" + fieldValue + "\",";*/
+				//if (labelText == "Style")
+				//	_data += "\n\"" + fieldLabel + "\":\"" + fieldValue + "\",";
 			}
 			else if (QTextEdit* qTextC1 = qobject_cast<QTextEdit*>(qWidgetColumn1))
 			{
