@@ -1166,10 +1166,7 @@ namespace CLOVise
 				if (_selectedIdList.contains(QString::fromStdString(styleId)))
 				{
 					//aditionalResultWidget->show();
-					if (m_perveiouselySelectedId == styleId)
-						continue;
-
-					m_perveiouselySelectedId = styleId;
+					
 					aditionalResultWidget->clear();
 
 					Logger::Debug("_selectedIdList.contains(QString::fromStdString(styleId)" + styleId);
