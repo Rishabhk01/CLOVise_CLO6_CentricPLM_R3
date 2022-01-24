@@ -551,6 +551,7 @@ namespace CLOVise
 					comboBox->setStyleSheet(COMBOBOX_STYLE);
 					comboBox->addItem(QString::fromStdString(BLANK));
 					comboBox->setProperty(ATTRIBUTE_INITIAL_VALUE.c_str(), QString::fromStdString(attValue));
+
 					for (int i = 0; i < attEnumsJson.size(); i++)
 					{
 						attJson = Helper::GetJSONParsedValue<int>(attEnumsJson, i, false);///use new method

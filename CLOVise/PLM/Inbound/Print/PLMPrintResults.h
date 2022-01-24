@@ -60,6 +60,7 @@ namespace CLOVise
 
 		void connectSignalSlots(bool _b) override;
 
+		void reject();
 
 		static PLMPrintResults* _instance;
 		bool m_isHidden = false;

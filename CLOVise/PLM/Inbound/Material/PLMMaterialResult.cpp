@@ -28,6 +28,7 @@
 #include "CLOVise/PLM/Outbound/UpdateMaterial/UpdateMaterial.h"
 #include "CLOVise/PLM/Outbound/CraeteMaterial/CreateMaterial.h"
 #include "CLOVise/PLM/Outbound/PublishToPLM/CreateProduct.h"
+#include "CLOVise/PLM/Outbound/PublishToPLM/UpdateProduct.h"
 
 using namespace std;
 
@@ -849,6 +850,14 @@ namespace CLOVise
 					CreateProduct::GetInstance()->AddMaterialInBom();
 					CreateProduct::GetInstance()->setModal(true);
 					CreateProduct::GetInstance()->show();
+				}
+				if (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED)
+				{
+					RESTAPI::SetProgressBarData(20, "Loading Update Product..", true);
+					UTILITY_API->SetProgress("Loading Create Product..", (qrand() % 101));
+					UpdateProduct::GetInstance()->AddMaterialInBom();
+					UpdateProduct::GetInstance()->setModal(true);
+					UpdateProduct::GetInstance()->show();
 				}
 				if (Configuration::GetInstance()->GetCloseResultsDialogue())
 				{

@@ -377,6 +377,7 @@ QSpinBox* CVWidgetGenerator::CreateSpinBoxWidget(QString _defaultPresetValue, bo
 	spinBox->setMaximumHeight(SPINBOX_HEIGHT);
 	spinBox->setStyleSheet(SPINBOX_STYLE);
 	spinBox->setRange(0, 10000000000000);
+	spinBox->setAttribute(Qt::WA_MacShowFocusRect, false);
 	spinBox->setPrefix(QString::fromStdString(_input));
 	spinBox->setValue(0);
 	spinBox->setFocusPolicy(Qt::StrongFocus);
@@ -406,6 +407,7 @@ QSpinBox* CVWidgetGenerator::CreateSpinBoxWidgetForRGB(QString _defaultPresetVal
 	spinBox->setMaximumHeight(SPINBOX_HEIGHT);
 	spinBox->setStyleSheet(SPINBOX_STYLE);
 	spinBox->setRange(_min, _max);
+	spinBox->setAttribute(Qt::WA_MacShowFocusRect, false);
 	spinBox->setPrefix(QString::fromStdString(_input));
 	spinBox->setValue(0);
 	spinBox->setCorrectionMode(QAbstractSpinBox::CorrectToNearestValue);
@@ -435,6 +437,7 @@ QSpinBox* CVWidgetGenerator::CreateSpinBoxWidget(QString _defaultPresetValue, st
 	spinBox->setMaximumHeight(SPINBOX_HEIGHT);
 	spinBox->setStyleSheet(SPINBOX_STYLE);
 	spinBox->setRange(0, 10000000000000);
+	spinBox->setAttribute(Qt::WA_MacShowFocusRect, false);
 	spinBox->setPrefix(QString::fromStdString(_input));
 	spinBox->setValue(0);
 	spinBox->setFocusPolicy(Qt::StrongFocus);
@@ -474,6 +477,7 @@ ComboBoxItem* CVWidgetGenerator::CreateBooleanWidget(QString _defaultValue, bool
 	comboBox->setProperty(TrueValue.c_str(), QString::fromStdString(TrueValue));
 	comboBox->setProperty(FalseValue.c_str(), QString::fromStdString(FalseValue));
 	comboBox->setFocusPolicy(Qt::StrongFocus);
+	comboBox->setAttribute(Qt::WA_MacShowFocusRect, false);
 
 	if (FormatHelper::HasContent(_defaultValue.toStdString()))
 	{
@@ -517,6 +521,7 @@ QComboBox* CVWidgetGenerator::CreateComboBox(bool _disable, QComboBox* _comboBox
 	_comboBox->addItems(_itemList);
 	_comboBox->setCurrentIndex(_defaultIndext);
 	_comboBox->setFocusPolicy(Qt::StrongFocus);
+	_comboBox->setAttribute(Qt::WA_MacShowFocusRect, false);
 
 	if (_disable)
 	{
@@ -541,6 +546,7 @@ ComboBoxItem* CVWidgetGenerator::CreateComboBoxItem(bool _disable, ComboBoxItem*
 	_comboBox->addItems(_itemList);
 	_comboBox->setCurrentIndex(_defaultIndext);
 	_comboBox->setFocusPolicy(Qt::StrongFocus);
+	_comboBox->setAttribute(Qt::WA_MacShowFocusRect, false);
 
 	if (_disable)
 	{
@@ -2834,6 +2840,7 @@ ComboBoxItem* CVWidgetGenerator::CreateComboBox(QString _toolTip, QString _style
 	comboBox->setToolTip(_toolTip);
 	comboBox->setStyleSheet(_styleSheet);
 	comboBox->setFocusPolicy(Qt::StrongFocus);
+
 	if (!_showWidget)
 		comboBox->hide();
 	return comboBox;
@@ -2858,6 +2865,8 @@ QLineEdit* CVWidgetGenerator::CreateLineEdit(QString _toolTip, QString _styleShe
 
 	lineEdit->setToolTip(_toolTip);
 	lineEdit->setStyleSheet(_styleSheet);
+	lineEdit->setAttribute(Qt::WA_MacShowFocusRect, false);
+
 	if (!_showWidget)
 		lineEdit->hide();
 	return lineEdit;
@@ -3038,6 +3047,16 @@ QImage CVWidgetGenerator::ReadQImage(json _resultListJson, string _objectId, str
 		try
 		{
 			string rgbValue = Helper::GetJSONValue<string>(_resultListJson, RGB_VALUE_KEY, true);
+			size_t found = rgbValue.find(".");
+			if (found != string::npos)
+			{
+				Logger::Error("LOGGER::CVWidgetGenerator: CreateIconWidget() -> Image is not loaded.");
+				QImageReader imageReader(":/CLOVise/PLM/Images/NoImage.png");
+				imageReader.setDecideFormatFromContent(true);
+				styleIcon = imageReader.read();
+
+				return styleIcon;
+			}
 			rgbValue = Helper::FindAndReplace(rgbValue, "(", "");
 			rgbValue = Helper::FindAndReplace(rgbValue, ")", "");
 			rgbValue = Helper::FindAndReplace(rgbValue, " ", "");

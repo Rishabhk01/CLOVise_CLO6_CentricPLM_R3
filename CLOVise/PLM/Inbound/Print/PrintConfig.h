@@ -91,7 +91,8 @@ class PrintConfig
 		QStringList m_attScopes;
 		string m_maxPrintResultsLimit;
 		map<string, string> m_printDesignIdNameMap;
-		bool restData = true;
+		map<string, string> m_printDesignlibNameMap;
+		bool restData = true;		
 
 	json m_printResults = json::array();
 	string m_typename = "";
