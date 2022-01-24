@@ -735,6 +735,7 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 
 					 QLineEdit* newColumn = new QLineEdit();
 					 newColumn->setStyleSheet(LINEEDIT_STYLE);
+					 newColumn->home(true);
 					 if (FormatHelper::HasContent(text))
 						 newColumn->setText(QString::fromStdString(text));
 					 else
@@ -1024,6 +1025,7 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 					 {
 						 QLineEdit* newColumn = new QLineEdit();
 						 newColumn->setAttribute(Qt::WA_MacShowFocusRect, false);
+						 newColumn->home(true);
 						 newColumn->setStyleSheet(LINEEDIT_STYLE);
 						 if (FormatHelper::HasContent(text))
 							 newColumn->setText(QString::fromStdString(text));
