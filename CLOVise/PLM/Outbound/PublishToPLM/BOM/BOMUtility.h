@@ -119,6 +119,7 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 		sectionTable->setProperty("SectionId", QString::fromStdString(_sectionId));
 		sectionTable->setColumnCount(_tablecolumnList.size());
 		sectionTable->setHorizontalHeaderLabels(_tablecolumnList);
+		sectionTable->setSortingEnabled(false);	//Disabling All section table column header sort icon		
 		Logger::Debug("BOMUtility CreateSectionInBom 2: ");
 		_bomSectionTableInfoMap.insert(make_pair(_sectionName, sectionTable));
 		Logger::Debug("BOMUtility CreateSectionInBom 2: _bomSectionTableInfoMap " + to_string(_bomSectionTableInfoMap.size()));
