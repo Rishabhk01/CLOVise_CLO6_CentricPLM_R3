@@ -44,7 +44,7 @@ const QString PLM_NAME = "Centric 8";
 //Colorway table columns
 
 #define CHECKBOX_COLUMN 0
-#define COLORWAYDELETE_COLUMN 0
+#define COLORWAY_DELETE_COLUMN 0
 #define UPDATE_BTN_COLUMN 1
 #define ASSOCIATE_COLOR_COLUMN 1
 #define PLM_COLORWAY_COLUMN 2

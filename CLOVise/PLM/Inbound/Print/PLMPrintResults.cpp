@@ -1018,4 +1018,10 @@ namespace CLOVise
 		horizontalHeaderClicked(PrintConfig::GetInstance()->m_sortedColumnNumber);
 		Logger::Info("PLMPrintResults -> DrawResultWidget() -> End");
 	}
+
+	void PLMPrintResults::reject()
+	{
+		Configuration::GetInstance()->SetIsPrintSearchClicked(false);
+		this->accept();
+	}
 }

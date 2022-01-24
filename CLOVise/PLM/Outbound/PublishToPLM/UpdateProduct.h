@@ -51,9 +51,10 @@ namespace CLOVise
 		void GetUpdatedColorwayNames();
 		void DeleteColorwayFromPLM();
 		void GetcolorwayDetails();
+		void GetMappedColorway();
 		void refreshImageIntents();
 		bool GetIsSaveClicked();
-		
+		void AddMaterialInBom();
 		void FillImageIntentIdAndLabeMap(json _imageJson, string _module);
 		void FillNonCloImageMap(json _imageJson,string _id);
 		void FillNonCloColorwayImageMap(json _imageJson, string _imageId, QString _colorwayId);
@@ -78,6 +79,8 @@ namespace CLOVise
 		void FillImageIntentsStruct(string _colorway, string _view, string _viewName, string _labels, string _default, string _includeAvatar);
 
 		void AddRowInImageIntentTab(QPixmap _pixMap, ImageIntentsDetails _imageIntentsDetails, string _imageId);
+		void SetUpdateBomFlag(bool _flag);
+		void ClearBOMData();
 		MVTableWidget *ui_colorwayTable;
 		std::map<QString, QString> m_colorwayImageLabelsMap;
 		std::map<QString, QStringList> m_nonCloStyleImageLabelsMap;
@@ -86,6 +89,7 @@ namespace CLOVise
 		map<QString, QStringList > m_nonCloColorwayImagesMap;
 		std::map<QString, QString> m_styleImageLabelsMap;
 		std::map<string, string> m_digiCodeNamesMap;
+		std::map<string, string> m_CloAndPLMColorwayMap;
 		QStringList m_digiCodeValue;
 
 		QSignalMapper *m_updateColorButtonSignalMapper;
@@ -105,6 +109,13 @@ namespace CLOVise
 		MVTableWidget *m_imageIntentTable;
 		int m_imageIntentRowcount;
 		int m_currentViewSelected;
+		int  m_selectedStyleTypeIndex = 0;
+		QPushButton* m_bomAddButton;
+		QLabel *m_bomName;
+		QLabel *m_bomTemplateName;
+		QStringList m_mappedColorways;
+		string m_currentlySelectedStyleTypeId;
+		bool m_updateBomTab;
 	private:
 		UpdateProduct(QWidget* parent = nullptr);
 		virtual ~UpdateProduct();
@@ -122,6 +133,7 @@ namespace CLOVise
 		//void collect3DTurntablesData();
 		void collectCreateProductFieldsData();
 		void exportZPRJ(string _productId);
+		void exportGLBFile(string _productId);
 		void exportGLB(bool _isGLBExportable);
 		string getPublishRequestParameter(string _path, string _imageName);
 		void connectSignalSlots(bool _b) override;
@@ -199,6 +211,7 @@ namespace CLOVise
 		map<string, QStringList > m_imageIntentIdAndLabeMap;
 		string m_collectionId;
 		QLabel* m_totalCountLabel;
+		
 
 		QStringList m_DeletedColorwayList;
 		QStringList m_NewlyAddedColorway;
@@ -236,5 +249,6 @@ namespace CLOVise
 		void onColorwayTableHorizontalHeaderClicked(int column);
 		void OnCreateColorSpecClicked(int _row);
 		void OnSearchPrintClicked(int _row);
+		void onAddNewBomClicked();
 	};
 }

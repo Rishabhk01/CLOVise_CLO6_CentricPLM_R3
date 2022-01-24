@@ -482,6 +482,7 @@ namespace CLOVise
 				QTreeWidgetItem* topLevel = new QTreeWidgetItem();
 				ComboBoxItem* comboBox = new ComboBoxItem();
 				comboBox->setFocusPolicy(Qt::StrongFocus);
+
 				QStringList valueList;
 				valueList.append(QString::fromStdString(BLANK));
 	
@@ -1258,6 +1259,7 @@ namespace CLOVise
 
 		QLineEdit* lineEditItem = new QLineEdit();
 		lineEditItem->setStyleSheet(LINEEDIT_STYLE);
+		lineEditItem->setAttribute(Qt::WA_MacShowFocusRect, false);
 		lineEditItem->setText("");
 		ui_ColorwayTable->setCellWidget(_count + m_colorwayRowcount, 6, lineEditItem);
 

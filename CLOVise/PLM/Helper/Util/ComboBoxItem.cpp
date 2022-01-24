@@ -16,6 +16,14 @@
 
 ComboBoxItem::ComboBoxItem()
 {
+#ifdef __APPLE__	// Settinng Windows OS style to QComboBox on MAC OS
+
+	this->setStyle(QStyleFactory::create("Windows"));
+	this->setItemDelegate(new QStyledItemDelegate());;
+
+#endif
+
+	this->setAttribute(Qt::WA_MacShowFocusRect, false);
 	m_defaultValue = "";
 }
 /*

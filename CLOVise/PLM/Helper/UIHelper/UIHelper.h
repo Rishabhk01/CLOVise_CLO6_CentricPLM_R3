@@ -79,6 +79,7 @@
 #include "CLOVise/PLM/Helper/UIHelper/CVDisplayMessageBox.h"
 #include "CLOVise/PLM/Inbound/Document/DocumentConfig.h"
 #include "CLOVise/PLM/Inbound/Product/ProductConfig.h"
+#include "CLOVise/PLM/Inbound/Print/PrintConfig.h"
 #include "CLOVise/PLM/Outbound/PublishToPLM/PublishToPLMData.h"
 #include "CLOVise/PLM/Helper/Util/Logger.h"
 
@@ -1122,13 +1123,14 @@ namespace UIHelper
 			documentId = BLANK;
 			json fieldsJson = Helper::GetJSONParsedValue<int>(_resultJsonArray, ResultsjsonCount, false);
 			string objectId = Helper::GetJSONValue<string>(fieldsJson, "objectId", true);
+			string parentId = Helper::GetJSONValue<string>(fieldsJson, "parent", true);
 			string defaultAttachmentId = Helper::GetJSONValue<string>(fieldsJson, DFAULT_ASSET_KEY, true);
 
 			for (int i = 0; i < _downloadIdList.size(); i++)
 			{
 				if (_downloadIdList[i] == QString::fromStdString(objectId))
 				{
-					if (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_MATERIAL_CLICKED || Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED)
+					if (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_MATERIAL_CLICKED || Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED || Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED)
 					{
 						MaterialConfig::GetInstance()->SetUpdateMaterialCacheData(fieldsJson);
 						return "";
@@ -1213,7 +1215,6 @@ namespace UIHelper
 
 						if (_module == PRINT_MODULE && attachmentjson.empty())
 						{
-							string parentId = Helper::GetJSONValue<string>(fieldsJson, "parent", true);
 							if (FormatHelper::HasContent(parentId))
 							{
 								attachemntRevisionApi = Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::ATTACHMENTS_LATEST_REVISION_RESULTS_API + parentId + "?revision_details=true";
@@ -1286,6 +1287,55 @@ namespace UIHelper
 									break;
 								}
 								break;
+							}
+						}
+						//If there is no Documents in Print Design/Print Design Colors, Downloading Print Design or Print Design Color Default Images 
+						if (_module == PRINT_MODULE && attachmentjson.empty())
+						{
+							json imageResultJson = json::object();
+							auto startTime = std::chrono::high_resolution_clock::now();
+							string defaultImageID;
+						
+							string printDesignColorResponseAPI = Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_PRINT_DESIGN_COLOR_API + "/"+objectId;
+
+							string printDesignColorResponse = RESTAPI::CentricRestCallGet(printDesignColorResponseAPI + "?decode=true", APPLICATION_JSON_TYPE, "");
+							Logger::Debug("printDesignColorResponse ::" + printDesignColorResponse);
+							json printDesignColorResponseJson = json::parse(printDesignColorResponse);
+
+							string images = Helper::GetJSONValue<string>(printDesignColorResponseJson, "images", false);
+							json imageIDJson = json::parse(images);
+							defaultImageID = Helper::GetJSONValue<string>(imageIDJson, "", true);
+							if (!FormatHelper::HasContent(defaultImageID))//Checking only if PDC images are empty
+							{
+								string printDesignResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_PRINT_DESIGN_API + "/" + parentId + "?decode=true", APPLICATION_JSON_TYPE, "");
+								json printDesignResponseJson = json::parse(printDesignResponse);
+								string images = Helper::GetJSONValue<string>(printDesignResponseJson, "images", false);
+								code = "";//No code for Print Design
+								json imageIDJson = json::parse(images);
+								defaultImageID = Helper::GetJSONValue<string>(imageIDJson, "", true);
+							}
+
+							if (FormatHelper::HasContent(defaultImageID))//Checking For both PD or PDC image ID should not not null,NUL,etc
+							{
+								string imageResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::PRINT_IMAGE_API + "/" + defaultImageID, APPLICATION_JSON_TYPE, BLANK);
+								auto finishTime = std::chrono::high_resolution_clock::now();
+								std::chrono::duration<double> totalDuration = finishTime - startTime;
+								Logger::perfomance(PERFOMANCE_KEY + "Get Thambnail API :: " + to_string(totalDuration.count()));
+								Logger::RestAPIDebug("resultResponse::" + imageResponse);
+								if (!FormatHelper::HasError(imageResponse))
+								{
+									imageResultJson = json::parse(imageResponse);
+
+									string latestRevisionId = Helper::GetJSONValue<string>(imageResultJson, "id", true);
+									string latestVersionAttId = Helper::GetJSONValue<string>(imageResultJson, THUMBNAIL_KEY, true);
+									latestVersionAttName = Helper::GetJSONValue<string>(imageResultJson, "node_name", true);
+									latestVersionAttUrl = Helper::GetJSONValue<string>(imageResultJson, "_url_base_template", true);
+									latestVersionAttUrl = Helper::FindAndReplace(latestVersionAttUrl, "%s", latestVersionAttId);
+									
+									Logger::Logger("latestVersionAttName::" + latestVersionAttName + "::latestVersionAttId::" + latestVersionAttId + "  ::latestVersionAttUrl::" + latestVersionAttUrl);
+									documentId = latestRevisionId;									
+									
+								}
 							}
 						}
 						
@@ -2090,6 +2140,7 @@ namespace UIHelper
 					}
 				}
 			}
+			listC1->setStyleSheet("QListWidget{border-bottom: 1px inset #262626; font-size: 10px; font-face: ArialMT; border-left: 1px inset #0D0D0D; max-height:90px; border-top: 1px inset #0D0D0D; border-right: 1px inset #262626; background-color: #222224; outline: 0; } QListView { outline: 0; } QListWidget::item{ background-color: #222224; margin: 2px;} QListWidget::item:hover { background-color: #222224; } QListWidget::indicator { width: 10px; height:10px; } QListWidget::indicator:unchecked {background-color: #343434 ; border: 1px solid #3B3B3B;} QListWidget::indicator:checked {image: url(:/CLOVise/PLM/Images/icon_ok_over.svg);background-color: #343434; border: 1px solid #3B3B3B;}");
 			listC1->sortItems(Qt::AscendingOrder);
 			UTILITY_API->DeleteProgressBar(true);
 		}
@@ -2281,6 +2332,7 @@ namespace UIHelper
 						comboBox->setFocusPolicy(Qt::StrongFocus);
 						comboBox->setStyleSheet(COMBOBOX_STYLE);
 						comboBox->addItem(QString::fromStdString(BLANK));
+
 						for (int attEnumCount = 0; attEnumCount < attributeEnumJson.size(); attEnumCount++)
 						{
 							attEnumListStrJson = Helper::GetJSONParsedValue<int>(attributeEnumJson, attEnumCount, false);;///use new method
@@ -2510,6 +2562,7 @@ namespace UIHelper
 						comboBox->setFocusPolicy(Qt::StrongFocus);
 						comboBox->setStyleSheet(COMBOBOX_STYLE);
 						comboBox->addItem(QString::fromStdString(BLANK));
+
 						for (int attEnumCount = 0; attEnumCount < attributeEnumJson.size(); attEnumCount++)
 						{
 							attEnumListStrJson = Helper::GetJSONParsedValue<int>(attributeEnumJson, attEnumCount, false);;///use new method
@@ -2829,6 +2882,7 @@ namespace UIHelper
 					comboBox->setStyleSheet(COMBOBOX_STYLE);
 					comboBox->addItem(QString::fromStdString(BLANK));
 					comboBox->setProperty(ATTRIBUTE_INITIAL_VALUE.c_str(), QString::fromStdString(attValue));
+
 					for (int i = 0; i < attEnumsJson.size(); i++)
 					{
 						attJson = Helper::GetJSONParsedValue<int>(attEnumsJson, i, false);///use new method

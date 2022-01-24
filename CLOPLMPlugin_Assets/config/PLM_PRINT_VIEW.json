@@ -87,6 +87,26 @@
             "isAttUpdatable": true,
 			"rest_api_exposed": true,
             "userList": []
+          },
+		   {
+            "attCurrencyCode": null,
+            "attDecimalFigures": 0,
+            "attDefaultValue": null,
+            "attKey": "lib_name",
+            "attName": "Libraries",
+            "attObjectLevel": null,
+            "attScope": "PRINT",
+            "attSearchDefaultValue": null,
+            "attType": "ref",
+            "enumList": [],
+            "isAttEnabled": true,
+            "isAttInSearchResults": true,
+            "isAttRequired": false,
+            "isAttSearchable": true,
+            "isAttSettable": true,
+            "isAttUpdatable": true,
+			"rest_api_exposed": true,
+            "userList": []
           }
 		 
         ],

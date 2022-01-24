@@ -437,6 +437,7 @@ namespace CLOVise
 				if (!ColorConfig::GetInstance()->GetIsModelExecuted())
 				{
 					ColorConfig::GetInstance()->InitializeColorData();
+					PLMColorSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
 					isFromConstructor = true;
 				}
 				else
@@ -451,7 +452,7 @@ namespace CLOVise
 					PLMColorSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
 				}
 				PLMColorSearch::GetInstance()->setModal(true);
-				
+
 				UTILITY_API->DeleteProgressBar(true);
 				PLMColorSearch::GetInstance()->exec();
 				ColorConfig::GetInstance()->SetIsModelExecuted(true);
@@ -721,7 +722,7 @@ namespace CLOVise
 					CreateProduct::GetInstance()->GetUpdatedColorwayNames();
 				}
 				CreateProduct::GetInstance()->addCreateProductDetailsWidgetData();
-				CreateProduct::GetInstance()->ExportTechPack();
+				Configuration::GetInstance()->ExportTechPackJson();
 				CreateProduct::GetInstance()->refreshImageIntents();
 				CreateProduct::GetInstance()->SetUpdateBomFlag(true);
 				CreateProduct::GetInstance()->setModal(true);
@@ -965,6 +966,8 @@ namespace CLOVise
 					if(!UpdateProduct::GetInstance()->GetIsSaveClicked())
 						UpdateProduct::GetInstance()->GetcolorwayDetails();
 				}
+				Configuration::GetInstance()->ExportTechPackJson();
+				UpdateProduct::GetInstance()->SetUpdateBomFlag(true);
 
 				if (UpdateProduct::GetInstance()->GetIsSaveClicked())
 					UpdateProduct::GetInstance()->refreshImageIntents();

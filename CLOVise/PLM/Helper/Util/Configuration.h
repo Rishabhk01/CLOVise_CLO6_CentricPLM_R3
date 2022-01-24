@@ -91,6 +91,7 @@ public:
 	json GetClientSpecificAttCachedData();
 	string GetSubTypeInternalName();
 	string GetQueryParameterForMaterial();
+	json GetTechPackJson();
 	
 	void SetPLMServerURL(string _plmServerURL);
 	void SetLogFileName(string _logFileName);
@@ -141,6 +142,7 @@ public:
 	void SetClientSpecificAttCachedData(json _clientSpecificAttCachedData);
 	void SetSubTypeInternalName(json _clientSpecificJson);
 	void SetQueryParameterForMaterial(string queryParamsForMaterial);
+	void ExportTechPackJson();
 	
 
 private:
@@ -194,4 +196,5 @@ private:
 	json m_clientSpecificAttCachedData;
 	string m_categoryInternalName;
 	string m_queryParamsForMaterial;
+	json m_techPackJson;
 	};

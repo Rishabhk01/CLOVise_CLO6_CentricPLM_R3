@@ -138,6 +138,8 @@ namespace CLOVise
 		m_colorwayComboBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 		m_colorwayComboBox->setMaximumWidth(200);
 		m_colorwayComboBox->setMinimumWidth(200);
+		m_colorwayComboBox->setMaximumHeight(30);
+		m_colorwayComboBox->setMinimumHeight(25);
 		m_colorwayComboBox->setMinimumContentsLength(200);
 
 		QSpacerItem *horizontalSpacer = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Expanding);
