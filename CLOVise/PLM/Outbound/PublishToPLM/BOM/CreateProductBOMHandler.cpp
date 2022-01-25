@@ -528,6 +528,11 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 
 		Logger::Debug("CreateProductBOMHandler -> AddBomRows() -> Start");
 		Logger::Debug("CreateProductBOMHandler -> AddBomRows() -> _sectionTable" + to_string(long(_sectionTable)));
+        
+#ifdef __APPLE__    // Settinng Windows OS style to QComboBox on MAC OS
+        _sectionTable->setStyle(QStyleFactory::create("Windows"));
+        _sectionTable->setItemDelegate(new QStyledItemDelegate());
+#endif
 		int rowCount = _sectionTable->rowCount();
 		Logger::Debug("CreateProductBOMHandler -> AddBomRows() -> test1");
 		_sectionTable->setRowCount(rowCount);
