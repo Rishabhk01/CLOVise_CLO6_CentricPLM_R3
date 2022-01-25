@@ -2717,7 +2717,7 @@ namespace CLOVise
 				data += "\n}\n}";
 
 				Logger::Debug("CreateProduct -> LinkImagesToColorways () data" + data);
-				if (str.compare("No Colorway(Default)") == 0)
+				if (str.compare("No_Colorway_Default") == 0)
 				{
 					//Link images to style .....
 					string resultJsonString = RESTAPI::PutRestCall(data, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::STYLE_ENDPOINT_API + "/" + _productId, "content-type: application/json");
@@ -3132,11 +3132,11 @@ namespace CLOVise
 		filepath.clear();
 		UTILITY_API->SetCurrentColorwayIndex(cloColorwaySelectedIndex);
 		UTILITY_API->SetShowHideAvatar(true);
-		filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/Avatar_No Colorway(Default).png";
+		filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/Avatar_No_Colorway_Default.png";
 		EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
 		filepath.clear();
 		UTILITY_API->SetShowHideAvatar(false);
-		filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/No Colorway(Default).png";
+		filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/No_Colorway_Default.png";
 		EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
 
 		Logger::Debug("CreateProduct -> exportTurntableImages() -> End ");

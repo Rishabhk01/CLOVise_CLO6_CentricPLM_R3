@@ -546,11 +546,11 @@ namespace CLOVise
 				filepath.clear();
 				UTILITY_API->SetCurrentColorwayIndex(cloColorwaySelectedIndex);
 				UTILITY_API->SetShowHideAvatar(true);
-				filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/Avatar_No Colorway(Default).png";
+				filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/Avatar_No_Colorway_Default.png";
 				EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
 				filepath.clear();
 				UTILITY_API->SetShowHideAvatar(false);
-				filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/No Colorway(Default).png";
+				filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/No_Colorway_Default.png";
 				EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
 				//////
 				QString selectedSnapshot;
@@ -721,11 +721,11 @@ Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> filepath1" + file
 				filepath.clear();
 				UTILITY_API->SetCurrentColorwayIndex(cloColorwaySelectedIndex);
 				UTILITY_API->SetShowHideAvatar(true);
-				filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/Avatar_No Colorway(Default).png";
+				filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/Avatar_No_Colorway_Default.png";
 				EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
 				filepath.clear();
 				UTILITY_API->SetShowHideAvatar(false);
-				filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/No Colorway(Default).png";
+				filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/No_Colorway_Default.png";
 				EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
 				//////
 
@@ -909,9 +909,9 @@ Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> filepath1" + file
 	{
 		Logger::Debug("UpdateImageIntent -> fillSelectedList() -> Start");
 		m_colorwayComboBox->clear();
-		m_colorwayComboBox->addItem("No Colorway(Default)");
+		m_colorwayComboBox->addItem("No_Colorway_Default");
 		m_colorwayComboBox->addItems(_colorwayNames);
-		m_colorwayComboBox->setCurrentText(QString::fromStdString("No Colorway(Default)"));
+		m_colorwayComboBox->setCurrentText(QString::fromStdString("No_Colorway_Default"));
 		Logger::Debug("UpdateImageIntent -> fillSelectedList() -> End");
 	}
 	void UpdateImageIntent::ClearAllFields()

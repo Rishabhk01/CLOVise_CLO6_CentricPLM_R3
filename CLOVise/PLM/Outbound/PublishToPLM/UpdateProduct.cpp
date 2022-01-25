@@ -2974,7 +2974,7 @@ namespace CLOVise
 							else
 							{
 								string labelId;
-								if (colorwayIterator->first == "No Colorway(Default)")
+								if (colorwayIterator->first == "No_Colorway_Default")
 								{
 									Logger::Debug("UpdateProduct -> LinkImagesToColorways () labels:" + colorwayIterator->second.viewLabelMap[i][labelIterator].toStdString());
 									it = m_styleImageLabelsMap.find(colorwayIterator->second.viewLabelMap[i][labelIterator]);
@@ -3000,7 +3000,7 @@ namespace CLOVise
 				}
 				Logger::Debug("UpdateProduct -> LinkImagesToColorways () ============ Data    " + data);
 
-				if (str.compare("No Colorway(Default)") == 0)
+				if (str.compare("No_Colorway_Default") == 0)
 				{
 					for (auto styleIterator = m_nonCloStyleImageLabelsMap.begin(); styleIterator != m_nonCloStyleImageLabelsMap.end(); styleIterator++)
 					{
@@ -3645,7 +3645,7 @@ namespace CLOVise
 		RESTAPI::SetProgressBarData(10, "Loading colorway images..", true);
 		string styleId;
 		styleId = Helper::GetJSONValue<string>(m_downloadedStyleJson, "id", true);
-		drawColorwayImageList(styleId, "No Colorway(Default)", "style");//Adding image intent for style
+		drawColorwayImageList(styleId, "No_Colorway_Default", "style");//Adding image intent for style
 		for (auto colorwayIterator = m_downloadedColorwayIdMap.begin(); colorwayIterator != m_downloadedColorwayIdMap.end(); colorwayIterator++)
 			drawColorwayImageList(colorwayIterator->first, colorwayIterator->second, "colorway");
 		Logger::Debug("UpdateProduct -> ShowImageIntent() -> End");
@@ -4411,11 +4411,11 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 		filepath.clear();
 		UTILITY_API->SetCurrentColorwayIndex(cloColorwaySelectedIndex);
 		UTILITY_API->SetShowHideAvatar(true);
-		filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/Avatar_No Colorway(Default).png";
+		filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/Avatar_No_Colorway_Default.png";
 		EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
 		filepath.clear();
 		UTILITY_API->SetShowHideAvatar(false);
-		filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/No Colorway(Default).png";
+		filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/No_Colorway_Default.png";
 		EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
 
 		Logger::Debug("UpdateProduct -> exportTurntableImages() -> End ");
