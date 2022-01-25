@@ -458,7 +458,14 @@ namespace CLOVise
 			RESTAPI::SetProgressBarData(20, "Loading BOM data ", true);
 			QTreeWidget *tree = new QTreeWidget();
 			UIHelper::ValidateRquired3DModelData(m_createBOMTreeWidget);
+			if (Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED)
 			m_BOMMetaData = CreateProduct::GetInstance()->collectCriteriaFields(m_createBOMTreeWidget, tree);
+			if (Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED)
+			{
+				string bomMetaDataStr = UpdateProduct::GetInstance()->collectCriteriaFields(m_createBOMTreeWidget, tree);
+				m_BOMMetaData = json::parse(bomMetaDataStr);
+			}
+
 			string bomName = Helper::GetJSONValue<string>(m_BOMMetaData, "node_name", true);
 			string bomTemplateId = Helper::GetJSONValue<string>(m_BOMMetaData, "bom_template", true);
 			string latestRevision;
