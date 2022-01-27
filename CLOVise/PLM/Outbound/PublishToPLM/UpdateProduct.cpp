@@ -2175,19 +2175,19 @@ namespace CLOVise
 		Logger::Debug("UpdateProduct onTabClicked() Start");
 		QStringList list;
 		bool duplicateColrwayName = false;
-		if (_index == 1)
+		if (_index == COLORWAY_COLUMN)
 		{
 			ui_colorwayTable->setColumnCount(m_ColorwayTableColumnNames.size());
 			ui_colorwayTable->setHorizontalHeaderLabels(m_ColorwayTableColumnNames);
 			ui_colorwayTable->show();
 		}
-		if (_index == 2 /*&& m_colorwayRowcount > 0*/)//Image Intent tab
+		if (_index == IMAGE_VIEW_COLUMN /*&& m_colorwayRowcount > 0*/)//Image Intent tab
 		{
-			int imageRowCount = m_imageIntentTable->rowCount();
-			m_imageIntentTable->setColumnCount(m_ImageIntentsColumnsNames.size());
-			m_imageIntentTable->setHorizontalHeaderLabels(m_ImageIntentsColumnsNames);
+			//int imageRowCount = m_imageIntentTable->rowCount();
+			//m_imageIntentTable->setColumnCount(m_ImageIntentsColumnsNames.size());
+			//m_imageIntentTable->setHorizontalHeaderLabels(m_ImageIntentsColumnsNames);
 			ValidateColorwayNameField();
-			if (imageRowCount != 0)
+			/*if (imageRowCount != 0)
 			{
 				UTILITY_API->CreateProgressBar();
 				RESTAPI::SetProgressBarData(20, "Loading Latest Image Intents... ", true);
@@ -2247,7 +2247,7 @@ namespace CLOVise
 					m_imageIntentTable->setCellWidget(index, IMAGE_INTENT_COLUMN, pColorWidget);
 
 				}
-			}
+			}*/
 		}
 
 		if (_index == BOM_TAB)
@@ -2267,6 +2267,84 @@ namespace CLOVise
 		RESTAPI::SetProgressBarData(0, "", false);
 		Logger::Debug("UpdateProduct onTabClicked() End");
 
+	}
+
+	void UpdateProduct::RefreshImageIntents()
+	{
+		int imageRowCount = m_imageIntentTable->rowCount();
+		m_imageIntentTable->setColumnCount(m_ImageIntentsColumnsNames.size());
+		m_imageIntentTable->setHorizontalHeaderLabels(m_ImageIntentsColumnsNames);
+
+		if (imageRowCount != 0)
+		{
+			UTILITY_API->CreateProgressBar();
+			RESTAPI::SetProgressBarData(20, "Loading Latest Image Intents... ", true);
+			UTILITY_API->SetProgress("Loading Latest Image Intents...", (qrand() % 101));
+		}
+
+		if (/*ValidateColorwayNameField() && */imageRowCount != 0)
+		{
+			exportTurntableImages();
+
+			string colorwayName;
+			string viewName;
+			int view;
+			int rowCount = m_imageIntentTable->rowCount();
+			string temporaryPath = UTILITY_API->GetCLOTemporaryFolderPath();
+
+			for (int index = 0; index < rowCount; index++)
+			{
+
+				QTableWidgetItem* item = m_imageIntentTable->item(index, COLORWAY_COLUMN);
+				Logger::Debug("UpdateProduct -> onTabClicked() -> Item" + item->text().toStdString());
+				colorwayName = item->text().toStdString();
+
+				Logger::Debug("UpdateProduct -> onTabClicked() -> clorwayname" + colorwayName);
+
+
+				QTableWidgetItem* viewItem = m_imageIntentTable->item(index, IMAGE_VIEW_COLUMN);
+				Logger::Debug("UpdateProduct -> onTabClicked() -> Item" + viewItem->text().toStdString());
+				string ViewText;
+				ViewText = viewItem->text().toStdString();
+				int length = ViewText.length();
+				int indexOfColon = ViewText.find(":");
+				viewName = ViewText.substr(indexOfColon + 1, length);
+				Logger::Debug("UpdateProduct -> onTabClicked() -> viewName" + viewName);
+
+				if (viewName.find("Back") != -1)
+					view = BACK_VIEW;
+				else if (viewName.find("Front") != -1)
+					view = FRONT_VIEW;
+				else if (viewName.find("Left") != -1)
+					view = LEFT_VIEW;
+				else
+					view = RIGHT_VIEW;
+
+				QPushButton *deleteButton = static_cast<QPushButton*>(m_imageIntentTable->cellWidget(index, DELETE_COLUMN)->children().last());
+				string includeAvatar = deleteButton->property("includeAvatar").toString().toStdString();				
+				Logger::Debug("UpdateProduct -> refreshImageIntents() -> includeAvatar" + includeAvatar);
+
+				QString filepath;
+				if (includeAvatar == "Yes")
+					filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithAvatar/Avatar_" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
+				else
+					filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithoutAvatar/" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
+
+				Logger::Debug("UpdateProduct -> refreshImageIntents() -> filepath" + filepath.toStdString());
+
+				QPixmap pix(filepath);
+				pix.scaled(QSize(80, 80), Qt::KeepAspectRatio);
+				QWidget *pColorWidget = nullptr;
+				QLabel* label = new QLabel();
+				label->setMaximumSize(QSize(80, 80));
+				int w = label->width();
+				int h = label->height();
+				label->setPixmap(QPixmap(pix.scaled(w, h, Qt::KeepAspectRatio)));
+				pColorWidget = CVWidgetGenerator::InsertWidgetInCenter(label);
+				m_imageIntentTable->setCellWidget(index, IMAGE_INTENT_COLUMN, pColorWidget);
+
+			}
+		}
 	}
 
 	void UpdateProduct::OnHandleDropDownValue(const QString& _item)
@@ -3751,9 +3829,9 @@ namespace CLOVise
 
 				string filePath = UTILITY_API->GetCLOTemporaryFolderPath();
 				if (imageName.find("Avatar_") != -1)
-				filePath = filePath + "CLOViseTurntableImages/WithAvatar/";
+					filePath = filePath + "CLOViseTurntableImages/WithAvatar/";
 				else
-				filePath = filePath + "CLOViseTurntableImages/WithoutAvatar/";
+					filePath = filePath + "CLOViseTurntableImages/WithoutAvatar/";
 				
 				filePath = filePath + imageName;
 
@@ -4026,12 +4104,6 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 		defaultWidget->setToolTip(QString::fromStdString(""));
 		m_imageIntentTable->setItem(m_imageIntentRowcount, DEFAULT_COLUMN, defaultWidget);
 		m_imageIntentTable->setColumnWidth(DEFAULT_COLUMN, 90);
-
-		/*QTableWidgetItem* avatarWidget = new QTableWidgetItem(_imageIntentsDetails.isdefault);
-		avatarWidget->setTextAlignment(Qt::AlignCenter);
-		avatarWidget->setToolTip(QString::fromStdString(""));
-		m_imageIntentTable->setItem(m_imageIntentRowcount,AVATAR_COLUMN, avatarWidget);
-		m_imageIntentTable->setColumnWidth(AVATAR_COLUMN, 90);*/
 
 		QPushButton *editButton = CVWidgetGenerator::CreatePushButton("", ":/CLOVise/PLM/Images/icon_draw_over.svg", "Edit", PUSH_BUTTON_STYLE, 30, true);
 		editButton->setProperty("colorwayName", _imageIntentsDetails.colorwayName);

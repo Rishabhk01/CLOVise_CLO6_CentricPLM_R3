@@ -81,6 +81,8 @@ namespace CLOVise
 		void AddRowInImageIntentTab(QPixmap _pixMap, ImageIntentsDetails _imageIntentsDetails, string _imageId);
 		void SetUpdateBomFlag(bool _flag);
 		void ClearBOMData();
+		void RefreshImageIntents();
+
 		MVTableWidget *ui_colorwayTable;
 		std::map<QString, QString> m_colorwayImageLabelsMap;
 		std::map<QString, QStringList> m_nonCloStyleImageLabelsMap;

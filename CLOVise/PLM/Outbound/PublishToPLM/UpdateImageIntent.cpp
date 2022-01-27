@@ -792,7 +792,7 @@ Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> filepath1" + file
 							defaultImage = text.substr(indexOfColon + 1, length);
 							Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> label" + defaultImage);
 						}
-						if (colIndex == 4)
+						if (colIndex == INCLUDE_AVATAR_COLUMN)
 						{
 							string text;
 							text = item->text().toStdString();
