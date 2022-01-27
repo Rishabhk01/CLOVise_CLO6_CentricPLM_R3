@@ -633,9 +633,12 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 							queryParam = "?" + queryParam;
 						if (FormatHelper::HasContent(materialName))
 						{
-							materialName = QString::fromStdString(materialName).replace(" ", "%20").toStdString();
-							queryParam = queryParam + "&material_name=" + materialName;
+							string encodedString = Helper::URLEncode(materialName);
+							//materialName = QString::fromStdString(materialName).replace(" ", "%20").toStdString();
+							queryParam = queryParam + "&material_name=" + encodedString;
 						}
+
+						
 						string api = Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API_V3 + "/" + bomLatestRevision + "/items/special_part_materials" + queryParam;
 						Logger::Debug("BOMUtility CreateBom() queryParam" + queryParam);
 						Logger::Debug("BOMUtility CreateBom() placementData" + placementData);

@@ -528,6 +528,11 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 
 		Logger::Debug("CreateProductBOMHandler -> AddBomRows() -> Start");
 		Logger::Debug("CreateProductBOMHandler -> AddBomRows() -> _sectionTable" + to_string(long(_sectionTable)));
+        
+#ifdef __APPLE__    // Settinng Windows OS style to QComboBox on MAC OS
+        _sectionTable->setStyle(QStyleFactory::create("Windows"));
+        _sectionTable->setItemDelegate(new QStyledItemDelegate());
+#endif
 		int rowCount = _sectionTable->rowCount();
 		Logger::Debug("CreateProductBOMHandler -> AddBomRows() -> test1");
 		_sectionTable->setRowCount(rowCount);
@@ -731,6 +736,7 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 
 					QLineEdit* newColumn = new QLineEdit();
 					newColumn->setStyleSheet(LINEEDIT_STYLE);
+					newColumn->home(true);
 					if (FormatHelper::HasContent(text))
 						newColumn->setText(QString::fromStdString(text));
 					else
@@ -740,7 +746,6 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 					newColumn->setProperty("row", rowCount);
 					Logger::Debug("CreateProductBOMHandler -> AddBomRows() -> 7");
 					newColumn->setProperty("rest_api_name", bomTableColumnKeys[columnIndex]);
-
 					_sectionTable->setCellWidget(rowCount, columnIndex, pLineEditWidget);
 					Logger::Debug("CreateProductBOMHandler -> AddBomRows() -> 8");
 				}
@@ -1021,6 +1026,7 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 						QLineEdit* newColumn = new QLineEdit();
 						newColumn->setAttribute(Qt::WA_MacShowFocusRect, false);
 						newColumn->setStyleSheet(LINEEDIT_STYLE);
+						newColumn->home(true);
 						if (FormatHelper::HasContent(text))
 							newColumn->setText(QString::fromStdString(text));
 						else

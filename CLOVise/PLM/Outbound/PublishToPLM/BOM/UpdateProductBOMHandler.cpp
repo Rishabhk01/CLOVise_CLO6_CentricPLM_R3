@@ -532,6 +532,11 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 
 		 Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> Start");
 		 Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> _sectionTable" + to_string(long(_sectionTable)));
+         
+#ifdef __APPLE__    // Settinng Windows OS style to QComboBox on MAC OS
+        _sectionTable->setStyle(QStyleFactory::create("Windows"));
+        _sectionTable->setItemDelegate(new QStyledItemDelegate());
+#endif
 		 int rowCount = _sectionTable->rowCount();
 		 Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> test1");
 		 _sectionTable->setRowCount(rowCount);
@@ -735,6 +740,7 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 
 					 QLineEdit* newColumn = new QLineEdit();
 					 newColumn->setStyleSheet(LINEEDIT_STYLE);
+					 newColumn->home(true);
 					 if (FormatHelper::HasContent(text))
 						 newColumn->setText(QString::fromStdString(text));
 					 else
@@ -1024,6 +1030,7 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 					 {
 						 QLineEdit* newColumn = new QLineEdit();
 						 newColumn->setAttribute(Qt::WA_MacShowFocusRect, false);
+						 newColumn->home(true);
 						 newColumn->setStyleSheet(LINEEDIT_STYLE);
 						 if (FormatHelper::HasContent(text))
 							 newColumn->setText(QString::fromStdString(text));
