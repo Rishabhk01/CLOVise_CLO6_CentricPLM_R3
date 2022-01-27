@@ -332,8 +332,8 @@ namespace CLOVise
 				else
 				{
 					int length = response.length();
-					int indexforjson = response.find("{");
-					basicTokenResponse = response.substr(indexforjson, length);
+					int indexforjson = response.find("token");
+					basicTokenResponse = response.substr(indexforjson - 2, length);
 					if (FormatHelper::HasContent(basicTokenResponse))
 						responseTokenJson = json::parse(basicTokenResponse);
 					//UTILITY_API->DisplayMessageBox("responseTokenJson:: " + to_string(responseTokenJson));
