@@ -1538,7 +1538,7 @@ namespace CLOVise
 				colorwayNamesList.append(QString::fromStdString(colorwayName));
 			}
 			//UTILITY_API->DisplayMessageBox(to_string(downloadJsonArray));
-
+			m_colorwayNamesList = colorwayNamesList;
 			for (int rowCount = 0; rowCount < downloadJsonArray.size(); rowCount++)
 			{
 
@@ -2180,7 +2180,7 @@ namespace CLOVise
 				int view;
 				int rowCount = m_imageIntentTable->rowCount();
 				string temporaryPath = UTILITY_API->GetCLOTemporaryFolderPath();
-
+				
 				for (int index = 0; index < rowCount; index++)
 				{
 
@@ -2223,10 +2223,10 @@ namespace CLOVise
 					pColorWidget = CVWidgetGenerator::InsertWidgetInCenter(label);
 					m_imageIntentTable->setCellWidget(index, IMAGE_INTENT_COLUMN, pColorWidget);
 
-				}
+				}								
 			}
 		}
-
+	
 		if (_index == BOM_TAB)
 		{
 			
@@ -3294,7 +3294,7 @@ namespace CLOVise
 				//UTILITY_API->DisplayMessageBox("colorwayCountJson:: " + to_string(downloadedColorwayjson));
 				m_downloadedColorway = true;
 				m_downloadedColorwayJson = downloadedColorwayjson;
-				AddColorwayDetails(selectedIds, downloadedColorwayjson);
+				AddColorwayDetails(selectedIds, downloadedColorwayjson);			
 				ShowImageIntent();
 				m_downloadedColorway = false;
 			}
@@ -3825,8 +3825,18 @@ namespace CLOVise
 				pix.scaled(QSize(80, 80), Qt::KeepAspectRatio);
 				QIcon newIcon;
 				newIcon.addPixmap(pix);
-
-				AddRowInImageIntentTab(pix, imageIntentsDetails, imageId);
+				if (_colorwayName == "No Colorway(Default)")
+				{
+					AddRowInImageIntentTab(pix, imageIntentsDetails, imageId);
+				}
+				for (auto i = 0; i < m_colorwayNamesList.count(); i++)
+				{					
+					
+					if (m_colorwayNamesList.at(i).toStdString()== _colorwayName )
+					{
+						AddRowInImageIntentTab(pix, imageIntentsDetails, imageId);
+					}
+				}
 			}
 			m_nonCloColorwayImagesMap.insert(make_pair(QString::fromStdString(_id), nonCloImageIdsList));
 
