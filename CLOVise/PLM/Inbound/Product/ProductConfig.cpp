@@ -831,7 +831,7 @@ string ProductConfig::GetDisplayName(map<string, string> _map, string _Id)
 map<string,string> ProductConfig::GetAttributeIdAndValueMap(string _restApi)
 {
 	Logger::Debug("ProductConfig -> GetAttributeIdAndValueMap Start");
-	json responseJson = Helper::makeRestcallGet(_restApi, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading season details..");
+	json responseJson = RESTAPI::makeRestcallGet(_restApi, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading season details..");
 	json attJson;
 	string attName;
 	string attId;

@@ -496,13 +496,13 @@ namespace CLOVise
 					if (attributeName == "Season")
 					{
 						
-						responseJson = Helper::makeRestcallGet(RESTAPI::SEASON_SEARCH_API, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue() + "&sort=node_name", "", "Loading season details..");
+						responseJson = RESTAPI::makeRestcallGet(RESTAPI::SEASON_SEARCH_API, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue() + "&sort=node_name", "", "Loading season details..");
 						Logger::RestAPIDebug("seasonJson::" + to_string(responseJson));
 						
 					}
 					else if (attributeName == "Style Type")
 					{
-						responseJson = Helper::makeRestcallGet(RESTAPI::STYLE_TYPE_API, "?available=true&limit=100", "", "Loading style type details..");
+						responseJson = RESTAPI::makeRestcallGet(RESTAPI::STYLE_TYPE_API, "?available=true&limit=100", "", "Loading style type details..");
 						Logger::RestAPIDebug("styleTypeJson::" + to_string(responseJson));
 					}
 					for (int i = 0; i < responseJson.size(); i++)
@@ -810,7 +810,7 @@ namespace CLOVise
 
 			json EmptyJson = json::object();
 			string emptyString = to_string(EmptyJson);
-			string resultJsonString = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::DOCUMENT_CREATE_API + "/" + _productId, &emptyString, headerNameAndValueList, "Loading");
+			string resultJsonString = RESTAPI::PostRestCall(emptyString, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::DOCUMENT_CREATE_API + "/" + _productId, "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 			if (!FormatHelper::HasContent(resultJsonString))
 			{
 				throw "Unable to initiliaze Document Configuration. Please try again or Contact your System Administrator.";
@@ -1373,17 +1373,17 @@ namespace CLOVise
 							if (lableText == "shape")
 							{
 								progressbarText = "Loading Shape details..";
-								dependentFieldJson = Helper::makeRestcallGet(RESTAPI::SHAPE_API, "&skip=0&limit=100", "?shape_seasons=" + id, progressbarText);
+								dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::SHAPE_API, "&skip=0&limit=100", "?shape_seasons=" + id, progressbarText);
 
 							}
 							else if (lableText == "theme")
 							{
 								progressbarText = "Loading Theme details..";
-								dependentFieldJson = Helper::makeRestcallGet(RESTAPI::THEME_API, "&skip=0&limit=100", "?theme_seasons=" + id, progressbarText);
+								dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::THEME_API, "&skip=0&limit=100", "?theme_seasons=" + id, progressbarText);
 							}
 							else
 							{
-								dependentFieldJson = Helper::makeRestcallGet(apiUrl, "/hierarchy", "/" + id, progressbarText);
+								dependentFieldJson = RESTAPI::makeRestcallGet(apiUrl, "/hierarchy", "/" + id, progressbarText);
 							}
 							json attJson = json::object();
 
@@ -1438,18 +1438,18 @@ namespace CLOVise
 							if (lableText == "shape")
 							{
 								progressbarText = "Loading Shape details..";
-								dependentFieldJson = Helper::makeRestcallGet(RESTAPI::SHAPE_API, "&skip=0&limit=100", "?shape_seasons=" + id, progressbarText);
+								dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::SHAPE_API, "&skip=0&limit=100", "?shape_seasons=" + id, progressbarText);
 
 							}
 							else if (lableText == "theme")
 							{
 								progressbarText = "Loading Theme details..";
-								dependentFieldJson = Helper::makeRestcallGet(RESTAPI::THEME_API, "&skip=0&limit=100", "?theme_seasons=" + id, progressbarText);
+								dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::THEME_API, "&skip=0&limit=100", "?theme_seasons=" + id, progressbarText);
 
 							}
 							else
 							{
-								dependentFieldJson = Helper::makeRestcallGet(apiUrl, "/hierarchy", "/" + id, progressbarText);
+								dependentFieldJson = RESTAPI::makeRestcallGet(apiUrl, "/hierarchy", "/" + id, progressbarText);
 							}
 
 							json attJson = json::object();

@@ -84,7 +84,7 @@ Description - GetMaterialTypeForSection(string _sectionName) method used to get 
 	inline  map<string, string> GetCentricMaterialTypes()
 	{
 		map<string, string> materialTypeMap;
-		json responseJson = Helper::makeRestcallGet(RESTAPI::MATERIAL_TYPE_SEARCH_API, "?limit=100", "", "Loading materail type details..");
+		json responseJson = RESTAPI::makeRestcallGet(RESTAPI::MATERIAL_TYPE_SEARCH_API, "?limit=100", "", "Loading materail type details..");
 
 		//m_materialTypeList.append(QString::fromStdString(BLANK));
 		for (int i = 0; i < responseJson.size(); i++)
@@ -416,7 +416,7 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 		bomData["style_id"] = _productId;
 		string bomMetaData = to_string(bomData);
 		//UTILITY_API->DisplayMessageBox(to_string(bomData));
-		string response = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::CREATE_BOM_API + "/" + bomTemplateId, &bomMetaData, headerNameAndValueList, "Loading");
+		string response = RESTAPI::PostRestCall(bomMetaData, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::CREATE_BOM_API + "/" + bomTemplateId , "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 		if (!FormatHelper::HasContent(response))
 		{
 			RESTAPI::SetProgressBarData(0, "", false);
@@ -614,7 +614,6 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 						string placementData = to_string(attJson);
 						Logger::Debug("BOMUtility CreateBom() placementData" + placementData);
 						partMaterialResponse = RESTAPI::PostRestCall(placementData, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API_V3 + "/" + bomLatestRevision + "/items/part_materials", "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
-						//response = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API_V3 + "/" + bomLatestRevision + "/items/part_materials", &placementData, headerNameAndValueList, "Loading");
 						Logger::Debug("BOMUtility CreateBom() response material" + partMaterialResponse);
 
 					}
@@ -645,7 +644,6 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 						Logger::Debug("BOMUtility CreateBom() queryParam" + api);
 
 						partMaterialResponse = RESTAPI::PostRestCall(placementData, api, "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
-						//response = REST_API->CallRESTPost(api, &placementData, headerNameAndValueList, "Loading");
 						Logger::Debug("BOMUtility CreateBom() response Special" + partMaterialResponse);
 
 					}
