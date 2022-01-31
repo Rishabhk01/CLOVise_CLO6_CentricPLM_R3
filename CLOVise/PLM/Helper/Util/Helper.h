@@ -14,7 +14,6 @@
 #include <sstream>
 #include <sys/stat.h>
 #include <sys/types.h>
-
 #include <QString>
 #include <QStringList>
 #include <QVariant>
@@ -1331,27 +1330,131 @@ namespace Helper
 		string fileExt = _fileName.substr(pos + 1);
 		return fileExt;
 	}
-
-	inline json makeRestcallGet(string _api, string _param = "", string _id = "", string _progressbartext = "")
-	{
-		Logger::Debug("UiHelper drawWidget() _attName == Season");
-		Logger::Debug("UiHelper drawWidget() API: " + _api + _id + _param);
-		vector<pair<string, string>> headerNameAndValueList;
-		headerNameAndValueList.push_back(make_pair("content-Type", "application/json"));
-		headerNameAndValueList.push_back(make_pair("Cookie", Configuration::GetInstance()->GetBearerToken()));
-		string resultJsonString = REST_API->CallRESTGet(Configuration::GetInstance()->GetPLMServerURL() + _api + _id + _param, headerNameAndValueList, _progressbartext);
-		if (!FormatHelper::HasContent(resultJsonString))
-		{
-			throw "Unable to initiliaze Document Configuration. Please try again or Contact your System Administrator.";
-		}
-
-		int length = resultJsonString.length();
-		int indexforjson = resultJsonString.find("[");
-		string FinalresultJsonString = resultJsonString.substr(indexforjson, length);
-		json detailJson = json::parse(FinalresultJsonString);
-
-		return detailJson;
+	static size_t WriteCallback(void* _contents, size_t _size, size_t _nmemb, string* _userp) {
+		_userp->append((char*)_contents, _size * _nmemb);
+		return _size * _nmemb;
 	}
+
+	static string CentricRestCallGet(string _url, string _contentType, string _parameter)
+	{
+		Logger::Info("RestAPI::CentricRestCallGet() Started...");
+		//_url = _url + "&decode=true"; //appending decode=true to get decoded response from centric
+		string response;
+		CURL* curl;
+		FILE* fp = nullptr;;
+		CURLcode res;
+		string url1;
+		const char* url = _url.c_str();
+		curl_version_info_data* vinfo = curl_version_info(CURLVERSION_NOW);
+		if (vinfo->features & CURL_VERSION_SSL) {
+			printf("CURL: SSL enabled" + '\n');
+		}
+		else {
+			printf("CURL: SSL not enabled\n");
+		}
+		curl = curl_easy_init();
+		if (curl) {
+			struct curl_slist* headers = NULL;
+			string authorization = "Cookie: " + Configuration::GetInstance()->GetBearerToken();
+			headers = curl_slist_append(headers, authorization.c_str());
+			string accept = "Accept: application/json";
+			headers = curl_slist_append(headers, accept.c_str());
+			if (_contentType == APPLICATION_JSON_TYPE)
+			{
+				string contentTypee = CONTENTTYPE + ": " + APPLICATION_JSON_TYPE + "; " + CHARSET_UTF8;
+				headers = curl_slist_append(headers, contentTypee.c_str());
+			}
+			else if (!_contentType.empty())
+			{
+				string contentTypee = CONTENTTYPE + ": " + _contentType;
+				headers = curl_slist_append(headers, contentTypee.c_str());
+			}
+
+			if (FormatHelper::HasContent(Configuration::GetInstance()->GetCsrfNonceToken())) {
+				string csrfNonceToken = Configuration::GetInstance()->GetCsrfNonceKey() + ": " + Configuration::GetInstance()->GetCsrfNonceToken();
+				headers = curl_slist_append(headers, csrfNonceToken.c_str());
+			}
+			//UTILITY_API->DisplayMessageBox("urlbefor encode::" + _url);
+			if (FormatHelper::HasContent(_parameter))
+			{
+				//	Commented below code because it is not working in MAC
+//              char* singleEncode = curl_easy_escape(curl, _parameter.c_str(), _parameter.length());
+//              if (singleEncode)
+//                  curl_free(singleEncode);
+//              string singleConvert = singleEncode;
+//              //UTILITY_API->DisplayMessageBox("single encode::" + singleConvert);
+//              char* doubleEncode = curl_easy_escape(curl, singleConvert.c_str(), singleConvert.length());
+//				if (doubleEncode)
+//					curl_free(doubleEncode);
+//              string doubleConvert = doubleEncode;
+
+				//	Added below code which is compatible with MAC
+				string encodedString = Helper::URLEncode(_parameter);
+				string doubleConvert = Helper::URLEncode(encodedString);
+
+				//              UTILITY_API->DisplayMessageBox("encodedString::" + doubleConvert);
+				doubleConvert = Helper::FindAndReplace(doubleConvert, "%253D", "=");
+				doubleConvert = Helper::FindAndReplace(doubleConvert, "%2526", "&");
+				//              UTILITY_API->DisplayMessageBox("after str::" + doubleConvert);
+				_url = _url + doubleConvert;
+			}
+
+			Logger::RestAPIDebug("Get_URL:: " + _url);
+			/* Setup the https:// verification options. Note we   */
+			/* do this on all requests as there may be a redirect */
+			/* from http to https and we still want to verify     */
+			curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+			curl_easy_setopt(curl, CURLOPT_URL, _url.c_str());
+			curl_easy_setopt(curl, CURLOPT_CAINFO, "./ca-bundle.crt");
+			curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
+			curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, false);
+			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+			curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+			curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0);
+			curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, progress_callback);
+			res = curl_easy_perform(curl);
+
+			if (res != CURLE_OK) {
+				stringstream errorMsg;
+				errorMsg << "Unable to process your request, PLM Server is down or unavailable. Please contact system administrator";
+				Logger::Error(errorMsg.str());
+				response = errorMsg.str();
+			}
+			else if (QString::fromStdString(response).contains(QString::fromStdString(SERVER_DOWN_MSG))) {
+				response = SERVER_DOWN_RESPOSE;
+			}
+		}
+		curl_easy_cleanup(curl);
+		Logger::Debug("Response..." + response);
+		Logger::Info("RestAPI::CentricRestCallGet() Ended...");
+		if (FormatHelper::HasError(response))
+		{
+			throw runtime_error(response);
+		}
+		return response;
+	}
+	//inline json makeRestcallGet(string _api, string _param = "", string _id = "", string _progressbartext = "")
+	//{
+	//	Logger::Debug("UiHelper drawWidget() _attName == Season");
+	//	Logger::Debug("UiHelper drawWidget() API: " + _api + _id + _param);
+	//	vector<pair<string, string>> headerNameAndValueList;
+	//	headerNameAndValueList.push_back(make_pair("content-Type", "application/json"));
+	//	headerNameAndValueList.push_back(make_pair("Cookie", Configuration::GetInstance()->GetBearerToken()));
+	//	string resultJsonString = CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + _api + _id + _param, APPLICATION_JSON_TYPE, "");
+	//	if (!FormatHelper::HasContent(resultJsonString))
+	//	{
+	//		throw "Unable to initiliaze Document Configuration. Please try again or Contact your System Administrator.";
+	//	}
+
+	//	Logger::Debug("resultJsonString" + resultJsonString);
+	//	/*int length = resultJsonString.length();
+	//	int indexforjson = resultJsonString.rfind("[");
+	//	string FinalresultJsonString = resultJsonString.substr(indexforjson, length);*/
+	//	json detailJson = json::parse(resultJsonString);
+
+	//
+	//	return detailJson;
+	//}
 
 	inline json GetJsonFromResponse(string _response, string _start)
 	{

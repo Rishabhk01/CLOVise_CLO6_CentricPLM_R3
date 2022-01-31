@@ -784,7 +784,7 @@ void PrintConfig::SetDataFromResponse(json _param)
 			Helper::GetCentricErrorMessage(resultResponse);
 			throw runtime_error(resultResponse);
 		}
-		json colorLibResultResponse = Helper::makeRestcallGet(RESTAPI::COLOR_SEARCH_API_LIB, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading print design libraries..");
+		json colorLibResultResponse = RESTAPI::makeRestcallGet(RESTAPI::COLOR_SEARCH_API_LIB, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading print design libraries..");
 
 		for (int i = 0; i < colorLibResultResponse.size(); i++)
 		{
@@ -796,7 +796,7 @@ void PrintConfig::SetDataFromResponse(json _param)
 			m_printDesignlibNameMap.insert(make_pair(attId, attName));			
 		}
 		
-		json printDesignResponseJson = Helper::makeRestcallGet(RESTAPI::SEARCH_PRINT_DESIGN_API, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading print design details..");
+		json printDesignResponseJson = RESTAPI::makeRestcallGet(RESTAPI::SEARCH_PRINT_DESIGN_API, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading print design details..");
 		
 		for (int i = 0; i < printDesignResponseJson.size(); i++)
 		{

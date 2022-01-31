@@ -301,28 +301,26 @@ namespace CLOVise
 
 			UTILITY_API->CreateProgressBar();
 			UTILITY_API->SetProgress("Loading", (qrand() % 101));
+			string basicTokenResponse = "";
+			bool validToken = false;
+			json responseTokenJson;
 			auto startTime = std::chrono::high_resolution_clock::now();
-			//UTILITY_API->DisplayMessageBox("serverURL::" + serverURL+"::AUTHORIZATION_URL::"+ RESTAPI::AUTHORIZATION_URL+"::jsonstring::"+ jsonstring);
-			string response = REST_API->CallRESTPost(serverURL + RESTAPI::AUTHORIZATION_URL, &jsonstring, headernameandvalue, "Loading");
+			string response = RESTAPI::PostRestCall(jsonstring, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::AUTHORIZATION_URL, "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 			//UTILITY_API->DisplayMessageBox("response::" + response);
 			auto finishTime = std::chrono::high_resolution_clock::now();
 			std::chrono::duration<double> totalDuration = finishTime - startTime;
 			Logger::perfomance(PERFOMANCE_KEY + "Time for Login API :: " + to_string(totalDuration.count()));
 			Logger::RestAPIDebug("response :: " + response);
+			const char* restErrorMsgg = RESTAPI::CheckForRestErrorMsg(response);
 			if (!FormatHelper::HasContent(response))
 			{
 				throw "Unable to login. Please try again or Contact your System Administrator.";
-			}
-			const char* restErrorMsgg = RESTAPI::CheckForRestErrorMsg(response);
-			if (FormatHelper::HasError(response))
+			}	
+			else if (FormatHelper::HasError(response))
 			{
 				throw response;
 			}
-			size_t found = response.find("HTTP/1.1 200");
-			string basicTokenResponse = "";
-			bool validToken = false;
-			json responseTokenJson;
-			if (found != string::npos)
+			else
 			{
 
 				if (!CVLicenseHelper::GetInstance()->ValidateCVLicense(_userName))
@@ -361,10 +359,10 @@ namespace CLOVise
 					UTILITY_API->DeleteProgressBar(false);
 				}
 			}
-			else
+			/*else
 			{
 				throw "Unable to login. Please verify login credentials.";
-			}
+			}*/
 		}
 		catch (string msg)
 		{

@@ -322,12 +322,12 @@ namespace CLOVise
 
 					if (internalName == "bom_template")
 					{
-						responseJson = Helper::makeRestcallGet(RESTAPI::BOM_TEMPLATE_API, "?parent=centric:&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading template details..");
+						responseJson = RESTAPI::makeRestcallGet(RESTAPI::BOM_TEMPLATE_API, "?parent=centric:&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading template details..");
 						m_BOMTemplateJson = responseJson;
 					}
 					else if (internalName == "subtype")
 					{
-						responseJson = Helper::makeRestcallGet(RESTAPI::APPAREL_BOM_SUBTYPE_API, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading subtype details..");
+						responseJson = RESTAPI::makeRestcallGet(RESTAPI::APPAREL_BOM_SUBTYPE_API, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading subtype details..");
 					}
 					//else if (attributeName == "Style Type")
 					//{

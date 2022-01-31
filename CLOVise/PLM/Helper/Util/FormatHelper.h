@@ -155,7 +155,7 @@ namespace FormatHelper
 		{
 			return true;
 		}
-		else if (error.contains("exception"))
+		else if (error.contains("exception") && error.contains("message"))
 		{
 			int index = _value.find('{');
 			_value = _value.substr(index, _value.length() + 1);

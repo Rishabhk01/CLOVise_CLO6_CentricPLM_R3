@@ -693,11 +693,11 @@ namespace CLOVise
 					{
 						if (attributeName == "Season")
 						{
-							responseJson = Helper::makeRestcallGet(RESTAPI::SEASON_SEARCH_API, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading season details..");
+							responseJson = RESTAPI::makeRestcallGet(RESTAPI::SEASON_SEARCH_API, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading season details..");
 						}
 						else if (attributeName == "Style Type")
 						{
-							responseJson = Helper::makeRestcallGet(RESTAPI::STYLE_TYPE_API, "?available=true&limit=100", "", "Loading style type details..");
+							responseJson = RESTAPI::makeRestcallGet(RESTAPI::STYLE_TYPE_API, "?available=true&limit=100", "", "Loading style type details..");
 						}
 						for (int i = 0; i < responseJson.size(); i++)
 						{
@@ -849,9 +849,7 @@ namespace CLOVise
 				//  UTILITY_API->DisplayMessageBox(to_string(m_ProductMetaData));
 				string productMetaData = to_string(m_ProductMetaData);
 				Logger::RestAPIDebug("CreateProduct:: onPublishToPLMClicked() productMetaData:: " + productMetaData);
-				response = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::CREATE_STYLE_API + "/" + m_collectionId + "/hierarchy", &productMetaData, headerNameAndValueList, "Loading");
-				///string response = RESTAPI::PostRestCall(m_ProductMetaData, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::CREATE_STYLE_COPY_API, "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
-
+				response = RESTAPI::PostRestCall(productMetaData, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::CREATE_STYLE_API + "/" + m_collectionId + "/hierarchy", "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 				Logger::RestAPIDebug("CreateProduct:: onPublishToPLMClicked() response:: " + response);
 				//UTILITY_API->DisplayMessageBox(response);
 
@@ -1101,7 +1099,7 @@ namespace CLOVise
 		string zprjFileName = UTILITY_API->GetProjectName();
 		bodyJson["node_name"] = zprjFileName;
 		string bodyJsonString = to_string(bodyJson);
-		string resultJsonString = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::DOCUMENT_CREATE_API + "/" + _productId, &bodyJsonString, headerNameAndValueList, "Loading");
+		string resultJsonString = RESTAPI::PostRestCall(bodyJsonString, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::DOCUMENT_CREATE_API + "/" + _productId, "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 		if (!FormatHelper::HasContent(resultJsonString))
 		{
 			throw "Unable to initiliaze Document Configuration. Please try again or Contact your System Administrator.";
@@ -1261,7 +1259,7 @@ namespace CLOVise
 					attsJson[attkey] = attValue;
 			}
 		}
-		//attJson["cus_cost_factors"] = "18";
+		//attsJson["cus_cost_factors"] = "18";
 		Logger::Debug("Create product collectCriteriaFields() attsJson:: " + to_string(attsJson));
 		//UTILITY_API->DisplayMessageBox("Create product collectCriteriaFields() attsJson:: " + to_string(attsJson));
 		Logger::Debug("Create product collectCriteriaFields() end....");
@@ -2056,17 +2054,17 @@ namespace CLOVise
 								if (lableText == "shape")
 								{
 									progressbarText = "Loading Shape details..";
-									dependentFieldJson = Helper::makeRestcallGet(RESTAPI::SHAPE_API, "?skip=0&limit=100", "?shape_seasons=" + id, progressbarText);
+									dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::SHAPE_API, "?skip=0&limit=100", "?shape_seasons=" + id, progressbarText);
 
 								}
 								else if (lableText == "theme")
 								{
 									progressbarText = "Loading Theme details..";
-									dependentFieldJson = Helper::makeRestcallGet(RESTAPI::THEME_API, "?skip=0&limit=100", "?theme_seasons=" + id, progressbarText);
+									dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::THEME_API, "?skip=0&limit=100", "?theme_seasons=" + id, progressbarText);
 								}
 								else
 								{
-									dependentFieldJson = Helper::makeRestcallGet(apiUrl, "/hierarchy?skip=0&limit=1000", "/" + id, progressbarText);
+									dependentFieldJson = RESTAPI::makeRestcallGet(apiUrl, "/hierarchy?skip=0&limit=1000", "/" + id, progressbarText);
 								}
 								json attJson = json::object();
 
@@ -2131,18 +2129,18 @@ namespace CLOVise
 								if (lableText == "shape")
 								{
 									progressbarText = "Loading Shape details..";
-									dependentFieldJson = Helper::makeRestcallGet(RESTAPI::SHAPE_API, "?skip=0&limit=100", "?shape_seasons=" + id, progressbarText);
+									dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::SHAPE_API, "?skip=0&limit=100", "?shape_seasons=" + id, progressbarText);
 
 								}
 								else if (lableText == "theme")
 								{
 									progressbarText = "Loading Theme details..";
-									dependentFieldJson = Helper::makeRestcallGet(RESTAPI::THEME_API, "?skip=0&limit=100", "?theme_seasons=" + id, progressbarText);
+									dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::THEME_API, "?skip=0&limit=100", "?theme_seasons=" + id, progressbarText);
 
 								}
 								else
 								{
-									dependentFieldJson = Helper::makeRestcallGet(apiUrl, "/hierarchy?skip=0&limit=100", "/" + id, progressbarText);
+									dependentFieldJson = RESTAPI::makeRestcallGet(apiUrl, "/hierarchy?skip=0&limit=100", "/" + id, progressbarText);
 								}
 
 								json attJson = json::object();
@@ -2536,7 +2534,7 @@ namespace CLOVise
 
 					string requestString = to_string(request);
 					//UTILITY_API->DisplayMessageBox("requestString" + requestString);
-					string response = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::STYLE_ENDPOINT_API + "/" + _productId + "/product_colors", &requestString, headerNameAndValueList, "Creating Colorways");
+					string response = RESTAPI::PostRestCall(requestString, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::STYLE_ENDPOINT_API + "/" + _productId + "/product_colors", "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 					//UTILITY_API->DisplayMessageBox("response" + response);
 					if (FormatHelper::HasError(response))
 					{
@@ -3211,7 +3209,7 @@ namespace CLOVise
 		bomData["style_id"] = _productId;
 		string bomMetaData = to_string(bomData);
 		//UTILITY_API->DisplayMessageBox(to_string(bomData));
-		string response = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::CREATE_BOM_API + "/" + bomTemplateId, &bomMetaData, headerNameAndValueList, "Loading");
+		string response = RESTAPI::PostRestCall(bomMetaData, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::CREATE_BOM_API + "/" + bomTemplateId, "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 		if (!FormatHelper::HasContent(response))
 		{
 			RESTAPI::SetProgressBarData(0, "", false);
@@ -3409,7 +3407,6 @@ namespace CLOVise
 						string placementData = to_string(attJson);
 						Logger::Debug("Create product CreateBom() placementData" + placementData);
 						partMaterialResponse = RESTAPI::PostRestCall(placementData, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API_V3 + "/" + bomLatestRevision + "/items/part_materials", "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
-						//response = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API_V3 + "/" + bomLatestRevision + "/items/part_materials", &placementData, headerNameAndValueList, "Loading");
 						Logger::Debug("Create product CreateBom() response material" + partMaterialResponse);
 
 					}
@@ -3437,7 +3434,6 @@ namespace CLOVise
 						Logger::Debug("Create product CreateBom() queryParam" + api);
 
 						partMaterialResponse = RESTAPI::PostRestCall(placementData, api, "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
-						//response = REST_API->CallRESTPost(api, &placementData, headerNameAndValueList, "Loading");
 						Logger::Debug("Create product CreateBom() response Special" + partMaterialResponse);
 
 					}
