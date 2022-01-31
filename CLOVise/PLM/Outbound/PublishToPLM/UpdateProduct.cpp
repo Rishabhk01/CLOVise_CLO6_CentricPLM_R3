@@ -2579,6 +2579,8 @@ namespace CLOVise
 
 				fieldVal = qComboBoxC1->property(fieldValue.c_str()).toString().toStdString();
 				Logger::Debug("Update product ReadVisualUIFieldValue() QComboBox->fieldVal" + fieldVal);
+			if (fieldLabel == "bom_template")
+				m_bomTemplateName->setText(QString::fromStdString(fieldValue));
 				if (!fieldVal.empty())
 				{
 					fieldValue = fieldVal;
