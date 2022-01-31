@@ -84,7 +84,7 @@ Description - GetMaterialTypeForSection(string _sectionName) method used to get 
 	inline  map<string, string> GetCentricMaterialTypes()
 	{
 		map<string, string> materialTypeMap;
-		json responseJson = RESTAPI::makeRestcallGet(RESTAPI::MATERIAL_TYPE_SEARCH_API, "?limit=100", "", "Loading materail type details..");
+		json responseJson = RESTAPI::makeRestcallGet(RESTAPI::MATERIAL_TYPE_SEARCH_API, "?limit=100", "", "Loading material type details..");
 
 		//m_materialTypeList.append(QString::fromStdString(BLANK));
 		for (int i = 0; i < responseJson.size(); i++)
