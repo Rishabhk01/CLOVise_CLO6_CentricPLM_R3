@@ -2054,13 +2054,13 @@ namespace CLOVise
 								if (lableText == "shape")
 								{
 									progressbarText = "Loading Shape details..";
-									dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::SHAPE_API, "?skip=0&limit=100", "?shape_seasons=" + id, progressbarText);
+									dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::SHAPE_API, "&skip=0&limit=100", "?shape_seasons=" + id, progressbarText);
 
 								}
 								else if (lableText == "theme")
 								{
 									progressbarText = "Loading Theme details..";
-									dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::THEME_API, "?skip=0&limit=100", "?theme_seasons=" + id, progressbarText);
+									dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::THEME_API, "&skip=0&limit=100", "?theme_seasons=" + id, progressbarText);
 								}
 								else
 								{
@@ -2129,13 +2129,13 @@ namespace CLOVise
 								if (lableText == "shape")
 								{
 									progressbarText = "Loading Shape details..";
-									dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::SHAPE_API, "?skip=0&limit=100", "?shape_seasons=" + id, progressbarText);
+									dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::SHAPE_API, "&skip=0&limit=100", "?shape_seasons=" + id, progressbarText);
 
 								}
 								else if (lableText == "theme")
 								{
 									progressbarText = "Loading Theme details..";
-									dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::THEME_API, "?skip=0&limit=100", "?theme_seasons=" + id, progressbarText);
+									dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::THEME_API, "&skip=0&limit=100", "?theme_seasons=" + id, progressbarText);
 
 								}
 								else
