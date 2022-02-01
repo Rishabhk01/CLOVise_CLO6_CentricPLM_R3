@@ -217,6 +217,7 @@ namespace CLOVise
 		QStringList m_localAttributesList;
 		QStringList m_plmAttributesList;
 		QListWidget* m_colorwayImageList;
+		QStringList m_colorwayNamesList;
 
 		string m_perveiouselySelectedId;
 		json m_colorwayJson;
