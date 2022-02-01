@@ -748,6 +748,8 @@ Description - BackupBomDetails() method used backup bom data in a data structure
 			{
 				//sectionInfo sectionInfoObj = 
 				QTableWidget* sectionTable = itr->second;
+				json attsJson = json::array();
+				int count = 0;
 				string sectionId = sectionTable->property("SectionId").toString().toStdString();
 				for (int rowCount = 0; rowCount < sectionTable->rowCount(); rowCount++)
 				{
@@ -890,14 +892,16 @@ Description - BackupBomDetails() method used backup bom data in a data structure
 					}
 					attJson["ds_section"] = sectionId;
 					attJson["common_color"] = commonColorId;
-
-					if (isRowAddedByUser == "true")
-						backupBomDataMap.insert(make_pair(itr->first, attJson));
+					
+					
 					Logger::Debug("BOMUtility BackupBomDetails() attJson" + to_string(attJson));
-
+					if (isRowAddedByUser == "true")
+						attsJson[count++] = attJson;
 
 					//UTILITY_API->DisplayMessageBox("attJson" + to_string(attJson));
 				}
+				Logger::Debug("BOMUtility BackupBomDetails() attsJson" + to_string(attsJson));
+					backupBomDataMap.insert(make_pair(itr->first, attsJson));
 				//sectionTable->model()->removeRows(0, sectionTable->rowCount());
 				sectionTable->clearContents();
 				sectionTable->setRowCount(0);

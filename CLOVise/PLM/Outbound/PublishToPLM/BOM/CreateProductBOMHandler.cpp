@@ -1138,6 +1138,7 @@ Description - RestoreBomDetails() method used to store bom data.
 		getMaterialDetails("buttonHeadList", Configuration::GetInstance()->GetTechPackJson(), false);
 		getMaterialDetails("buttonHoleList", Configuration::GetInstance()->GetTechPackJson(), false);
 		getMaterialDetails("zipperList", Configuration::GetInstance()->GetTechPackJson(), false);
+		Logger::Debug("CreateProductBOMHandler -> RestoreBomDetails() -> m_backupBomDataMap size" + to_string(m_backupBomDataMap.size()));
 		for (auto itr = m_backupBomDataMap.begin(); itr != m_backupBomDataMap.end(); itr++)
 		{
 			json rowDataJson = itr->second;
@@ -1147,7 +1148,14 @@ Description - RestoreBomDetails() method used to store bom data.
 			json placementMateriaTypeJson;
 			placementMateriaTypeJson = BOMUtility::GetMaterialTypeForSection(m_bomSectionNameAndTypeMap, itr->first);
 			if (table != nullptr)
-				AddBomRows(table, rowDataJson, QString::fromStdString(itr->first), placementMateriaTypeJson, true);
+			{
+				for (int i = 0; i < rowDataJson.size(); i++)
+				{
+					json rowData = rowDataJson.at(i);
+					Logger::Debug("CreateProductBOMHandler -> RestoreBomDetails() -> rowData" + to_string(rowData));
+					AddBomRows(table, rowData, QString::fromStdString(itr->first), placementMateriaTypeJson, true);
+				}
+			}
 		}
 		Logger::Debug("CreateProductBOMHandler -> RestoreBomDetails() -> End");
 	}

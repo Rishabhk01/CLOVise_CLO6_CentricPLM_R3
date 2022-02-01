@@ -1153,7 +1153,14 @@ Description - RestoreBomDetails() method used to store bom data.
 			  json placementMateriaTypeJson;
 			  placementMateriaTypeJson = BOMUtility::GetMaterialTypeForSection(m_bomSectionNameAndTypeMap, itr->first);
 			  if (table != nullptr)
-				  AddBomRows(table, rowDataJson, QString::fromStdString(itr->first), placementMateriaTypeJson, true);
+			  {
+				  for (int i = 0; i < rowDataJson.size(); i++)
+				  {
+					  json rowData = rowDataJson.at(i);
+					  Logger::Debug("UpdateProductBOMHandler -> RestoreBomDetails() -> rowData" + to_string(rowData));
+					  AddBomRows(table, rowData, QString::fromStdString(itr->first), placementMateriaTypeJson, true);
+				  }
+			  }
 		  }
 		  Logger::Debug("UpdateProductBOMHandler -> RestoreBomDetails() -> End");
 	  }
