@@ -14,7 +14,6 @@
 #include <sstream>
 #include <sys/stat.h>
 #include <sys/types.h>
-
 #include <QString>
 #include <QStringList>
 #include <QVariant>
@@ -1330,27 +1329,6 @@ namespace Helper
 		int pos = _fileName.find_last_of('.');
 		string fileExt = _fileName.substr(pos + 1);
 		return fileExt;
-	}
-
-	inline json makeRestcallGet(string _api, string _param = "", string _id = "", string _progressbartext = "")
-	{
-		Logger::Debug("UiHelper drawWidget() _attName == Season");
-		Logger::Debug("UiHelper drawWidget() API: " + _api + _id + _param);
-		vector<pair<string, string>> headerNameAndValueList;
-		headerNameAndValueList.push_back(make_pair("content-Type", "application/json"));
-		headerNameAndValueList.push_back(make_pair("Cookie", Configuration::GetInstance()->GetBearerToken()));
-		string resultJsonString = REST_API->CallRESTGet(Configuration::GetInstance()->GetPLMServerURL() + _api + _id + _param, headerNameAndValueList, _progressbartext);
-		if (!FormatHelper::HasContent(resultJsonString))
-		{
-			throw "Unable to initiliaze Document Configuration. Please try again or Contact your System Administrator.";
-		}
-
-		int length = resultJsonString.length();
-		int indexforjson = resultJsonString.find("[");
-		string FinalresultJsonString = resultJsonString.substr(indexforjson, length);
-		json detailJson = json::parse(FinalresultJsonString);
-
-		return detailJson;
 	}
 
 	inline json GetJsonFromResponse(string _response, string _start)

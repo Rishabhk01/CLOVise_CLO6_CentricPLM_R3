@@ -42,7 +42,7 @@ void PublishToPLMData::SetDocumentConfigJSON(string _module, string _rootType, b
 	const char* restErrorMsg = "";
 	try
 	{
-		m_documentConfigJson = Helper::makeRestcallGet(RESTAPI::STYLE_DETAIL_API, "/centric%3A%2F%2FREFLECTION%2FINSTANCE%2FCreateFormDefinition%2FStyle/configurable_attributes?skip=0&limit=100", "", "Loading " + Configuration::GetInstance()->GetLocalizedStyleClassName() + " details..");
+		m_documentConfigJson = RESTAPI::makeRestcallGet(RESTAPI::STYLE_DETAIL_API, "/centric%3A%2F%2FREFLECTION%2FINSTANCE%2FCreateFormDefinition%2FStyle/configurable_attributes?skip=0&limit=100", "", "Loading " + Configuration::GetInstance()->GetLocalizedStyleClassName() + " details..");
 		Logger::RestAPIDebug("m_documentConfigJson::" + to_string(m_documentConfigJson));
 		//Logger::Info("PublishToPLMData -> if (restData)  start");
 		//UTILITY_API->DisplayMessageBox("Calling rest api");

@@ -713,43 +713,44 @@ namespace CLOVise
 					if (attributeName == "Season")
 					{
 
-						responseJson = Helper::makeRestcallGet(RESTAPI::SEASON_SEARCH_API, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading season details..");
+						responseJson = RESTAPI::makeRestcallGet(RESTAPI::SEASON_SEARCH_API, "?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "Loading season details..");
 					}
 					else if (attributeName == "Brand")
 					{
 						string seasonId = Helper::GetJSONValue<string>(m_downloadedStyleJson, "parent_season_Id", true);
-						responseJson = Helper::makeRestcallGet(RESTAPI::SEASON_SEARCH_API, "/hierarchy?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "/" + seasonId, "Loading brand details..");
+						responseJson = RESTAPI::makeRestcallGet(RESTAPI::SEASON_SEARCH_API, "/hierarchy?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "/" + seasonId, "Loading brand details..");
 					}
 					else if (attributeName == "Department")
 					{
 
 						string brandId = Helper::GetJSONValue<string>(m_downloadedStyleJson, "category_1", true);
-						responseJson = Helper::makeRestcallGet(RESTAPI::DEPARTMENT_DETAIL_API, "/hierarchy?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "/" + brandId, "Loading Department details..");
+						responseJson = RESTAPI::makeRestcallGet(RESTAPI::DEPARTMENT_DETAIL_API, "/hierarchy?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "/" + brandId, "Loading Department details..");
 					}
 					else if (attributeName == "Collection")
 					{
 						string departmentId = Helper::GetJSONValue<string>(m_downloadedStyleJson, "category_2", true);
-						responseJson = Helper::makeRestcallGet(RESTAPI::COLLECTION_DETAIL_API, "/hierarchy?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "/" + departmentId, "Loading collection details..");
+						responseJson = RESTAPI::makeRestcallGet(RESTAPI::COLLECTION_DETAIL_API, "/hierarchy?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "/" + departmentId, "Loading collection details..");
 					}
 
 					else if (attributeName == "Style Type")
 					{
-						responseJson = Helper::makeRestcallGet(RESTAPI::STYLE_TYPE_API, "?available=true&limit=100", "", "Loading style type details..");
+						responseJson = RESTAPI::makeRestcallGet(RESTAPI::STYLE_TYPE_API, "?available=true&limit=100", "", "Loading style type details..");
 						m_currentlySelectedStyleTypeId = attDefaultValue.toStdString();
 					}
 					else if (attributeName == "Style/Shape")
 					{
 						string seasonId = Helper::GetJSONValue<string>(m_downloadedStyleJson, "parent_season_Id", true);
-						responseJson = Helper::makeRestcallGet(RESTAPI::SHAPE_API, "&skip=0&limit=100", "?shape_seasons=" + seasonId, "Loading style type details..");
+						responseJson = RESTAPI::makeRestcallGet(RESTAPI::SHAPE_API, "&skip=0&limit=100", "?shape_seasons=" + seasonId, "Loading style type details..");
 					}
 					else if (attributeName == "Style/Theme")
 					{
 						string seasonId = Helper::GetJSONValue<string>(m_downloadedStyleJson, "parent_season_Id", true);
-						responseJson = Helper::makeRestcallGet(RESTAPI::THEME_API, "&skip=0&limit=100", "?theme_seasons=" + seasonId, "Loading theme type details..");
+						responseJson = RESTAPI::makeRestcallGet(RESTAPI::THEME_API, "&skip=0&limit=100", "?theme_seasons=" + seasonId, "Loading theme type details..");
 					}
 
 					Logger::Debug("UpdateProduct drawWidget() attributeName:**************************** " + attributeName);
 					
+
 					for (int i = 0; i < responseJson.size(); i++)
 					{
 						attJson = Helper::GetJSONParsedValue<int>(responseJson, i, false);;///use new method
@@ -1191,7 +1192,7 @@ namespace CLOVise
 			string zprjFileName = UTILITY_API->GetProjectName();
 			bodyJson["node_name"] = zprjFileName;
 			string bodyJsonString = to_string(bodyJson);
-			string resultJsonString = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::DOCUMENT_CREATE_API + "/" + _productId, &bodyJsonString, headerNameAndValueList, "Loading");
+			string resultJsonString = RESTAPI::PostRestCall(bodyJsonString, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::DOCUMENT_CREATE_API + "/" + _productId, "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 			if (!FormatHelper::HasContent(resultJsonString))
 			{
 				throw "Unable to initiliaze Document Configuration. Please try again or Contact your System Administrator.";
@@ -1243,7 +1244,7 @@ namespace CLOVise
 			string FileName = UTILITY_API->GetProjectName() + ".zip";
 			bodyJson["node_name"] = FileName;
 			string bodyJsonString = to_string(bodyJson);
-			string resultJsonString = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::DOCUMENT_CREATE_API + "/" + _productId, &bodyJsonString, headerNameAndValueList, "Loading");
+			string resultJsonString = RESTAPI::PostRestCall(bodyJsonString, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::DOCUMENT_CREATE_API + "/" + _productId, "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 			if (!FormatHelper::HasContent(resultJsonString))
 			{
 				throw "Unable to initiliaze Document Configuration. Please try again or Contact your System Administrator.";
@@ -1539,7 +1540,7 @@ namespace CLOVise
 				colorwayNamesList.append(QString::fromStdString(colorwayName));
 			}
 			//UTILITY_API->DisplayMessageBox(to_string(downloadJsonArray));
-
+			m_colorwayNamesList = colorwayNamesList;
 			for (int rowCount = 0; rowCount < downloadJsonArray.size(); rowCount++)
 			{
 
@@ -2203,7 +2204,7 @@ namespace CLOVise
 				int view;
 				int rowCount = m_imageIntentTable->rowCount();
 				string temporaryPath = UTILITY_API->GetCLOTemporaryFolderPath();
-
+				
 				for (int index = 0; index < rowCount; index++)
 				{
 
@@ -2443,18 +2444,18 @@ namespace CLOVise
 							if (lableText == "shape")
 							{
 								progressbarText = "Loading Shape details..";
-								dependentFieldJson = Helper::makeRestcallGet(RESTAPI::SHAPE_API, "&skip=0&limit=100", "?shape_seasons=" + id, progressbarText);
+								dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::SHAPE_API, "&skip=0&limit=100", "?shape_seasons=" + id, progressbarText);
 
 							}
 							else if (lableText == "theme")
 							{
 								progressbarText = "Loading Theme details..";
-								dependentFieldJson = Helper::makeRestcallGet(RESTAPI::THEME_API, "&skip=0&limit=100", "?theme_seasons=" + id, progressbarText);
+								dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::THEME_API, "&skip=0&limit=100", "?theme_seasons=" + id, progressbarText);
 
 							}
 							else
 							{
-								dependentFieldJson = Helper::makeRestcallGet(apiUrl, "/hierarchy", "/" + id, progressbarText);
+								dependentFieldJson = RESTAPI::makeRestcallGet(apiUrl, "/hierarchy", "/" + id, progressbarText);
 							}
 
 
@@ -2514,18 +2515,18 @@ namespace CLOVise
 							if (lableText == "shape")
 							{
 								progressbarText = "Loading Shape details..";
-								dependentFieldJson = Helper::makeRestcallGet(RESTAPI::SHAPE_API, "&skip=0&limit=100", "?shape_seasons=" + id, progressbarText);
+								dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::SHAPE_API, "&skip=0&limit=100", "?shape_seasons=" + id, progressbarText);
 
 							}
 							else if (lableText == "theme")
 							{
 								progressbarText = "Loading Theme details..";
-								dependentFieldJson = Helper::makeRestcallGet(RESTAPI::THEME_API, "&skip=0&limit=100", "?theme_seasons=" + id, progressbarText);
+								dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::THEME_API, "&skip=0&limit=100", "?theme_seasons=" + id, progressbarText);
 
 							}
 							else
 							{
-								dependentFieldJson = Helper::makeRestcallGet(apiUrl, "/hierarchy", "/" + id, progressbarText);
+								dependentFieldJson = RESTAPI::makeRestcallGet(apiUrl, "/hierarchy", "/" + id, progressbarText);
 							}
 
 
@@ -2680,6 +2681,8 @@ namespace CLOVise
 
 				fieldVal = qComboBoxC1->property(fieldValue.c_str()).toString().toStdString();
 				Logger::Debug("Update product ReadVisualUIFieldValue() QComboBox->fieldVal" + fieldVal);
+			if (fieldLabel == "bom_template")
+				m_bomTemplateName->setText(QString::fromStdString(fieldValue));
 				if (!fieldVal.empty())
 				{
 					fieldValue = fieldVal;
@@ -2889,7 +2892,7 @@ namespace CLOVise
 					request["description"] = description->toPlainText().toStdString();
 					request["node_name"] = plmColorwayName->text().toStdString();
 					string requestString = to_string(request);
-					response = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::STYLE_ENDPOINT_API + "/" + _productId + "/product_colors", &requestString, headerNameAndValueList, "Loading");
+				response = RESTAPI::PostRestCall(requestString, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::STYLE_ENDPOINT_API + "/" + _productId + "/product_colors", "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 				}
 				int colorwayCount = UTILITY_API->GetColorwayCount();
 				QString selectedCLOColorwayName = colorwayNameCombo->currentText();
@@ -3341,7 +3344,7 @@ namespace CLOVise
 		{
 			if (!styleId.empty())
 			{
-				colorwayJson = Helper::makeRestcallGet(RESTAPI::UPDATE_STYLE_API + "/" + styleId + "/product_colors?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "", "Loading colorway details..");
+				colorwayJson = RESTAPI::makeRestcallGet(RESTAPI::UPDATE_STYLE_API + "/" + styleId + "/product_colors?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "", "Loading colorway details..");
 				Logger::RestAPIDebug("responseJson->GetcolorwayDetails() ::responseJson::" + to_string(colorwayJson));
 				//colorwayJson = Helper::makeRestcallGet(RESTAPI::UPDATE_STYLE_API + "/" + styleId + "/product_colors?limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "", "Loading colorway details..");
 				//m_downloadedColorwayJson = colorwayJson;
@@ -3364,7 +3367,7 @@ namespace CLOVise
 				}
 				//	UTILITY_API->DisplayMessageBox("colorSpecsId" + colorSpecsId);
 				colorSpecsId = colorSpecsId.substr(0, colorSpecsId.length() - 1);
-				json colorSpecJson = Helper::makeRestcallGet(RESTAPI::COLOR_SPEC_API + "?" + colorSpecsId + "&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "", "Loading color spec details..");
+				json colorSpecJson = RESTAPI::makeRestcallGet(RESTAPI::COLOR_SPEC_API + "?" + colorSpecsId + "&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "", "Loading color spec details..");
 
 				//	UTILITY_API->DisplayMessageBox("colorSpecsId" + to_string(colorSpecJson));
 				for (int colorwayAarrayCount = 0; colorwayAarrayCount < colorwayJson.size(); colorwayAarrayCount++)
@@ -3402,7 +3405,7 @@ namespace CLOVise
 				//UTILITY_API->DisplayMessageBox("colorwayCountJson:: " + to_string(downloadedColorwayjson));
 				m_downloadedColorway = true;
 				m_downloadedColorwayJson = downloadedColorwayjson;
-				AddColorwayDetails(selectedIds, downloadedColorwayjson);
+				AddColorwayDetails(selectedIds, downloadedColorwayjson);			
 				ShowImageIntent();
 				m_downloadedColorway = false;
 			}
@@ -3950,8 +3953,18 @@ namespace CLOVise
 				pix.scaled(QSize(80, 80), Qt::KeepAspectRatio);
 				QIcon newIcon;
 				newIcon.addPixmap(pix);
-
-				AddRowInImageIntentTab(pix, imageIntentsDetails, imageId);
+				if (_colorwayName == "No Colorway(Default)")
+				{
+					AddRowInImageIntentTab(pix, imageIntentsDetails, imageId);
+				}
+				for (auto i = 0; i < m_colorwayNamesList.count(); i++)
+				{					
+					
+					if (m_colorwayNamesList.at(i).toStdString()== _colorwayName )
+					{
+						AddRowInImageIntentTab(pix, imageIntentsDetails, imageId);
+					}
+				}
 			}
 			m_nonCloColorwayImagesMap.insert(make_pair(QString::fromStdString(_id), nonCloImageIdsList));
 

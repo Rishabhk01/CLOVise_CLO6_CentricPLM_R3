@@ -1097,7 +1097,7 @@ namespace CLOVise
 
 			string dataJSONString = to_string(dataJson);
 
-			string resultJsonString = REST_API->CallRESTPost(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::DOCUMENT_CREATE_API + "/" + _productId, &dataJSONString, headerNameAndValueList, "Loading");
+			string resultJsonString = RESTAPI::PostRestCall(dataJSONString, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::DOCUMENT_CREATE_API + "/" + _productId, "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 			//UTILITY_API->DisplayMessageBox(resultJsonString);
 			if (!FormatHelper::HasContent(resultJsonString))
 			{
@@ -1451,7 +1451,7 @@ namespace CLOVise
 						progressbarText = "Loading Category details..";
 						string matTypeId = sender()->property(_item.toStdString().c_str()).toString().toStdString();
 						string categoryValueId = MaterialConfig::GetInstance()->GetMaterialCategoryEnumId();
-						dependentFieldJson = Helper::makeRestcallGet(RESTAPI::SEARCH_ENUM_ATT_API + "/" + categoryValueId + "/values?depends_on_details=true&skip=0&limit=1000", "","", progressbarText);
+						dependentFieldJson = RESTAPI::makeRestcallGet(RESTAPI::SEARCH_ENUM_ATT_API + "/" + categoryValueId + "/values?depends_on_details=true&skip=0&limit=1000", "","", progressbarText);
 						Logger::Logger("dependentFieldJson============= " + to_string(dependentFieldJson));
 					}
 					json attJson = json::object();

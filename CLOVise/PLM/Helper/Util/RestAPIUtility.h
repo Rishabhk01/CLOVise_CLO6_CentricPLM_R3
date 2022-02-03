@@ -309,13 +309,38 @@ namespace RESTAPI
 		}
 		curl_easy_cleanup(curl);
 		Logger::Debug("Response..." + response);
-		Logger::Info("RestAPI::CentricRestCallGet() Ended...");
+		
 		if (FormatHelper::HasError(response))
 		{
 			RESTAPI::SetProgressBarData(0, "", false);
 			throw runtime_error(response);
 		}
+		Logger::Info("RestAPI::CentricRestCallGet() Ended...");
 		return response;
+	}
+
+
+	inline json makeRestcallGet(string _api, string _param = "", string _id = "", string _progressbartext = "")
+	{
+		Logger::Debug("UiHelper drawWidget() _attName == Season");
+		Logger::Debug("UiHelper drawWidget() API: " + _api + _id + _param);
+		vector<pair<string, string>> headerNameAndValueList;
+		headerNameAndValueList.push_back(make_pair("content-Type", "application/json"));
+		headerNameAndValueList.push_back(make_pair("Cookie", Configuration::GetInstance()->GetBearerToken()));
+		string resultJsonString = CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + _api + _id + _param, APPLICATION_JSON_TYPE, "");
+		if (!FormatHelper::HasContent(resultJsonString))
+		{
+			throw "Unable to initiliaze Document Configuration. Please try again or Contact your System Administrator.";
+		}
+
+		Logger::Debug("resultJsonString" + resultJsonString);
+		/*int length = resultJsonString.length();
+		int indexforjson = resultJsonString.rfind("[");
+		string FinalresultJsonString = resultJsonString.substr(indexforjson, length);*/
+		json detailJson = json::parse(resultJsonString);
+
+
+		return detailJson;
 	}
 	/*
 	* Description - RestCall() method used to make a Rest call method.
@@ -576,6 +601,7 @@ namespace RESTAPI
 		curl_easy_setopt(hnd, CURLOPT_POSTFIELDSIZE, _parameter.size());
 		curl_easy_setopt(hnd, CURLOPT_NOPROGRESS, 0);
 		curl_easy_setopt(hnd, CURLOPT_XFERINFOFUNCTION, progress_callback);
+		
 
 		//	curl_easy_setopt(hnd, CURLOPT_POSTFIELDS, "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"file\"; filename=\"image.png\"\r\nContent-Type: image/png\r\n\r\n" + fileStream.str() +"\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--");
 		CURLcode ret = curl_easy_perform(hnd);

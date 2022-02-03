@@ -58,6 +58,7 @@ namespace CLOVise
 		void FillImageIntentIdAndLabeMap(json _imageJson, string _module);
 		void FillNonCloImageMap(json _imageJson,string _id);
 		void FillNonCloColorwayImageMap(json _imageJson, string _imageId, QString _colorwayId);
+		string collectCriteriaFields(QTreeWidget* _documentPushToPLMTree_1, QTreeWidget* _documentPushToPLMTree_2);
 		struct ColorwayViews
 		{
 			string viewUploadId[4];
@@ -125,7 +126,7 @@ namespace CLOVise
 
 		void drawCriteriaWidget(json _documentJson, QTreeWidget* _documentPushToPLMTree_1, QTreeWidget* _documentPushToPLMTree_2, json _metadataJson);
 		void drawWidget(json _feildsJson, QTreeWidget* m_TreeWidget, int _start, int _end);
-		string collectCriteriaFields(QTreeWidget* _documentPushToPLMTree_1, QTreeWidget* _documentPushToPLMTree_2);
+		
 		/*void PutRestCall(string _parameter, string _api, string _contentType);
 		 size_t  WriteCallback(void* _contents, size_t _size, size_t _nmemb, string* _userp);
 		size_t GetFileSize(const std::string& _path);*/
@@ -220,6 +221,7 @@ namespace CLOVise
 		QStringList m_localAttributesList;
 		QStringList m_plmAttributesList;
 		QListWidget* m_colorwayImageList;
+		QStringList m_colorwayNamesList;
 
 		string m_perveiouselySelectedId;
 		json m_colorwayJson;
