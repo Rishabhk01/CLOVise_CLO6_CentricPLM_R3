@@ -1946,10 +1946,35 @@ namespace CLOVise
 						if (deleteMessage->exec() == QMessageBox::Yes)
 						{
 							m_prevSelectedStyleTypeIndex = m_selectedStyleTypeIndex;
-							for (int rowCount = 0; rowCount < ui_colorwayTable->rowCount(); rowCount++)
+							for (int rowCount = ui_colorwayTable->rowCount()-1; rowCount >= 0; rowCount--)
 							{
 								ui_colorwayTable->removeRow(rowCount);
 							}
+							for (auto index = m_ImageIntentList->count()-1; index >= 0; index--)
+							{
+								QListWidgetItem* item = m_ImageIntentList->item(index);
+								QListWidget *listItem = qobject_cast<QListWidget*>(m_ImageIntentList->itemWidget(item));
+								string colorwayName;
+								for (int itemIndex = 0; itemIndex < listItem->count(); itemIndex++)
+								{
+									string text= listItem->item(itemIndex)->text().toStdString();									
+									if (itemIndex == 0)
+									{
+										int length = text.length();
+										int indexOfColon = text.find(":");
+										colorwayName = text.substr(indexOfColon + 2, length);
+										Logger::Debug("CreateProduct -> onTabClicked() -> clorwayname" + colorwayName);
+
+									}									
+								}
+
+								if (colorwayName != "No Colorway(Default)")
+								{
+									m_ImageIntentList->takeItem(index);//Deleting the mapped colorway image intent lists
+								}
+									
+							}
+							SetTotalImageCount();
 							if (CreateProductBOMHandler::GetInstance()->IsBomCreated())
 							{
 								m_CloAndPLMColorwayMap.clear();
