@@ -1254,12 +1254,7 @@ namespace CLOVise
 			if (CVLicenseHelper::GetInstance()->ValidateCVLicenseLogOut(CLOPLMSignIn::GetInstance()->GetID().toStdString()))
 			{
 				this->hide();
-				Configuration::GetInstance()->SetPLMSignin(false);
-				Configuration::GetInstance()->SetBearerToken("");
-				Configuration::GetInstance()->SetConnectionStatus("Not Connected");
-				Configuration::GetInstance()->SetPLMVersion("Not Available");
-				PLMSignin::Destroy();
-				CLOPLMSignIn::Destroy();
+				
 				Logger::Info("DesignSuite -> CLOPLMSignIn -> after");
 				ColorConfig::GetInstance()->ResetColorConfig();
 				PrintConfig::GetInstance()->ResetPrintConfig();
@@ -1288,6 +1283,12 @@ namespace CLOVise
 				CreateProduct::Destroy();
 				PublishToPLMData::Destroy();*/
 				CreateProduct::Destroy(); //uncommented because of destroy issue not fixed.
+				Configuration::GetInstance()->SetPLMSignin(false);
+				Configuration::GetInstance()->SetBearerToken("");
+				Configuration::GetInstance()->SetConnectionStatus("Not Connected");
+				Configuration::GetInstance()->SetPLMVersion("Not Available");
+				PLMSignin::Destroy();
+				CLOPLMSignIn::Destroy();
 				if (FormatHelper::HasContent(UTILITY_API->GetProjectName()) && DEFAULT_3DMODEL_NAME.find(UTILITY_API->GetProjectName()) == string::npos)
 				{
 					string currentProjectPath = UTILITY_API->GetProjectFilePath();
