@@ -1097,7 +1097,7 @@ namespace CLOVise
 	{
 		Logger::Info("DesignSuite -> onClickedSearchPrints() -> Start");
 		Configuration::GetInstance()->SetCurrentScreen(PRINT_SEARCH_CLICKED);
-		Configuration::GetInstance()->SetIsUpdateColorClicked(false);
+		Configuration::GetInstance()->SetIsPrintSearchClicked(false);
 		ExecutePrintModule();
 		Logger::Info("DesignSuite -> onClickedSearchPrints() -> Start");
 	}
@@ -1164,6 +1164,7 @@ namespace CLOVise
 	{
 		Logger::Info("DesignSuite -> Initialize 3D Model&Visual -> Start");
 		Configuration::GetInstance()->SetIsUpdateColorClicked(false);
+		Configuration::GetInstance()->SetIsPrintSearchClicked(false);
 		Configuration::GetInstance()->SetCurrentScreen(CREATE_PRODUCT_CLICKED);
 		
 		ExecuteCreateProductModule();
