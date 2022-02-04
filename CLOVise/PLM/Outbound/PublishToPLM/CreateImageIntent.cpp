@@ -311,8 +311,9 @@ namespace CLOVise
 
 	void CreateImageIntent::OnStyleOrColorwayDropdownClicked(const QString& _item)
 	{
+		Logger::Debug("CreateImageIntent -> OnStyleOrColorwayDropdownClicked() -> Start");
 		std::map<QString, QString> checkBoxItemListMap;
-		if (_item.contains("No Colorway"))
+		if (_item.contains("No_Colorway_Default"))
 		{
 			checkBoxItemListMap = m_styleImageLabelsMap;
 		}
@@ -321,6 +322,8 @@ namespace CLOVise
 			checkBoxItemListMap = m_colorwayImageLabelsMap;
 		}
 		m_labelList->clear();
+
+		Logger::Debug("CreateImageIntent -> OnStyleOrColorwayDropdownClicked() -> checkBoxItemListMap");
 
 		for (auto it = checkBoxItemListMap.begin(); it != checkBoxItemListMap.end(); it++)
 		{
@@ -332,10 +335,12 @@ namespace CLOVise
 			checkbox->setAttribute(Qt::WA_MacShowFocusRect, false);
 			checkbox->setParent(m_viewList);
 			checkbox->setStyleSheet("QRadioButton{spacing: 7px; margin-right: 5px;}");
-
+			Logger::Debug("CreateImageIntent -> OnStyleOrColorwayDropdownClicked() -> checkBoxItemListMap- first" + it->first.toStdString());
+			Logger::Debug("CreateImageIntent -> OnStyleOrColorwayDropdownClicked() -> checkBoxItemListMap- second" + it->second.toStdString());
 			m_labelList->addItem(listItem);
 			m_labelList->setItemWidget(listItem, checkbox);
 		}
+		Logger::Debug("CreateImageIntent -> OnStyleOrColorwayDropdownClicked() -> End");
 	}
 
 	void CreateImageIntent::onAddToQueueButtonClicked()

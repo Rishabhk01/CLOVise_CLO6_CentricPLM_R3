@@ -340,7 +340,7 @@ namespace CLOVise
 	void UpdateImageIntent::StyleOrColorwayDropdownClicked(const QString& _item)
 	{
 		std::map<QString, QString> checkBoxItemListMap;
-		if (_item.contains("No Colorway"))
+		if (_item.contains("No_Colorway_Default"))
 		{
 			checkBoxItemListMap = m_styleImageLabelsMap;
 		}

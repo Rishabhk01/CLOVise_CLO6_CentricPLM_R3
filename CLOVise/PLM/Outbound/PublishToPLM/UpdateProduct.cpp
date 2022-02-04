@@ -975,7 +975,7 @@ namespace CLOVise
 					exportZPRJ(documentId);
 					exportGLBFile(glbDocumentId);
 					//UploadStyleThumbnail(productId);
-					//exportTurntableImages();
+					exportTurntableImages();
 					DeleteColorwayFromPLM();
 					uploadColorwayImages();
 					LinkImagesToColorways(productId);
