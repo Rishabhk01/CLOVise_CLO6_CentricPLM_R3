@@ -401,7 +401,7 @@ namespace CLOVise
 
 		//SetTotalImageCount();
 
-		Configuration::GetInstance()->SetIsPrintSearchClicked(false);
+			
 		this->close();
 		CLOVise::CLOViseSuite::GetInstance()->setModal(true);
 		CLOViseSuite::GetInstance()->show();
@@ -830,7 +830,6 @@ namespace CLOVise
 		string response;
 		try
 		{
-			Configuration::GetInstance()->SetIsPrintSearchClicked(false);
 			if (ValidateColorwayNameField() && CreateProductBOMHandler::GetInstance()->ValidateBomFields())
 			{
 				this->hide();
@@ -1723,8 +1722,7 @@ namespace CLOVise
 
 		PublishToPLMData::GetInstance()->m_isSaveClicked = true;
 
-		Configuration::GetInstance()->SetIsPrintSearchClicked(false);
-
+		
 		GetUpdatedColorwayNames();
 		//if (ExtractAllUIValues())
 		{
@@ -2867,7 +2865,7 @@ namespace CLOVise
 
 
 		}
-		Configuration::GetInstance()->SetIsPrintSearchClicked(false);
+		
 		this->accept();
 		/*if (!m_isSaveClicked)*/
 			//CreateProduct::Destroy();

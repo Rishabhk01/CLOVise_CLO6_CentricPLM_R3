@@ -1021,7 +1021,6 @@ namespace CLOVise
 
 	void PLMPrintResults::reject()
 	{
-		Configuration::GetInstance()->SetIsPrintSearchClicked(false);
 		this->accept();
 	}
 }
