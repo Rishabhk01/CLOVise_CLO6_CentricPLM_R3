@@ -345,6 +345,11 @@ namespace CLOVise
 			CLOVise::CLOViseSuite::GetInstance()->setModal(true);
 			CLOViseSuite::GetInstance()->show();
 		}
+		case UPDATE_MATERIAL_CLICKED:
+		{
+			CLOVise::CLOViseSuite::GetInstance()->setModal(true);
+			CLOViseSuite::GetInstance()->show();
+		}
 		}
 		UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_1);
 		UIHelper::ClearAllFieldsForSearch(m_searchTreeWidget_2);
