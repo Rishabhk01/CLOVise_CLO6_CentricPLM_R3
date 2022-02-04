@@ -782,71 +782,70 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 							 Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> colorwayName" + colorwayName);
 
 							 Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> horizontalHeaderItem Text" + _sectionTable->horizontalHeaderItem(columnIndex)->text().toStdString());
-							 if (colorwayName == _sectionTable->horizontalHeaderItem(columnIndex)->text().toStdString())
+							 if (colorwayName == _sectionTable->horizontalHeaderItem(columnIndex)->text().toStdString() && (FormatHelper::HasContent(colorId)))
 							 {
 
-								 if (FormatHelper::HasContent(colorId))
+
+								 //json dependentFieldJson = Helper::makeRestcallGet("csi-requesthandler/api/v2/color_specifications/", "&skip=0&limit=100", "" + colorId, "");
+								 string resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_COLOR_API + "/" + colorId, APPLICATION_JSON_TYPE, "");
+								 Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> resultResponse" + resultResponse);
+								 json ColoreResultJson = json::parse(resultResponse);
+								 Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> ColoreResultJson" + to_string(ColoreResultJson));
+								 string rgbValue = Helper::GetJSONValue<string>(ColoreResultJson, RGB_VALUE_KEY, true);
+								 string colorName = Helper::GetJSONValue<string>(ColoreResultJson, ATTRIBUTE_NAME, true);
+								 Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> rgbValue" + rgbValue);
+
+								 rgbValue = Helper::FindAndReplace(rgbValue, "(", "");
+								 rgbValue = Helper::FindAndReplace(rgbValue, ")", "");
+								 rgbValue = Helper::FindAndReplace(rgbValue, " ", "");
+								 Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> 2");
+								 if (FormatHelper::HasContent(rgbValue))
 								 {
-									 //json dependentFieldJson = Helper::makeRestcallGet("csi-requesthandler/api/v2/color_specifications/", "&skip=0&limit=100", "" + colorId, "");
-									 string resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_COLOR_API + "/" + colorId, APPLICATION_JSON_TYPE, "");
-									 Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> resultResponse" + resultResponse);
-									 json ColoreResultJson = json::parse(resultResponse);
-									 Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> ColoreResultJson" + to_string(ColoreResultJson));
-									 string rgbValue = Helper::GetJSONValue<string>(ColoreResultJson, RGB_VALUE_KEY, true);
-									 string colorName = Helper::GetJSONValue<string>(ColoreResultJson, ATTRIBUTE_NAME, true);
-									 Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> rgbValue" + rgbValue);
-
-									 rgbValue = Helper::FindAndReplace(rgbValue, "(", "");
-									 rgbValue = Helper::FindAndReplace(rgbValue, ")", "");
-									 rgbValue = Helper::FindAndReplace(rgbValue, " ", "");
+									 QStringList listRGB;
+									 QString colorRGB = QString::fromStdString(rgbValue);
+									 listRGB = colorRGB.split(',');
+									 int red = listRGB.at(0).toInt();
+									 int green = listRGB.at(1).toInt();
+									 int blue = listRGB.at(2).toInt();
+									 QColor color(red, green, blue);
+									 QImage image(20, 20, QImage::Format_ARGB32);
+									 image.fill(color);
+									 QPixmap pixmap;
 									 Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> 2");
-									 if (FormatHelper::HasContent(rgbValue))
+									 QLabel* label = new QLabel();
+									 label->setToolTip(QString::fromStdString(colorName));
+									 pixmap = QPixmap::fromImage(image);
+									 label->setPixmap(QPixmap(pixmap));
+
+
+									 QWidget* p_widget = new QWidget(_sectionTable);
+									 QGridLayout* gridLayout = new QGridLayout(_sectionTable);
+									 gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+									 gridLayout->setContentsMargins(0, 0, 0, 0);
+
+									 QWidget *colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
+									 colorchip->setProperty("colorId", colorId.c_str());
+									 gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
+									 QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
+									 pushButton_2->setFixedHeight(20);
+									 pushButton_2->setFixedWidth(20);
+									 if (m_addColorButtonSignalMapper != nullptr)
 									 {
-										 QStringList listRGB;
-										 QString colorRGB = QString::fromStdString(rgbValue);
-										 listRGB = colorRGB.split(',');
-										 int red = listRGB.at(0).toInt();
-										 int green = listRGB.at(1).toInt();
-										 int blue = listRGB.at(2).toInt();
-										 QColor color(red, green, blue);
-										 QImage image(20, 20, QImage::Format_ARGB32);
-										 image.fill(color);
-										 QPixmap pixmap;
-										 Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> 2");
-										 QLabel* label = new QLabel();
-										 label->setToolTip(QString::fromStdString(colorName));
-										 pixmap = QPixmap::fromImage(image);
-										 label->setPixmap(QPixmap(pixmap));
-
-
-										 QWidget* p_widget = new QWidget(_sectionTable);
-										 QGridLayout* gridLayout = new QGridLayout(_sectionTable);
-										 gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-										 gridLayout->setContentsMargins(0, 0, 0, 0);
-
-										 QWidget *colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
-										 colorchip->setProperty("colorId", colorId.c_str());
-										 gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
-										 QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
-										 pushButton_2->setFixedHeight(20);
-										 pushButton_2->setFixedWidth(20);
-										 if (m_addColorButtonSignalMapper != nullptr)
-										 {
-											 m_addColorButtonSignalMapper->setProperty("TableName", _tableName);
-											 connect(pushButton_2, SIGNAL(clicked()), m_addColorButtonSignalMapper, SLOT(map()));
-											 m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2-%3").arg(rowCount).arg(columnIndex).arg(_tableName));
-										 }
-										 pushButton_2->setProperty("TableName", _tableName);
-										 gridLayout->addWidget(pushButton_2, 0, 1, 1, 1, Qt::AlignHCenter);
-										 p_widget->setLayout(gridLayout);
-										 p_widget->setProperty("rest_api_name", bomTableColumnKeys[columnIndex]);
-										 p_widget->setProperty("colorId", colorId.c_str());
-										 Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> 10");
-										 _sectionTable->setCellWidget(rowCount, columnIndex, p_widget);
-
-										 colorChip = true;
+										 m_addColorButtonSignalMapper->setProperty("TableName", _tableName);
+										 connect(pushButton_2, SIGNAL(clicked()), m_addColorButtonSignalMapper, SLOT(map()));
+										 m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2-%3").arg(rowCount).arg(columnIndex).arg(_tableName));
 									 }
+									 pushButton_2->setProperty("TableName", _tableName);
+									 gridLayout->addWidget(pushButton_2, 0, 1, 1, 1, Qt::AlignHCenter);
+									 p_widget->setLayout(gridLayout);
+									 p_widget->setProperty("rest_api_name", bomTableColumnKeys[columnIndex]);
+									 p_widget->setProperty("colorId", colorId.c_str());
+									 Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> 10");
+									 _sectionTable->setCellWidget(rowCount, columnIndex, p_widget);
+
+									 colorChip = true;
 								 }
+							 }
 								 else
 								 {
 									 QWidget* p_widget = new QWidget(_sectionTable);
@@ -892,7 +891,7 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 									 colorChip = true;
 
 								 }
-							 }
+							 
 						 }
 					 }
 					 else
