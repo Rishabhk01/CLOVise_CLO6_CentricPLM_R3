@@ -736,11 +736,12 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 
 					QLineEdit* newColumn = new QLineEdit();
 					newColumn->setStyleSheet(LINEEDIT_STYLE);
-					newColumn->home(true);
+					
 					if (FormatHelper::HasContent(text))
 						newColumn->setText(QString::fromStdString(text));
 					else
 						newColumn->setText("");
+					newColumn->home(true);
 					Logger::Debug("CreateProductBOMHandler -> AddBomRows() -> 6");
 					QWidget *pLineEditWidget = CVWidgetGenerator::InsertWidgetInCenter(newColumn);
 					newColumn->setProperty("row", rowCount);
@@ -1025,11 +1026,13 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 						QLineEdit* newColumn = new QLineEdit();
 						newColumn->setAttribute(Qt::WA_MacShowFocusRect, false);
 						newColumn->setStyleSheet(LINEEDIT_STYLE);
-						newColumn->home(true);
+						
 						if (FormatHelper::HasContent(text))
 							newColumn->setText(QString::fromStdString(text));
 						else
 							newColumn->setText("");
+
+						newColumn->home(true);
 						Logger::Debug("CreateProductBOMHandler -> AddBomRows() -> 6");
 						QWidget *pLineEditWidget = CVWidgetGenerator::InsertWidgetInCenter(newColumn);
 						newColumn->setProperty("row", rowCount);
