@@ -1513,11 +1513,11 @@ bool Configuration::GetIsUpdateColorClicked()
 	 return m_clientSpecificAttCachedData;
  }
 
- void Configuration::SetDownloadButton(bool _downloadButton)
+ void Configuration::SetCopyStyleDownloadButton(bool _downloadButton)
  {
 	 m_downloadButton = _downloadButton;
  }
- bool Configuration::GetDownloadButton()
+ bool Configuration::GetCopyStyleDownloadButton()
  {
 	 return m_downloadButton;
  }

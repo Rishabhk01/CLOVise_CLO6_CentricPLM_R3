@@ -92,7 +92,7 @@ public:
 	string GetSubTypeInternalName();
 	string GetQueryParameterForMaterial();
 	json GetTechPackJson();
-	bool GetDownloadButton();
+	bool GetCopyStyleDownloadButton();
 	
 	void SetPLMServerURL(string _plmServerURL);
 	void SetLogFileName(string _logFileName);
@@ -144,7 +144,7 @@ public:
 	void SetSubTypeInternalName(json _clientSpecificJson);
 	void SetQueryParameterForMaterial(string queryParamsForMaterial);
 	void ExportTechPackJson();
-	void SetDownloadButton(bool _downloadButton);
+	void SetCopyStyleDownloadButton(bool _downloadButton);
 	
 
 private:

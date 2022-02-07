@@ -386,7 +386,7 @@ namespace CLOVise
 			PLMProductResults::GetInstance()->setModal(true);
 			if (Configuration::GetInstance()->GetCurrentScreen() == COPY_PRODUCT_CLICKED)
 			{
-				Configuration::GetInstance()->SetDownloadButton(false);
+				Configuration::GetInstance()->SetCopyStyleDownloadButton(false);
 			}
 			if (ProductConfig::GetInstance()->GetIsModelExecuted() || ProductConfig::GetInstance()->m_resultAfterLogout)
 			{
