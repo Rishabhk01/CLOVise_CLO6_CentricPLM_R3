@@ -124,7 +124,12 @@ namespace CLOVise
 			{
 				m_downloadButton = CVWidgetGenerator::CreatePushButton("Download", DOWNLOAD_HOVER_ICON_PATH, "Download", PUSH_BUTTON_STYLE, 30, true);
 			}
-			else
+
+			else if (Configuration::GetInstance()->GetCopyStyleDownloadButton() && Configuration::GetInstance()->GetCurrentScreen() == COPY_PRODUCT_CLICKED)
+			{
+				m_downloadButton = CVWidgetGenerator::CreatePushButton("Download", DOWNLOAD_HOVER_ICON_PATH, "Download", PUSH_BUTTON_STYLE, 30, true);
+			}
+			else 
 			{
 				m_downloadButton = CVWidgetGenerator::CreatePushButton("Copy", SAVE_HOVER_ICON_PATH, "Copy", PUSH_BUTTON_STYLE, 30, true);
 			}
@@ -1444,6 +1449,12 @@ namespace CLOVise
 			m_downloadButton->setToolTip("Download");
 			// = CVWidgetGenerator::CreatePushButton("Download", DOWNLOAD_HOVER_ICON_PATH, "Download", PUSH_BUTTON_STYLE, 30, true);
 		}
+		else if (Configuration::GetInstance()->GetCopyStyleDownloadButton() && Configuration::GetInstance()->GetCurrentScreen() == COPY_PRODUCT_CLICKED)
+		{
+			m_downloadButton->setText("Download");
+			m_downloadButton->setToolTip("Download");
+		}
+
 		else
 		{
 			m_downloadButton->setText("Copy");
