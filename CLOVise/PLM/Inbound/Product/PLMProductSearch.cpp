@@ -384,6 +384,10 @@ namespace CLOVise
 			//UTILITY_API->SetProgress("Searching style", (qrand() % 101));
 			ProductConfig::GetInstance()->SetDataFromResponse(ProductConfig::GetInstance()->GetSearchCriteriaJSON());
 			PLMProductResults::GetInstance()->setModal(true);
+			if (Configuration::GetInstance()->GetCurrentScreen() == COPY_PRODUCT_CLICKED)
+			{
+				Configuration::GetInstance()->SetDownloadButton(false);
+			}
 			if (ProductConfig::GetInstance()->GetIsModelExecuted() || ProductConfig::GetInstance()->m_resultAfterLogout)
 			{
 				PLMProductResults::GetInstance()->currPageLabel->setText("1");
