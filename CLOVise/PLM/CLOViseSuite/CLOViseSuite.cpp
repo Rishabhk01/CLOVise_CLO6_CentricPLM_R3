@@ -788,6 +788,7 @@ namespace CLOVise
 				Configuration::GetInstance()->SetCurrentScreen(COPY_PRODUCT_CLICKED);
 				CopyProduct::GetInstance()->SetCopyCreated(false);
 				ProductConfig::GetInstance()->m_isShow3DAttWidget = false;	
+				Configuration::GetInstance()->SetDownloadButton(false);
 				PLMProductSearch::GetInstance()->ClearAllFields();
 				PLMProductSearch::GetInstance()->setModal(true);
 				//UIHelper::ClearAllFieldsForSearch(PLMProductSearch::GetInstance()->GetTreewidget(0));
