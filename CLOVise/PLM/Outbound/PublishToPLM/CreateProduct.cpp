@@ -2110,7 +2110,7 @@ namespace CLOVise
 										m_shapeNameIdMap.insert(make_pair(attName, attId));
 									if (lableText == "theme")
 										m_themeNameIdMap.insert(make_pair(attName, attId));
-
+										
 								}
 								qComboBox->clear();
 								if (qComboBox->isEnabled())
@@ -2178,6 +2178,12 @@ namespace CLOVise
 									valueList.append(QString::fromStdString(attName));
 									qComboBox->setProperty(attName.c_str(), QString::fromStdString(attId));
 									m_brandNameIdMap.insert(make_pair(attName, attId));
+									if (lableText == "shape")
+										m_shapeNameIdMap.insert(make_pair(attName, attId));
+										
+									if (lableText == "theme")									
+										m_themeNameIdMap.insert(make_pair(attName, attId));
+										
 								}
 								qComboBox->clear();
 								if (qComboBox->isEnabled())
@@ -2348,6 +2354,7 @@ namespace CLOVise
 
 			if (attInternalName == "parent_season" || attInternalName == "category_1" || attInternalName == "category_2" || attInternalName == "collection" || attInternalName == "shape" || attInternalName == "theme")
 			{
+				Logger::Logger("fieldValue::::::::::" + fieldValue);
 				it = nameIdMap.find(fieldValue);//
 				if (it != nameIdMap.end())
 				{
