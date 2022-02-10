@@ -572,19 +572,22 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 					 comboType->setAttribute(Qt::WA_MacShowFocusRect, false);
 					 comboType->setFocusPolicy(Qt::StrongFocus);
 					 QStringList materialType;
-					 for (int i = 0; i < _placementMateriaTypeJson.size(); i++)
+					 if (_placementMateriaTypeJson.size() && _tableName != "Blank")
 					 {
-						 string bomPlacementProductTypeId = Helper::GetJSONValue<int>(_placementMateriaTypeJson, i, true);
-						 auto itr = m_materialTypeNameIdMap.find(bomPlacementProductTypeId);
-						 if (itr != m_materialTypeNameIdMap.end())
+						 for (int i = 0; i < _placementMateriaTypeJson.size(); i++)
 						 {
-							 itr->first;
-							 materialType.append(QString::fromStdString(itr->second));
-						 }
-						 comboType->setProperty(itr->second.c_str(), QString::fromStdString(itr->first));
+							 string bomPlacementProductTypeId = Helper::GetJSONValue<int>(_placementMateriaTypeJson, i, true);
+							 auto itr = m_materialTypeNameIdMap.find(bomPlacementProductTypeId);
+							 if (itr != m_materialTypeNameIdMap.end())
+							 {
+								 itr->first;
+								 materialType.append(QString::fromStdString(itr->second));
+							 }
+							 comboType->setProperty(itr->second.c_str(), QString::fromStdString(itr->first));
 
+						 }
 					 }
-					 if (_tableName == "Blank")
+					 else//if (_tableName == "Blank")
 					 {
 						 for (auto itr = m_materialTypeNameIdMap.begin(); itr != m_materialTypeNameIdMap.end(); itr++)
 						 {

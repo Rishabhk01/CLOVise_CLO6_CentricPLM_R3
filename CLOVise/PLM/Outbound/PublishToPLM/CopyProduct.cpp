@@ -690,7 +690,7 @@ namespace CLOVise
 				m_copyCreated = true;
 				ProductConfig::GetInstance()->m_isShow3DAttWidget = true;
 				ProductConfig::GetInstance()->SetCopyStyleResult(response);
-				PLMProductResults::GetInstance()->m_downloadButton->setText("Download");
+				Configuration::GetInstance()->SetCopyStyleDownloadButton(true);
 				PLMProductResults::GetInstance()->DrawResultWidget(false);
 				UTILITY_API->DeleteProgressBar(true);
 				PLMProductResults::GetInstance()->setModal(true);
