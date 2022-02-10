@@ -873,17 +873,59 @@ void MaterialConfig::SetDataFromResponse(json _param)
 		m_materialResults.clear();
 		for (int i = 0; i < materialResults.size(); i++)
 		{
+			string documentSubType;
 			string resultListStr = Helper::GetJSONValue<int>(materialResults, i, false);
 			json resultListJson = json::parse(resultListStr);
-			string attachmentId = Helper::GetJSONValue<string>(resultListJson, "default_3d_material", true);
+			string materialId = Helper::GetJSONValue<string>(resultListJson, "id", true);
 			if (Configuration::GetInstance()->GetCurrentScreen() == SEARCH_MATERIAL_CLICKED)
 			{
-				if (attachmentId == "centric%3A" || !FormatHelper::HasContent(attachmentId))
-					continue;
-				Logger::Debug("attachmentId inside::" + attachmentId);
+				string data = "{";
+				data += "\n\"" + PARENT_TYPE + "\":\"Material\",";
+				data += "\n\"" + PARENT_ID + "\":\"" + materialId + "\",";
+				
+				data += "\n\"children\" : [\n";
+
+				string data1 = "{";
+				data1 += "\n\"" + TYPE + "\":\"Document\",";
+				data1 += "\n\"" + PATH + "\":\"DocumentsAndComments:Documents\"";
+				data1 += "\n}";
+				
+				data += data1;
+				data += "\n]\n}";
+				Logger::Logger("data::" + data);
+
+				 string response = RESTAPI::PostRestCall(data, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::OBJECT_TREE_API, "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
+				 Logger::Logger("response::" + response);
+				 json childrenResponse = json::parse(response);
+
+				 string children = Helper::GetJSONValue<string>(childrenResponse,"children" , false);
+
+				 json childrenJson = json::parse(children);
+				 for (auto i = 0; i < childrenJson.size(); i++)
+				 {
+					 string  child = Helper::GetJSONValue<int>(childrenJson, i, false);
+					 json childJson = json::parse(child);
+					 string instances = Helper::GetJSONValue<string>(childJson, "instances", false);
+					 json instancesJson = json::parse(instances);
+					 for (auto j = 0; j < instancesJson.size(); j++)
+					 {
+						 
+						 string  instance = Helper::GetJSONValue<int>(instancesJson, j, false);
+						 json instanceJson = json::parse(instance);
+						 string subtype = Helper::GetJSONValue<string>(instanceJson, "subtype", true);
+						 documentSubType = subtype.substr(subtype.length() - 3);
+						 Logger::Logger("documentSubType::" + documentSubType);
+
+						 if (documentSubType == "Clo")
+						 {
+							 MaterialConfig::GetInstance()->UpdateResultJson(resultListJson, materialTypeValuesJson);
+							 m_materialResults.push_back(resultListJson);
+							 break;
+						 }
+						 
+					 }					
+				 }
 			}
-			MaterialConfig::GetInstance()->UpdateResultJson(resultListJson, materialTypeValuesJson);
-			m_materialResults.push_back(resultListJson);
 		}
 		Logger::Debug("m_materialResults::" + to_string(m_materialResults));
 		//MaterialConfig::GetInstance()->UpdateResultJson();
