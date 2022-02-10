@@ -68,6 +68,16 @@ void MaterialConfig::SetMaterialConfigJSONFromFile(string _module, string _rootT
 		m_materialConfigJson = DataHelper::GetInstance()->SetConfigJSON(_module, _rootType, _initDepedentJsons, PLM_MATERIAL_SEARCH_FILE_NAME);
 		break;
 	}
+	case CREATE_PRODUCT_CLICKED://use for create product Bom material Search Dialog
+	{
+		m_materialConfigJson = DataHelper::GetInstance()->SetConfigJSON(_module, _rootType, _initDepedentJsons, PLM_MATERIAL_SEARCH_FILE_NAME);
+		break;
+	}
+	case UPDATE_PRODUCT_CLICKED://use for Update product Bom material Search Dialog
+	{
+		m_materialConfigJson = DataHelper::GetInstance()->SetConfigJSON(_module, _rootType, _initDepedentJsons, PLM_MATERIAL_SEARCH_FILE_NAME);
+		break;
+	}
 	}
 	//if (_matFucntion == SEARCH_MATERIAL) {
 	//	m_materialConfigJson = DataHelper::GetInstance()->SetConfigJSON(_module, _rootType, _initDepedentJsons, PLM_MATERIAL_SEARCH_FILE_NAME);
@@ -660,7 +670,7 @@ void MaterialConfig::createFieldsJson(string& _fieldsJsonStringResponse, json& _
 			}
 		}
 
-		if (Configuration::GetInstance()->GetCurrentScreen() == SEARCH_MATERIAL_CLICKED)
+		if (Configuration::GetInstance()->GetCurrentScreen() == SEARCH_MATERIAL_CLICKED|| Configuration::GetInstance()->GetCurrentScreen() == CREATE_PRODUCT_CLICKED || Configuration::GetInstance()->GetCurrentScreen() == UPDATE_PRODUCT_CLICKED)
 		{
 			GetDataFromLocalJson(fieldsJson, _defaultFieldsJson, attKeyList);
 		}
