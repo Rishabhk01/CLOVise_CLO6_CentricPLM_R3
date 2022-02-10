@@ -1512,6 +1512,17 @@ bool Configuration::GetIsUpdateColorClicked()
  {
 	 return m_clientSpecificAttCachedData;
  }
+
+ void Configuration::SetCopyStyleDownloadButton(bool _downloadButton)
+ {
+	 m_downloadButton = _downloadButton;
+ }
+ bool Configuration::GetCopyStyleDownloadButton()
+ {
+	 return m_downloadButton;
+ }
+
+
  void Configuration::SetSubTypeInternalName(json _clientSpecificJson)
  {
 	 string categoryInternalName = Helper::GetJSONValue<string>(_clientSpecificJson, "categoryInternalName", true);
