@@ -2661,12 +2661,17 @@ namespace CLOVise
 					if (colorwayIterator->second.viewUploadId[i].compare("") != 0)
 					{
 						string filepath;
-						if (colorwayIterator->second.includeAvatar[i] == 1)
-							filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/" + str + "_" + to_string(i) + ".png";
-						else
-							filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/" + str + "_" + to_string(i) + ".png";
-						//UTILITY_API->DisplayMessageBox("filepath  " + filepath + "image name  " + str + "_" + to_string(i) + ".png");
-						string postField = getPublishRequestParameter(filepath, str + "_" + to_string(i) + ".png");
+						string postField;
+							if (colorwayIterator->second.includeAvatar[i] == 1)
+							{
+								filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/Avatar_" + str + "_" + to_string(i) + ".png";
+								 postField = getPublishRequestParameter(filepath, "Avatar_" + str + "_" + to_string(i) + ".png");
+							}
+							else
+							{
+								filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/" + str + "_" + to_string(i) + ".png";
+								 postField = getPublishRequestParameter(filepath, str + "_" + to_string(i) + ".png");
+							}
 
 						string resultJsonString;
 
@@ -2743,7 +2748,7 @@ namespace CLOVise
 				data += "\n}\n}";
 
 				Logger::Debug("CreateProduct -> LinkImagesToColorways () data" + data);
-				if (str.compare("No Colorway(Default)") == 0)
+				if (str.compare("No_Colorway_Default") == 0)
 				{
 					//Link images to style .....
 					string resultJsonString = RESTAPI::PutRestCall(data, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::STYLE_ENDPOINT_API + "/" + _productId, "content-type: application/json");
@@ -3147,7 +3152,7 @@ namespace CLOVise
 
 			UTILITY_API->SetShowHideAvatar(true);
 			UTILITY_API->SetCurrentColorwayIndex(colorwayIndex);
-			filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/" + colorwayName + ".png";
+			filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/Avatar_" + colorwayName + ".png";
 			EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
 			filepath.clear();
 			UTILITY_API->SetShowHideAvatar(false);
@@ -3158,11 +3163,11 @@ namespace CLOVise
 		filepath.clear();
 		UTILITY_API->SetCurrentColorwayIndex(cloColorwaySelectedIndex);
 		UTILITY_API->SetShowHideAvatar(true);
-		filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/No Colorway(Default).png";
+		filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/Avatar_No_Colorway_Default.png";
 		EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
 		filepath.clear();
 		UTILITY_API->SetShowHideAvatar(false);
-		filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/No Colorway(Default).png";
+		filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/No_Colorway_Default.png";
 		EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
 
 		Logger::Debug("CreateProduct -> exportTurntableImages() -> End ");
@@ -3766,11 +3771,11 @@ namespace CLOVise
 					}
 				}
 
-				QString filepath;
-				if (includeAvatar == "Yes")
-					filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithAvatar/" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
-				else
-					filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithoutAvatar/" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
+					QString filepath;
+					if (includeAvatar == "Yes")
+						filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithAvatar/Avatar_" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
+					else
+						filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithoutAvatar/" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
 
 				Logger::Debug("CreateImageIntent -> onTabClicked() -> filepath" + filepath.toStdString());
 

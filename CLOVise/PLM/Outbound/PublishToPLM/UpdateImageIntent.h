@@ -49,6 +49,7 @@ namespace CLOVise
 		struct ColorwayViews
 		{
 			string viewUploadId[4];
+			int includeAvatar[4] = { -1 };
 			int defaultImage = -1;
 			string colorwayId;
 			QStringList imageLabels;
@@ -63,6 +64,7 @@ namespace CLOVise
 		QPushButton* m_addToQueueButton;
 		QComboBox*  m_colorwayComboBox;
 		QCheckBox* m_setDefaultCheckBox;
+		QCheckBox* m_includeAvatarCheckBox;
 	private:
 		UpdateImageIntent(QWidget* parent = nullptr);
 		virtual ~UpdateImageIntent();
@@ -137,7 +139,7 @@ namespace CLOVise
 		
 		
 		
-		//QWidget* m_includeAvatarCheckBox;
+
 		map<string, string > m_ImageDataMap;
 		QStringList m_SelectedColorwayList;
 		QStringList m_ColorwayImageLabelList;

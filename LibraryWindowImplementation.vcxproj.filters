@@ -362,9 +362,6 @@
     <ClCompile Include="CLOVise\PLM\Outbound\UpdateMaterial\UpdateMaterialConfig.cpp">
       <Filter>CLOVise\PLM\Outbound\UpdateMaterial</Filter>
     </ClCompile>
-    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_UpdateImageIntent.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -421,6 +418,9 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_UpdateProductBOMHandler.cpp">
       <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Outbound\PublishToPLM\UpdateImageIntent.cpp">
+      <Filter>CLOVise\PLM\Outbound\PublishToPLM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -70,7 +70,7 @@ const QString PLM_NAME = "Centric 8";
 #define VIEW_COLUMN  1
 #define IMAGE_LABLE_COLUMN  2
 #define DEFAULT_IMAGE_COLUMN  3
-
+#define INCLUDE_AVATAR_COLUMN  4
 
 //Bom Table columns
 #define DELETE_BUTTON_COLUMN  0

@@ -125,14 +125,14 @@ namespace CLOVise
 		m_setDefaultCheckBox = CVWidgetGenerator::CreateCheckBox("", "", true);
 		m_setDefaultCheckBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
-		//m_includeAvatarCheckBox = CVWidgetGenerator::CreateCheckBoxWidget(false, "", "", "");
-	   // m_includeAvatarCheckBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+		m_includeAvatarCheckBox = CVWidgetGenerator::CreateCheckBox("", "", true);
+	    m_includeAvatarCheckBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
 		QLabel* defaultImageLabel = CVWidgetGenerator::CreateLabel("Set as Default Image", QString::fromStdString(BLANK), HEADER_STYLE, true);
 		defaultImageLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
-		//QLabel* includeAvatarLabel = CVWidgetGenerator::CreateLabel("Include Avatar", QString::fromStdString(BLANK), HEADER_STYLE, true);
-		//includeAvatarLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+		QLabel* includeAvatarLabel = CVWidgetGenerator::CreateLabel("Include Avatar", QString::fromStdString(BLANK), HEADER_STYLE, true);
+		includeAvatarLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
 		m_colorwayComboBox = CVWidgetGenerator::CreateComboBox(QString::fromStdString("Style & Colorway"), "", true);
 		m_colorwayComboBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -173,8 +173,8 @@ namespace CLOVise
 		checkBoxLayout->insertWidget(0, m_setDefaultCheckBox);
 		checkBoxLayout->insertWidget(1, defaultImageLabel);
 		checkBoxLayout->insertSpacerItem(2, horizontalSpacer1);
-		//checkBoxLayout->insertWidget(3, m_includeAvatarCheckBox);
-		//checkBoxLayout->insertWidget(4, includeAvatarLabel);
+		checkBoxLayout->insertWidget(3, m_includeAvatarCheckBox);
+		checkBoxLayout->insertWidget(4, includeAvatarLabel);
 
 		horizontalLayout_2->insertLayout(1, checkBoxLayout);
 
@@ -340,7 +340,7 @@ namespace CLOVise
 	void UpdateImageIntent::StyleOrColorwayDropdownClicked(const QString& _item)
 	{
 		std::map<QString, QString> checkBoxItemListMap;
-		if (_item.contains("No Colorway"))
+		if (_item.contains("No_Colorway_Default"))
 		{
 			checkBoxItemListMap = m_styleImageLabelsMap;
 		}
@@ -349,7 +349,7 @@ namespace CLOVise
 			checkBoxItemListMap = m_colorwayImageLabelsMap;
 		}
 		m_labelList->clear();
-
+		m_includeAvatarCheckBox->setChecked(false);
 		for (auto it = checkBoxItemListMap.begin(); it != checkBoxItemListMap.end(); it++)
 		{
 			QCheckBox* checkbox = new QCheckBox;
@@ -426,6 +426,9 @@ namespace CLOVise
 				{
 					Logger::Debug("UpdateImageIntent -> onAddToQueueButtonClicked() -> 1" + to_string(view));
 					colorwayView = it->second;
+					if (m_includeAvatarCheckBox->isChecked())
+						colorwayView.includeAvatar[view] = 1;
+
 					colorwayView.viewUploadId[view] = "1";
 					if (m_setDefaultCheckBox->isChecked())
 						colorwayView.defaultImage = view;
@@ -437,6 +440,10 @@ namespace CLOVise
 				{
 					Logger::Debug("UpdateImageIntent -> onAddToQueueButtonClicked() -> 2");
 					colorwayView.viewUploadId[view] = "1";
+
+					if (m_includeAvatarCheckBox->isChecked())
+						colorwayView.includeAvatar[view] = 1;
+
 					if (m_setDefaultCheckBox->isChecked())
 						colorwayView.defaultImage = view;
 
@@ -446,7 +453,7 @@ namespace CLOVise
 					Logger::Debug("UpdateImageIntent -> onAddToQueueButtonClicked() ->m_colorwayViewMap size() after Insert: " + to_string(m_ColorwayViewMap.size()));
 				}
 
-				m_imageQueueTable->setColumnCount(4);
+				m_imageQueueTable->setColumnCount(5);
 				m_imageQueueTable->setRowCount(++m_imageQueueTableRowCount);
 				m_imageQueueTable->show();
 
@@ -476,6 +483,16 @@ namespace CLOVise
 				defaultCheckbox->setTextAlignment(Qt::AlignCenter);
 				m_imageQueueTable->setItem(m_imageQueueTableRowCount - 1, 3, defaultCheckbox);
 
+				QString includeAvatar;
+				if (m_includeAvatarCheckBox->isChecked())
+					includeAvatar = "Include Avatar: Yes";
+				else
+					includeAvatar = "Include Avatar: No";
+
+				QTableWidgetItem* avatarCheckbox = new QTableWidgetItem(includeAvatar);
+				avatarCheckbox->setTextAlignment(Qt::AlignCenter);
+				m_imageQueueTable->setItem(m_imageQueueTableRowCount - 1, 4, avatarCheckbox);
+
 				Logger::Debug("UpdateImageIntent -> onAddToQueueButtonClicked() -> m_colorwayselectedList.size()" + to_string(m_colorwayselectedList.size()));
 			}
 			else
@@ -501,27 +518,39 @@ namespace CLOVise
 			{
 				int rowIndex = UpdateProduct::GetInstance()->m_ImageIntentRowIndexForEdit;
 				QPushButton *editButton = static_cast<QPushButton*>(UpdateProduct::GetInstance()->m_imageIntentTable->cellWidget(rowIndex, EDIT_COLUMN)->children().last());
+				QPushButton *deleteButton = static_cast<QPushButton*>(UpdateProduct::GetInstance()->m_imageIntentTable->cellWidget(rowIndex, DELETE_COLUMN)->children().last());
 				string selectedColorwayName = m_colorwayComboBox->currentText().toStdString();
 				Logger::Debug("UpdateImageIntent -> selectedColorwayName() " + selectedColorwayName);
 				int cloColorwaySelectedIndex = UTILITY_API->GetCurrentColorwayIndex();
 				int colorwayCount = UTILITY_API->GetColorwayCount();
 				int colorwayIndex = 0;
+				string filepath;
 				for (colorwayIndex = 0; colorwayIndex < colorwayCount; colorwayIndex++)
 				{
 					string colorwayName = UTILITY_API->GetColorwayName(colorwayIndex);
 					if (selectedColorwayName.compare(colorwayName) == 0)
 					{
+						UTILITY_API->SetShowHideAvatar(true);
 						UTILITY_API->SetCurrentColorwayIndex(colorwayIndex);
-						string filepath = temporaryPath + "CLOViseTurntableImages/" + selectedColorwayName + ".png";
-
+						filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/Avatar_" + colorwayName + ".png";
+						EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
+						filepath.clear();
+						UTILITY_API->SetShowHideAvatar(false);
+						filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/" + colorwayName + ".png";
 						EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
 						break;
 					}
 				}
 
 				// To generate turntable images for the style with the currently selected colorway (needed for style image labels)
+				filepath.clear();
 				UTILITY_API->SetCurrentColorwayIndex(cloColorwaySelectedIndex);
-				string filepath = temporaryPath + "CLOViseTurntableImages/" + "No Colorway(Default)" + ".png";
+				UTILITY_API->SetShowHideAvatar(true);
+				filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/Avatar_No_Colorway_Default.png";
+				EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
+				filepath.clear();
+				UTILITY_API->SetShowHideAvatar(false);
+				filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/No_Colorway_Default.png";
 				EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
 				//////
 				QString selectedSnapshot;
@@ -553,6 +582,14 @@ namespace CLOVise
 					defaultcheck = "Yes";
 				else
 					defaultcheck = "No";
+
+				string includeAvatar = "No";
+				if (m_includeAvatarCheckBox->isChecked())
+				{
+					includeAvatar = "Yes";
+				}
+				deleteButton->setProperty("includeAvatar", includeAvatar.c_str());
+				
 
 				int view;
 				if (selectedSnapshot.contains("Back"))
@@ -587,8 +624,13 @@ namespace CLOVise
 					editButton->setProperty("view", QString::fromStdString(to_string(view)));
 					editButton->setProperty("defaultImage", QString::fromStdString(defaultcheck));
 
-					QString filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/" + QString::fromStdString(selectedColorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
-					Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> filepath1" + filepath.toStdString());
+					QString filepath;
+					if (includeAvatar == "Yes")
+						filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithAvatar/Avatar_" + QString::fromStdString(selectedColorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
+					else
+						filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithoutAvatar/" + QString::fromStdString(selectedColorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
+Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> filepath1" + filepath.toStdString());
+
 					QPixmap pix(filepath);
 					pix.scaled(QSize(80, 80), Qt::KeepAspectRatio);
 
@@ -644,6 +686,7 @@ namespace CLOVise
 				Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> m_colorwayselectedList.size()" + to_string(m_colorwayselectedList.size()));
 				int cloColorwaySelectedIndex = UTILITY_API->GetCurrentColorwayIndex();
 				int colorwayCount = UTILITY_API->GetColorwayCount();
+				string filepath;
 				for (int i = 0; i < m_colorwayselectedList.size(); i++)
 				{
 					if (!m_exportedColorwayImages.contains(m_colorwayselectedList[i]))
@@ -651,14 +694,20 @@ namespace CLOVise
 						m_exportedColorwayImages.append(m_colorwayselectedList[i]);
 						Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> Exporting: " + m_colorwayselectedList[i].toStdString());
 						int colorwayIndex = 0;
+						
 						for (colorwayIndex = 0; colorwayIndex < colorwayCount; colorwayIndex++)
 						{
 							string colorwayName = UTILITY_API->GetColorwayName(colorwayIndex);
+							
 							if (m_colorwayselectedList[i].toStdString().compare(colorwayName) == 0)
 							{
+								UTILITY_API->SetShowHideAvatar(true);
 								UTILITY_API->SetCurrentColorwayIndex(colorwayIndex);
-								string filepath = temporaryPath + "CLOViseTurntableImages/" + m_colorwayselectedList[i].toStdString() + ".png";
-
+								filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/Avatar_" + colorwayName + ".png";
+								EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
+								filepath.clear();
+								UTILITY_API->SetShowHideAvatar(false);
+								filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/" + colorwayName + ".png";
 								EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
 								break;
 							}
@@ -669,8 +718,14 @@ namespace CLOVise
 				}
 
 				// To generate turntable images for the style with the currently selected colorway (needed for style image labels)
+				filepath.clear();
 				UTILITY_API->SetCurrentColorwayIndex(cloColorwaySelectedIndex);
-				string filepath = temporaryPath + "CLOViseTurntableImages/" + "No Colorway(Default)" + ".png";
+				UTILITY_API->SetShowHideAvatar(true);
+				filepath = temporaryPath + "CLOViseTurntableImages/WithAvatar/Avatar_No_Colorway_Default.png";
+				EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
+				filepath.clear();
+				UTILITY_API->SetShowHideAvatar(false);
+				filepath = temporaryPath + "CLOViseTurntableImages/WithoutAvatar/No_Colorway_Default.png";
 				EXPORT_API->ExportTurntableImages(filepath, 4, 480, 640);
 				//////
 
@@ -678,6 +733,7 @@ namespace CLOVise
 				string viewName;
 				string lable;
 				string defaultImage;
+				string includeAvatar;
 				int view;
 				Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> m_imageQueueTable->rowCount()" + to_string(m_imageQueueTable->rowCount()));
 				Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> m_imageQueueTable->columnCount()" + to_string(m_imageQueueTable->columnCount()));
@@ -736,6 +792,16 @@ namespace CLOVise
 							defaultImage = text.substr(indexOfColon + 1, length);
 							Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> label" + defaultImage);
 						}
+						if (colIndex == INCLUDE_AVATAR_COLUMN)
+						{
+							string text;
+							text = item->text().toStdString();
+							int length = text.length();
+							int indexOfColon = text.find(":");
+							includeAvatar = text.substr(indexOfColon + 2, length);
+							Logger::Debug("CreateImageIntent -> onFinishButtonClicked() -> includeAvatar" + includeAvatar);
+
+						}
 
 					}
 					/*if (m_colorwayViewQueue.contains(QString::fromStdString(clorwayname) + QString::fromStdString(viewName).trimmed()))
@@ -743,10 +809,15 @@ namespace CLOVise
 					else
 					m_colorwayViewQueue.append(QString::fromStdString(clorwayname) + QString::fromStdString(viewName).trimmed());*/
 					//string displayDetails = "Colorway : " + clorwayname + "\nView : " + viewName + "\n Image Labels: " + lable + "\n Default: " + defaultImage;
-					UpdateProduct::GetInstance()->FillImageIntentsStruct(clorwayname, to_string(view), viewName, lable, defaultImage);
+					UpdateProduct::GetInstance()->FillImageIntentsStruct(clorwayname, to_string(view), viewName, lable, defaultImage, includeAvatar);
 
-					QString filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/" + QString::fromStdString(clorwayname) + "_" + QString::fromStdString(to_string(view)) + ".png";
-					Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> filepath" + filepath.toStdString());
+					QString filepath;
+					if (includeAvatar == "Yes")
+						filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithAvatar/Avatar_" + QString::fromStdString(clorwayname) + "_" + QString::fromStdString(to_string(view)) + ".png";
+					else
+						filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithoutAvatar/" + QString::fromStdString(clorwayname) + "_" + QString::fromStdString(to_string(view)) + ".png";
+
+					Logger::Debug("CreateImageIntent -> onFinishButtonClicked() -> filepath" + filepath.toStdString());
 
 					QPixmap pix(filepath);
 					pix.scaled(QSize(80, 80), Qt::KeepAspectRatio);
@@ -838,9 +909,9 @@ namespace CLOVise
 	{
 		Logger::Debug("UpdateImageIntent -> fillSelectedList() -> Start");
 		m_colorwayComboBox->clear();
-		m_colorwayComboBox->addItem("No Colorway(Default)");
+		m_colorwayComboBox->addItem("No_Colorway_Default");
 		m_colorwayComboBox->addItems(_colorwayNames);
-		m_colorwayComboBox->setCurrentText(QString::fromStdString("No Colorway(Default)"));
+		m_colorwayComboBox->setCurrentText(QString::fromStdString("No_Colorway_Default"));
 		Logger::Debug("UpdateImageIntent -> fillSelectedList() -> End");
 	}
 	void UpdateImageIntent::ClearAllFields()

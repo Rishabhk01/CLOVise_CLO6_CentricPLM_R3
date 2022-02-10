@@ -52,6 +52,7 @@ namespace CLOVise
 		void DeleteColorwayFromPLM();
 		void GetcolorwayDetails();
 		void GetMappedColorway();
+		void refreshImageIntents();
 		bool GetIsSaveClicked();
 		void AddMaterialInBom();
 		void FillImageIntentIdAndLabeMap(json _imageJson, string _module);
@@ -73,13 +74,16 @@ namespace CLOVise
 			QString viewName;
 			QString labels;
 			QString isdefault;
+			QString isAvatar;
 
 		} m_imageIntentsDetails;
-		void FillImageIntentsStruct(string _colorway, string _view, string _viewName, string _labels, string _default);
+		void FillImageIntentsStruct(string _colorway, string _view, string _viewName, string _labels, string _default, string _includeAvatar);
 
 		void AddRowInImageIntentTab(QPixmap _pixMap, ImageIntentsDetails _imageIntentsDetails, string _imageId);
 		void SetUpdateBomFlag(bool _flag);
 		void ClearBOMData();
+		void RefreshImageIntents();
+
 		MVTableWidget *ui_colorwayTable;
 		std::map<QString, QString> m_colorwayImageLabelsMap;
 		std::map<QString, QStringList> m_nonCloStyleImageLabelsMap;
