@@ -2177,7 +2177,16 @@ namespace CLOVise
 									Logger::Debug("PublishToPLMData -> OnHandleDropDownValue() attId: " + attId);
 									valueList.append(QString::fromStdString(attName));
 									qComboBox->setProperty(attName.c_str(), QString::fromStdString(attId));
-									m_brandNameIdMap.insert(make_pair(attName, attId));
+									if (labelName == "Season")
+										m_brandNameIdMap.insert(make_pair(attName, attId));
+									if (labelName == "Brand")
+										m_dipartmentNameIdMap.insert(make_pair(attName, attId));
+									if (labelName == "Department")
+										m_collectionNameIdMap.insert(make_pair(attName, attId));
+									if (lableText == "shape")
+										m_shapeNameIdMap.insert(make_pair(attName, attId));
+									if (lableText == "theme")
+										m_themeNameIdMap.insert(make_pair(attName, attId));
 								}
 								qComboBox->clear();
 								if (qComboBox->isEnabled())
