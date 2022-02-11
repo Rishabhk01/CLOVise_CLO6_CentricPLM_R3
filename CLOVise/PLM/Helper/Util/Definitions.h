@@ -645,4 +645,9 @@ const string ATT_RESTRICT_EDIT = "restrict_edit";
 const string ALLOW_CREATE_COLOR = "allow_create_color_spec_on_colorway";
 const string REFER_DEFAULT_IMAGE_ON_COLOR = "reference_default_image_on_colorway_create";
 const string IMAGES_JSON = "images";
+const string PARENT_TYPE = "parent_type";
+const string PARENT_ID = "parent_id";
+const string TYPE = "type";
+const string PATH = "path";
+
 const QStringList MATERIAL_FILTER_LIST{ ".zfab", ".zsd", ".zpl", ".zpac", ".zsp", ".btn", ".bth", ".obj", ".sst" };
