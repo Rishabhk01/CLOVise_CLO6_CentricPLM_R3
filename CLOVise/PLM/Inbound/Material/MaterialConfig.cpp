@@ -896,7 +896,7 @@ void MaterialConfig::SetDataFromResponse(json _param)
 
 				string subtype = "centric%3A%2F%2FREFLECTION%2FINSTANCE%2FDocumentSubtype%2FClo";//filtering only clo 3D material using SubType
 
-				 string response = RESTAPI::PostRestCall(data, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::OBJECT_TREE_API+"?"+subtype, "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
+				 string response = RESTAPI::PostRestCall(data, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::OBJECT_TREE_API+"?subtype="+subtype, "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 				 Logger::Logger("response::" + response);
 				 json childrenResponse = json::parse(response);
 
