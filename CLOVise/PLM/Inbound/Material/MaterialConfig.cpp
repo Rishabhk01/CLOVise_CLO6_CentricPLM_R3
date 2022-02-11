@@ -894,7 +894,9 @@ void MaterialConfig::SetDataFromResponse(json _param)
 				data += "\n]\n}";
 				Logger::Logger("data::" + data);
 
-				 string response = RESTAPI::PostRestCall(data, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::OBJECT_TREE_API, "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
+				string subtype = "centric%3A%2F%2FREFLECTION%2FINSTANCE%2FDocumentSubtype%2FClo";//filtering only clo 3D material using SubType
+
+				 string response = RESTAPI::PostRestCall(data, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::OBJECT_TREE_API+"?"+subtype, "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 				 Logger::Logger("response::" + response);
 				 json childrenResponse = json::parse(response);
 
@@ -907,22 +909,10 @@ void MaterialConfig::SetDataFromResponse(json _param)
 					 json childJson = json::parse(child);
 					 string instances = Helper::GetJSONValue<string>(childJson, "instances", false);
 					 json instancesJson = json::parse(instances);
-					 for (auto j = 0; j < instancesJson.size(); j++)
+					 if (!instancesJson.empty())
 					 {
-						 
-						 string  instance = Helper::GetJSONValue<int>(instancesJson, j, false);
-						 json instanceJson = json::parse(instance);
-						 string subtype = Helper::GetJSONValue<string>(instanceJson, "subtype", true);
-						 documentSubType = subtype.substr(subtype.length() - 3);
-						 Logger::Logger("documentSubType::" + documentSubType);
-
-						 if (documentSubType == "Clo")
-						 {
-							 MaterialConfig::GetInstance()->UpdateResultJson(resultListJson, materialTypeValuesJson);
-							 m_materialResults.push_back(resultListJson);
-							 break;
-						 }
-						 
+						 MaterialConfig::GetInstance()->UpdateResultJson(resultListJson, materialTypeValuesJson);
+						 m_materialResults.push_back(resultListJson);
 					 }					
 				 }
 			}
