@@ -131,6 +131,7 @@ namespace RESTAPI
 	const string UPDATE_STYLE_API = "/csi-requesthandler/api/v2/styles";
 	const string COLOR_SPEC_API = "/csi-requesthandler/api/v2/color_specifications";
 	const string PRINT_IMAGE_API = "/csi-requesthandler/api/v2/images";
+	const string OBJECT_TREE_API = "/csi-requesthandler/api/v2/object_tree";
 
 
 
