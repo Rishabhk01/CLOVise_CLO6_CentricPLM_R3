@@ -855,6 +855,7 @@ Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> filepath1" + file
 				}
 			}
 			m_setDefaultCheckBox->setChecked(false);
+			m_includeAvatarCheckBox->setChecked(false);
 			this->hide();
 			UpdateProduct::GetInstance()->setModal(true);
 			UpdateProduct::GetInstance()->show();
@@ -899,6 +900,7 @@ Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> filepath1" + file
 			}
 		}
 		m_setDefaultCheckBox->setChecked(false);
+		m_includeAvatarCheckBox->setChecked(false);
 		this->hide();
 		UpdateProduct::GetInstance()->setModal(true);
 		UpdateProduct::GetInstance()->show();
@@ -938,7 +940,7 @@ Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> filepath1" + file
 
 		}*/
 		m_setDefaultCheckBox->setChecked(false);
-		//m_colorwayViewQueue.clear();
+		m_includeAvatarCheckBox->setChecked(false);
 		m_imageQueueTable->clear();
 		m_colorwayselectedList.clear();
 		m_exportedColorwayImages.clear();

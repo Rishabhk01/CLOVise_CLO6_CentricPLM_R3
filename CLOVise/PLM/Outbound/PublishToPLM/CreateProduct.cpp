@@ -1966,7 +1966,7 @@ namespace CLOVise
 									}									
 								}
 
-								if (colorwayName != "No Colorway(Default)")
+								if (colorwayName != "No_Colorway_Default")
 								{
 									m_ImageIntentList->takeItem(index);//Deleting the mapped colorway image intent lists
 								}

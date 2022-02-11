@@ -2176,79 +2176,18 @@ namespace CLOVise
 		Logger::Debug("UpdateProduct onTabClicked() Start");
 		QStringList list;
 		bool duplicateColrwayName = false;
-		if (_index == COLORWAY_COLUMN)
+		if (_index == COLORWAY_TAB)
 		{
 			ui_colorwayTable->setColumnCount(m_ColorwayTableColumnNames.size());
 			ui_colorwayTable->setHorizontalHeaderLabels(m_ColorwayTableColumnNames);
 			ui_colorwayTable->show();
 		}
-		if (_index == IMAGE_VIEW_COLUMN /*&& m_colorwayRowcount > 0*/)//Image Intent tab
+		if (_index == IMAGE_INTENT_TAB /*&& m_colorwayRowcount > 0*/)//Image Intent tab
 		{
-			//int imageRowCount = m_imageIntentTable->rowCount();
-			//m_imageIntentTable->setColumnCount(m_ImageIntentsColumnsNames.size());
-			//m_imageIntentTable->setHorizontalHeaderLabels(m_ImageIntentsColumnsNames);
+			m_imageIntentTable->setColumnCount(m_ImageIntentsColumnsNames.size());
+			m_imageIntentTable->setHorizontalHeaderLabels(m_ImageIntentsColumnsNames);
 			ValidateColorwayNameField();
-			/*if (imageRowCount != 0)
-			{
-				UTILITY_API->CreateProgressBar();
-				RESTAPI::SetProgressBarData(20, "Loading Latest Image Intents... ", true);
-				UTILITY_API->SetProgress("Loading Latest Image Intents...", (qrand() % 101));
-			}
-
-			if (ValidateColorwayNameField() && imageRowCount != 0)
-			{
-				exportTurntableImages();
-
-				string colorwayName;
-				string viewName;
-				int view;
-				int rowCount = m_imageIntentTable->rowCount();
-				string temporaryPath = UTILITY_API->GetCLOTemporaryFolderPath();
-				
-				for (int index = 0; index < rowCount; index++)
-				{
-
-					QTableWidgetItem* item = m_imageIntentTable->item(index, COLORWAY_COLUMN);
-					Logger::Debug("UpdateProduct -> onTabClicked() -> Item" + item->text().toStdString());
-					colorwayName = item->text().toStdString();
-
-					Logger::Debug("UpdateProduct -> onTabClicked() -> clorwayname" + colorwayName);
-
-
-					QTableWidgetItem* viewItem = m_imageIntentTable->item(index, IMAGE_VIEW_COLUMN);
-					Logger::Debug("UpdateProduct -> onTabClicked() -> Item" + viewItem->text().toStdString());
-					string ViewText;
-					ViewText = viewItem->text().toStdString();
-					int length = ViewText.length();
-					int indexOfColon = ViewText.find(":");
-					viewName = ViewText.substr(indexOfColon + 1, length);
-					Logger::Debug("UpdateProduct -> onTabClicked() -> viewName" + viewName);
-
-					if (viewName.find("Back") != -1)
-						view = BACK_VIEW;
-					else if (viewName.find("Front") != -1)
-						view = FRONT_VIEW;
-					else if (viewName.find("Left") != -1)
-						view = LEFT_VIEW;
-					else
-						view = RIGHT_VIEW;
-
-					QString filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
-					Logger::Debug("UpdateProduct -> onTabClicked() -> filepath" + filepath.toStdString());
-
-					QPixmap pix(filepath);
-					pix.scaled(QSize(80, 80), Qt::KeepAspectRatio);
-					QWidget *pColorWidget = nullptr;
-					QLabel* label = new QLabel();
-					label->setMaximumSize(QSize(80, 80));
-					int w = label->width();
-					int h = label->height();
-					label->setPixmap(QPixmap(pix.scaled(w, h, Qt::KeepAspectRatio)));
-					pColorWidget = CVWidgetGenerator::InsertWidgetInCenter(label);
-					m_imageIntentTable->setCellWidget(index, IMAGE_INTENT_COLUMN, pColorWidget);
-
-				}
-			}*/
+			
 		}
 
 		if (_index == BOM_TAB)
@@ -3953,7 +3892,7 @@ namespace CLOVise
 				pix.scaled(QSize(80, 80), Qt::KeepAspectRatio);
 				QIcon newIcon;
 				newIcon.addPixmap(pix);
-				if (_colorwayName == "No Colorway(Default)")
+				if (_colorwayName == "No_Colorway_Default")
 				{
 					AddRowInImageIntentTab(pix, imageIntentsDetails, imageId);
 				}
@@ -4195,9 +4134,9 @@ void UpdateProduct::hideButtonClicked(bool _hide)
 			}
 
 			Logger::Debug("UpdateProduct -> onImageIntentsTableEditButtonClicked() Start 2 imageId" + imageId);
-			if (colorwayName.find("No Colorway") != -1)
+			if (colorwayName.find("No_Colorway_Default") != -1)
 			{
-				UpdateImageIntent::GetInstance()->StyleOrColorwayDropdownClicked("No Colorway");
+				UpdateImageIntent::GetInstance()->StyleOrColorwayDropdownClicked("No_Colorway_Default");
 			}
 			else
 				UpdateImageIntent::GetInstance()->StyleOrColorwayDropdownClicked("Colorway");
