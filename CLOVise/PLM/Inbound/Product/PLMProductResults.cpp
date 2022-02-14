@@ -1014,6 +1014,7 @@ namespace CLOVise
 				UTILITY_API->DeleteProgressBar(true);
 				this->show();
 			}
+			m_selectedIdnameText = "";
 			Logger::Info("PLMProductResults -> DownloadClicked() -> end");
 		}
 		catch (string msg)
