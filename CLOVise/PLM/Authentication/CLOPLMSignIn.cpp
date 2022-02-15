@@ -116,11 +116,11 @@ namespace CLOVise
 			userNameLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 			QLabel  *passwordLabel = CVWidgetGenerator::CreateLabel("Password", "", HEADER_STYLE, true);
 			passwordLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-			m_userNameLineEdit = CVWidgetGenerator::CreateLineEdit("", HEADER_STYLE, true);
+			m_userNameLineEdit = CVWidgetGenerator::CreateLineEdit("", LINEEDIT_STYLE, true);
 			m_userNameLineEdit->setAttribute(Qt::WA_MacShowFocusRect, false);
 			m_userNameLineEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-			m_passwordLineEdit = CVWidgetGenerator::CreateLineEdit("", HEADER_STYLE, true);
+			m_passwordLineEdit = CVWidgetGenerator::CreateLineEdit("", LINEEDIT_STYLE, true);
 			m_passwordLineEdit->setAttribute(Qt::WA_MacShowFocusRect, false);
 			m_passwordLineEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 			m_passwordLineEdit->setEchoMode(QLineEdit::Password);
