@@ -78,13 +78,13 @@ namespace CLOVise
 		m_createBOMTreeWidget = CVWidgetGenerator::CreatePublishTreeWidget("QTreeWidget { background-color: #262628; border: 1px solid #000;}""QTreeWidget::item { padding :5px; height: 20px; color: #FFFFFF; font-face: ArialMT; font-size: 10px; width: 90px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; border: none;}""QTreeWidget::item:hover{background-color: #262628;}", true);
 		m_createBOMTreeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 		horizontalLayout->insertWidget(0, m_createBOMTreeWidget);
-		m_createBOMTreeWidget->setMinimumHeight(600);
-		QSpacerItem *horizontalSpacer = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Expanding);
-		QSpacerItem *horizontalSpacer1 = new QSpacerItem(1, 1, QSizePolicy::Fixed, QSizePolicy::Fixed);
+		m_createBOMTreeWidget->setMinimumHeight(500);
+		QSpacerItem *horizontalSpacer = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Fixed);
+		//QSpacerItem *horizontalSpacer1 = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 		ui_buttonsLayout->insertSpacerItem(0, horizontalSpacer);
 		ui_buttonsLayout->insertWidget(1, m_backButton);
-		ui_buttonsLayout->insertSpacerItem(2, horizontalSpacer1);
+		ui_buttonsLayout->insertSpacerItem(2, horizontalSpacer);
 		ui_buttonsLayout->insertWidget(3, m_createButton);
 		ui_buttonsLayout->insertSpacerItem(4, horizontalSpacer);
 		json jsonbbj;
