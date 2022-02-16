@@ -421,10 +421,10 @@ Description - OnClickDeleteButton() method used to delete a bom line from table.
 		 int count = 0;
 		 json placementProductTypeJson;
 
-		 string code, name, materialType, description, objectId = "";
+		 string code, name, materialType, description;
 		 for (int fabCount = 0; fabCount < fabJson.size(); fabCount++)
 		 {
-
+			 string objectId = "";
 			 materialCount = fabJson[fabCount].dump();
 			 // Utility::InfoLogger("getFabricTrimDetails ::: JSON :: " + materialCount);
 			 json materialCountJson = json::parse(materialCount);
