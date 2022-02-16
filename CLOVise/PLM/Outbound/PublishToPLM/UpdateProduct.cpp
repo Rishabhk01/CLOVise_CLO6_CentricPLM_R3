@@ -417,7 +417,6 @@ namespace CLOVise
 			ui_tabWidget->setCurrentIndex(0);
 			m_colorSpecList.clear();
 			ClearBOMData();
-			m_CloAndPLMColorwayMap.clear();
 			m_totalCountLabel->setText("Total count: 0");
 		}
 		SetTotalImageCount();
@@ -1023,7 +1022,6 @@ namespace CLOVise
 					PublishToPLMData::GetInstance()->SetIsCreateNewGLBDocument(false);
 					m_totalCountLabel->setText("Total count: 0");
 					ClearBOMData();
-					m_CloAndPLMColorwayMap.clear();
 					RESTAPI::SetProgressBarData(0, "", false);
 					//this->hide();
 					this->close();
@@ -3206,7 +3204,7 @@ namespace CLOVise
 			m_colorSpecList.clear();
 			m_totalCountLabel->setText("Total count: 0");
 			ClearBOMData();
-			m_CloAndPLMColorwayMap.clear();
+			
 			
 		}
 		Configuration::GetInstance()->SetIsPrintSearchClicked(false);
@@ -4770,6 +4768,7 @@ Description - ClearBOMData() used to clear bom tab data and UI
 		BOMUtility::ClearBomSectionLayout(ui_sectionLayout);
 		m_bomAddButton->show();
 		m_bomAddButton->setEnabled(true);
+		m_CloAndPLMColorwayMap.clear();
 		Logger::Debug("UpdateProduct -> ClearBOMData() -> End");
 	}
 

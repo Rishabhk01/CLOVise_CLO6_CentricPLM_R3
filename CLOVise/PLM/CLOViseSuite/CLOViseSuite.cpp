@@ -960,8 +960,12 @@ namespace CLOVise
 					UpdateProduct::GetInstance()->GetUpdatedColorwayNames();
 				}
 				//UpdateProduct::GetInstance()->m_downloadedStyleJson = PublishToPLMData::GetInstance()->GetUpdateStyleCacheData();
-				if(Configuration::GetInstance()->GetIsNewStyleDownloaded())
+				if (Configuration::GetInstance()->GetIsNewStyleDownloaded())
+				{
 					UpdateProduct::GetInstance()->addCreateProductDetailsWidgetData();
+					UpdateProduct::GetInstance()->ClearBOMData();
+
+				}
 				else
 				{
 					if(!UpdateProduct::GetInstance()->GetIsSaveClicked())
