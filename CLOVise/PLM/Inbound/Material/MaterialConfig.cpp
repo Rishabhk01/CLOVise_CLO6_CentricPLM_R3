@@ -887,7 +887,7 @@ void MaterialConfig::SetDataFromResponse(json _param)
 			string resultListStr = Helper::GetJSONValue<int>(materialResults, i, false);
 			json resultListJson = json::parse(resultListStr);
 			string materialId = Helper::GetJSONValue<string>(resultListJson, "id", true);
-			if (Configuration::GetInstance()->GetCurrentScreen() == SEARCH_MATERIAL_CLICKED || Configuration::GetInstance()->GetCurrentScreen() == UPDATE_MATERIAL_CLICKED)
+			if (Configuration::GetInstance()->GetCurrentScreen() == SEARCH_MATERIAL_CLICKED )
 			{
 				string data = "{";
 				data += "\n\"" + PARENT_TYPE + "\":\"Material\",";
@@ -925,6 +925,13 @@ void MaterialConfig::SetDataFromResponse(json _param)
 						 m_materialResults.push_back(resultListJson);
 					 }					
 				 }
+			}
+			else
+			{
+				//Adding  clo and non clo 3d materials  to show in the result table
+				
+				MaterialConfig::GetInstance()->UpdateResultJson(resultListJson, materialTypeValuesJson);
+				m_materialResults.push_back(resultListJson);
 			}
 		}
 		Logger::Debug("m_materialResults::" + to_string(m_materialResults));
