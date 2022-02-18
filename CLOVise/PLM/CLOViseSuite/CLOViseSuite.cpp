@@ -1198,6 +1198,7 @@ namespace CLOVise
 	{
 		Logger::Info("DesignSuite -> Initialize MaterialSearch -> Start...");
 		Configuration::GetInstance()->SetCurrentScreen(SEARCH_MATERIAL_CLICKED);
+		Configuration::GetInstance()->SetQueryParameterForMaterial("");
 		ExecuteMaterialModule();
 		Logger::Info("DesignSuite -> Initialize MaterialSearch -> End...");
 	}
@@ -1243,6 +1244,7 @@ namespace CLOVise
 	void CLOViseSuite::onClickedUpdateMaterial()
 	{
 		Logger::Info("DesignSuite -> Initialize Create Material -> Start");
+		Configuration::GetInstance()->SetQueryParameterForMaterial("");
 		ExecuteUpdateMaterialModule();
 		Logger::Info("DesignSuite -> Initialize Create Material -> End");
 	}
