@@ -1048,8 +1048,11 @@ namespace CLOVise
 			m_deSelectAllButton->hide();
 		}
 		else
+		{		
 			CVWidgetGenerator::DrawViewAndResultsWidget(m_viewComboBox, resultTable, iconTable, false, m_colorResults, ColorConfig::GetInstance()->GetColorViewJSON(), "Color Image", m_typename, true, ColorConfig::GetInstance()->GetSelectedViewIdx(), ColorConfig::GetInstance()->GetAttScopes(), false, false, ColorConfig::GetInstance()->GetColorViewJSON());
-
+			m_selectAllButton->show();
+			m_deSelectAllButton->show();
+		}
 		CVWidgetGenerator::UpdateTableAndIconRows(resultTable, currPageLabel, m_perPageResultComboBox, m_resultsCount, _isFromConstructor);
 		setHeaderToolTip();
 		resultTable->setEnabled(true);
