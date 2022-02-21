@@ -3758,6 +3758,7 @@ namespace CLOVise
 				{
 					nonCloImageIdsList.append(QString::fromStdString(imageId));
 					FillNonCloColorwayImageMap(imageJson, imageId, QString::fromStdString(_id));
+					continue;
 				}
 
 				if (imageName.empty())
@@ -3903,7 +3904,7 @@ namespace CLOVise
 					}
 				}
 			}
-			m_nonCloColorwayImagesMap.insert(make_pair(QString::fromStdString(_id), nonCloImageIdsList));
+		//	m_nonCloColorwayImagesMap.insert(make_pair(QString::fromStdString(_id), nonCloImageIdsList));
 
 			UpdateImageIntent::GetInstance()->m_ColorwayViewMap.insert(make_pair(_colorwayName, colorwayView));
 			Logger::Debug("UpdateProduct -> drawColorwayImageList() -> colorwayView.viewUploadId[0]" + colorwayView.viewUploadId[0]);

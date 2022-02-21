@@ -213,8 +213,12 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 		sectionId = sectionId.substr(0, sectionId.length() - 1);
 		string sectionDefinitions;
 		if (!sectionId.empty())
+		{
+			Logger::Debug("BOMUtility -> CreateTableforEachSection() -> API::" + Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_SECTION_DEFINITION_API + "?" + sectionId + "&sort=sort_order&limit=1000");
 			sectionDefinitions = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_SECTION_DEFINITION_API + "?" + sectionId + "&sort=sort_order&limit=1000", APPLICATION_JSON_TYPE, "");
-		Logger::Debug("BOMUtility -> CreateTableforEachSection() -> resultResponse" + sectionDefinitions);
+		
+		}
+			Logger::Debug("BOMUtility -> CreateTableforEachSection() -> resultResponse" + sectionDefinitions);
 
 		//QStringList sectionList;
 		//sectionList << "FABRICS" << "TRIMS" << "LABELS";
