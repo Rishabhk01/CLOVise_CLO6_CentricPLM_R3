@@ -627,8 +627,6 @@ namespace CLOVise
 			
 			Logger::Debug("CreateImageIntent -> onFinishButtonClicked() -> filepath" + filepath.toStdString());
 
-
-
 			//	CreateProduct::GetInstance()->m_ImageIntentList->setProperty();
 			listItem->setTextAlignment(Qt::AlignLeft);
 			QPixmap pix(filepath);
@@ -637,7 +635,7 @@ namespace CLOVise
 			newIcon.addPixmap(pix);
 			Logger::Debug("CreateImageIntent -> onFinishButtonClicked() -> 1");
 			listItem->setIcon(newIcon);
-			listItem->setSizeHint(QSize(80, 80));
+			listItem->setSizeHint(QSize(90, 90));
 			listItem->setTextAlignment(Qt::AlignLeft);
 			Logger::Debug("CreateImageIntent -> onFinishButtonClicked() -> 2");
 			CreateProduct::GetInstance()->m_ImageIntentList->addItem(listItem);

@@ -456,9 +456,9 @@ namespace CLOVise
 					if (returnValue)
 					{
 						Logger::Debug("PLMColorResults -> void onDownloadClicked TRue");
-						RESTAPI::SetProgressBarData(0, "", false);
 						UpdateProduct::GetInstance()->setModal(true);
 						UpdateProduct::GetInstance()->show();
+						RESTAPI::SetProgressBarData(0, "", false);
 					}
 					else
 					{
