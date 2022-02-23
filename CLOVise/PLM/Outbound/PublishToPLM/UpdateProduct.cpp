@@ -2870,6 +2870,12 @@ namespace CLOVise
 		UpdateImageIntent::GetInstance()->m_imageQueueTable->clear();
 		UpdateImageIntent::GetInstance()->m_colorwayComboBox->setDisabled(false);
 		UpdateImageIntent::GetInstance()->m_colorwayComboBox->setStyleSheet(COMBOBOX_STYLE);
+		if (UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->isChecked())
+		{
+			UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setAutoExclusive(false);
+			UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setChecked(false);
+			UpdateImageIntent::GetInstance()->m_includeAvatarCheckBox->setAutoExclusive(true);
+		}
 		UpdateImageIntent::GetInstance()->setModal(true);
 		UpdateImageIntent::GetInstance()->exec();
 

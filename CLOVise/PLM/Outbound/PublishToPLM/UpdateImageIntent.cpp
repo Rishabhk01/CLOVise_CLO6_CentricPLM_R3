@@ -349,7 +349,7 @@ namespace CLOVise
 			checkBoxItemListMap = m_colorwayImageLabelsMap;
 		}
 		m_labelList->clear();
-		m_includeAvatarCheckBox->setChecked(false);
+		//m_includeAvatarCheckBox->setChecked(false);
 		for (auto it = checkBoxItemListMap.begin(); it != checkBoxItemListMap.end(); it++)
 		{
 			QCheckBox* checkbox = new QCheckBox;
