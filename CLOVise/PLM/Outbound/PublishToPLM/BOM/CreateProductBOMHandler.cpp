@@ -843,6 +843,7 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 									_sectionTable->setCellWidget(rowCount, columnIndex, p_widget);
 
 									colorChip = true;
+									break;
 								}
 							}
 								else
