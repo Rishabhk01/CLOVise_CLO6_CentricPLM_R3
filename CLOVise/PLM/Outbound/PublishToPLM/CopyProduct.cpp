@@ -1751,7 +1751,7 @@ namespace CLOVise
 			if (_lable == "Season")
 			{
 				//if (lableText == "Division")
-				if (lableText == "Brand" || lableText == "Division" || lableText == "Department" || lableText == "Item Code" || lableText == "Planning Sum")
+				if (lableText == "Brand" || lableText == "Division" || lableText == "Department" || lableText == "Item Code" || lableText == "Planning Sum" || lableText == "Shape" || lableText == "Theme")
 				{
 					Logger::Debug("Copy Product -> clearDependentComboBox () lableText: " + lableText.toStdString());
 					if (qComboBox)
