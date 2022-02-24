@@ -793,9 +793,14 @@ namespace CLOVise
 				PLMProductSearch::GetInstance()->setModal(true);
 				//UIHelper::ClearAllFieldsForSearch(PLMProductSearch::GetInstance()->GetTreewidget(0));
 				//UIHelper::ClearAllFieldsForSearch(PLMProductSearch::GetInstance()->GetTreewidget(1));
+				if (ProductConfig::GetInstance()->m_productlLoggedOut)
+				{
+					ProductConfig::GetInstance()->m_productlLoggedOut = false;
+					ProductConfig::GetInstance()->m_resultAfterLogout = true;
+				}
 				UTILITY_API->DeleteProgressBar(true);
 				PLMProductSearch::GetInstance()->exec();
-				PublishToPLMData::GetInstance()->SetIsModelExecuted(true);
+				ProductConfig::GetInstance()->SetIsModelExecuted(true);
 				
 			}
 		}
