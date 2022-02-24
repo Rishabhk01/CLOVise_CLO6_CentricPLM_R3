@@ -76,6 +76,7 @@ const QString PLM_NAME = "Centric 8";
 #define DELETE_BUTTON_COLUMN  0
 #define MATERIAL_NAME_COLUMN  1
 #define MATERIAL_TYPE_COLUMN  2
+#define MATERIAL_QTY_COLUMN  4
 #define COMMON_COLOR_COLUMN  5
 
 
