@@ -1010,7 +1010,7 @@ namespace UIHelper
 							}
 							else if (_module == PRINT_MODULE)
 							{
-								if (COLOR_SUPPORTING_LIST.contains(QString::fromStdString(fileExt), Qt::CaseInsensitive))
+								if (PRINT_SUPPORTING_LIST.contains(QString::fromStdString(fileExt), Qt::CaseInsensitive))
 									filePath = DirectoryUtil::GetPrintAssetsDirectory();
 							}
 							else

@@ -619,6 +619,7 @@ const QString TRIM_DATA_ID_KEY = "Trim";
 const QString PRINTS_AND_PATTERN_DATA_ID_KEY = "Print & Pattern";
 const QStringList TRIM_SUPPORTING_LIST{ "btn", "zsd" , "bth", "zpl", "png", "jpg", "jpeg", "zpac", "zsp" };
 const QStringList COLOR_SUPPORTING_LIST{ "png", "jpeg", "jpg", "ai" };
+const QStringList PRINT_SUPPORTING_LIST{ "png", "jpeg", "jpg", "ai" ,"psd"};
 const QStringList PRODUCT_SUPPORTING_LIST{ "zprj", "Zprj" };
 const QStringList MATERIAL_SUPPORTING_LIST{ "zfab" };
 
