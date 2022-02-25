@@ -977,7 +977,7 @@ namespace CLOAPISample
 				QString fileName = fileList.at(fileListCount).fileName();
 				QString fileCreationDateTime = fileList.at(fileListCount).lastModified().toString(Qt::ISODate);
 
-				if (COLOR_SUPPORTING_LIST.contains(QString::fromStdString(Helper::GetFileExtension(fileName.toStdString())), Qt::CaseInsensitive))
+				if (PRINT_SUPPORTING_LIST.contains(QString::fromStdString(Helper::GetFileExtension(fileName.toStdString())), Qt::CaseInsensitive))
 				{
 					string metadataStr = UTILITY_API->GetAPIMetaData(filePath.toStdString());
 					string objectId = "";

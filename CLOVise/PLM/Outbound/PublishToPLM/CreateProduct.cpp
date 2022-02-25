@@ -2798,7 +2798,7 @@ namespace CLOVise
 			QComboBox* qComboBox = qobject_cast<QComboBox*>(qWidgetColumn_1);
 			if (_lable == "Season")
 			{
-				if (lableText == "Brand" || lableText == "Division" || lableText == "Department" || lableText == "Item Code" || lableText == "Planning Sum")
+				if (lableText == "Brand" || lableText == "Division" || lableText == "Department" || lableText == "Item Code" || lableText == "Planning Sum" || lableText == "Shape" || lableText == "Theme")
 				{
 					if (qComboBox)
 					{
