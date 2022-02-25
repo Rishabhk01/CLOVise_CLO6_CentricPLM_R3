@@ -1722,7 +1722,7 @@ namespace CLOVise
 
 		PublishToPLMData::GetInstance()->m_isSaveClicked = true;
 
-		
+		GetMappedColorway();
 		GetUpdatedColorwayNames();
 		//if (ExtractAllUIValues())
 		{
@@ -1745,6 +1745,15 @@ namespace CLOVise
 		bool duplicateColrwayName = false;
 		if (_index == COLORWAY_TAB)
 		{
+			for (int rowIndex = 0; rowIndex < ui_colorwayTable->rowCount(); rowIndex++)
+			{
+				QComboBox *colorwayNameCombo = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(rowIndex, CLO_COLORWAY_COLUMN)->children().last());
+				Logger::Debug("createProduct -> GetUpdatedColorwayNames() -> m_mappedColorways: " + m_mappedColorways.join(',').toStdString());
+				string CloColorwayName = colorwayNameCombo->currentText().toStdString();
+				if (!m_mappedColorways.contains(QString::fromStdString(CloColorwayName)))
+					colorwayNameCombo->setCurrentIndex(0);
+
+			}
 			if (m_selectedStyleTypeIndex <= 0)
 			{
 				UTILITY_API->DisplayMessageBox("Please select the Style Type in the Overview tab to add colorways");
@@ -3665,7 +3674,6 @@ namespace CLOVise
 			for (int index = selectedIndexs.size() - 1; index >= 0; index--)
 			{
 				m_ImageIntentList->takeItem(selectedIndexs[index].toInt()); //deleting row from table, in reverse order
-
 			}
 			string currentViewName;
 			for (int index = 0; index < 4; index++)
@@ -3728,71 +3736,123 @@ namespace CLOVise
 
 			string temporaryPath = UTILITY_API->GetCLOTemporaryFolderPath();
 
+			int colorwayCount = UTILITY_API->GetColorwayCount();
+			QStringList updatedColorwayName;
+			QStringList selectedIndexs;
+			for (int colorwayIndex = 0; colorwayIndex < colorwayCount; colorwayIndex++)
+			{
+				string colorwayName1 = UTILITY_API->GetColorwayName(colorwayIndex);
+				updatedColorwayName.append(QString::fromStdString(colorwayName1));
+			}
+
 			for (int index = 0; index < imageRowCount; index++)
 			{
 				QListWidgetItem* listImageItem = new QListWidgetItem();
 				QListWidgetItem* item = m_ImageIntentList->item(index);
-				QListWidget *listItem = qobject_cast<QListWidget*>(m_ImageIntentList->itemWidget(item));
-				for (int itemIndex = 0; itemIndex < listItem->count(); itemIndex++)
+				if (item)
 				{
-					string text = listItem->item(itemIndex)->text().toStdString();
-					Logger::Debug("CreateProduct -> onTabClicked() -> Item" + text);
-					if (itemIndex == 0)
-					{
-						int length = text.length();
-						int indexOfColon = text.find(":");
-						colorwayName = text.substr(indexOfColon + 2, length);
-						Logger::Debug("CreateProduct -> onTabClicked() -> clorwayname" + colorwayName);
 
-					}
-					if (itemIndex == 1)
+					QListWidget *listItem = qobject_cast<QListWidget*>(m_ImageIntentList->itemWidget(item));
+					if (listItem)
 					{
-						int length = text.length();
-						int indexOfColon = text.find(":");
-						viewName = text.substr(indexOfColon + 1, length);
-						Logger::Debug("CreateProduct -> onTabClicked() -> viewName" + viewName);
+						for (int itemIndex = 0; itemIndex < listItem->count(); itemIndex++)
+						{
+							string text = listItem->item(itemIndex)->text().toStdString();
+							Logger::Debug("CreateProduct -> onTabClicked() -> Item" + text);
+							if (itemIndex == 0)
+							{
+								int length = text.length();
+								int indexOfColon = text.find(":");
+								colorwayName = text.substr(indexOfColon + 2, length);
+								Logger::Debug("CreateProduct -> onTabClicked() -> clorwayname" + colorwayName);
 
-						if (viewName == " Back")
-							view = BACK_VIEW;
-						else if (viewName == " Front")
-							view = FRONT_VIEW;
-						else if (viewName == " Left")
-							view = LEFT_VIEW;
+							}
+							if (itemIndex == 1)
+							{
+								int length = text.length();
+								int indexOfColon = text.find(":");
+								viewName = text.substr(indexOfColon + 1, length);
+								Logger::Debug("CreateProduct -> onTabClicked() -> viewName" + viewName);
+
+								if (viewName == " Back")
+									view = BACK_VIEW;
+								else if (viewName == " Front")
+									view = FRONT_VIEW;
+								else if (viewName == " Left")
+									view = LEFT_VIEW;
+								else
+									view = RIGHT_VIEW;
+							}
+							if (itemIndex == 4)
+							{
+								int length = text.length();
+								int indexOfColon = text.find(":");
+								includeAvatar = text.substr(indexOfColon + 2, length);
+								Logger::Debug("CreateImageIntent -> onTabClicked() -> includeAvatar" + includeAvatar);
+
+							}
+						}
+						Logger::Debug("CreateImageIntent -> onTabClicked() -> updatedColorwayName" + updatedColorwayName.join(',').toStdString());
+
+						if (!updatedColorwayName.contains(QString::fromStdString(colorwayName)))
+						{
+							Logger::Debug("CreateImageIntent -> onTabClicked() -> Deleted Item " + colorwayName);
+							listItem->setProperty("Delete", "true");
+							//selectedIndexs.append(QString::fromStdString(to_string(index)));
+							//continue;
+							//m_ImageIntentList->takeItem(index						
+
+							//continue;
+						}
 						else
-							view = RIGHT_VIEW;
-					}
-					if (itemIndex == 4)
-					{
-						int length = text.length();
-						int indexOfColon = text.find(":");
-						includeAvatar = text.substr(indexOfColon + 2, length);
-						Logger::Debug("CreateImageIntent -> onTabClicked() -> includeAvatar" + includeAvatar);
+							listItem->setProperty("Delete", "false");
 
+
+
+						QString filepath;
+						if (includeAvatar == "Yes")
+							filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithAvatar/Avatar_" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
+						else
+							filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithoutAvatar/" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
+
+						Logger::Debug("CreateImageIntent -> onTabClicked() -> filepath" + filepath.toStdString());
+
+						item->setTextAlignment(Qt::AlignLeft);
+						QPixmap pix(filepath);
+						pix.scaled(QSize(80, 80), Qt::KeepAspectRatio);
+						QIcon newIcon;
+						newIcon.addPixmap(pix);
+						Logger::Debug("CreateProduct -> onTabClicked() -> 1");
+						item->setIcon(newIcon);
+						item->setSizeHint(QSize(80, 80));
+						m_ImageIntentList->addItem(item);
+						Logger::Debug("CreateProduct -> onTabClicked() -> 3");
+						CreateProduct::GetInstance()->m_ImageIntentList->setIconSize(QSize(80, 80));
+						//m_ImageIntentList->takeItem(index);
+						m_ImageIntentList->addItem(item);
+						CreateProduct::GetInstance()->m_ImageIntentList->setItemWidget(item, listItem);
 					}
 				}
+			}
 
-					QString filepath;
-					if (includeAvatar == "Yes")
-						filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithAvatar/Avatar_" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
-					else
-						filepath = QString::fromStdString(temporaryPath) + "CLOViseTurntableImages/WithoutAvatar/" + QString::fromStdString(colorwayName) + "_" + QString::fromStdString(to_string(view)) + ".png";
+			for (int index = 0; index < m_ImageIntentList->count(); index++)
+			{
+				QListWidgetItem* listImageItem = new QListWidgetItem();
+				QListWidgetItem* item = m_ImageIntentList->item(index);
+				if (item)
+				{
 
-				Logger::Debug("CreateImageIntent -> onTabClicked() -> filepath" + filepath.toStdString());
-
-				item->setTextAlignment(Qt::AlignLeft);
-				QPixmap pix(filepath);
-				pix.scaled(QSize(80, 80), Qt::KeepAspectRatio);
-				QIcon newIcon;
-				newIcon.addPixmap(pix);
-				Logger::Debug("CreateProduct -> onTabClicked() -> 1");
-				item->setIcon(newIcon);
-				item->setSizeHint(QSize(80, 80));
-				m_ImageIntentList->addItem(item);
-				Logger::Debug("CreateProduct -> onTabClicked() -> 3");
-				CreateProduct::GetInstance()->m_ImageIntentList->setIconSize(QSize(80, 80));
-				//m_ImageIntentList->takeItem(index);
-				m_ImageIntentList->addItem(item);
-				CreateProduct::GetInstance()->m_ImageIntentList->setItemWidget(item, listItem);
+					QListWidget *listItem = qobject_cast<QListWidget*>(m_ImageIntentList->itemWidget(item));
+					if (listItem)
+					{
+						QString flag = listItem->property("Delete").toString();
+						if (flag == "true")
+						{
+							m_ImageIntentList->takeItem(index);
+							index = 0;
+						}
+					}
+				}
 			}
 		}
 
