@@ -4896,9 +4896,8 @@ Description - ClearBOMData() used to clear bom tab data and UI
 				json attachmentCountJson = Helper::GetJSONParsedValue<int>(revisionDetailsJson, attachmenAarrayCount, false);
 				latestVersionAttName = Helper::GetJSONValue<string>(attachmentCountJson, "file_name", true);
 				latestRevisionId = Helper::GetJSONValue<string>(attachmentCountJson, ATTRIBUTE_ID, true);
-				Logger::Logger("product latestRevisionId==================" + latestRevisionId);
+				
 			}
-			Logger::Logger("product latestRevisionId==================" + latestRevisionId);
 			PublishToPLMData::GetInstance()->SetLatestRevision(latestRevisionId);
 		}
 		json glbAttachmentjson = json::parse(glbAttachmentResponse);
@@ -4919,7 +4918,7 @@ Description - ClearBOMData() used to clear bom tab data and UI
 				if (!FormatHelper::HasContent(documentName))
 					documentName = "(unnamed)";
 				json revisionDetailsJson = Helper::GetJSONParsedValue<string>(attachmentCountJson, "revision_details", false);
-				Logger::Logger("revisionDetailsJson===========" + to_string(revisionDetailsJson));
+				Logger::Logger("revisionDetailsJson::" + to_string(revisionDetailsJson));
 				string modifiedAt = Helper::GetJSONValue<string>(attachmentCountJson, "_modified_at", true);
 				string latestVersionAttName = "";
 				string latestRevisionId = "";
@@ -4928,13 +4927,10 @@ Description - ClearBOMData() used to clear bom tab data and UI
 				{
 					json attachmentCountJson = Helper::GetJSONParsedValue<int>(revisionDetailsJson, attachmenAarrayCount, false);
 					latestVersionAttName = Helper::GetJSONValue<string>(attachmentCountJson, "file_name", true);
-					Logger::Logger("latestVersionAttName===========" + latestVersionAttName);
-
+					
 					latestRevisionId = Helper::GetJSONValue<string>(attachmentCountJson, ATTRIBUTE_ID, true);
-					Logger::Logger("GLB latestRevisionId===========" + latestRevisionId);
-
+					
 				}
-				Logger::Logger(" GLB latestRevisionId===========1" + latestRevisionId);
 				PublishToPLMData::GetInstance()->SetGLBLatestRevision(latestRevisionId);
 			}
 		}
