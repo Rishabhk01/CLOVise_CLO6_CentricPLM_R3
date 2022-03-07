@@ -1192,7 +1192,6 @@ Description - UpdateColorwayColumns() method used to add or remove colorways col
 			bomTableColumnKeys.append(CreateProduct::GetInstance()->m_mappedColorways);
 
 		}
-
 		int rowCount = 0;
 		for (auto itr = m_bomSectionTableInfoMap.begin(); itr != m_bomSectionTableInfoMap.end(); itr++)// map contain section name and corresponding table pointer  
 		{
@@ -1245,8 +1244,8 @@ Description - UpdateColorwayColumns() method used to add or remove colorways col
 
 					if (!bomColorwayColumns.contains(columnName))
 					{
-						//if (FormatHelper::HasContent(matrialId.toStdString()))
-						//{
+						if (FormatHelper::HasContent(matrialId.toStdString()))
+						{
 
 							//sectionTabl
 							Logger::Debug("CreateProductBOMHandler -> UpdateColorwayColumns () 2");
@@ -1326,53 +1325,6 @@ Description - UpdateColorwayColumns() method used to add or remove colorways col
 											//colorChip = true;
 										}
 									}
-									else
-									{
-										if (CreateProduct::GetInstance()->m_mappedColorways.contains(columnName))
-										{
-											QWidget* p_widget = new QWidget(sectionTable);
-											QGridLayout* gridLayout = new QGridLayout(sectionTable);
-											gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-											gridLayout->setContentsMargins(0, 0, 0, 0);
-
-											QPixmap pixmap;
-											Logger::Debug("CreateProductBOMHandler -> AddBomRows() -> 2");
-											QLabel* label = new QLabel();
-
-											QImage styleIcon;
-											QImageReader imageReader(":/CLOVise/PLM/Images/NoImage.png");
-											imageReader.setDecideFormatFromContent(true);
-											styleIcon = imageReader.read();
-											pixmap = QPixmap::fromImage(styleIcon);
-
-											label->setMaximumSize(QSize(20, 20));
-											int w = label->width();
-											int h = label->height();
-											label->setPixmap(QPixmap(pixmap.scaled(w, h, Qt::KeepAspectRatio)));
-											Logger::Debug("CreateProductBOMHandler -> AddBomRows() -> 3");
-											QWidget *colorchip = nullptr;
-											colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
-
-											gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
-											QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
-											pushButton_2->setFixedHeight(20);
-											pushButton_2->setFixedWidth(20);
-											if (m_addColorButtonSignalMapper != nullptr)
-											{
-												m_addColorButtonSignalMapper->setProperty("TableName", tableName);
-												connect(pushButton_2, SIGNAL(clicked()), m_addColorButtonSignalMapper, SLOT(map()));
-												//int number = rowCount * 10 + columnIndex;
-												m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2-%3").arg(rowCount).arg(columnIndex).arg(tableName));
-												//m_buttonSignalMapper->setMapping(pushButton_2, number);
-											}
-											pushButton_2->setProperty("TableName", tableName);
-											gridLayout->addWidget(pushButton_2, 0, 1, 1, 1, Qt::AlignHCenter);
-											p_widget->setLayout(gridLayout);
-
-											Logger::Debug("CreateProductBOMHandler -> AddBomRows() -> 10");
-											sectionTable->setCellWidget(rowCount, columnIndex, p_widget);
-										}
-									}
 								}
 								else
 								{
@@ -1424,7 +1376,7 @@ Description - UpdateColorwayColumns() method used to add or remove colorways col
 
 							}
 
-					//	}
+						}
 						else
 						{
 							if (CreateProduct::GetInstance()->m_mappedColorways.contains(columnName))

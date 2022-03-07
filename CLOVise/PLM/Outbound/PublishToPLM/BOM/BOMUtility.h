@@ -35,7 +35,7 @@ using namespace std;
 
 namespace BOMUtility
 {
-	static json m_mappedColorwaysArr = json::array();
+	static json m_mappedColorwaysArr;
 	//static QStringList m_materialTypeList;
 	
 	
@@ -298,31 +298,6 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 
 	}
 
-	inline void GetUpdatedColorwayNameFromClo()
-	{
-		Logger::Debug("BOMUtility -> GetUpdatedColorwayNameFromClo () Start");
-		m_mappedColorwaysArr.clear();
-		json colorwayListJsonArr = json::array();
-		string colorwayList = Helper::GetJSONValue<string>(Configuration::GetInstance()->GetTechPackJson(), "colorwayList", false);
-		colorwayListJsonArr = json::parse(colorwayList);
-		Logger::Debug("BOMUtility -> GetUpdatedColorwayNameFromClo () colorwayListJsonArr.size()" +to_string(colorwayListJsonArr.size()));
-		Logger::Debug("BOMUtility -> GetUpdatedColorwayNameFromClo ()ColorwayList" + colorwayList);
-		for (int colorwayListCount = 0; colorwayListCount < colorwayListJsonArr.size(); colorwayListCount++)
-		{
-			json colorwayJson = json::object();
-			json colorJson = json::object();
-			string cloColorwayStr = colorwayListJsonArr[colorwayListCount].dump();
-			json cloColorwayJson = json::parse(cloColorwayStr);
-
-			string colorwayName = Helper::GetJSONValue<string>(cloColorwayJson, "name", true);
-			colorwayJson["colorwayName"] = colorwayName;
-			colorwayJson["colorwayIndex"] = to_string(colorwayListCount);
-			m_mappedColorwaysArr[colorwayListCount] = colorwayJson;
-			Logger::Debug("BOMUtility -> GetUpdatedColorwayNameFromClo () colorwayJson" + to_string(colorwayJson) );
-			Logger::Debug("BOMUtility -> GetUpdatedColorwayNameFromClo () m_mappedColorwaysArr[colorwayListCount]" + to_string(m_mappedColorwaysArr[colorwayListCount]) );
-		}
-		Logger::Debug("BOMUtility -> GetUpdatedColorwayNameFromClo () End");
-	}
 
 	/*
 * Description - getColorInfo() get color information from CLO techpack
@@ -365,21 +340,13 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 				json colorApimetaDataJson = json::parse(colorApiMetadataStr);
 				Logger::Logger("colorApimetaDataJsoncolorApimetaDataJsoncolorApimetaDataJson - " + to_string(colorApimetaDataJson));
 				string colorId = Helper::GetJSONValue<string>(colorApimetaDataJson, "CLOVISE_COLOR_ID", true);
-				Logger::Logger("m_mappedColorwaysArr.size() - " + to_string(m_mappedColorwaysArr.size()));
-				Logger::Logger("m_mappedColorwaysArr- " + to_string(m_mappedColorwaysArr));
-
-				json colorwayListJsonArr = json::array();
-				string colorwayList = Helper::GetJSONValue<string>(Configuration::GetInstance()->GetTechPackJson(), "colorwayList", false);
-				colorwayListJsonArr = json::parse(colorwayList);
-
-
-				for (int mappedColorwaysCount = 0; mappedColorwaysCount < colorwayListJsonArr.size(); mappedColorwaysCount++)
+				for (int mappedColorwaysCount = 0; mappedColorwaysCount < m_mappedColorwaysArr.size(); mappedColorwaysCount++)
 				{
-					string mappedColorwaysStr = colorwayListJsonArr[mappedColorwaysCount].dump();
+					string mappedColorwaysStr = m_mappedColorwaysArr[mappedColorwaysCount].dump();
 					json mappedColorwaysJson = json::parse(mappedColorwaysStr);
 					Logger::Logger("mappedColorwaysJsonmappedColorwaysJsonmappedColorwaysJson - " + to_string(mappedColorwaysJson));
-					string colorwayIndex = /*Helper::GetJSONValue<string>(mappedColorwaysJson, "colorwayIndex", true);*/to_string(mappedColorwaysCount);
-					string colorwayName = Helper::GetJSONValue<string>(mappedColorwaysJson, "name", true);
+					string colorwayIndex = Helper::GetJSONValue<string>(mappedColorwaysJson, "colorwayIndex", true);
+					string colorwayName = Helper::GetJSONValue<string>(mappedColorwaysJson, "colorwayName", true);
 					Logger::Logger("colorwayIndexcolorwayIndex - " + (colorwayIndex));
 					if (to_string(colorwayListCount) == colorwayIndex)
 					{
