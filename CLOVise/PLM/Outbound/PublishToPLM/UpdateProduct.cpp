@@ -2190,7 +2190,7 @@ namespace CLOVise
 
 		if (_index == BOM_TAB)
 		{
-			
+			BOMUtility::GetUpdatedColorwayNameFromClo();
 			Logger::Debug("UpdateProduct onTabClicked() 1");
 				if (m_isSaveClicked && m_updateBomTab && UpdateProductBOMHandler::GetInstance()->IsBomCreated())
 				{
@@ -3451,7 +3451,7 @@ namespace CLOVise
 			{
 				Logger::Debug("UpdateProduct -> UpdateColorInColorways () attId: " + attId);
 				Logger::Debug("UpdateProduct -> UpdateColorInColorways () attId: " + to_string(m_colorSpecList.size()));
-				if (m_colorSpecList.contains(QString::fromStdString(attId)))
+				if (m_colorSpecList.contains(QString::fromStdString(attId)) && tabIndex == COLORWAY_TAB)
 					return false;
 				else
 					m_colorSpecList.append(QString::fromStdString(attId));

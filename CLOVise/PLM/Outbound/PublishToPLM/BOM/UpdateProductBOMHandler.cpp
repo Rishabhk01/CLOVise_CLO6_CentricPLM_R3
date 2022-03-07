@@ -421,7 +421,7 @@ Description - OnClickDeleteButton() method used to delete a bom line from table.
 		 int count = 0;
 		 json placementProductTypeJson;
 
-		 string code, name, materialType, description;
+		 string code, name, materialType, description, onTheFlyMatId;
 		 for (int fabCount = 0; fabCount < fabJson.size(); fabCount++)
 		 {
 			 string objectId = "";
@@ -496,6 +496,8 @@ Description - OnClickDeleteButton() method used to delete a bom line from table.
 			 else
 			 {
 				 name = Helper::GetJSONValue<string>(materialCountJson, "name", true);
+				 onTheFlyMatId = Helper::GetJSONValue<string>(materialCountJson, "id", true);
+				 BOMUtility::getColorInfo(materialCountJson, rowDataJson, onTheFlyMatId, _isFabric, m_colorwayMapForBom);
 				 table = BOMUtility::GetSectionTable(m_bomSectionTableInfoMap, "Blank");
 				 tableName = "Blank";
 			 }
@@ -1191,7 +1193,7 @@ Description - RestoreBomDetails() method used to store bom data.
 		  bomTableColumnKeys = m_bomTableColumnKeys;
 		  QStringList bomColorwayColumns;
 
-
+		  Logger::Debug("UpdateProductBOMHandler -> UpdateColorwayColumns () Mappedcolorway" + UpdateProduct::GetInstance()->m_mappedColorways.join(',').toStdString());
 		  if (UpdateProduct::GetInstance()->m_mappedColorways.size() && m_bomSectionTableInfoMap.size() > 0)
 		  {
 
@@ -1199,6 +1201,9 @@ Description - RestoreBomDetails() method used to store bom data.
 			  bomTableColumnKeys.append(UpdateProduct::GetInstance()->m_mappedColorways);
 
 		  }
+
+		  Logger::Debug("UpdateProductBOMHandler -> UpdateColorwayColumns () tablecolumnList" + tablecolumnList.join(',').toStdString());
+		  Logger::Debug("UpdateProductBOMHandler -> UpdateColorwayColumns () bomTableColumnKeys" + bomTableColumnKeys.join(',').toStdString());
 		  int rowCount = 0;
 		  for (auto itr = m_bomSectionTableInfoMap.begin(); itr != m_bomSectionTableInfoMap.end(); itr++)// map contain section name and corresponding table pointer  
 		  {
@@ -1215,6 +1220,7 @@ Description - RestoreBomDetails() method used to store bom data.
 					  int columnNumber = bomColumnCountWOColorway + diff;
 					  Logger::Debug("UpdateProductBOMHandler -> UpdateColorwayColumns () columnNumber" + to_string(columnNumber));
 					  QString columnName = sectionTable->horizontalHeaderItem(columnNumber - 1)->text();
+					  Logger::Debug("UpdateProductBOMHandler -> UpdateColorwayColumns () columnName1" + columnName.toStdString());
 					  bomColorwayColumns.append(columnName);
 					  if (!UpdateProduct::GetInstance()->m_mappedColorways.contains(columnName))
 						  sectionTable->removeColumn(columnNumber - 1);
@@ -1248,17 +1254,17 @@ Description - RestoreBomDetails() method used to store bom data.
 					  QString columnName = sectionTable->horizontalHeaderItem(columnIndex)->text();
 					  Logger::Debug("UpdateProductBOMHandler -> UpdateColorwayColumns1 () columnName" + columnName.toStdString());
 					  Logger::Debug("UpdateProductBOMHandler -> UpdateColorwayColumns1 () bomColorwayColumns" + bomColorwayColumns.join(',').toStdString());
-
+					  bool colorChip = false;
 					  if (!bomColorwayColumns.contains(columnName))
 					  {
 						  if (FormatHelper::HasContent(matrialId.toStdString()))
 						  {
 
 							  //sectionTabl
-							  Logger::Debug("UpdateProductBOMHandler -> UpdateColorwayColumns () 2");
+							  //Logger::Debug("UpdateProductBOMHandler -> UpdateColorwayColumns () 2");
 							  if (UpdateProduct::GetInstance()->m_mappedColorways.contains(columnName))
 							  {
-								  Logger::Debug("UpdateProductBOMHandler -> UpdateColorwayColumns () columnName" + columnName.toStdString());
+								  Logger::Debug("UpdateProductBOMHandler -> UpdateColorwayColumns () columnName 2:" + columnName.toStdString());
 								  auto colorwayJsonItr = m_colorwayMapForBom.find(matrialId.toStdString());
 								  if (colorwayJsonItr != m_colorwayMapForBom.end())
 								  {
@@ -1329,7 +1335,7 @@ Description - RestoreBomDetails() method used to store bom data.
 											  p_widget->setProperty("colorId", colorObjId.c_str());
 											  sectionTable->setCellWidget(rowCount, columnIndex, p_widget);
 											  Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> 7");
-											  //colorChip = true;
+											  colorChip = true;
 										  }
 									  }
 								  }
@@ -1432,6 +1438,53 @@ Description - RestoreBomDetails() method used to store bom data.
 							  }
 						  }
 					  }
+					  //if (!colorChip)
+					  //{
+						 // if (UpdateProduct::GetInstance()->m_mappedColorways.contains(columnName))
+						 // {
+							//  QWidget* p_widget = new QWidget(sectionTable);
+							//  QGridLayout* gridLayout = new QGridLayout(sectionTable);
+							//  gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+							//  gridLayout->setContentsMargins(0, 0, 0, 0);
+
+							//  QPixmap pixmap;
+							//  Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> 2");
+							//  QLabel* label = new QLabel();
+
+							//  QImage styleIcon;
+							//  QImageReader imageReader(":/CLOVise/PLM/Images/NoImage.png");
+							//  imageReader.setDecideFormatFromContent(true);
+							//  styleIcon = imageReader.read();
+							//  pixmap = QPixmap::fromImage(styleIcon);
+
+							//  label->setMaximumSize(QSize(20, 20));
+							//  int w = label->width();
+							//  int h = label->height();
+							//  label->setPixmap(QPixmap(pixmap.scaled(w, h, Qt::KeepAspectRatio)));
+							//  Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> 3");
+							//  QWidget *colorchip = nullptr;
+							//  colorchip = CVWidgetGenerator::InsertWidgetInCenter(label);
+
+							//  gridLayout->addWidget(colorchip, 0, 0, 1, 1, Qt::AlignHCenter);
+							//  QPushButton* pushButton_2 = CVWidgetGenerator::CreatePushButton("", ADD_HOVER_ICON_PATH, "", PUSH_BUTTON_STYLE, 30, true);
+							//  pushButton_2->setFixedHeight(20);
+							//  pushButton_2->setFixedWidth(20);
+							//  if (m_addColorButtonSignalMapper != nullptr)
+							//  {
+							//	  m_addColorButtonSignalMapper->setProperty("TableName", tableName);
+							//	  connect(pushButton_2, SIGNAL(clicked()), m_addColorButtonSignalMapper, SLOT(map()));
+							//	  //int number = rowCount * 10 + columnIndex;
+							//	  m_addColorButtonSignalMapper->setMapping(pushButton_2, QString("%1-%2-%3").arg(rowCount).arg(columnIndex).arg(tableName));
+							//	  //m_buttonSignalMapper->setMapping(pushButton_2, number);
+							//  }
+							//  pushButton_2->setProperty("TableName", tableName);
+							//  gridLayout->addWidget(pushButton_2, 0, 1, 1, 1, Qt::AlignHCenter);
+							//  p_widget->setLayout(gridLayout);
+
+							//  Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> 10");
+							//  sectionTable->setCellWidget(rowCount, columnIndex, p_widget);
+						 // }
+					  //}
 				  }
 
 			  }
@@ -1466,4 +1519,6 @@ Description - ClearBomData() method used to clear all the bom related variables.
 	  {
 		  return BOMUtility::ValidateBomFields(m_bomSectionTableInfoMap);
 	  }
+	  
+	  
 }
