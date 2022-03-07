@@ -3451,11 +3451,14 @@ namespace CLOVise
 			{
 				Logger::Debug("UpdateProduct -> UpdateColorInColorways () attId: " + attId);
 				Logger::Debug("UpdateProduct -> UpdateColorInColorways () attId: " + to_string(m_colorSpecList.size()));
-				if (m_colorSpecList.contains(QString::fromStdString(attId)))
-					return false;
-				else
-					m_colorSpecList.append(QString::fromStdString(attId));
 
+				if (tabIndex == COLORWAY_TAB)
+				{
+					if (m_colorSpecList.contains(QString::fromStdString(attId)))
+						return false;
+					else
+						m_colorSpecList.append(QString::fromStdString(attId));
+				}
 				attId = Helper::GetJSONValue<string>(attachmentsJson, ATTRIBUTE_ID, true);
 				objectName = Helper::GetJSONValue<string>(attachmentsJson, ATTRIBUTE_NAME, true);
 				pantone = Helper::GetJSONValue<string>(attachmentsJson, PANTONE_KEY, true);
