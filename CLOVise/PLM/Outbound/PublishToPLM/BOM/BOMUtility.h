@@ -931,7 +931,6 @@ Description - BackupBomDetails() method used backup bom data in a data structure
 			{
 
 				QLineEdit *materialNameLineEdit = static_cast<QLineEdit*>(sectionTable->cellWidget(rowCount, MATERIAL_NAME_COLUMN)->children().last());
-				//QLineEdit *materialQtyLineEdit = static_cast<QLineEdit*>(sectionTable->cellWidget(rowCount, MATERIAL_QTY_COLUMN)->children().last());
 				QComboBox *materialTypeCombo = static_cast<QComboBox*>(sectionTable->cellWidget(rowCount, MATERIAL_TYPE_COLUMN)->children().last());
 								
 				if (materialNameLineEdit)
