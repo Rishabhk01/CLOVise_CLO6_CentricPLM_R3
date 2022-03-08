@@ -340,13 +340,19 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 				json colorApimetaDataJson = json::parse(colorApiMetadataStr);
 				Logger::Logger("colorApimetaDataJsoncolorApimetaDataJsoncolorApimetaDataJson - " + to_string(colorApimetaDataJson));
 				string colorId = Helper::GetJSONValue<string>(colorApimetaDataJson, "CLOVISE_COLOR_ID", true);
-				for (int mappedColorwaysCount = 0; mappedColorwaysCount < m_mappedColorwaysArr.size(); mappedColorwaysCount++)
+
+				json colorwayListJsonArr = json::array();
+				string colorwayList = Helper::GetJSONValue<string>(Configuration::GetInstance()->GetTechPackJson(), "colorwayList", false);
+				colorwayListJsonArr = json::parse(colorwayList);
+
+				for (int mappedColorwaysCount = 0; mappedColorwaysCount < colorwayListJsonArr.size(); mappedColorwaysCount++)
 				{
-					string mappedColorwaysStr = m_mappedColorwaysArr[mappedColorwaysCount].dump();
+					string mappedColorwaysStr = colorwayListJsonArr[mappedColorwaysCount].dump();
 					json mappedColorwaysJson = json::parse(mappedColorwaysStr);
 					Logger::Logger("mappedColorwaysJsonmappedColorwaysJsonmappedColorwaysJson - " + to_string(mappedColorwaysJson));
-					string colorwayIndex = Helper::GetJSONValue<string>(mappedColorwaysJson, "colorwayIndex", true);
-					string colorwayName = Helper::GetJSONValue<string>(mappedColorwaysJson, "colorwayName", true);
+					string colorwayName = Helper::GetJSONValue<string>(mappedColorwaysJson, "name", true);
+					string colorwayIndex = to_string(mappedColorwaysCount);//Helper::GetJSONValue<string>(mappedColorwaysJson, "colorwayIndex", true);
+					//string colorwayName = Helper::GetJSONValue<string>(mappedColorwaysJson, "colorwayName", true);
 					Logger::Logger("colorwayIndexcolorwayIndex - " + (colorwayIndex));
 					if (to_string(colorwayListCount) == colorwayIndex)
 					{
