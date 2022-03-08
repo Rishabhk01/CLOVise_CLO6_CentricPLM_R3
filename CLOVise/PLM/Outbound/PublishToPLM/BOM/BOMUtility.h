@@ -931,19 +931,9 @@ Description - BackupBomDetails() method used backup bom data in a data structure
 			{
 
 				QLineEdit *materialNameLineEdit = static_cast<QLineEdit*>(sectionTable->cellWidget(rowCount, MATERIAL_NAME_COLUMN)->children().last());
-				QLineEdit *materialQtyLineEdit = static_cast<QLineEdit*>(sectionTable->cellWidget(rowCount, MATERIAL_QTY_COLUMN)->children().last());
+				//QLineEdit *materialQtyLineEdit = static_cast<QLineEdit*>(sectionTable->cellWidget(rowCount, MATERIAL_QTY_COLUMN)->children().last());
 				QComboBox *materialTypeCombo = static_cast<QComboBox*>(sectionTable->cellWidget(rowCount, MATERIAL_TYPE_COLUMN)->children().last());
-				
-				if (materialQtyLineEdit)
-				{
-					materialQtyLineEdit->setValidator(new QDoubleValidator(0, 99999.0, 2, materialQtyLineEdit));
-
-					if (!materialQtyLineEdit->hasAcceptableInput() && !materialQtyLineEdit->text().isEmpty())
-					{
-						UTILITY_API->DisplayMessageBox("Please enter valid Float number in " + itr->first + " Section");
-					}
-					
-				}
+								
 				if (materialNameLineEdit)
 				{
 					QString materialName = materialNameLineEdit->text();
