@@ -550,10 +550,16 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 		int columnCount = _sectionTable->columnCount();
 		//" << "Code" <<"Name"<< "Type"<< "Placement"<< "Quantity"<<"Comment";
 		QStringList bomTableColumnKeys;
+		QStringList tablecolumnList;
 		bomTableColumnKeys = m_bomTableColumnKeys;
+		tablecolumnList = m_bomTableColumnlist;
 		Logger::Debug("CreateProductBOMHandler -> AddBomRows() -> test4");
 		bomTableColumnKeys.append(CreateProduct::GetInstance()->m_mappedColorways);
+		tablecolumnList.append(CreateProduct::GetInstance()->m_mappedColorways);
 		Logger::Debug("CreateProductBOMHandler -> AddBomRows() -> test5");
+		_sectionTable->setColumnCount(bomTableColumnKeys.size());
+		_sectionTable->setHorizontalHeaderLabels(tablecolumnList);
+
 		string materialId = Helper::GetJSONValue<string>(_rowDataJson, "materialId", true);
 		Logger::Debug("CreateProductBOMHandler -> AddBomRows() -> materialId" + materialId);
 		for (int columnIndex = 0; columnIndex < bomTableColumnKeys.size(); columnIndex++)
@@ -1255,9 +1261,6 @@ Description - UpdateColorwayColumns() method used to add or remove colorways col
 					Logger::Debug("CreateProductBOMHandler -> UpdateColorwayColumns1 () columnName" + columnName.toStdString());
 					Logger::Debug("CreateProductBOMHandler -> UpdateColorwayColumns1 () bomColorwayColumns" + bomColorwayColumns.join(',').toStdString());
 					bool colorChip = false;
-					if (!bomColorwayColumns.contains(columnName))
-
-					{
 
 						Logger::Debug("CreateProductBOMHandler -> UpdateColorwayColumns () 2");
 						if (CreateProduct::GetInstance()->m_mappedColorways.contains(columnName))
@@ -1338,7 +1341,6 @@ Description - UpdateColorwayColumns() method used to add or remove colorways col
 								}
 							}
 						}
-					}
 					else
 						colorChip = true;
 
