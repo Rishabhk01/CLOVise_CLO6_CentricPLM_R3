@@ -555,10 +555,10 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 		QStringList tablecolumnList;
 		bomTableColumnKeys = m_bomTableColumnKeys;
 		tablecolumnList = m_bomTableColumnlist;
-		Logger::Debug("CreateProductBOMHandler -> AddBomRows() -> test4");
+		Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> test4");
 		bomTableColumnKeys.append(UpdateProduct::GetInstance()->m_mappedColorways);
 		tablecolumnList.append(UpdateProduct::GetInstance()->m_mappedColorways);
-		Logger::Debug("CreateProductBOMHandler -> AddBomRows() -> test5");
+		Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> test5");
 		_sectionTable->setColumnCount(bomTableColumnKeys.size());
 		_sectionTable->setHorizontalHeaderLabels(tablecolumnList);
 
@@ -1259,7 +1259,7 @@ Description - UpdateColorwayColumns() method used to add or remove colorways col
 					Logger::Debug("UpdateProductBOMHandler -> UpdateColorwayColumns1 () bomColorwayColumns" + bomColorwayColumns.join(',').toStdString());
 					bool colorChip = false;
 
-					Logger::Debug("CreateProductBOMHandler -> UpdateColorwayColumns () 2");
+					Logger::Debug("UpdateProductBOMHandler -> UpdateColorwayColumns () 2");
 					if (UpdateProduct::GetInstance()->m_mappedColorways.contains(columnName))
 					{
 						Logger::Debug("UpdateProductBOMHandler -> UpdateColorwayColumns () columnName" + columnName.toStdString());
