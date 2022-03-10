@@ -2190,7 +2190,7 @@ namespace CLOVise
 
 		if (_index == BOM_TAB)
 		{
-			
+			ValidateColorwayNameField();
 			Logger::Debug("UpdateProduct onTabClicked() 1");
 				if (m_isSaveClicked && m_updateBomTab && UpdateProductBOMHandler::GetInstance()->IsBomCreated())
 				{

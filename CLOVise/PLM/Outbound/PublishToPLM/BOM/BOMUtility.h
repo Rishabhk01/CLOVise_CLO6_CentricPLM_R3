@@ -615,7 +615,7 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 				if (FormatHelper::HasContent(bomLatestRevision))
 				{
 					string partMaterialResponse;
-					if (FormatHelper::HasContent(materialId))
+					if (FormatHelper::HasContent(materialId) && materialId.find("C") != string::npos )
 					{
 
 						attJson.erase("Type");

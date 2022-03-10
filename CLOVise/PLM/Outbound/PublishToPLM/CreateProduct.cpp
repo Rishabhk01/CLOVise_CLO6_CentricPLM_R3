@@ -1864,6 +1864,7 @@ namespace CLOVise
 
 		if (_index == BOM_TAB)
 		{
+			ValidateColorwayNameField();
 			if (m_selectedStyleTypeIndex <= 0)
 			{
 				UTILITY_API->DisplayMessageBox("Please select the Style Type in the Overview tab to create BOM ");
