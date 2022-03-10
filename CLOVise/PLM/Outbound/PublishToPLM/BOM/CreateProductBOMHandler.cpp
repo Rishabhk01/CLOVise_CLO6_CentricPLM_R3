@@ -738,6 +738,11 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 				else {
 
 					QLineEdit* newColumn = new QLineEdit();
+					if (columnIndex == MATERIAL_QTY_COLUMN)
+					{
+						newColumn->setValidator(new QDoubleValidator(0, 99999.0, 9, newColumn));
+						newColumn->setToolTip("Please enter valid floating point numbers for quantity");
+					}
 					newColumn->setStyleSheet(LINEEDIT_STYLE);
 					
 					if (FormatHelper::HasContent(text))

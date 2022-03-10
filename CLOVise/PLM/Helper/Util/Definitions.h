@@ -535,7 +535,7 @@ const QString DEFAULT_TEXT_COLOR = "#FFFFFF";
 const QString SELECTED_TAB_BG_COLOR = "#323234";
 const QString DEFAULT_TAB_BG_COLOR = "#202021";
 
-const QString LINEEDIT_STYLE = "QLineEdit { font-size: 10px; font-face: ArialMT; max-height 25px; min-width: 40px; }";
+const QString LINEEDIT_STYLE = ("QLineEdit { font-size: 10px; font-face: ArialMT; max-height 25px; min-width: 40px; }""QToolTip{ color: #46C8FF; background-color: #33414D; border: 1px #000000; }");
 const QString DISABLED_LINEEDIT_STYLE = "QLineEdit { color:#868482; font-size: 10px; font-face: ArialMT; max-height: 25px; min-width: 40px; }";
 const QString HEADER_STYLE = "font-size: 12px; font-face: ArialMT; height: 20px;";
 const QString BUTTON_STYLE = "QPushButton{font-size: 10px; font-face: ArialMT; height: 27px; padding-left:12px;padding-right:12px;icon-size:18px;}""QPushButton::hover{padding-left:12px;padding-right:12px;color: #46C8FF;}";
