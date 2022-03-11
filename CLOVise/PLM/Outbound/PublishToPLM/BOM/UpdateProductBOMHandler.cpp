@@ -106,6 +106,8 @@ namespace CLOVise
 		m_materialTypeNameIdMap = BOMUtility::GetCentricMaterialTypes();
 		connectSignalSlots(true);
 		m_bomCreated = false;
+		 m_bomCreatedInPlm= false;
+		
 
 	}
 
@@ -1137,7 +1139,7 @@ Description - AddMaterialInBom method used to add a material in bom table.
 
 	void UpdateProductBOMHandler::CreateBom(string _productId, json _BomMetaData, map<string, string> _CloAndPLMColorwayMap)
 	{
-		BOMUtility::CreateBom(_productId, _BomMetaData, m_bomSectionTableInfoMap, UpdateProduct::GetInstance()->m_mappedColorways, _CloAndPLMColorwayMap);
+		BOMUtility::CreateBom(_productId, _BomMetaData, m_bomSectionTableInfoMap, UpdateProduct::GetInstance()->m_mappedColorways, _CloAndPLMColorwayMap,m_bomCreatedInPlm, m_apparelBomId);
 	}
 
 	/*

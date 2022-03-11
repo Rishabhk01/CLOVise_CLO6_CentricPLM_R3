@@ -411,7 +411,7 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 	}
 
 	
-	inline void CreateBom(string _productId, json _BomMetaData, map<string, QTableWidget*> _bomSectionTableInfoMap, QStringList _mappedColorways, map<string, string> _CloAndPLMColorwayMap)
+	inline void CreateBom(string _productId, json _BomMetaData, map<string, QTableWidget*> _bomSectionTableInfoMap, QStringList _mappedColorways, map<string, string> _CloAndPLMColorwayMap, bool& _bomCreatedInPlm, string& _apparelBomId)
 	{
 		Logger::Debug("BOMUtility -> CreateBom() -> Start");
 		vector<pair<string, string>> headerNameAndValueList;
@@ -426,6 +426,10 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 		bomData["style_id"] = _productId;
 		string bomMetaData = to_string(bomData);
 		//UTILITY_API->DisplayMessageBox(to_string(bomData));
+		if (_bomCreatedInPlm)
+		{
+			string response = RESTAPI::DeleteRestCall("", Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_TEMPLATE_API + "/" + _apparelBomId, "content-type: application/json");
+		}
 		string response = RESTAPI::PostRestCall(bomMetaData, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::CREATE_BOM_API + "/" + bomTemplateId , "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 		if (!FormatHelper::HasContent(response))
 		{
@@ -439,10 +443,12 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 			//Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 1");
 			throw runtime_error(response);
 		}
+		_bomCreatedInPlm = true;
 		Logger::Debug("BOMUtility -> CreateBom() -> response" + response);
 		json bomJson = Helper::GetJsonFromResponse(response, "{");
 		string bomLatestRevision = Helper::GetJSONValue<string>(bomJson, "latest_revision", true);
-
+		_apparelBomId = Helper::GetJSONValue<string>(bomJson, "id", true);
+		Logger::Debug("BOMUtility -> CreateBom() -> _apparelBomId" + _apparelBomId);
 		if (FormatHelper::HasContent(bomLatestRevision))
 		{
 			string modifiedbyFlag = "{\"modified_by_application\":\"CLO3D\"}";
@@ -725,6 +731,7 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 
 
 		}
+		_bomCreatedInPlm = false;
 		Logger::Debug("BOMUtility -> CreateBom() -> End");
 	}
 
