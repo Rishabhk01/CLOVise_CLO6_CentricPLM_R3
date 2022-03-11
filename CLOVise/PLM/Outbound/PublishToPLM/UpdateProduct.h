@@ -154,6 +154,7 @@ namespace CLOVise
 		void showNoImageAvailable();
 		void ShowImageIntent();
 		void exportTurntableImages();
+		void GetLatestRevisionStyleID(string _styleID);
 
 		//void UpdateColorwayDetails(string _productId);
 		static UpdateProduct* _instance;
