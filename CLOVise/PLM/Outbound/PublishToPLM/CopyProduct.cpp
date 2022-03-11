@@ -276,7 +276,14 @@ namespace CLOVise
 				if (i < sizeOfTwoJSONs)
 					mergedJsonArray_2[i] = mergedJsonArray_1[i];
 				else
+
+				{
+					json attJson = Helper::GetJSONParsedValue<int>(fieldsJsonArray, i - sizeOfTwoJSONs, false);
+					string attType = Helper::GetJSONValue<string>(attJson, "value_type", true);
+					if (attType == "ref")
+						continue;
 					mergedJsonArray_2[i] = fieldsJsonArray[i - sizeOfTwoJSONs];
+				}
 			}
 			//UTILITY_API->DisplayMessageBox("mergedJsonArray_2:: " + to_string(mergedJsonArray_2));
 

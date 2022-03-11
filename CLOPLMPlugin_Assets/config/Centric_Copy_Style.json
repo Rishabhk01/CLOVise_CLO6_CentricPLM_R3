@@ -36,4 +36,29 @@
  "rest_api_exposed": true,
  "rest_api_name":"product_type"
 }
+,
+{
+ "id": "8",
+ "node_name": "Shape",
+ "value_type": "ref",
+  "display_name": "Shape",
+ "attribute_flags":"0",
+ "required":"false",
+ "create_only": false,
+ "rest_api_exposed": true,
+ "restrict_edit": false,
+ "rest_api_name":"shape"
+},
+{
+ "id": "9",
+ "node_name": "Theme",
+ "value_type": "ref",
+  "display_name": "Theme",
+ "attribute_flags":"0",
+ "required":"false",
+ "create_only": false,
+ "rest_api_exposed": true,
+ "restrict_edit": false,
+ "rest_api_name":"theme"
+}
 ]
