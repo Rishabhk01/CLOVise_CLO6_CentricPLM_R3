@@ -303,7 +303,7 @@ namespace CLOVise
 		m_imageIntentTable->setHorizontalHeaderLabels(m_ImageIntentsColumnsNames);
 		m_imageIntentTable->horizontalHeader()->setStretchLastSection(true);
 
-
+		
 		//addUpdateProductDetailsWidgetData();
 
 		m_colorwayImageLabelsMap = UIHelper::GetImageLabels("Colorway");
@@ -881,7 +881,8 @@ namespace CLOVise
 		string response;
 		try
 		{
-			Configuration::GetInstance()->SetIsPrintSearchClicked(false);
+			Configuration::GetInstance()->SetIsPrintSearchClicked(false);		
+			
 			if (ValidateColorwayNameField() && UpdateProductBOMHandler::GetInstance()->ValidateBomFields())
 			{
 				this->hide();
@@ -899,6 +900,7 @@ namespace CLOVise
 				//	UTILITY_API->DisplayMessageBox(m_collectionId);
 				//UTILITY_API->DisplayMessageBox(m_ProductMetaData);
 				string productId = Helper::GetJSONValue<string>(m_downloadedStyleJson, ATTRIBUTE_ID, true);
+				//GetLatestRevisionStyleID(productId);
 				if (FormatHelper::HasContent(productId))
 				{
 					response = RESTAPI::PutRestCall(m_productMetaData, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::STYLE_ENDPOINT_API + "/" + productId, "content-type: application/json");
@@ -942,13 +944,23 @@ namespace CLOVise
 					Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 2");
 					string productId = Helper::GetJSONValue<string>(detailJson, ATTRIBUTE_ID, true);
 					Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 3");
+
+					UTILITY_API->SetProgress("Publishing to PLM", (qrand() % 101));
+					CreateAndUpdateColorways(productId);					
+					//UploadStyleThumbnail(productId);
+					exportTurntableImages();
+					DeleteColorwayFromPLM();
+					uploadColorwayImages();
+					LinkImagesToColorways(productId);
+					if (UpdateProductBOMHandler::GetInstance()->IsBomCreated())
+						UpdateProductBOMHandler::GetInstance()->CreateBom(productId, AddNewBom::GetInstance()->m_BOMMetaData, m_CloAndPLMColorwayMap);
 					
 					if (PublishToPLMData::GetInstance()->GetIsCreateNewDocument())
 					{
 						documentId = uploadDocument(productId);
 						glbDocumentId=uploadGLBFile(productId);
 					}
-				   
+
 					else
 					{
 						Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 5");
@@ -964,22 +976,10 @@ namespace CLOVise
 							Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 7======");
 							string latestGLBRevisionId = PublishToPLMData::GetInstance()->GetGLBLatestRevision();
 							glbDocumentId=reviseDocument(latestGLBRevisionId);
-						}					
+						}
 					}
-					
-
-					Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 6");
-					UTILITY_API->SetProgress("Publishing to PLM", (qrand() % 101));
-					CreateAndUpdateColorways(productId);
 					exportZPRJ(documentId);
 					exportGLBFile(glbDocumentId);
-					//UploadStyleThumbnail(productId);
-					exportTurntableImages();
-					DeleteColorwayFromPLM();
-					uploadColorwayImages();
-					LinkImagesToColorways(productId);
-					if (UpdateProductBOMHandler::GetInstance()->IsBomCreated())
-						UpdateProductBOMHandler::GetInstance()->CreateBom(productId, AddNewBom::GetInstance()->m_BOMMetaData, m_CloAndPLMColorwayMap);
 					m_colorSpecList.clear();
 					UTILITY_API->NewProject();
 					//Clearing cached data post successful publish toii plm
@@ -3741,7 +3741,7 @@ namespace CLOVise
 			{
 				json attachmentCountJson = Helper::GetJSONParsedValue<int>(m_colorwayJson, attachmenAarrayCount, false);
 				string imageJsonStr = Helper::GetJSONValue<string>(attachmentCountJson, "images", false);
-				 imageJson = json::parse(imageJsonStr);
+				imageJson = json::parse(imageJsonStr);
 				Logger::Debug("UpdateProduct -> attachmentCountJson imageJson " + to_string(imageJson));
 				QString colorwayId = QString::fromStdString(Helper::GetJSONValue<string>(attachmentCountJson, "id", true));
 
@@ -3751,7 +3751,7 @@ namespace CLOVise
 					break;
 				}
 			}
-			
+
 			UpdateImageIntent::ColorwayViews colorwayView;
 			QStringList nonCloImageIdsList;
 			for (int attachmenAarrayCount = 0; attachmenAarrayCount < attachmentjson.size(); attachmenAarrayCount++)
@@ -3782,7 +3782,7 @@ namespace CLOVise
 					filePath = filePath + "CLOViseTurntableImages/WithAvatar/";
 				else
 					filePath = filePath + "CLOViseTurntableImages/WithoutAvatar/";
-				
+
 				filePath = filePath + imageName;
 
 				Logger::Debug("UpdateProduct -> drawColorwayImageList() -> filePath " + filePath);
@@ -3878,7 +3878,7 @@ namespace CLOVise
 					colorwayView.defaultImage = -1;
 				colorwayView.viewUploadId[view] = imageId;
 
-				int includeAvatar=-1;
+				int includeAvatar = -1;
 				QString includeAvaterStr = "No";
 				size_t found = imageName.find("Avatar_");
 				if (found != string::npos)
@@ -3888,7 +3888,7 @@ namespace CLOVise
 					Logger::Debug("UpdateProduct -> drawColorwayImageList() -> includeAvaterStr" + includeAvaterStr.toStdString());
 				}
 				imageIntentsDetails.isAvatar = includeAvaterStr;
-				colorwayView.includeAvatar[view]= includeAvatar;
+				colorwayView.includeAvatar[view] = includeAvatar;
 				colorwayView.viewLabelMap.insert(make_pair(view, labelsList));
 
 				//QString displayDetails = "Colorway : " + QString::fromStdString(_colorwayName) + "\nView : " + QString::fromStdString(viewName) + "\n Image Labels: " + labels + "\n Default: " + defaultImage;
@@ -3905,16 +3905,20 @@ namespace CLOVise
 					AddRowInImageIntentTab(pix, imageIntentsDetails, imageId);
 				}
 				for (auto i = 0; i < m_colorwayNamesList.count(); i++)
-				{					
-					
-					if (m_colorwayNamesList.at(i).toStdString()== _colorwayName )
+				{
+
+					if (m_colorwayNamesList.at(i).toStdString() == _colorwayName)
 					{
 						AddRowInImageIntentTab(pix, imageIntentsDetails, imageId);
 					}
 				}
 			}
-
-			UpdateImageIntent::GetInstance()->m_ColorwayViewMap.insert(make_pair(_colorwayName, colorwayView));
+			if (m_colorwayNamesList.contains(QString::fromStdString(_colorwayName)))
+			{
+				Logger::Logger("_colorwayName:::::" + _colorwayName);
+				UpdateImageIntent::GetInstance()->m_ColorwayViewMap.insert(make_pair(_colorwayName, colorwayView));
+			}
+			
 			Logger::Debug("UpdateProduct -> drawColorwayImageList() -> colorwayView.viewUploadId[0]" + colorwayView.viewUploadId[0]);
 			Logger::Debug("UpdateProduct -> drawColorwayImageList() -> colorwayView.viewUploadId[1]" + colorwayView.viewUploadId[1]);
 			Logger::Debug("UpdateProduct -> drawColorwayImageList() -> colorwayView.viewUploadId[2]" + colorwayView.viewUploadId[2]);
@@ -4857,5 +4861,85 @@ Description - ClearBOMData() used to clear bom tab data and UI
 
 				}
 			}
-}
+     }
+
+	void UpdateProduct::GetLatestRevisionStyleID(string _styleID)
+	{
+		string attachmentResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::ATTACHMENTS_LATEST_REVISION_RESULTS_API + _styleID + "?revision_details=true&limit=100&decode=true&file_ext=" + ZPRJ, APPLICATION_JSON_TYPE, "");
+		string glbAttachmentResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::ATTACHMENTS_LATEST_REVISION_RESULTS_API + _styleID + "?revision_details=true&limit=100&decode=true&file_ext=" + ZIP, APPLICATION_JSON_TYPE, "");
+	
+		Logger::RestAPIDebug("_selectedIdList.contains(QString::fromStdString(styleId)::documentjson::" + attachmentResponse);
+		if (FormatHelper::HasError(attachmentResponse))
+		{
+			Helper::GetCentricErrorMessage(attachmentResponse);
+			throw runtime_error(attachmentResponse);
+		}
+		if (FormatHelper::HasError(glbAttachmentResponse))
+		{
+			Helper::GetCentricErrorMessage(glbAttachmentResponse);
+			throw runtime_error(glbAttachmentResponse);
+		}
+
+		json attachmentjson = json::parse(attachmentResponse);
+
+		for (int attachmenAarrayCount = 0; attachmenAarrayCount < attachmentjson.size(); attachmenAarrayCount++)
+		{
+			json attachmentCountJson = Helper::GetJSONParsedValue<int>(attachmentjson, attachmenAarrayCount, false);
+			string documentName = Helper::GetJSONValue<string>(attachmentCountJson, NODE_NAME_KEY, true);
+
+			string documentId = Helper::GetJSONValue<string>(attachmentCountJson, "id", true);
+
+			if (!FormatHelper::HasContent(documentName))
+				documentName = "(unnamed)";
+			json revisionDetailsJson = Helper::GetJSONParsedValue<string>(attachmentCountJson, "revision_details", false);
+			string modifiedAt = Helper::GetJSONValue<string>(attachmentCountJson, "_modified_at", true);
+			string latestVersionAttName = "";
+			string latestRevisionId = "";
+			//string modifiedAt = "";
+			for (int attachmenAarrayCount = 0; attachmenAarrayCount < revisionDetailsJson.size(); attachmenAarrayCount++)
+			{
+				json attachmentCountJson = Helper::GetJSONParsedValue<int>(revisionDetailsJson, attachmenAarrayCount, false);
+				latestVersionAttName = Helper::GetJSONValue<string>(attachmentCountJson, "file_name", true);
+				latestRevisionId = Helper::GetJSONValue<string>(attachmentCountJson, ATTRIBUTE_ID, true);
+				
+			}
+			PublishToPLMData::GetInstance()->SetLatestRevision(latestRevisionId);
+		}
+		json glbAttachmentjson = json::parse(glbAttachmentResponse);
+		if (glbAttachmentjson.size() == 0)
+		{
+			PublishToPLMData::GetInstance()->SetIsCreateNewGLBDocument(true);
+		}
+		else
+		{
+			PublishToPLMData::GetInstance()->SetIsCreateNewGLBDocument(false);
+			for (int attachmenAarrayCount = 0; attachmenAarrayCount < glbAttachmentjson.size(); attachmenAarrayCount++)
+			{
+				json attachmentCountJson = Helper::GetJSONParsedValue<int>(glbAttachmentjson, attachmenAarrayCount, false);
+				string documentName = Helper::GetJSONValue<string>(attachmentCountJson, NODE_NAME_KEY, true);
+
+				string documentId = Helper::GetJSONValue<string>(attachmentCountJson, "id", true);
+
+				if (!FormatHelper::HasContent(documentName))
+					documentName = "(unnamed)";
+				json revisionDetailsJson = Helper::GetJSONParsedValue<string>(attachmentCountJson, "revision_details", false);
+				Logger::Logger("revisionDetailsJson::" + to_string(revisionDetailsJson));
+				string modifiedAt = Helper::GetJSONValue<string>(attachmentCountJson, "_modified_at", true);
+				string latestVersionAttName = "";
+				string latestRevisionId = "";
+				//string modifiedAt = "";
+				for (int attachmenAarrayCount = 0; attachmenAarrayCount < revisionDetailsJson.size(); attachmenAarrayCount++)
+				{
+					json attachmentCountJson = Helper::GetJSONParsedValue<int>(revisionDetailsJson, attachmenAarrayCount, false);
+					latestVersionAttName = Helper::GetJSONValue<string>(attachmentCountJson, "file_name", true);
+					
+					latestRevisionId = Helper::GetJSONValue<string>(attachmentCountJson, ATTRIBUTE_ID, true);
+					
+				}
+				PublishToPLMData::GetInstance()->SetGLBLatestRevision(latestRevisionId);
+			}
+		}
+
 	}
+
+}
