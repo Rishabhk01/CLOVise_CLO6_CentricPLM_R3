@@ -1265,29 +1265,6 @@ namespace UIHelper
 								break;
 							}
 							
-							else
-							{
-								string latestRevisionId = Helper::GetJSONValue<string>(attachmentCountJson, "latest_revision", true);
-								json revisionDetailsJson = Helper::GetJSONParsedValue<string>(attachmentCountJson, "revision_details", false);
-								Logger::Logger("revisionDetailsJson::" + to_string(revisionDetailsJson));
-								for (int revisionCount = 0; revisionCount < revisionDetailsJson.size(); revisionCount++)
-								{
-									if (latestRevisionId != Helper::GetJSONValue<string>(revisionDetailsJson[revisionCount], "id", true))
-										continue;
-									string latestVersionAttId = Helper::GetJSONValue<string>(revisionDetailsJson[revisionCount], "file", true);
-									latestVersionAttName = Helper::GetJSONValue<string>(revisionDetailsJson[revisionCount], "file_name", true);
-
-									latestVersionAttUrl = Helper::GetJSONValue<string>(revisionDetailsJson[revisionCount], "_url_base_template", true);
-									
-									latestVersionAttUrl = Helper::FindAndReplace(latestVersionAttUrl, "%s", latestVersionAttId);
-
-									//latestVersionAttUrl = latestVersionAttUrl + latestVersionAttId;
-									Logger::Logger("latestVersionAttName::" + latestVersionAttName + "::latestVersionAttId::" + latestVersionAttId + "  ::latestVersionAttUrl::" + latestVersionAttUrl);
-									documentId = latestRevisionId;
-									break;
-								}
-								break;
-							}
 						}
 						//If there is no Documents in Print Design/Print Design Colors, Downloading Print Design or Print Design Color Default Images 
 						if (_module == PRINT_MODULE && attachmentjson.empty())
