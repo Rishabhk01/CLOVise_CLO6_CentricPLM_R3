@@ -487,6 +487,9 @@ namespace CLOVise
 			{
 				json fieldsJson = Helper::GetJSONParsedValue<int>(fieldsJsonArray, i - sizeOfDefaultJSON, false);
 				string internalName = Helper::GetJSONValue<string>(fieldsJson, "rest_api_name", true);
+				string attType = Helper::GetJSONValue<string>(fieldsJson, "value_type", true);
+				if (attType == "ref")
+					continue;
 				m_plmAttributesList.push_back(QString::fromStdString(internalName));
 				mergedJsonArray[i] = fieldsJsonArray[i - sizeOfDefaultJSON];
 			}
