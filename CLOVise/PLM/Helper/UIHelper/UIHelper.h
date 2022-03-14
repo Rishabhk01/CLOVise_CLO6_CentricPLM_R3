@@ -1264,7 +1264,7 @@ namespace UIHelper
 								}
 								break;
 							}
-							else//no default 3d asset key for prints
+							if (_module == PRINT_MODULE)
 							{
 								string latestRevisionId = Helper::GetJSONValue<string>(attachmentCountJson, "latest_revision", true);
 								json revisionDetailsJson = Helper::GetJSONParsedValue<string>(attachmentCountJson, "revision_details", false);
