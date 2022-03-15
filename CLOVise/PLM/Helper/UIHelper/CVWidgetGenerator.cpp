@@ -717,12 +717,13 @@ void CVWidgetGenerator::CreateSearchCriteriaWidget(QTreeWidget* _searchTree_1, Q
 		{
 			UIHelper::CreateWidgetsOnOutBoundTreeWidget(_searchTree_1, STARTING_INDEX, ceil(_attributeJson.size() / DIVISION_FACTOR), _attributeJson, "CREATE");
 			UIHelper::CreateWidgetsOnOutBoundTreeWidget(_searchTree_2, ceil(_attributeJson.size() / DIVISION_FACTOR), _attributeJson.size(), _attributeJson, "CREATE");
-		
+
 		}
 		else
 		{
-		UIHelper::CreateWidgetsOnTreeWidget(_searchTree_1, STARTING_INDEX, ceil(_attributeJson.size() / DIVISION_FACTOR), _attributeJson, _noFilter, _isTemplateType);
-		UIHelper::CreateWidgetsOnTreeWidget(_searchTree_2, ceil(_attributeJson.size() / DIVISION_FACTOR), _attributeJson.size(), _attributeJson, _noFilter, _isTemplateType);
+			UIHelper::CreateWidgetsOnTreeWidget(_searchTree_1, STARTING_INDEX, ceil(_attributeJson.size() / DIVISION_FACTOR), _attributeJson, _noFilter, _isTemplateType);
+			UIHelper::CreateWidgetsOnTreeWidget(_searchTree_2, ceil(_attributeJson.size() / DIVISION_FACTOR), _attributeJson.size(), _attributeJson, _noFilter, _isTemplateType);
+		}
 	}
 	Logger::Debug("CVWidgetGenerator CreateSearchCriteriaWidget() -> End");
 	//QStringList attributeDefaultValueList;
