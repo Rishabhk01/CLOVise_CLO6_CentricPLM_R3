@@ -93,6 +93,7 @@ public:
 	string GetQueryParameterForMaterial();
 	json GetTechPackJson();
 	bool GetCopyStyleDownloadButton();
+	bool GetCreatColorSpecFlag();
 	
 	void SetPLMServerURL(string _plmServerURL);
 	void SetLogFileName(string _logFileName);
@@ -145,6 +146,7 @@ public:
 	void SetQueryParameterForMaterial(string queryParamsForMaterial);
 	void ExportTechPackJson();
 	void SetCopyStyleDownloadButton(bool _downloadButton);
+	void SetCreatColorSpecFlag(bool _isCreateColorSpec);
 	
 
 private:
@@ -200,4 +202,5 @@ private:
 	string m_queryParamsForMaterial;
 	json m_techPackJson;
 	bool m_downloadButton = false;
+	bool m_isCreateColorSpec=false;
 	};

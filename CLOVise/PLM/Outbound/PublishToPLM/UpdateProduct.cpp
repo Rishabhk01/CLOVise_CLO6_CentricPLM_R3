@@ -2057,6 +2057,7 @@ namespace CLOVise
 	{
 		Logger::Info("INFO::UpdateProduct -> OnCreateColorSpecClicked() -> Start");
 		Configuration::GetInstance()->SetIsUpdateColorClicked(true);
+		Configuration::GetInstance()->SetCreatColorSpecFlag(true);
 		m_currentColorSpec = BLANK;
 		m_selectedRow = _selectedRow;
 		QComboBox *colorwayNameCombo = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(m_selectedRow, CLO_COLORWAY_COLUMN)->children().last());
@@ -2103,6 +2104,7 @@ namespace CLOVise
 	{
 		Logger::Info("INFO::UpdateProduct -> OnSearchPrintClicked() -> Start");
 		Configuration::GetInstance()->SetIsPrintSearchClicked(true);
+		Configuration::GetInstance()->SetCreatColorSpecFlag(false);
 		m_selectedRow = _SelectedRow;
 		m_currentColorSpec = BLANK;
 		this->hide();
@@ -3388,6 +3390,7 @@ namespace CLOVise
 	{
 		Logger::Debug("UpdateProduct -> OnClickUpdateColorButton () Start");
 		Configuration::GetInstance()->SetIsUpdateColorClicked(true);
+		Configuration::GetInstance()->SetCreatColorSpecFlag(false);
 		m_currentColorSpec = BLANK;
 		m_selectedRow = i;
 		//UTILITY_API->DisplayMessageBox(to_string(m_SelectedRow));

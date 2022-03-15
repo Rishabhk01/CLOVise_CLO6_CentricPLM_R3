@@ -1095,6 +1095,7 @@ namespace CLOVise
 		Logger::Info("DesignSuite -> Initialize ColorSearch-> Start");
 		Configuration::GetInstance()->SetCurrentScreen(COLOR_SEARCH_CLICKED);
 		Configuration::GetInstance()->SetIsUpdateColorClicked(false);
+		Configuration::GetInstance()->SetCreatColorSpecFlag(false);
 		ExecuteColorModule();
 		Logger::Info("DesignSuite -> Initialize ColorSearch-> Start");
 	}
@@ -1111,6 +1112,7 @@ namespace CLOVise
 		Logger::Info("DesignSuite -> onClickedSearchPrints() -> Start");
 		Configuration::GetInstance()->SetCurrentScreen(PRINT_SEARCH_CLICKED);
 		Configuration::GetInstance()->SetIsPrintSearchClicked(false);
+		Configuration::GetInstance()->SetCreatColorSpecFlag(false);
 		ExecutePrintModule();
 		Logger::Info("DesignSuite -> onClickedSearchPrints() -> Start");
 	}

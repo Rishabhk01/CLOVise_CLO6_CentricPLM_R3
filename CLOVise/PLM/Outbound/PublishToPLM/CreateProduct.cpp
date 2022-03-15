@@ -1632,6 +1632,7 @@ namespace CLOVise
 	{
 		Logger::Info("INFO::createProduct -> OnCreateColorSpecClicked() -> Start");
 		Configuration::GetInstance()->SetIsUpdateColorClicked(true);
+		Configuration::GetInstance()->SetCreatColorSpecFlag(true);
 		m_selectedRow = _SelectedRow;
 		m_currentColorSpec = BLANK;
 		this->hide();
@@ -1667,6 +1668,7 @@ namespace CLOVise
 	{
 		Logger::Info("INFO::createProduct -> OnSearchPrintClicked() -> Start");
 		Configuration::GetInstance()->SetIsPrintSearchClicked(true);
+		Configuration::GetInstance()->SetCreatColorSpecFlag(false);
 		m_selectedRow = _SelectedRow;
 		m_currentColorSpec = BLANK;
 		this->hide();
@@ -2904,6 +2906,7 @@ namespace CLOVise
 	{
 		Logger::Debug("CreateProduct -> OnClickUpdateColorButton () Start");
 		Configuration::GetInstance()->SetIsUpdateColorClicked(true);
+		Configuration::GetInstance()->SetCreatColorSpecFlag(false);
 		m_selectedRow = i;
 		m_currentColorSpec = BLANK;
 		this->hide();

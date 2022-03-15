@@ -1547,6 +1547,15 @@ bool Configuration::GetIsUpdateColorClicked()
 	 m_queryParamsForMaterial = _queryParamsForMaterial;
  }
 
+ bool Configuration::GetCreatColorSpecFlag()
+ {
+	 return m_isCreateColorSpec;
+ }
+ void Configuration::SetCreatColorSpecFlag(bool _isCreateColorSpec)
+ {
+	 m_isCreateColorSpec = _isCreateColorSpec;
+ }
+
  void Configuration::ExportTechPackJson()
  {
 	 m_techPackJson.clear();

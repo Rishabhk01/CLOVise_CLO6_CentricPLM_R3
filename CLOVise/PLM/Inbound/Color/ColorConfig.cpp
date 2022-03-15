@@ -572,6 +572,8 @@ void ColorConfig::createFieldsJson(string& _fieldsJsonStringResponse, json& _def
 	string attKey;
 	string attApiExposed;
 	string isAttEnable;
+	string attRequired;
+	string isAttFlag;
 	json fieldsListjson = json::array();
 
 	json fieldsJson;
@@ -590,6 +592,8 @@ void ColorConfig::createFieldsJson(string& _fieldsJsonStringResponse, json& _def
 			isAttEnable = Helper::GetJSONValue<string>(feildsvaluesJson, ENABLED_KEY, true);
 			attValue = Helper::GetJSONValue<string>(feildsvaluesJson, DISPLAY_NAME_KEY, true);
 			attApiExposed = Helper::GetJSONValue<string>(feildsvaluesJson, ATTRIBUTE_REST_API_EXPOSED, true);
+			attRequired = Helper::GetJSONValue<string>(feildsvaluesJson, ATTRIBUTE_REQUIRED, true);
+			isAttFlag = Helper::GetJSONValue<string>(feildsvaluesJson, ATT_RESTRICT_EDIT, true);
 			//UTILITY_API->DisplayMessageBox("before convert::" + attKey + "::attValue::" + attValue);
 			/*int last = attKey.find_last_of('/');
 			attKey = attKey.substr(last + 1);
@@ -609,10 +613,14 @@ void ColorConfig::createFieldsJson(string& _fieldsJsonStringResponse, json& _def
 				fieldsAttJson["attName"] = attValue;
 				fieldsAttJson["isAttSearchable"] = isAttEnable;
 				fieldsAttJson["isMultiselectable"] = false;
+				fieldsAttJson["isAttSettable"] = isAttFlag;
 				fieldsAttJson[IS_CHECK_KEY] = true;
 				fieldsAttJson[IS_SINGLE_INTERGER_KEY] = true;
 				fieldsAttJson[IS_SINGLE_FLOAT_KEY] = true;
 				fieldsAttJson[ATTRIBUTE_REST_API_EXPOSED] = attApiExposed;
+				fieldsAttJson[ATTRIBUTE_REQUIRED_KEY] = attRequired;
+				fieldsAttJson[ATTRIBUTE_ENABLED_KEY] = isAttEnable;
+
 				if (FormatHelper::HasContent(to_string(fieldsAttJson)))
 				{
 					fieldsJson["attributes"].emplace_back(fieldsAttJson);
