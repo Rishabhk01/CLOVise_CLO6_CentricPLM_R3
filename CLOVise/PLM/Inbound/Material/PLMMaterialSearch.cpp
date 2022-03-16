@@ -399,7 +399,7 @@ namespace CLOVise
 			Logger::Debug("preparing the response value ended..."); 
 			
 			PLMMaterialResult::GetInstance()->setModal(true);
-			if (MaterialConfig::GetInstance()->GetIsModelExecuted() || Configuration::GetInstance()->GetCurrentScreen() == UPDATE_MATERIAL_CLICKED || MaterialConfig::GetInstance()->m_resultAfterLogout)
+			if (MaterialConfig::GetInstance()->GetIsModelExecuted() || Configuration::GetInstance()->GetCurrentScreen() == SEARCH_MATERIAL_CLICKED || Configuration::GetInstance()->GetCurrentScreen() == UPDATE_MATERIAL_CLICKED || MaterialConfig::GetInstance()->m_resultAfterLogout)
 			{
 				PLMMaterialResult::GetInstance()->currPageLabel->setText("1");
 				PLMMaterialResult::GetInstance()->DrawResultWidget(false);
