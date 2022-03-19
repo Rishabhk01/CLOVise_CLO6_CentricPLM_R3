@@ -394,13 +394,12 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 			string objectId = Helper::GetJSONValue<string>(fieldsJson, "id", true);
 			string name = Helper::GetJSONValue<string>(fieldsJson, "node_name", true);
 			string materialType = Helper::GetJSONValue<string>(fieldsJson, "product_type", true);
-			string description = Helper::GetJSONValue<string>(fieldsJson, "description", true);
 			Logger::Debug("BOMUtility -> AddMaterialInBom() -> 3");
 			json rowDataJson = json::object();
 			rowDataJson["Code"] = code;
 			rowDataJson["material_name"] = name;
 			rowDataJson["Type"] = materialType;
-			rowDataJson["comment"] = description;
+			rowDataJson["comment"] = "";
 			rowDataJson["qty_default"] = "";
 			rowDataJson["uom"] = "";
 			rowDataJson["materialId"] = objectId;
