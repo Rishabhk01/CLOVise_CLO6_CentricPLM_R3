@@ -72,6 +72,7 @@ namespace CLOVise
 		bool m_updateBomTab;
 		void SetUpdateBomFlag(bool _flag);
 		QStringList m_mappedColorways;
+		QStringList m_mappedColorwaysForBOM;
 		string m_currentlySelectedStyleTypeId;
 		json collectCriteriaFields(QTreeWidget* _documentPushToPLMTree_1, QTreeWidget* _documentPushToPLMTree_2);
 		void refreshImageIntents();
