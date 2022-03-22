@@ -3313,27 +3313,27 @@ namespace CLOVise
 					Logger::RestAPIDebug("responseJson->GetcolorwayDetails() ::colorSpec::" + colorSpec);
 					selectedIds.append(QString::fromStdString(colorwayId));
 					//colorSpecsId += "id=" + colorSpec + "&";
-					colorSpec = "id=" + colorSpec ;
-				
-				//	UTILITY_API->DisplayMessageBox("colorSpecsId" + colorSpecsId);
-				colorSpecsId = colorSpecsId.substr(0, colorSpecsId.length() - 1);
-				 colorSpecJson = RESTAPI::makeRestcallGet(RESTAPI::COLOR_SPEC_API + "?" + colorSpec + "&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "", "Loading color spec details..");
-				if(colorSpecJson.empty())
-				{
-				  colorSpecJson = RESTAPI::makeRestcallGet(RESTAPI::SEARCH_PRINT_DESIGN_COLOR_API + "?" + colorSpec + "&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "", "Loading color spec details..");
+					colorSpec = "id=" + colorSpec;
 
-				}
-				
-				Logger::Logger("colorSpecJson count================" + to_string(colorSpecJson.size()));
-					for (int colorSpecJsonAarrayCount = 0; colorSpecJsonAarrayCount < colorSpecJson.size(); colorSpecJsonAarrayCount++)
+					//	UTILITY_API->DisplayMessageBox("colorSpecsId" + colorSpecsId);
+					colorSpecsId = colorSpecsId.substr(0, colorSpecsId.length() - 1);
+					colorSpecJson = RESTAPI::makeRestcallGet(RESTAPI::COLOR_SPEC_API + "?" + colorSpec + "&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "", "Loading color spec details..");
+					if (colorSpecJson.empty())//if color specification response is empty using print design color api
 					{
-						colorSpecCountJson = Helper::GetJSONParsedValue<int>(colorSpecJson, colorSpecJsonAarrayCount, false);
-						string colorSpecId = Helper::GetJSONValue<string>(colorSpecCountJson, ATTRIBUTE_ID, true);
+						colorSpecJson = RESTAPI::makeRestcallGet(RESTAPI::SEARCH_PRINT_DESIGN_COLOR_API + "?" + colorSpec + "&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue(), "", "", "Loading color spec details..");
+
+					}
+					if (!colorSpecJson.empty())
+					{
+						for (int colorSpecJsonAarrayCount = 0; colorSpecJsonAarrayCount < colorSpecJson.size(); colorSpecJsonAarrayCount++)
+						{
+							colorSpecCountJson = Helper::GetJSONParsedValue<int>(colorSpecJson, colorSpecJsonAarrayCount, false);
+							string colorSpecId = Helper::GetJSONValue<string>(colorSpecCountJson, ATTRIBUTE_ID, true);
 							Logger::Debug("UpdateProduct -> GetcolorwayDetails() colorSpec : " + colorSpec);
 							if (!colorSpec.empty() || colorSpec != "centric%3A")
 							{
 								m_colorSpecList.append(QString::fromStdString(colorSpec));
-								
+
 							}
 							string nodeName = Helper::GetJSONValue<string>(colorSpecCountJson, NODE_NAME_KEY, true);;
 							string code = Helper::GetJSONValue<string>(colorSpecCountJson, CODE_KEY, true);;
@@ -3344,9 +3344,12 @@ namespace CLOVise
 							colorwayCountJson["code"] = code;
 							colorwayCountJson["pantone"] = pantone;
 							colorwayCountJson["rgb_triple"] = rgbValue;
-							
+
+							downloadedColorwayjson[colorwayAarrayCount] = colorwayCountJson;
+					    }
+				    }
+				    else// no color spec and print design colors are adding todownloadedColorwayjson   
 						downloadedColorwayjson[colorwayAarrayCount] = colorwayCountJson;
-				    }				
 				}
 				Logger::Logger("colorwayCountJson============= " + to_string(downloadedColorwayjson));
 				m_downloadedColorway = true;
