@@ -1755,7 +1755,8 @@ namespace CLOVise
 				QComboBox *colorwayNameCombo = static_cast<QComboBox*>(ui_colorwayTable->cellWidget(rowIndex, CLO_COLORWAY_COLUMN)->children().last());
 				Logger::Debug("createProduct -> GetUpdatedColorwayNames() -> m_mappedColorways: " + m_mappedColorways.join(',').toStdString());
 				string CloColorwayName = colorwayNameCombo->currentText().toStdString();
-				if (!m_mappedColorways.contains(QString::fromStdString(CloColorwayName)))
+
+				if (!m_mappedColorways.isEmpty() && !m_mappedColorways.contains(QString::fromStdString(CloColorwayName)))
 					colorwayNameCombo->setCurrentIndex(0);
 
 			}
@@ -1771,6 +1772,7 @@ namespace CLOVise
 				ui_colorwayTable->setHorizontalHeaderLabels(m_ColorwayTableColumnNames);
 				ui_colorwayTable->show();
 			}
+			m_mappedColorways.clear();
 		}
 		if (_index == IMAGE_INTENT_TAB /*&& m_colorwayRowcount > 0*/)//Image Intent tab
 		{
@@ -3239,6 +3241,7 @@ namespace CLOVise
 				Logger::Debug("CreateProduct -> GetMappedColorway() -> mappedColorway:" + cloColorwayCombo->currentText().toStdString());
 			}
 		}
+		m_mappedColorwaysForBOM = m_mappedColorways;
 		Logger::Debug("CreateProduct -> GetMappedColorway() -> End");
 	}
 
@@ -3307,7 +3310,7 @@ namespace CLOVise
 					QString columnName = sectionTable->horizontalHeaderItem(columnCount)->text();
 					Logger::Debug("Create product CreateBom() columnName" + columnName.toStdString());
 
-					if (CreateProduct::GetInstance()->m_mappedColorways.contains(columnName))
+					if (CreateProduct::GetInstance()->m_mappedColorwaysForBOM.contains(columnName))
 					{
 						Logger::Debug("Create product CreateBom() colorways1");
 
@@ -3801,7 +3804,7 @@ namespace CLOVise
 						}
 						Logger::Debug("CreateImageIntent -> onTabClicked() -> updatedColorwayName" + updatedColorwayName.join(',').toStdString());
 
-						if (!updatedColorwayName.contains(QString::fromStdString(colorwayName)))
+						if (!updatedColorwayName.contains(QString::fromStdString(colorwayName)) && colorwayName!="No_Colorway_Default")
 						{
 							Logger::Debug("CreateImageIntent -> onTabClicked() -> Deleted Item " + colorwayName);
 							listItem->setProperty("Delete", "true");
@@ -3837,12 +3840,12 @@ namespace CLOVise
 						CreateProduct::GetInstance()->m_ImageIntentList->setIconSize(QSize(80, 80));
 						//m_ImageIntentList->takeItem(index);
 						m_ImageIntentList->addItem(item);
-						CreateProduct::GetInstance()->m_ImageIntentList->setItemWidget(item, listItem);
+						CreateProduct::GetInstance()->m_ImageIntentList->setItemWidget(item, listItem);						
 					}
 				}
 			}
 
-			for (int index = 0; index < m_ImageIntentList->count(); index++)
+			for (int index = 0; index < m_ImageIntentList->count();)
 			{
 				QListWidgetItem* listImageItem = new QListWidgetItem();
 				QListWidgetItem* item = m_ImageIntentList->item(index);
@@ -3858,11 +3861,15 @@ namespace CLOVise
 							m_ImageIntentList->takeItem(index);
 							index = 0;
 						}
+						else
+						{
+							index++;
+						}
 					}
 				}
 			}
 		}
-
+		SetTotalImageCount();
 		RESTAPI::SetProgressBarData(0, "", false);
 	}
 
