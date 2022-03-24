@@ -114,6 +114,7 @@ namespace CLOVise
 		int m_currentViewSelected;
 		int  m_selectedStyleTypeIndex = 0;
 		QPushButton* m_bomAddButton;
+		QPushButton* m_updatBOMButton;
 		QLabel *m_bomName;
 		QLabel *m_bomTemplateName;
 		QStringList m_mappedColorways;
@@ -255,5 +256,6 @@ namespace CLOVise
 		void OnCreateColorSpecClicked(int _row);
 		void OnSearchPrintClicked(int _row);
 		void onAddNewBomClicked();
+		void onUpdateBomClicked();
 	};
 }

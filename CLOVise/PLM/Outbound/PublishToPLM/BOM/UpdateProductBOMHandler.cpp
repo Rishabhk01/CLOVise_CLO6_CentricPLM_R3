@@ -518,6 +518,7 @@ Description - OnClickDeleteButton() method used to delete a bom line from table.
 			rowDataJson["qty_default"] = quantityVal;
 			rowDataJson["uom"] = uom;
 			rowDataJson["materialId"] = objectId;
+			rowDataJson["bomLineId"] = "";
 			AddBomRows(table, rowDataJson, tableName, placementProductTypeJson);
 		}
 
@@ -565,6 +566,7 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 		_sectionTable->setHorizontalHeaderLabels(tablecolumnList);
 
 		string materialId = Helper::GetJSONValue<string>(_rowDataJson, "materialId", true);
+		string bomLineId = Helper::GetJSONValue<string>(_rowDataJson, "bomLineId", true);
 		Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> materialId" + materialId);
 		for (int columnIndex = 0; columnIndex < bomTableColumnKeys.size(); columnIndex++)
 		{
@@ -1030,6 +1032,7 @@ Description - AddBomRows(QTableWidget* _sectionTable, json _rowDataJson, QString
 						QPushButton *deleteButton = CVWidgetGenerator::CreatePushButton("", ":/CLOVise/PLM/Images/icon_delete_over.svg", "Delete", PUSH_BUTTON_STYLE, 30, true);
 						deleteButton->setStyleSheet(BUTTON_STYLE);
 						deleteButton->setProperty("materialId", QString::fromStdString(materialId));
+						deleteButton->setProperty("bomLineId", QString::fromStdString(bomLineId));
 						Logger::Debug("UpdateProductBOMHandler -> AddBomRows() -> _tableName" + _tableName.toStdString());
 						if (m_deleteButtonSignalMapper != nullptr)
 						{
@@ -1096,7 +1099,8 @@ Description - AddMaterialInBom method used to add a material in bom table.
 			Logger::Debug("UpdateProductBOMHandler -> AddMaterialInBom() -> 1");
 			sectionTable = it->second;
 			QString tableName = sectionTable->property("TableName").toString();
-			json rowDataJson = BOMUtility::AddMaterialInBom();
+			json fieldsJson = MaterialConfig::GetInstance()->GetUpdateMaterialCacheData();
+			json rowDataJson = BOMUtility::AddMaterialInBom(fieldsJson);
 			json placementMateriaTypeJson;
 			Logger::Debug("UpdateProductBOMHandler -> AddMaterialInBom() -> rowDataJson" + to_string(rowDataJson));
 			placementMateriaTypeJson = BOMUtility::GetMaterialTypeForSection(m_bomSectionNameAndTypeMap, tableName.toStdString());
@@ -1129,6 +1133,7 @@ Description - AddMaterialInBom method used to add a material in bom table.
 			rowDataJson["qty_default"] = "";
 			rowDataJson["uom"] = "";
 			rowDataJson["materialId"] = "";
+			rowDataJson["bomLineId"] = "";
 			json placementMateriaTypeJson;
 			placementMateriaTypeJson = BOMUtility::GetMaterialTypeForSection(m_bomSectionNameAndTypeMap, tableName.toStdString());
 			AddBomRows(sectionTable, rowDataJson, tableName, placementMateriaTypeJson, true);
@@ -1139,7 +1144,7 @@ Description - AddMaterialInBom method used to add a material in bom table.
 
 	void UpdateProductBOMHandler::CreateBom(string _productId, json _BomMetaData, map<string, string> _CloAndPLMColorwayMap)
 	{
-		BOMUtility::CreateBom(_productId, _BomMetaData, m_bomSectionTableInfoMap, UpdateProduct::GetInstance()->m_mappedColorways, _CloAndPLMColorwayMap,m_bomCreatedInPlm, m_apparelBomId);
+		BOMUtility::CreateBom(_productId, _BomMetaData, m_bomSectionTableInfoMap, UpdateProduct::GetInstance()->m_mappedColorways, _CloAndPLMColorwayMap,m_bomCreatedInPlm, m_apparelBomId, m_updateBom, m_updatelatestRevision);
 	}
 
 	/*
@@ -1431,4 +1436,155 @@ Description - ClearBomData() method used to clear all the bom related variables.
 	{
 		return BOMUtility::ValidateBomFields(m_bomSectionTableInfoMap);
 	}
+
+
+	void UpdateProductBOMHandler::updateBom(string _styleId)
+	{
+		//https://clovise-project.centricsoftware.com/csi-requesthandler/api/v2/styles/C443136/data_sheets/apparel_boms?skip=0&limit=10
+		json responseJson = RESTAPI::makeRestcallGet(RESTAPI::STYLE_ENDPOINT_API, "/" + _styleId + "/data_sheets/apparel_boms?skip=0&limit=1000" , "", "Loading template details..");
+		if (!responseJson.empty())
+		{
+			json attJson = Helper::GetJSONParsedValue<int>(responseJson, 0, false);;///use new method
+			string latestRevision = Helper::GetJSONValue<string>(attJson, "latest_revision", true);
+			m_updatelatestRevision = latestRevision;
+			if (!latestRevision.empty())
+			{
+				//https://clovise-project.centricsoftware.com/csi-requesthandler/api/v2/apparel_bom_revisions/C443160
+				string resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API + "/" + latestRevision, APPLICATION_JSON_TYPE, "");
+				//json responseJson = Helper::makeRestcallGet(RESTAPI::BOM_REVISION_API + "/" + latestRevision, "", "", "");
+				json responseJson = json::parse(resultResponse);
+				Logger::Debug("AddNewBom onCreateButtonClicked() responseJson...." + to_string(responseJson));
+				json sectionIdsJson = Helper::GetJSONParsedValue<string>(responseJson, "all_sections", false);
+				Logger::Debug("AddNewBom onCreateButtonClicked() sectionIdsJson...." + to_string(sectionIdsJson));
+
+					//json _sectionIdsjson;
+					BOMUtility::GetCentricMaterialTypes();
+					readBomTableColumnJson();
+					BOMUtility::CreateTableforEachSection(UpdateProduct::GetInstance()->ui_sectionLayout, sectionIdsJson, m_bomSectionTableInfoMap, m_bomSectionNameAndTypeMap, m_sectionMaterialTypeMap, m_addMaterialButtonAndTableMap, m_addSpecialMaterialButtonAndTableMap, UpdateProduct::GetInstance()->m_mappedColorways, UpdateProduct::GetInstance()->m_currentlySelectedStyleTypeId, m_bomTableColumnlist, m_bomTableColumnKeys);
+
+					Logger::Debug("UpdateProductBOMHandler -> CreateBom() -> m_bomSectionTableInfoMap" + to_string(m_bomSectionTableInfoMap.size()));
+
+					populateTechPackDataInBom();
+
+					string bomlineResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API_V3 + "/" + latestRevision+ "/items/part_materials?skip=0&limit=1000", APPLICATION_JSON_TYPE, "");
+					json bomLineJson = json::parse(bomlineResponse);
+					readExistingBOMDetailsAndShow(bomLineJson);
+
+					for (auto itr = m_bomSectionTableInfoMap.begin(); itr != m_bomSectionTableInfoMap.end(); itr++)
+					{
+						Logger::Debug("UpdateProductBOMHandler -> CreateBom loop");
+						QTableWidget* key = itr->second;
+						Logger::Debug("UpdateProductBOMHandler -> CreateBom() m_addMaterialButtonAndTableMap.size()" + to_string(m_addMaterialButtonAndTableMap.size()));
+#ifdef __APPLE__
+						auto result = std::find_if(std::begin(m_addMaterialButtonAndTableMap), std::end(m_addMaterialButtonAndTableMap), [&](const std::pair<QPushButton*, QTableWidget*> &pair) { return pair.second == key; });
+#else
+						auto result = std::find_if(m_addMaterialButtonAndTableMap.begin(), m_addMaterialButtonAndTableMap.end(), [key](const auto& mo) {return mo.second == key; });
+#endif
+
+#ifdef __APPLE__
+						auto result1 = std::find_if(std::begin(m_addSpecialMaterialButtonAndTableMap), std::end(m_addSpecialMaterialButtonAndTableMap), [&](const std::pair<QPushButton*, QTableWidget*> &pair) { return pair.second == key; });
+#else
+						auto result1 = std::find_if(m_addSpecialMaterialButtonAndTableMap.begin(), m_addSpecialMaterialButtonAndTableMap.end(), [key](const auto& mo) {return mo.second == key; });
+#endif
+						Logger::Debug("UpdateProductBOMHandler -> CreateBom () 2");
+
+						QPushButton* materialbutton = result->first;
+						if (materialbutton != nullptr)
+							connect(materialbutton, SIGNAL(clicked()), this, SLOT(onClickAddFromMaterialButton()));
+
+						QPushButton* specialbutton = result1->first;
+						if (specialbutton != nullptr)
+							connect(specialbutton, SIGNAL(clicked()), this, SLOT(onClickAddSpecialMaterialButton()));
+					}
+
+				
+
+			}
+		}
+	}
+
+
+	void UpdateProductBOMHandler::readExistingBOMDetailsAndShow(json _bomLineJson)
+	{
+		json rowDataJson;
+		if (!_bomLineJson.empty())
+		{
+			for (int bomLineCount = 0; bomLineCount < _bomLineJson.size(); bomLineCount++)
+			{
+				Logger::Debug("BOMUtility -> readExistingBOMDetailsAndShow() -> 1");
+				json bomCountJson = Helper::GetJSONParsedValue<int>(_bomLineJson, bomLineCount, false);///use new method
+				Logger::Debug("BOMUtility -> readExistingBOMDetailsAndShow() -> 1");
+				Logger::Debug("BOMUtility -> readExistingBOMDetailsAndShow() -> sectionCountJson" + to_string(bomCountJson));
+				string placementId = Helper::GetJSONValue<string>(bomCountJson, ATTRIBUTE_ID, true);
+				Logger::Debug("BOMUtility -> readExistingBOMDetailsAndShow() -> sectionId" + placementId);
+				string placement = Helper::GetJSONValue<string>(bomCountJson, "node_name", true);
+				string commonColor = Helper::GetJSONValue<string>(bomCountJson, "common_color", true);
+				string quantity = Helper::GetJSONValue<string>(bomCountJson, "qty_default", true);
+				string actual = Helper::GetJSONValue<string>(bomCountJson, "actual", true);
+				string sectionId = Helper::GetJSONValue<string>(bomCountJson, "ds_section", true);
+				string comment = Helper::GetJSONValue<string>(bomCountJson, "comment", true);
+
+				
+
+				Logger::Debug("BOMUtility -> readExistingBOMDetailsAndShow() -> sectionName" + placement);
+				if (FormatHelper::HasContent(actual))
+				{
+					string tableName;
+					string materialResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_MATERIAL_API + "/" + actual, APPLICATION_JSON_TYPE, "");
+					if (sectionId == "centric%3A" || !FormatHelper::HasContent(sectionId))
+						tableName = "Blank";
+					else
+					{
+						string sectionResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_SECTION_DEFINITION_API + "/" + sectionId, APPLICATION_JSON_TYPE, "");
+						json sectionResponseJson = json::parse(sectionResponse);
+						tableName = Helper::GetJSONValue<string>(sectionResponseJson, "node_name", true);
+					}
+					
+					
+					json materialResponseJson = json::parse(materialResponse);
+					
+					
+					QTableWidget* sectionTable = BOMUtility::GetSectionTable(m_bomSectionTableInfoMap, tableName);
+					if (sectionTable != nullptr)
+					{
+						
+						rowDataJson = BOMUtility::AddMaterialInBom(materialResponseJson);
+						rowDataJson["node_name"] = placement;
+						if (commonColor == "centric%3A")
+							commonColor = "";
+						rowDataJson["common_color"] = commonColor;
+						rowDataJson["bomLineId"] = placementId;
+
+						string partMaterialColorResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::PART_MATERIAL_API_V2 + "/" + placementId + "/part_material_colors?skip=0&limit=100", APPLICATION_JSON_TYPE, "");
+						json PartMaterialColorJson = json::parse(partMaterialColorResponse);
+						json MaterialColorwayDetailsJson = json::object();
+						json colorJson = json::object();
+						int count = 0;
+						for (int partMaterailColorCount = 0; partMaterailColorCount < PartMaterialColorJson.size(); partMaterailColorCount++)
+						{
+							Logger::Debug("BOMUtility -> readExistingBOMDetailsAndShow() -> 1");
+							json partMaterialColorCountJson = Helper::GetJSONParsedValue<int>(PartMaterialColorJson, partMaterailColorCount, false);
+							string coloName = Helper::GetJSONValue<string>(partMaterialColorCountJson, "node_name", true);
+							string colorId = Helper::GetJSONValue<string>(partMaterialColorCountJson, "pmc_color", true);
+							if (colorId == "centric%3A")
+								colorId = "";
+							colorJson["colorObjectId"] = colorId;
+							colorJson["colorwayName"] = coloName;
+							rowDataJson["color"][count++] = colorJson;
+							MaterialColorwayDetailsJson[coloName] = colorJson;
+						}
+						m_colorwayMapForBom.insert(make_pair(actual, MaterialColorwayDetailsJson));//actual = materailId
+
+						json placementMateriaTypeJson;
+						Logger::Debug("UpdateProductBOMHandler -> readExistingBOMDetailsAndShow() -> rowDataJson" + to_string(rowDataJson));
+						placementMateriaTypeJson = BOMUtility::GetMaterialTypeForSection(m_bomSectionNameAndTypeMap, tableName);
+						AddBomRows(sectionTable, rowDataJson, QString::fromStdString(tableName), placementMateriaTypeJson, true);
+					}
+					
+				}
+		}
+			m_updateBom = true;
+		//Logger::Debug("BOMUtility -> readExistingBOMDetailsAndShow() -> resultResponse" + sectionDefinitions);
+	}
 }
+	}

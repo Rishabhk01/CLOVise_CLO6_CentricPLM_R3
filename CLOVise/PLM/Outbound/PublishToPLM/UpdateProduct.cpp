@@ -9,7 +9,7 @@
 * @author GoVise
 *
 * @date 14-AUG-2020
-*/
+*/ 
 #include "UpdateProduct.h"
 #include <string>
 #include <cstring>
@@ -134,6 +134,7 @@ namespace CLOVise
 		m_totalCountLabel = CVWidgetGenerator::CreateLabel("Total count: 0 ", QString::fromStdString(BLANK), HEADER_STYLE, true);
 		m_totalCountLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 		m_bomAddButton = CVWidgetGenerator::CreatePushButton("New Style Bom", ADD_HOVER_ICON_PATH, "New Style Bom", PUSH_BUTTON_STYLE, 30, true);
+		m_updatBOMButton = CVWidgetGenerator::CreatePushButton("Update Bom", ADD_HOVER_ICON_PATH, "Update Bom", PUSH_BUTTON_STYLE, 30, true);
 		QSpacerItem *horizontalSpacer = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Fixed);
 		m_colorwayRowcount = -1;
 		m_imageIntentRowcount = -1;
@@ -239,6 +240,8 @@ namespace CLOVise
 		ui_addNewBomButtonLayout->insertWidget(5, label1);
 		ui_addNewBomButtonLayout->insertWidget(6, m_bomTemplateName);
 		ui_addNewBomButtonLayout->insertSpacerItem(7, horizontalSpacer);
+		ui_addNewBomButtonLayout->insertWidget(8, m_updatBOMButton);		
+		ui_addNewBomButtonLayout->insertSpacerItem(9, horizontalSpacer);
 
 		m_colorwayImageList = new QListWidget();
 		ui_colorwayImageLayout->addWidget(m_colorwayImageList);
@@ -370,6 +373,7 @@ namespace CLOVise
 			QObject::connect(m_imageIntentTable->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(onImageIntentsTableHorizontalHeaderClicked(int)));
 			QObject::connect(ui_colorwayTable->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(onColorwayTableHorizontalHeaderClicked(int)));
 			QObject::connect(m_bomAddButton, SIGNAL(clicked()), this, SLOT(onAddNewBomClicked()));
+			QObject::connect(m_updatBOMButton, SIGNAL(clicked()), this, SLOT(onUpdateBomClicked()));
 
 
 			//QObject::connect(m_dateResetButton, SIGNAL(clicked()), this, SLOT(onResetDateEditWidget()));
@@ -4721,6 +4725,14 @@ Description - onAddNewBomClicked() called when add new bom btton clicked
 		AddNewBom::GetInstance()->setModal(true);
 		AddNewBom::GetInstance()->exec();
 
+	}
+
+	void UpdateProduct::onUpdateBomClicked()
+	{
+		//this->hide(); 
+		string  styleId = Helper::GetJSONValue<string>(m_downloadedStyleJson, "id", true);
+		UpdateProductBOMHandler::GetInstance()->updateBom(styleId);
+		UpdateProductBOMHandler::GetInstance()->m_bomCreated = true;
 	}
 	/*
 Description - GetMappedColorway() used read and set mapped colorway from colorway tab

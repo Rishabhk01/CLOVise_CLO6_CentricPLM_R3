@@ -1091,7 +1091,8 @@ Description - AddMaterialInBom method used to add a material in bom table.
 			Logger::Debug("CreateProductBOMHandler -> AddMaterialInBom() -> 1");
 			sectionTable = it->second;
 			QString tableName = sectionTable->property("TableName").toString();
-			json rowDataJson = BOMUtility::AddMaterialInBom();
+			json fieldsJson = MaterialConfig::GetInstance()->GetUpdateMaterialCacheData();
+			json rowDataJson = BOMUtility::AddMaterialInBom(fieldsJson);
 			json placementMateriaTypeJson;
 			Logger::Debug("CreateProductBOMHandler -> AddMaterialInBom() -> rowDataJson" + to_string(rowDataJson));
 			placementMateriaTypeJson = BOMUtility::GetMaterialTypeForSection(m_bomSectionNameAndTypeMap, tableName.toStdString());
@@ -1133,7 +1134,7 @@ Description - AddMaterialInBom method used to add a material in bom table.
 
 	void CreateProductBOMHandler::CreateBom(string _productId, json _BomMetaData, map<string, string> _CloAndPLMColorwayMap)
 	{
-		BOMUtility::CreateBom(_productId, _BomMetaData, m_bomSectionTableInfoMap, CreateProduct::GetInstance()->m_mappedColorways, _CloAndPLMColorwayMap, m_bomCreatedInPlm, m_apparelBomId);
+		BOMUtility::CreateBom(_productId, _BomMetaData, m_bomSectionTableInfoMap, CreateProduct::GetInstance()->m_mappedColorways, _CloAndPLMColorwayMap, m_bomCreatedInPlm, m_apparelBomId, false, "");
 	}
 
 	/*

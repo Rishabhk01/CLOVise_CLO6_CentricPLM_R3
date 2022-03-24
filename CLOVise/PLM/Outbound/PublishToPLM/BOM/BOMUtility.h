@@ -37,8 +37,8 @@ namespace BOMUtility
 {
 	static json m_mappedColorwaysArr;
 	//static QStringList m_materialTypeList;
-	
-	
+
+
 		/*
 * Description - AddBomRows() method is to add a single row ina table provided in the IN parameter
 * Parameter - QTableWidget* , json , QString
@@ -65,7 +65,7 @@ Description - GetMaterialTypeForSection(string _sectionName) method used to get 
 	* Exception -
 	*Return -
 	*/
-	static json GetMaterialTypeForSection(map<string, json> _map,string _sectionName)
+	static json GetMaterialTypeForSection(map<string, json> _map, string _sectionName)
 	{
 		Logger::Debug("BOMUtility -> GetMaterialTypeForSection() -> Start");
 		Logger::Debug("BOMUtility -> GetMaterialTypeForSection() -> m_bomSectionNameAndTypeMap.size()" + to_string(_map.size()));
@@ -79,7 +79,7 @@ Description - GetMaterialTypeForSection(string _sectionName) method used to get 
 		Logger::Debug("BOMUtility -> GetMaterialTypeForSection() -> End");
 	}
 
-	
+
 
 	inline  map<string, string> GetCentricMaterialTypes()
 	{
@@ -158,8 +158,8 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 		Logger::Debug("BOMUtility CreateSectionInBom 2: _addMaterialButtonAndTableMap " + to_string(_addMaterialButtonAndTableMap.size()));
 		Logger::Debug("BOMUtility CreateSectionInBom 2: _addSpecialMaterialButtonAndTableMap " + to_string(_addSpecialMaterialButtonAndTableMap.size()));
 		QSpacerItem *horizontalSpacer = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Fixed);
-	//	connect(addPlmMaterialButton, SIGNAL(clicked()), this, SLOT(onClickAddFromMaterialButton()));
-	//	connect(addSpecialMaterialButton, SIGNAL(clicked()), this, SLOT(onClickAddSpecialMaterialButton()));
+		//	connect(addPlmMaterialButton, SIGNAL(clicked()), this, SLOT(onClickAddFromMaterialButton()));
+		//	connect(addSpecialMaterialButton, SIGNAL(clicked()), this, SLOT(onClickAddSpecialMaterialButton()));
 
 		addMaterialButtonLayout->insertSpacerItem(0, horizontalSpacer);
 		addMaterialButtonLayout->insertWidget(1, addPlmMaterialButton);
@@ -216,9 +216,9 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 		{
 			Logger::Debug("BOMUtility -> CreateTableforEachSection() -> API::" + Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_SECTION_DEFINITION_API + "?" + sectionId + "&sort=sort_order&limit=1000");
 			sectionDefinitions = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_SECTION_DEFINITION_API + "?" + sectionId + "&sort=sort_order&limit=1000", APPLICATION_JSON_TYPE, "");
-		
+
 		}
-			Logger::Debug("BOMUtility -> CreateTableforEachSection() -> resultResponse" + sectionDefinitions);
+		Logger::Debug("BOMUtility -> CreateTableforEachSection() -> resultResponse" + sectionDefinitions);
 
 		//QStringList sectionList;
 		//sectionList << "FABRICS" << "TRIMS" << "LABELS";
@@ -293,7 +293,7 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 			}
 		}
 		// Create blank section
-		CreateSectionInBom(_mainLayout, "Blank", "", tablecolumnList, sectionCountOnBomTab, placementProductTypeJson, _bomSectionTableInfoMap, _bomSectionNameAndTypeMap,_addMaterialButtonAndTableMap,_addSpecialMaterialButtonAndTableMap, _bomTableColumnlist, _bomTableColumnKeys);
+		CreateSectionInBom(_mainLayout, "Blank", "", tablecolumnList, sectionCountOnBomTab, placementProductTypeJson, _bomSectionTableInfoMap, _bomSectionNameAndTypeMap, _addMaterialButtonAndTableMap, _addSpecialMaterialButtonAndTableMap, _bomTableColumnlist, _bomTableColumnKeys);
 
 
 	}
@@ -380,74 +380,80 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 		Logger::Debug("BOMUtility -> getColorInfo () End");
 	}
 
-	
 
-	inline json AddMaterialInBom()
+
+	inline json AddMaterialInBom(json _fieldsJson)
 	{
-		
-			Logger::Debug("BOMUtility -> AddMaterialInBom() -> 1");
-			json fieldsJson;
-			Logger::Debug("BOMUtility -> AddMaterialInBom() -> 2");
-			fieldsJson = MaterialConfig::GetInstance()->GetUpdateMaterialCacheData();
-			Logger::Debug("BOMUtility -> AddMaterialInBom() -> fieldsJson" + to_string(fieldsJson));
-			string code = Helper::GetJSONValue<string>(fieldsJson, "code", true);
-			string objectId = Helper::GetJSONValue<string>(fieldsJson, "id", true);
-			string name = Helper::GetJSONValue<string>(fieldsJson, "node_name", true);
-			string materialType = Helper::GetJSONValue<string>(fieldsJson, "product_type", true);
-			Logger::Debug("BOMUtility -> AddMaterialInBom() -> 3");
-			json rowDataJson = json::object();
-			rowDataJson["Code"] = code;
-			rowDataJson["material_name"] = name;
-			rowDataJson["Type"] = materialType;
-			rowDataJson["comment"] = "";
-			rowDataJson["qty_default"] = "";
-			rowDataJson["uom"] = "";
-			rowDataJson["materialId"] = objectId;
-			Logger::Debug("BOMUtility -> AddMaterialInBom() -> rowDataJson" + to_string(rowDataJson));
-			
+
+		Logger::Debug("BOMUtility -> AddMaterialInBom() -> 1");
+		Logger::Debug("BOMUtility -> AddMaterialInBom() -> 2");
+
+		Logger::Debug("BOMUtility -> AddMaterialInBom() -> fieldsJson" + to_string(_fieldsJson));
+		string code = Helper::GetJSONValue<string>(_fieldsJson, "code", true);
+		string objectId = Helper::GetJSONValue<string>(_fieldsJson, "id", true);
+		string name = Helper::GetJSONValue<string>(_fieldsJson, "node_name", true);
+		string materialType = Helper::GetJSONValue<string>(_fieldsJson, "product_type", true);
+		string description = Helper::GetJSONValue<string>(_fieldsJson, "description", true);
+		Logger::Debug("BOMUtility -> AddMaterialInBom() -> 3");
+		json rowDataJson = json::object();
+		rowDataJson["Code"] = code;
+		rowDataJson["material_name"] = name;
+		rowDataJson["Type"] = materialType;
+		rowDataJson["comment"] = description;
+		rowDataJson["qty_default"] = "";
+		rowDataJson["uom"] = "";
+		rowDataJson["materialId"] = objectId;
+		Logger::Debug("BOMUtility -> AddMaterialInBom() -> rowDataJson" + to_string(rowDataJson));
+
 		Logger::Debug("BOMUtility -> AddMaterialInBom() -> End");
 		return rowDataJson;
 	}
 
-	
-	inline void CreateBom(string _productId, json _BomMetaData, map<string, QTableWidget*> _bomSectionTableInfoMap, QStringList _mappedColorways, map<string, string> _CloAndPLMColorwayMap, bool& _bomCreatedInPlm, string& _apparelBomId)
+
+	inline void CreateBom(string _productId, json _BomMetaData, map<string, QTableWidget*> _bomSectionTableInfoMap, QStringList _mappedColorways, map<string, string> _CloAndPLMColorwayMap, bool& _bomCreatedInPlm, string& _apparelBomId, bool _updateBOM, string _updateBomLatestRev)
 	{
 		Logger::Debug("BOMUtility -> CreateBom() -> Start");
 		vector<pair<string, string>> headerNameAndValueList;
 		headerNameAndValueList.push_back(make_pair("content-Type", "application/json"));
 		headerNameAndValueList.push_back(make_pair("Accept", "application/json"));
 		headerNameAndValueList.push_back(make_pair("Cookie", Configuration::GetInstance()->GetBearerToken()));
+		string bomLatestRevision;
+		if (_updateBOM)
+			bomLatestRevision = _updateBomLatestRev;
+		else
+		{
+			Logger::Debug("BOMUtility -> CreateBom() -> m_BomMetaData" + to_string(_BomMetaData));
+			json bomData = _BomMetaData;
+			string bomTemplateId = Helper::GetJSONValue<string>(bomData, "bom_template", true);
+			bomData.erase("bom_template");
+			bomData["style_id"] = _productId;
+			string bomMetaData = to_string(bomData);
+			//UTILITY_API->DisplayMessageBox(to_string(bomData));
+			if (_bomCreatedInPlm)
+			{
+				string response = RESTAPI::DeleteRestCall("", Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_TEMPLATE_API + "/" + _apparelBomId, "content-type: application/json");
+			}
+			string response = RESTAPI::PostRestCall(bomMetaData, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::CREATE_BOM_API + "/" + bomTemplateId, "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
+			if (!FormatHelper::HasContent(response))
+			{
+				RESTAPI::SetProgressBarData(0, "", false);
+				throw "Unable to publish to PLM. Please try again or Contact your System Administrator.";
+			}
 
-		Logger::Debug("BOMUtility -> CreateBom() -> m_BomMetaData" + to_string(_BomMetaData));
-		json bomData = _BomMetaData;
-		string bomTemplateId = Helper::GetJSONValue<string>(bomData, "bom_template", true);
-		bomData.erase("bom_template");
-		bomData["style_id"] = _productId;
-		string bomMetaData = to_string(bomData);
-		//UTILITY_API->DisplayMessageBox(to_string(bomData));
-		if (_bomCreatedInPlm)
-		{
-			string response = RESTAPI::DeleteRestCall("", Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_TEMPLATE_API + "/" + _apparelBomId, "content-type: application/json");
-		}
-		string response = RESTAPI::PostRestCall(bomMetaData, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::CREATE_BOM_API + "/" + bomTemplateId , "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
-		if (!FormatHelper::HasContent(response))
-		{
-			RESTAPI::SetProgressBarData(0, "", false);
-			throw "Unable to publish to PLM. Please try again or Contact your System Administrator.";
+			if (FormatHelper::HasError(response))
+			{
+				RESTAPI::SetProgressBarData(0, "", false);
+				//Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 1");
+				throw runtime_error(response);
+			}
+			_bomCreatedInPlm = true;
+			Logger::Debug("BOMUtility -> CreateBom() -> response" + response);
+			json bomJson = Helper::GetJsonFromResponse(response, "{");
+			bomLatestRevision = Helper::GetJSONValue<string>(bomJson, "latest_revision", true);
+			_apparelBomId = Helper::GetJSONValue<string>(bomJson, "id", true);
+			Logger::Debug("BOMUtility -> CreateBom() -> _apparelBomId" + _apparelBomId);
 		}
 
-		if (FormatHelper::HasError(response))
-		{
-			RESTAPI::SetProgressBarData(0, "", false);
-			//Logger::Debug("PublishToPLMData -> onPublishToPLMClicked 1");
-			throw runtime_error(response);
-		}
-		_bomCreatedInPlm = true;
-		Logger::Debug("BOMUtility -> CreateBom() -> response" + response);
-		json bomJson = Helper::GetJsonFromResponse(response, "{");
-		string bomLatestRevision = Helper::GetJSONValue<string>(bomJson, "latest_revision", true);
-		_apparelBomId = Helper::GetJSONValue<string>(bomJson, "id", true);
-		Logger::Debug("BOMUtility -> CreateBom() -> _apparelBomId" + _apparelBomId);
 		if (FormatHelper::HasContent(bomLatestRevision))
 		{
 			string modifiedbyFlag = "{\"modified_by_application\":\"CLO3D\"}";
@@ -464,6 +470,7 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 			{
 				json attJson = json::object();
 				string commonColorId;
+				string bomLineId = "";
 				map<string, string> partMaterialColorsMap;
 				for (int columnCount = 0; columnCount < sectionTable->columnCount(); columnCount++)
 				{
@@ -569,6 +576,7 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 						if (attInternalName == "Delete")
 						{
 							fieldValue = pushButton->property("materialId").toString().toStdString();
+							bomLineId = pushButton->property("bomLineId").toString().toStdString();
 							commonColorId = pushButton->property("commonColorId").toString().toStdString();
 							Logger::Debug("Create product CreateBom() QComboBox->materialId" + fieldValue);
 							Logger::Debug("Create product CreateBom() QComboBox->commonColorId" + commonColorId);
@@ -620,7 +628,7 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 				if (FormatHelper::HasContent(bomLatestRevision))
 				{
 					string partMaterialResponse;
-					if (FormatHelper::HasContent(materialId) && materialId.find("C") != string::npos )
+					if (FormatHelper::HasContent(materialId) && materialId.find("C") != string::npos)
 					{
 
 						attJson.erase("Type");
@@ -628,7 +636,11 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 						attJson.erase("uom");
 						string placementData = to_string(attJson);
 						Logger::Debug("BOMUtility CreateBom() placementData" + placementData);
-						partMaterialResponse = RESTAPI::PostRestCall(placementData, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API_V3 + "/" + bomLatestRevision + "/items/part_materials", "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
+
+						if (!FormatHelper::HasContent(bomLineId))
+							partMaterialResponse = RESTAPI::PostRestCall(placementData, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API_V3 + "/" + bomLatestRevision + "/items/part_materials", "content-type: application/json; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
+						else
+							partMaterialResponse = RESTAPI::PutRestCall(placementData, Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::PART_MATERIAL_API + "/" + bomLineId, "content-type: application/json");
 						Logger::Debug("BOMUtility CreateBom() response material" + partMaterialResponse);
 
 					}
@@ -652,7 +664,7 @@ Description - CreateSectionInBom() method used to create one section/table on bo
 							queryParam = queryParam + "&material_name=" + encodedString;
 						}
 
-						
+
 						string api = Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::BOM_REVISION_API_V3 + "/" + bomLatestRevision + "/items/special_part_materials" + queryParam;
 						Logger::Debug("BOMUtility CreateBom() queryParam" + queryParam);
 						Logger::Debug("BOMUtility CreateBom() placementData" + placementData);
@@ -760,172 +772,172 @@ Description - BackupBomDetails() method used backup bom data in a data structure
 	{
 		Logger::Debug("BOMUtility -> BackupBomDetails() -> Start");
 		map<string, json> backupBomDataMap;
-			for (auto itr = _bomSectionTableInfoMap.begin(); itr != _bomSectionTableInfoMap.end(); itr++)
+		for (auto itr = _bomSectionTableInfoMap.begin(); itr != _bomSectionTableInfoMap.end(); itr++)
+		{
+			//sectionInfo sectionInfoObj = 
+			QTableWidget* sectionTable = itr->second;
+			json attsJson = json::array();
+			int count = 0;
+			string sectionId = sectionTable->property("SectionId").toString().toStdString();
+			for (int rowCount = 0; rowCount < sectionTable->rowCount(); rowCount++)
 			{
-				//sectionInfo sectionInfoObj = 
-				QTableWidget* sectionTable = itr->second;
-				json attsJson = json::array();
-				int count = 0;
-				string sectionId = sectionTable->property("SectionId").toString().toStdString();
-				for (int rowCount = 0; rowCount < sectionTable->rowCount(); rowCount++)
+				json attJson = json::object();
+				string isRowAddedByUser;
+				string commonColorId;
+				for (int columnCount = 0; columnCount < sectionTable->columnCount(); columnCount++)
 				{
-					json attJson = json::object();
-					string isRowAddedByUser;
-					string commonColorId;
-					for (int columnCount = 0; columnCount < sectionTable->columnCount(); columnCount++)
+					string fieldValue;
+
+					QWidget* qcolumnWidget = (QWidget*)sectionTable->cellWidget(rowCount, columnCount)->children().last();
+					string attInternalName = qcolumnWidget->property("rest_api_name").toString().toStdString();
+					Logger::Debug("BOMUtility BackupBomDetails() attInternalName" + attInternalName);
+					QString columnName = sectionTable->horizontalHeaderItem(columnCount)->text();
+					Logger::Debug("BOMUtility BackupBomDetails() columnName" + columnName.toStdString());
+
+					if (_mappedColorways.contains(columnName))
 					{
-						string fieldValue;
+						Logger::Debug("BOMUtility BackupBomDetails() colorways1");
 
-						QWidget* qcolumnWidget = (QWidget*)sectionTable->cellWidget(rowCount, columnCount)->children().last();
-						string attInternalName = qcolumnWidget->property("rest_api_name").toString().toStdString();
-						Logger::Debug("BOMUtility BackupBomDetails() attInternalName" + attInternalName);
-						QString columnName = sectionTable->horizontalHeaderItem(columnCount)->text();
-						Logger::Debug("BOMUtility BackupBomDetails() columnName" + columnName.toStdString());
-
-						if (_mappedColorways.contains(columnName))
+						if (QWidget* widget = sectionTable->cellWidget(rowCount, columnCount))
 						{
-							Logger::Debug("BOMUtility BackupBomDetails() colorways1");
 
-							if (QWidget* widget = sectionTable->cellWidget(rowCount, columnCount))
+							string colorId, colorId2;
+							string colorId1 = widget->property("colorId").toString().toStdString();
+
+
+							Logger::Debug("BOMUtility BackupBomDetails() colorId1" + colorId1);
+							Logger::Debug("BOMUtility -> BackupBomDetails () 8");
+							if (QLayout* layout = widget->layout())
 							{
-
-								string colorId, colorId2;
-								string colorId1 = widget->property("colorId").toString().toStdString();
-
-
-								Logger::Debug("BOMUtility BackupBomDetails() colorId1" + colorId1);
-								Logger::Debug("BOMUtility -> BackupBomDetails () 8");
-								if (QLayout* layout = widget->layout())
+								Logger::Debug("BOMUtility -> BackupBomDetails () 9");
 								{
-									Logger::Debug("BOMUtility -> BackupBomDetails () 9");
-									{
-										auto gridLayout = dynamic_cast<QGridLayout*>(widget->layout());
-										QWidget *childwidget = gridLayout->itemAtPosition(0, 0)->widget();
-										//attInternalName = columnName.toStdString();
-										colorId2 = childwidget->property("colorId").toString().toStdString();
-										Logger::Debug("BOMUtility BackupBomDetails() colorId2" + colorId2);
+									auto gridLayout = dynamic_cast<QGridLayout*>(widget->layout());
+									QWidget *childwidget = gridLayout->itemAtPosition(0, 0)->widget();
+									//attInternalName = columnName.toStdString();
+									colorId2 = childwidget->property("colorId").toString().toStdString();
+									Logger::Debug("BOMUtility BackupBomDetails() colorId2" + colorId2);
 
-									}
 								}
-
-								if (FormatHelper::HasContent(colorId1))
-									colorId = colorId1;
-								else
-									colorId = colorId2;
-
-								attInternalName = columnName.toStdString();
-								fieldValue = colorId;
 							}
 
-						}
-						else if (QLineEdit* qLineEditC1 = qobject_cast<QLineEdit*>(qcolumnWidget))
-						{
-
-							fieldValue = qLineEditC1->text().toStdString();
-							//QString columnName = sectionTable->horizontalHeaderItem(columnCount)->text();
-						}
-						else if (QTextEdit* qTextC1 = qobject_cast<QTextEdit*>(qcolumnWidget))
-						{
-
-							fieldValue = qTextC1->toPlainText().toStdString();
-						}
-						else if (QDateEdit* qDateC1 = qobject_cast<QDateEdit*>(qcolumnWidget))
-						{
-							fieldValue = FormatHelper::RetrieveDate(qDateC1);
-							if (fieldValue.find(DATE_FORMAT_TEXT.toStdString()) != string::npos)
-							{
-								fieldValue = "";
-							}
+							if (FormatHelper::HasContent(colorId1))
+								colorId = colorId1;
 							else
-							{
-								//UTILITY_API->DisplayMessageBox("fieldValue::" + fieldValue);
-								fieldValue = fieldValue + "T00:00:00Z";
-							}
+								colorId = colorId2;
+
+							attInternalName = columnName.toStdString();
+							fieldValue = colorId;
 						}
-						else if (QListWidget* listC1 = qobject_cast<QListWidget*>(qcolumnWidget))
+
+					}
+					else if (QLineEdit* qLineEditC1 = qobject_cast<QLineEdit*>(qcolumnWidget))
+					{
+
+						fieldValue = qLineEditC1->text().toStdString();
+						//QString columnName = sectionTable->horizontalHeaderItem(columnCount)->text();
+					}
+					else if (QTextEdit* qTextC1 = qobject_cast<QTextEdit*>(qcolumnWidget))
+					{
+
+						fieldValue = qTextC1->toPlainText().toStdString();
+					}
+					else if (QDateEdit* qDateC1 = qobject_cast<QDateEdit*>(qcolumnWidget))
+					{
+						fieldValue = FormatHelper::RetrieveDate(qDateC1);
+						if (fieldValue.find(DATE_FORMAT_TEXT.toStdString()) != string::npos)
 						{
-							string tempValue = "";
-							QListWidgetItem* listItem = nullptr;
-							for (int row = 0; row < listC1->count(); row++)
+							fieldValue = "";
+						}
+						else
+						{
+							//UTILITY_API->DisplayMessageBox("fieldValue::" + fieldValue);
+							fieldValue = fieldValue + "T00:00:00Z";
+						}
+					}
+					else if (QListWidget* listC1 = qobject_cast<QListWidget*>(qcolumnWidget))
+					{
+						string tempValue = "";
+						QListWidgetItem* listItem = nullptr;
+						for (int row = 0; row < listC1->count(); row++)
+						{
+							listItem = listC1->item(row);
+							if (listItem->checkState())
 							{
-								listItem = listC1->item(row);
-								if (listItem->checkState())
+								tempValue = listItem->text().toStdString();
+								if (FormatHelper::HasContent(tempValue))
 								{
-									tempValue = listItem->text().toStdString();
+									tempValue = listC1->property(tempValue.c_str()).toString().toStdString();
 									if (FormatHelper::HasContent(tempValue))
 									{
-										tempValue = listC1->property(tempValue.c_str()).toString().toStdString();
-										if (FormatHelper::HasContent(tempValue))
-										{
-											tempValue = tempValue + DELIMITER_NEGATION;
-											fieldValue = fieldValue + tempValue;
-										}
+										tempValue = tempValue + DELIMITER_NEGATION;
+										fieldValue = fieldValue + tempValue;
 									}
 								}
 							}
 						}
-						else if (QPushButton* pushButton = qobject_cast<QPushButton*>(qcolumnWidget))
-						{
-							if (attInternalName == "Delete")
-							{
-								fieldValue = pushButton->property("materialId").toString().toStdString();
-								commonColorId = pushButton->property("commonColorId").toString().toStdString();
-								isRowAddedByUser = pushButton->property("RowAddedByUser").toString().toStdString();
-								Logger::Debug("AddNewBom BackupBomDetails() isRowAddedByUser" + isRowAddedByUser);
-								attInternalName = "materialId";
-							}
-						}
-						else if (QSpinBox* SpinC1 = qobject_cast<QSpinBox*>(qcolumnWidget))
-						{
-							if (SpinC1->value() != 0)
-							{
-								fieldValue = to_string(SpinC1->value());
-							}
-						}
-						else if (QComboBox* qComboBoxC1 = qobject_cast<QComboBox*>(qcolumnWidget))
-						{
-							fieldValue = qComboBoxC1->currentText().toStdString();
-
-							Logger::Debug("BOMUtility BackupBomDetails() QComboBox->fieldLabel" + attInternalName);
-							//Logger::Debug("Create product ReadVisualUIFieldValue() QComboBox->labelText" + labelText);
-
-							string fieldVal = qComboBoxC1->property(fieldValue.c_str()).toString().toStdString();
-							Logger::Debug("BOMUtility BackupBomDetails() QComboBox->fieldVal" + fieldVal);
-							if (!fieldVal.empty())
-							{
-								fieldValue = fieldVal;
-							}
-							Logger::Debug("BOMUtility BackupBomDetails() QComboBox->fieldValue" + fieldValue);
-						}
-						if (!attInternalName.empty() && !fieldValue.empty())
-						{
-							if (attInternalName == "qty_default")
-								attJson[attInternalName] = atoi(fieldValue.c_str());
-							else
-								attJson[attInternalName] = fieldValue;
-						}
-						Logger::Debug("BOMUtility BackupBomDetails() fieldValue" + fieldValue);
 					}
-					attJson["ds_section"] = sectionId;
-					attJson["common_color"] = commonColorId;
-					
-					
-					Logger::Debug("BOMUtility BackupBomDetails() attJson" + to_string(attJson));
-					if (isRowAddedByUser == "true")
-						attsJson[count++] = attJson;
+					else if (QPushButton* pushButton = qobject_cast<QPushButton*>(qcolumnWidget))
+					{
+						if (attInternalName == "Delete")
+						{
+							fieldValue = pushButton->property("materialId").toString().toStdString();
+							commonColorId = pushButton->property("commonColorId").toString().toStdString();
+							isRowAddedByUser = pushButton->property("RowAddedByUser").toString().toStdString();
+							Logger::Debug("AddNewBom BackupBomDetails() isRowAddedByUser" + isRowAddedByUser);
+							attInternalName = "materialId";
+						}
+					}
+					else if (QSpinBox* SpinC1 = qobject_cast<QSpinBox*>(qcolumnWidget))
+					{
+						if (SpinC1->value() != 0)
+						{
+							fieldValue = to_string(SpinC1->value());
+						}
+					}
+					else if (QComboBox* qComboBoxC1 = qobject_cast<QComboBox*>(qcolumnWidget))
+					{
+						fieldValue = qComboBoxC1->currentText().toStdString();
 
-					//UTILITY_API->DisplayMessageBox("attJson" + to_string(attJson));
+						Logger::Debug("BOMUtility BackupBomDetails() QComboBox->fieldLabel" + attInternalName);
+						//Logger::Debug("Create product ReadVisualUIFieldValue() QComboBox->labelText" + labelText);
+
+						string fieldVal = qComboBoxC1->property(fieldValue.c_str()).toString().toStdString();
+						Logger::Debug("BOMUtility BackupBomDetails() QComboBox->fieldVal" + fieldVal);
+						if (!fieldVal.empty())
+						{
+							fieldValue = fieldVal;
+						}
+						Logger::Debug("BOMUtility BackupBomDetails() QComboBox->fieldValue" + fieldValue);
+					}
+					if (!attInternalName.empty() && !fieldValue.empty())
+					{
+						if (attInternalName == "qty_default")
+							attJson[attInternalName] = atoi(fieldValue.c_str());
+						else
+							attJson[attInternalName] = fieldValue;
+					}
+					Logger::Debug("BOMUtility BackupBomDetails() fieldValue" + fieldValue);
 				}
-				Logger::Debug("BOMUtility BackupBomDetails() attsJson" + to_string(attsJson));
-					backupBomDataMap.insert(make_pair(itr->first, attsJson));
-				//sectionTable->model()->removeRows(0, sectionTable->rowCount());
-				sectionTable->clearContents();
-				sectionTable->setRowCount(0);
-				//sectionTable->clear();
+				attJson["ds_section"] = sectionId;
+				attJson["common_color"] = commonColorId;
 
+
+				Logger::Debug("BOMUtility BackupBomDetails() attJson" + to_string(attJson));
+				if (isRowAddedByUser == "true")
+					attsJson[count++] = attJson;
+
+				//UTILITY_API->DisplayMessageBox("attJson" + to_string(attJson));
 			}
-			Logger::Debug("BOMUtility -> BackupBomDetails() -> End");
-			return backupBomDataMap;
+			Logger::Debug("BOMUtility BackupBomDetails() attsJson" + to_string(attsJson));
+			backupBomDataMap.insert(make_pair(itr->first, attsJson));
+			//sectionTable->model()->removeRows(0, sectionTable->rowCount());
+			sectionTable->clearContents();
+			sectionTable->setRowCount(0);
+			//sectionTable->clear();
+
+		}
+		Logger::Debug("BOMUtility -> BackupBomDetails() -> End");
+		return backupBomDataMap;
 	}
 
 
@@ -944,7 +956,7 @@ Description - BackupBomDetails() method used backup bom data in a data structure
 
 				QLineEdit *materialNameLineEdit = static_cast<QLineEdit*>(sectionTable->cellWidget(rowCount, MATERIAL_NAME_COLUMN)->children().last());
 				QComboBox *materialTypeCombo = static_cast<QComboBox*>(sectionTable->cellWidget(rowCount, MATERIAL_TYPE_COLUMN)->children().last());
-								
+
 				if (materialNameLineEdit)
 				{
 					QString materialName = materialNameLineEdit->text();
