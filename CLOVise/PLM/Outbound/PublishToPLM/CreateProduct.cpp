@@ -1879,6 +1879,8 @@ namespace CLOVise
 			}
 			else
 			{
+				GetMappedColorway();
+				UpdateColorwayColumnsInBom();
 
 				if (PublishToPLMData::GetInstance()->m_isSaveClicked && m_updateBomTab && CreateProductBOMHandler::GetInstance()->IsBomCreated())
 				{
@@ -1886,9 +1888,7 @@ namespace CLOVise
 					CreateProductBOMHandler::GetInstance()->RestoreBomDetails();
 					m_updateBomTab = false;
 				}
-				GetMappedColorway();
-				UpdateColorwayColumnsInBom();
-
+				
 			}
 		}
 
