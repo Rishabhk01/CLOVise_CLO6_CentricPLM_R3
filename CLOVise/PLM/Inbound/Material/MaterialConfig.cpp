@@ -826,11 +826,11 @@ void MaterialConfig::SetDataFromResponse(json _param)
 		parameter = parameter + queryParamsForMaterial;
 		string resultResponse = "";
 		if (isLibrarySearch) {
-			resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::MATERIAL_SEARCH_API_LIB + "/" + matLibValue +"/elements?", APPLICATION_JSON_TYPE, parameter + "&decode=true&limit="+ MaterialConfig::GetInstance()->GetMaximumLimitForMaterialResult());
+			resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::MATERIAL_SEARCH_API_LIB + "/" + matLibValue +"/elements?", APPLICATION_JSON_TYPE, parameter + "&special = false&decode=true&limit="+ MaterialConfig::GetInstance()->GetMaximumLimitForMaterialResult());
 		}
 		else {
 			auto startTime = std::chrono::high_resolution_clock::now();
-			resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_MATERIAL_API + "?", APPLICATION_JSON_TYPE, parameter + "&decode=true&limit="+ MaterialConfig::GetInstance()->GetMaximumLimitForMaterialResult());
+			resultResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEARCH_MATERIAL_API + "?", APPLICATION_JSON_TYPE, parameter + "&special=false&decode=true&limit="+ MaterialConfig::GetInstance()->GetMaximumLimitForMaterialResult());
 			auto finishTime = std::chrono::high_resolution_clock::now();
 			std::chrono::duration<double> totalDuration = finishTime - startTime;
 			Logger::perfomance(PERFOMANCE_KEY + "Search Results API :: " + to_string(totalDuration.count()));
