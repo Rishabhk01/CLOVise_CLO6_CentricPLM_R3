@@ -2201,15 +2201,14 @@ namespace CLOVise
 		{
 			ValidateColorwayNameField();
 			Logger::Debug("UpdateProduct onTabClicked() 1");
-				if (m_isSaveClicked && m_updateBomTab && UpdateProductBOMHandler::GetInstance()->IsBomCreated())
-				{
-					Logger::Debug("UpdateProduct onTabClicked() 2");
-					UpdateProductBOMHandler::GetInstance()->RestoreBomDetails();
-					m_updateBomTab = false;
-				}
-				GetMappedColorway();
-				UpdateProductBOMHandler::GetInstance()->UpdateColorwayColumnsInBom();
-
+			GetMappedColorway();
+			UpdateProductBOMHandler::GetInstance()->UpdateColorwayColumnsInBom();
+			if (m_isSaveClicked && m_updateBomTab && UpdateProductBOMHandler::GetInstance()->IsBomCreated())
+			{
+				Logger::Debug("UpdateProduct onTabClicked() 2");
+				UpdateProductBOMHandler::GetInstance()->RestoreBomDetails();
+				m_updateBomTab = false;
+			}
 		}
 		RESTAPI::SetProgressBarData(0, "", false);
 		Logger::Debug("UpdateProduct onTabClicked() End");

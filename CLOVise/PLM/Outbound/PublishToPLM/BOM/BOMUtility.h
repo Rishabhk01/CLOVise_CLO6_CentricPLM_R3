@@ -783,7 +783,7 @@ Description - BackupBomDetails() method used backup bom data in a data structure
 			{
 				json attJson = json::object();
 				string isRowAddedByUser;
-				string commonColorId;
+				string commonColorId;				
 				for (int columnCount = 0; columnCount < sectionTable->columnCount(); columnCount++)
 				{
 					string fieldValue;
@@ -916,6 +916,8 @@ Description - BackupBomDetails() method used backup bom data in a data structure
 						else
 							attJson[attInternalName] = fieldValue;
 					}
+					else
+						attJson["Type"] = "";
 					Logger::Debug("BOMUtility BackupBomDetails() fieldValue" + fieldValue);
 				}
 				attJson["ds_section"] = sectionId;
