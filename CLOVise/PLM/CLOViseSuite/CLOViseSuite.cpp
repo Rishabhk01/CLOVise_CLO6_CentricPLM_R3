@@ -724,7 +724,7 @@ namespace CLOVise
 				CreateProduct::GetInstance()->addCreateProductDetailsWidgetData();
 				Configuration::GetInstance()->ExportTechPackJson();
 				CreateProduct::GetInstance()->refreshImageIntents();
-				CreateProduct::GetInstance()->SetUpdateBomFlag(true);
+				//CreateProduct::GetInstance()->SetUpdateBomFlag(true);
 				CreateProduct::GetInstance()->setModal(true);
 				CreateProduct::GetInstance()->addCreateProductDetailsWidgetData();
 				//if (PublishToPLMData::GetInstance()->isModelExecuted)
@@ -977,7 +977,7 @@ namespace CLOVise
 						UpdateProduct::GetInstance()->GetcolorwayDetails();
 				}
 				Configuration::GetInstance()->ExportTechPackJson();
-				UpdateProduct::GetInstance()->SetUpdateBomFlag(true);
+				//UpdateProduct::GetInstance()->SetUpdateBomFlag(true);
 
 				if (UpdateProduct::GetInstance()->GetIsSaveClicked())
 					UpdateProduct::GetInstance()->refreshImageIntents();

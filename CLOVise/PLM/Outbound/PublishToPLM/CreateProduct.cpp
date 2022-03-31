@@ -396,6 +396,7 @@ namespace CLOVise
 				}*/
 			m_CloAndPLMColorwayMap.clear();
 			ClearBOMData();
+			CreateProduct::GetInstance()->SetUpdateBomFlag(false);
 		}
 
 
@@ -1724,7 +1725,7 @@ namespace CLOVise
 		Logger::Debug("createProduct -> SaveClicked() -> Start");
 
 
-
+		CreateProduct::GetInstance()->SetUpdateBomFlag(true);
 		PublishToPLMData::GetInstance()->m_isSaveClicked = true;
 
 		GetMappedColorway();
@@ -2892,7 +2893,7 @@ namespace CLOVise
 			m_totalCountLabel->setText("Total count: 0");
 			m_CloAndPLMColorwayMap.clear();
 			ClearBOMData();
-
+			CreateProduct::GetInstance()->SetUpdateBomFlag(false);
 			//ui_sectionLayout->removeWidget();
 
 

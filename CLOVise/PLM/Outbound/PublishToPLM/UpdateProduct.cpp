@@ -429,7 +429,7 @@ namespace CLOVise
 		ui_tabWidget->setStyleSheet(" QTabWidget::pane { border: none; color: #FFFFFF; font-size: 10px; background-color: #262628; }""QTabBar::tab { width: 100px; padding: 2px; }""QTabBar::tab:selected { border: none; color: #FFFFFF; background-color: \"" + DEFAULT_TAB_BG_COLOR + "\"; }""QTabBar::tab:!selected { color:#FFFFFF; background-color:\"" + SELECTED_TAB_BG_COLOR + "\"; }");
 
 		Configuration::GetInstance()->SetIsPrintSearchClicked(false);
-
+		UpdateProduct::GetInstance()->SetUpdateBomFlag(false);
 		this->close();
 		CLOVise::CLOViseSuite::GetInstance()->setModal(true);
 		CLOViseSuite::GetInstance()->show();
@@ -2139,7 +2139,7 @@ namespace CLOVise
 	{
 		Logger::Debug("UpdateProduct -> SaveClicked() -> Start");
 		m_isSaveClicked = true;		
-		
+		UpdateProduct::GetInstance()->SetUpdateBomFlag(true);
 		Configuration::GetInstance()->SetIsPrintSearchClicked(false);
 
 		GetUpdatedColorwayNames();
@@ -3219,6 +3219,7 @@ namespace CLOVise
 			m_colorSpecList.clear();
 			m_totalCountLabel->setText("Total count: 0");
 			ClearBOMData();
+			UpdateProduct::GetInstance()->SetUpdateBomFlag(false);
 			
 			
 		}
