@@ -60,6 +60,8 @@ namespace RESTAPI
 	const string SEARCH_ATT_DEFINITION_ADDITIONAL_API = "/configurable_attributes?skip=0&limit=1000&decode=true";
 	const string SEASON_SEARCH_API = "/csi-requesthandler/api/v2/seasons";
 	const string SHAPE_API = "/csi-requesthandler/api/v2/shapes";
+	const string SHAPE_MASTER_SEARCH_API = "/csi-requesthandler/api/v2/shape_masters";
+
 	const string THEME_API = "/csi-requesthandler/api/v2/themes";
 	
 	const string ATTACHMENTS_RESULTS_API = "/csi-requesthandler/api/v2/documents/";
@@ -89,6 +91,9 @@ namespace RESTAPI
 	const string IMAGE_LABELS_ENUMLIST_API = "/csi-requesthandler/api/v2/enum_lists";
 	//const string MATERIAL_TYPE_SEARCH_API = "/csi-requesthandler/api/v2/material_types";
 	/*Centric material rest calls end	*/
+
+	const string SEARCH_SHAPE_API = "/csi-requesthandler/api/v2/shape";
+
 	
 	/*Centric color specification rest calls start	*/
 	const string SEARCH_COLOR_API = "/csi-requesthandler/api/v2/color_specifications";

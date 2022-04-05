@@ -80,6 +80,7 @@
 #include "CLOVise/PLM/Inbound/Document/DocumentConfig.h"
 #include "CLOVise/PLM/Inbound/Product/ProductConfig.h"
 #include "CLOVise/PLM/Inbound/Print/PrintConfig.h"
+#include "CLOVise/PLM/Inbound/Shape/ShapeConfig.h"
 #include "CLOVise/PLM/Outbound/PublishToPLM/PublishToPLMData.h"
 #include "CLOVise/PLM/Helper/Util/Logger.h"
 
@@ -1008,6 +1009,13 @@ namespace UIHelper
 									filePath = DirectoryUtil::GetStyleAttachmentDirectory();
 								filePath = filePath + attachmentName;
 							}
+							else if (_module == SHAPE_MODULE)
+							{
+								if (SHAPE_SUPPORTING_LIST.contains(QString::fromStdString(fileExt), Qt::CaseInsensitive))
+									filePath = DirectoryUtil::GetShapeAttachmentDirectory();
+								filePath = filePath + attachmentName;
+								Logger::Logger("filePath::" + filePath);
+							}
 							else if (_module == PRINT_MODULE)
 							{
 								if (PRINT_SUPPORTING_LIST.contains(QString::fromStdString(fileExt), Qt::CaseInsensitive))
@@ -1037,7 +1045,7 @@ namespace UIHelper
 							bool writtenToFile = true;
 							if (METADATA_SUPPORTED_FILE_LIST.contains(QString::fromStdString(fileExt), Qt::CaseInsensitive))
 							{
-								if (_module == STYLE_MODULE)
+								if (_module == STYLE_MODULE || _module == SHAPE_MODULE)
 								{
 									ProductConfig::GetInstance()->SetDownloadFileName(filePath);
 								}
@@ -2283,8 +2291,8 @@ namespace UIHelper
 				attributeName = Helper::GetJSONValue<string>(attCountOfAttJson, ATTRIBUTE_NAME_KEY, true);
 				attributeAttscop = Helper::GetJSONValue<string>(attCountOfAttJson, ATTRIBUTE_ATTSCOPE_KEY, true);
 				attributeApiExposed = Helper::GetJSONValue<string>(attCountOfAttJson, ATTRIBUTE_REST_API_EXPOSED, true);
-				if (attributeApiExposed == "false")
-					continue;
+				/*if (attributeApiExposed == "false")
+					continue;*/
 
 				if ("true" == Helper::GetJSONValue<string>(attCountOfAttJson, IS_MULTISELECT_KEY, true))
 					isMultiselectable = true;
@@ -2975,7 +2983,7 @@ namespace UIHelper
 		try
 		{
 			QStringList classNameList;
-			classNameList << "Style" << "Material" << "Color";
+			classNameList << "Style" << "Material" << "Color" << "Shape";
 			for (int index = 0; index < classNameList.size(); index++)
 			{
 				string localizedResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::LOCALIZATION_API + classNameList[index].toStdString() + "/en", APPLICATION_JSON_TYPE, "");
@@ -2991,6 +2999,10 @@ namespace UIHelper
 
 				else if (classNameList[index].toStdString() == COLOR_MODULE)
 					Configuration::GetInstance()->SetLocalizedColorClassName(localizedClassName);
+
+				else if (classNameList[index].toStdString() == SHAPE_MODULE)
+					Configuration::GetInstance()->SetLocalizedShapeClassName(localizedClassName);
+
 			}
 		}
 		catch (string msg)

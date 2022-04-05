@@ -42,6 +42,8 @@ namespace CLOVise {
 		//bool ValidateSubmitSample();
 		bool ValidateProductSearch();
 		bool ValidateCreateProduct();
+		bool ValidateShapeSearch();
+
 		bool ValidateCreateMaterial();
 		bool ValidateCopyProduct();
 		bool ValidateUpdateMaterial();
@@ -53,6 +55,7 @@ namespace CLOVise {
 		//void ExecuteDocumentModule();
 		//void ExecuteSampleModule();
 		//void ExecuteSubmitSampleModule();
+		void ExecuteShapeModule();
 		void ExecuteProductModule();
 		void ExecuteCreateProductModule();
 		void ExecuteCopyProductModule();
@@ -73,6 +76,8 @@ namespace CLOVise {
 		void onClickedSearchColors();
 		//void onClickedSearchDocument(); 
 		void onClickedCreateProduct();		
+		void onClickedSearchShape();
+
 		void onClickedCreateMaterial();		
 		void onClickedUpdateMaterial();
 		void onClickedUpdateProduct();

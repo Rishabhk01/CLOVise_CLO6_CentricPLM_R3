@@ -21,7 +21,7 @@
 
 using namespace std;
 
-enum currentScreenSelected {COLOR_SEARCH_CLICKED, SEARCH_PRODUCT_CLICKED, COPY_PRODUCT_CLICKED, CREATE_PRODUCT_CLICKED, UPDATE_PRODUCT_CLICKED, CREATE_MATERIAL_CLICKED, SEARCH_MATERIAL_CLICKED, UPDATE_MATERIAL_CLICKED, PRINT_SEARCH_CLICKED};
+enum currentScreenSelected {COLOR_SEARCH_CLICKED, SEARCH_PRODUCT_CLICKED, COPY_PRODUCT_CLICKED, CREATE_PRODUCT_CLICKED, UPDATE_PRODUCT_CLICKED, CREATE_MATERIAL_CLICKED, SEARCH_MATERIAL_CLICKED, UPDATE_MATERIAL_CLICKED, PRINT_SEARCH_CLICKED, SEARCH_SHAPE_CLICKED, UPDATE_SHAPE_CLICKED, COPY_SHAPE_CLICKED}; 
 const QString PLM_NAME = "Centric 8";
 
 #define FRONT_VIEW 0
@@ -100,6 +100,8 @@ const QString PRINT_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_print_over.svg"
 const QString DOCUMENT_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_3d_over.svg";
 const QString PRODUCT_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_product_over.svg";
 const QString PUBLISH_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_goto_over.svg";
+const QString SHAPE_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_save_none.svg";
+
 const QString SAMPLE_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_sample_over.svg";
 const QString SUBMIT_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_submit_over.svg";
 const QString LOGOUT_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/ui_exit.svg";
@@ -120,6 +122,8 @@ const QString FABRIC_NONE_ICON_PATH = ":/CLOVise/PLM/Images/icon_fabric_none.svg
 const QString COLOR_NONE_ICON_PATH = ":/CLOVise/PLM/Images/icon_color_none.svg";
 const QString DOCUMENT_NONE_ICON_PATH = ":/CLOVise/PLM/Images/icon_3d_none.svg";
 const QString PRODUCT_NONE_ICON_PATH = ":/CLOVise/PLM/Images/icon_product_none.svg";
+const QString SHAPE_NONE_ICON_PATH = ":/CLOVise/PLM/Images/icon_save_none.svg";
+
 const QString PUBLISH_NONE_ICON_PATH = ":/CLOVise/PLM/Images/icon_goto_none.svg";
 const QString SAMPLE_NONE_ICON_PATH = ":/CLOVise/PLM/Images/Sample_none.svg";
 const QString SUBMIT_NONE_ICON_PATH = ":/CLOVise/PLM/Images/icon_submit_none.svg";
@@ -188,6 +192,8 @@ const string PERFOMANCE_LOGGER_ENABLED_KEY = "perfomanceLoggerEnabled";
 const string REST_LOGGER_ENABLED_KEY = "restAPILoggerEnabled";
 const string USER_FULL_NAME_KEY = "fullName";
 const string MAX_STYLE_SEARCH_LIMIT = "maximumStyleSearchResults";
+const string MAX_SHAPE_SEARCH_LIMIT = "maximumShapeSearchResults";
+
 const string MAX_MATERIAL_SEARCH_LIMIT = "maximumMaterialSearchResults";
 const string MAX_COLOR_SEARCH_LIMIT = "maximumColorSearchResults";
 const string MAX_PRINT_SEARCH_LIMIT = "maximumPrintSearchResults";
@@ -296,6 +302,9 @@ const string PALETTEID_KEY = "paletteId";
 const string PRODUCTID_KEY = "productId";
 const string PRODUCT_NAME_KEY = "productName";
 const string PRODUCT_STATUS_KEY = "productStatus";
+const string SHAPEID_KEY = "shapeId";
+const string SHAPE_NAME_KEY = "shapeName";
+const string SHAPE_STATUS_KEY = "shapeStatus";
 const string SEASONID_KEY = "seasonId";
 const string SEASONID_VERSION_KEY = "seasonVersionId";
 const string PRODUCTNAME_KEY = "productName";
@@ -468,6 +477,20 @@ const string STYLE_MODULE = "Style";
 const string STYLE_SEARCH_ACTIVITY = "FIND_STYLE";
 const string STYLE_ID_EXIST_KEY = "styleIdKeyExist";
 
+/*PLMShape */
+const string PLM_SHAPE_FILE_NAME = "PLM_SHAPE_SEARCH.json";
+const string PLM_SHAPE_RESULT_FILE = "PLM_SHAPE_RESULTS.json";
+const string PLM_SHAPE_FILTER_FILE = "PLM_SHAPE_FILTER.json";
+const string PLM_SHAPE_VIEW_FILE = "PLM_SHAPE_VIEW.json";
+const string PLM_SHAPE_PALETTE_FILE = "PLM_SHAPE_PALETTE.json";
+const string PLM_SHAPE_ATTACHMENT_FILE_NAME = "PLMShapeAttachment.json";
+const string SHAPE_ROOT_TYPE = "Shape";
+const string SHAPE_MODULE = "Shape";
+const string SHAPE_SEARCH_ACTIVITY = "FIND_SHAPE";
+const string SHAPE_SEASON_TYPE_KEY = "shapeType";
+
+
+
 /* UI Definitions */
 const int VERTICAL_HEADER = 80;
 const int HORIZONTAL_HEADER_HEIGHT = 30;
@@ -524,6 +547,12 @@ const string PRODUCT_ID = "Product Id";
 const string PRODUCT_OBJ_ID = "productObjectId";
 const string PRODUCT_NAME = "Product Name";
 const string PRODUCT_STATUS = "Product Status";
+const string SHAPE_ID = "Shape Id";
+const string SHAPE_OBJ_ID = "ShapeObjectId";
+const string SHAPE_NAME = "Shape Name";
+const string SHAPE_STATUS = "Shape Status";
+
+
 const string DEFAULT_3DMODEL_NAME = "Default_Modelist";
 const string REQUIRED_THROW_KEY = " cannot be blank";
 
@@ -610,9 +639,13 @@ const QString SIDE_MENU_PRODUCT_ID = "PRODUCT";
 const QString SIDE_MENU_MATERIAL_ID = "MATERIAL";
 const QString SIDE_MENU_PRINT_ID = "PRINT";
 const QString MATERIAL_DATA_ID_KEY = "Material ";
+const QString SIDE_MENU_SHAPE_ID = "SHAPE";
+const QString SIDE_MENU_PATTERN_ID = "PATTERN";
 const QString COLOR_DATA_ID_KEY = "Color ";
 const QString PRINT_DATA_ID_KEY = "Print & Designs ";
 const QString PRODUCT_DATA_ID_KEY = "Product ";
+const QString SHAPE_DATA_ID_KEY = "Shape ";
+const QString PRTTERN_DATA_ID_KEY = "Pattern ";
 const QString FABRIC_DATA_ID_KEY = "Fabric";
 const QString DOCUMENT_DATA_ID_KEY = "Document";
 const QString TRIM_DATA_ID_KEY = "Trim";
@@ -621,6 +654,8 @@ const QStringList TRIM_SUPPORTING_LIST{ "btn", "zsd" , "bth", "zpl", "png", "jpg
 const QStringList COLOR_SUPPORTING_LIST{ "png", "jpeg", "jpg", "ai" };
 const QStringList PRINT_SUPPORTING_LIST{ "png", "jpeg", "jpg", "ai" ,"psd"};
 const QStringList PRODUCT_SUPPORTING_LIST{ "zprj", "Zprj" };
+const QStringList SHAPE_SUPPORTING_LIST{ "zprj", "Zprj" };
+
 const QStringList MATERIAL_SUPPORTING_LIST{ "zfab" };
 
 const string EXCLUDED_PREVIEW_FEILDS_KEY = "excludedPreviewFields";

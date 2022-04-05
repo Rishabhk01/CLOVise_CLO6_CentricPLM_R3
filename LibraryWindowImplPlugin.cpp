@@ -376,6 +376,8 @@ namespace CLOAPI
 		//strList.push_back(META_DATA_KEY_1_SERVICE_DIVISION.toStdString()); // do not show in list view
 		strList.push_back(META_DATA_KEY_2_BRAND.toStdString()); // show brand in list view
 		strList.push_back(META_DATA_KEY_3_PRODUCT_TYPE.toStdString()); // show product type in list view
+		strList.push_back(META_DATA_KEY_3_SHAPE_TYPE.toStdString()); // show shape type in list view
+
 		//strList.push_back(META_DATA_KEY_4_SEASON_CREATED.toStdString()); // do not show in list view
 		Logger::Logger("LibraryWindowImplPlugin GetMetaDataKeyListForUI end");
 		return strList;
@@ -523,6 +525,20 @@ namespace CLOAPI
 		product.itemType = "FOLDER";
 		product.itemName = "Product";
 		itemList.push_back(product);
+
+		//plm shape
+		CLOAPISample::LibraryAPIItem shape;
+		shape.itemID = "SHAPE";
+		shape.itemType = "FOLDER";
+		shape.itemName = "Shape";
+		itemList.push_back(shape);
+
+		//plm 2D Patterns
+		CLOAPISample::LibraryAPIItem pattern;
+		pattern.itemID = "PATTERN";
+		pattern.itemType = "FOLDER";
+		pattern.itemName = "2D Pattern";
+		itemList.push_back(pattern);
 
 		//plm print Design
 		CLOAPISample::LibraryAPIItem print;

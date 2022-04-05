@@ -8,6 +8,7 @@ const QString META_DATA_KEY_1_DATA_TYPE = QString("Type");
 const QString META_DATA_KEY_1_SERVICE_DIVISION = QString("CLO Service Division");
 const QString META_DATA_KEY_2_BRAND = QString("Brand");
 const QString META_DATA_KEY_3_PRODUCT_TYPE = QString("Product Type");
+const QString META_DATA_KEY_3_SHAPE_TYPE = QString("Shape Type");
 const QString META_DATA_KEY_4_SEASON_CREATED = QString("Season Created");
 const QString META_DATA_KEY_5_NAME = QString("Name");
 const QString META_DATA_KEY_6_ID = QString("Id");

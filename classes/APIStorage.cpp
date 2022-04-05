@@ -90,6 +90,12 @@ namespace CLOAPISample
 			GetFilePathWithID(m_ProductAPIItemList[i]->itemID, filePath);
 			m_ProductAPIItemList[i]->filesize = getFileSize(filePath);
 		}
+		for (size_t i = 0; i < m_ShapeAPIItemList.size(); ++i)
+		{
+			QString filePath;
+			GetFilePathWithID(m_ShapeAPIItemList[i]->itemID, filePath);
+			m_ShapeAPIItemList[i]->filesize = getFileSize(filePath);
+		}
 		for (size_t i = 0; i < m_PrintAPIItemList.size(); ++i)
 		{
 			QString filePath;
@@ -160,6 +166,13 @@ namespace CLOAPISample
 		else if (searchKeyValues[META_DATA_KEY_0_DATA_TYPE].toString().compare("PRODUCT", Qt::CaseInsensitive) == 0)
 		{
 			for (auto it : m_ProductAPIItemList)
+			{
+				searchResult.push_back(*it);
+			}
+		}
+		else if (searchKeyValues[META_DATA_KEY_0_DATA_TYPE].toString().compare("SHAPE", Qt::CaseInsensitive) == 0)
+		{
+			for (auto it : m_ShapeAPIItemList)
 			{
 				searchResult.push_back(*it);
 			}
@@ -242,6 +255,18 @@ namespace CLOAPISample
 				if (m_TrimAPIItemList[i]->itemID.compare(itemId, Qt::CaseInsensitive) == 0)
 				{
 					result = *m_TrimAPIItemList[i];
+					returnValue = true;
+					break;
+				}
+			}
+		}
+		if (returnValue == false)
+		{
+			for (size_t i = 0; i < m_ShapeAPIItemList.size(); ++i)
+			{
+				if (m_ShapeAPIItemList[i]->itemID.compare(itemId, Qt::CaseInsensitive) == 0)
+				{
+					result = *m_ShapeAPIItemList[i];
 					returnValue = true;
 					break;
 				}
@@ -911,6 +936,12 @@ namespace CLOAPISample
 			generateAPIItemListForPLMTrims(assetPath + "trim/", _itemDataType);
 		if (_itemDataType == SIDE_MENU_PRINT_ID)
 			generateAPIItemListForPLMPrints(assetPath + "print/", _itemDataType);
+		if (_itemDataType == SIDE_MENU_SHAPE_ID)
+			generateAPIItemListForPLMShape(assetPath + "shape/", _itemDataType);
+		//if (_itemDataType == SIDE_MENU_PATTERN_ID)
+		//	generateAPIItemListForPLMPattern(assetPath + "pattern/", _itemDataType);
+		Logger::Debug("shape  path ========" + _itemDataType.toStdString());
+
 	}
 	void APIStorage::generateAPIItemListForPLMColor(string _directoryPath, QString _itemDataType)
 	{
@@ -1079,6 +1110,61 @@ namespace CLOAPISample
 			}
 		}
 	}
+
+	void APIStorage::generateAPIItemListForPLMShape(string _directoryPath, QString _itemDataType)
+	{
+		_directoryPath = Helper::FindAndReplace(_directoryPath, LEFT_DOUBLE_SLASH, WRIGHT_SINGLE_SLASH);
+		QDir dir(QString::fromStdString(_directoryPath));
+		QFileInfoList fileList = dir.entryInfoList(QDir::Files, QDir::Time);
+		m_ShapeAPIItemList.clear();
+		for (int fileListCount = 0; fileListCount < fileList.size(); fileListCount++)
+		{
+			QString filePath = fileList.at(fileListCount).filePath();
+			QString fileName = fileList.at(fileListCount).fileName();
+			QString fileCreationDateTime = fileList.at(fileListCount).lastModified().toString(Qt::ISODate);
+
+			if (PRODUCT_SUPPORTING_LIST.contains(QString::fromStdString(Helper::GetFileExtension(fileName.toStdString())), Qt::CaseInsensitive))
+			{
+				string metadataStr = UTILITY_API->GetAPIMetaData(filePath.toStdString());
+				string objectId = "";
+				LibraryAPIItem* setItem = new LibraryAPIItem();
+				if (FormatHelper::HasContent(metadataStr))
+				{
+					json metadataJson = json::parse(metadataStr);
+					string objectId = Helper::GetJSONValue<string>(metadataJson, OBJECT_ID, true);
+					for (const auto& itrValues : metadataJson.items())
+					{
+						string value = itrValues.value();
+						if (value == "null")
+							value = "";
+						if (!Configuration::GetInstance()->GetExcludedPreviewFields().contains(QString::fromStdString(itrValues.key())))
+						{
+							setItem->metaData[QString::fromStdString(itrValues.key())] = QString::fromStdString(value);
+						}
+					}
+				}
+
+				if (!FormatHelper::HasContent(objectId))
+				{
+					objectId = Helper::GetFileNameWithOutExtension(fileName.toStdString());
+				}
+				setItem->itemID = QString::fromStdString(objectId);
+				float fileSize = (float)Helper::GetFileSize(filePath.toStdString());
+				setItem->metaData[META_DATA_KEY_0_DATA_TYPE] = _itemDataType;
+				setItem->metaData[SHAPE_DATA_ID_KEY + META_DATA_KEY_1_DATA_TYPE] = DOCUMENT_DATA_ID_KEY;
+				setItem->itemName = fileName;
+				setItem->sampleItemData.itemPath = fileName;
+				setItem->sampleItemData.iconThumbnailPath = filePath;
+				setItem->sampleItemData.previewThumbnailPath = filePath;
+				setItem->filesize = fileSize;
+				setItem->dateTime = fileCreationDateTime;
+
+				if (!Helper::CheckFileExist(fileName, setItem))
+					m_ShapeAPIItemList.push_back(setItem);
+			}
+		}
+	}
+
 
 	void APIStorage::generateAPIItemListForPLMMaterial(string _directoryPath, QString _itemDataType)
 	{

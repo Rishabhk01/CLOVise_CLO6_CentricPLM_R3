@@ -241,8 +241,8 @@ json DataHelper::SetSeasonPaletteJSON(string _FileName)
 
 	try
 	{
-		if (m_restData)
-		{
+		//if (m_restData)
+		//{
 			paletteJsonString = RESTAPI::RESTMethodSubmit(RESTAPI::PALETTE_SEARCH_API, param);
 			if (!FormatHelper::HasContent(paletteJsonString))
 			{
@@ -260,15 +260,15 @@ json DataHelper::SetSeasonPaletteJSON(string _FileName)
 			}
 
 			paletteJson = json::parse(paletteJsonString);
-		}
-		else
+		//}
+		/*else
 		{
 			paletteJson = Helper::GetDataFromJsonFile(_FileName );
 			if (!FormatHelper::HasContent(to_string(paletteJson)))
 			{
 				throw "Unable to initiliaze Configuration. Please try again or Contact your System Administrator.";
 			}
-		}
+		}*/
 	}
 	catch (exception e)
 	{
