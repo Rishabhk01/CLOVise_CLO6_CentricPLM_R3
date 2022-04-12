@@ -1826,12 +1826,12 @@ namespace CLOVise
 		if (m_createActionSignalMapper != nullptr)
 		{
 			connect(colorSpecAction, SIGNAL(triggered()), m_createActionSignalMapper, SLOT(map()));
-			m_createActionSignalMapper->setMapping(colorSpecAction, m_colorwayRowcount);
+			m_createActionSignalMapper->setMapping(colorSpecAction, _count + m_colorwayRowcount);
 		}
 		if (m_printActionSignalMapper != nullptr)
 		{
 			connect(printAction, SIGNAL(triggered()), m_printActionSignalMapper, SLOT(map()));
-			m_printActionSignalMapper->setMapping(printAction, m_colorwayRowcount);
+			m_printActionSignalMapper->setMapping(printAction, _count+ m_colorwayRowcount);
 		}
 
 		QPushButton *deleteButton = CVWidgetGenerator::CreatePushButton("", ":/CLOVise/PLM/Images/icon_delete_over.svg", "Delete", PUSH_BUTTON_STYLE, 30, true);
