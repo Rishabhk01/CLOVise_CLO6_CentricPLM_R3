@@ -917,7 +917,7 @@ Description - BackupBomDetails() method used backup bom data in a data structure
 							attJson[attInternalName] = fieldValue;
 					}
 					else
-						attJson["Type"] = "";
+						attJson[attInternalName] = "";
 					Logger::Debug("BOMUtility BackupBomDetails() fieldValue" + fieldValue);
 				}
 				attJson["ds_section"] = sectionId;
