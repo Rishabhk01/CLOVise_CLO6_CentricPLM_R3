@@ -1875,9 +1875,10 @@ namespace CLOVise
 			defaultPLMColorwayName = Helper::GetJSONValue<string>(_colorwayJson, "uni_2_digit_code", true);
 			defaultDescption = Helper::GetJSONValue<string>(_colorwayJson, "description", true);
 			downloadedPLMColorwayName = Helper::GetJSONValue<string>(_colorwayJson, "node_name", true);
-			json imageJson = Helper::GetJSONParsedValue<string>(_colorwayJson, IMAGES_JSON, false);
-			Logger::Logger("imageJson ::" + to_string(imageJson));
-			DefaultImageId = Helper::GetJSONValue<string>(imageJson, BLANK, true);
+			DefaultImageId = Helper::GetJSONParsedValue<string>(_colorwayJson, "default_image", false);
+			//json imageJson = json::parse(images);
+			//Logger::Logger("imageJson ::" + to_string(imageJson));
+			//DefaultImageId = Helper::GetJSONValue<string>(imageJson, BLANK, true);
 			Logger::Logger("DefaultImageId ::" + DefaultImageId);
 			int valueIndex = comboColorwayItem->findText(QString::fromUtf8(QString::fromStdString(downloadedPLMColorwayName).toStdString().c_str()));
 			if (valueIndex < 0)
@@ -3343,11 +3344,15 @@ namespace CLOVise
 							string code = Helper::GetJSONValue<string>(colorSpecCountJson, CODE_KEY, true);;
 							string pantone = Helper::GetJSONValue<string>(colorSpecCountJson, PANTONE_KEY, true);;
 							string rgbValue = Helper::GetJSONValue<string>(colorSpecCountJson, RGB_VALUE_KEY, true);;
+							string images = Helper::GetJSONValue<string>(colorSpecCountJson, "images", false);
+							json imageIDJson = json::parse(images);
+							string defaultImageID = Helper::GetJSONValue<string>(imageIDJson, BLANK, true);
 
 							colorwayCountJson["color_name_name"] = nodeName;
 							colorwayCountJson["code"] = code;
 							colorwayCountJson["pantone"] = pantone;
 							colorwayCountJson["rgb_triple"] = rgbValue;
+							colorwayCountJson["default_image"] = defaultImageID;
 
 							downloadedColorwayjson[colorwayAarrayCount] = colorwayCountJson;
 					    }
