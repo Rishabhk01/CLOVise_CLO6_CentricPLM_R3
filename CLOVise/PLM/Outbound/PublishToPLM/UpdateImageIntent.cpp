@@ -665,13 +665,7 @@ Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> filepath1" + file
 						m_ColorwayViewMap.insert(make_pair(selectedColorwayName, mapIterator->second));
 						Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> 11");
 					}
-
-					Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> colorwayView.viewUploadId[0]" + mapIterator->second.viewUploadId[0]);
-					Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> colorwayView.viewUploadId[1]" + mapIterator->second.viewUploadId[1]);
-					Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> colorwayView.viewUploadId[2]" + mapIterator->second.viewUploadId[2]);
-					Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> colorwayView.viewUploadId[3]" + mapIterator->second.viewUploadId[3]);
-					Logger::Debug("UpdateImageIntent -> onFinishButtonClicked() -> colorwayView.defaultImage" + to_string(mapIterator->second.defaultImage));
-
+					
 					UpdateProduct::GetInstance()->m_editButtonClicked = false;
 					m_colorwayComboBox->setDisabled(false);
 					m_colorwayComboBox->setStyleSheet(COMBOBOX_STYLE);
