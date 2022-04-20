@@ -24,7 +24,6 @@
 #include "CLOVise/PLM/Helper/UIHelper/CVHoverDelegate.h"
 #include "CLOVise/PLM/Helper/UIHelper/CVDisplayMessageBox.h"
 #include "CLOVise/PLM/Helper/Util/Logger.h"
-//#include "CLOVise/PLM/Outbound/PublishToPLM/CopyShape.h"
 //#include "CLOVise/PLM/Outbound/PublishToPLM/UpdateShape.h"
 using namespace std;
 
@@ -111,10 +110,6 @@ namespace CLOVise
 			ui_buttonLayout->insertWidget(1, m_backButton);
 
 			ui_buttonLayout->insertSpacerItem(2, horizontalSpacer_5);
-			m_deSelectAllButton = CVWidgetGenerator::CreatePushButton("Unselect All", OK_NONE_ICON_PATH, "Unselect All", PUSH_BUTTON_STYLE, 30, false);
-			m_deSelectAllButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-			m_deSelectAllButton->setFocusPolicy(Qt::NoFocus);
-			ui_buttonLayout->insertWidget(3, m_deSelectAllButton);
 			ui_buttonLayout->insertSpacerItem(4, horizontalSpacer_5);
 
 
@@ -125,27 +120,10 @@ namespace CLOVise
 				m_downloadButton = CVWidgetGenerator::CreatePushButton("Download", DOWNLOAD_HOVER_ICON_PATH, "Download", PUSH_BUTTON_STYLE, 30, true);
 			}
 
-			else if (Configuration::GetInstance()->GetCopyStyleDownloadButton() && Configuration::GetInstance()->GetCurrentScreen() == COPY_SHAPE_CLICKED)
-			{
-				m_downloadButton = CVWidgetGenerator::CreatePushButton("Download", DOWNLOAD_HOVER_ICON_PATH, "Download", PUSH_BUTTON_STYLE, 30, true);
-			}
-			else
-			{
-				m_downloadButton = CVWidgetGenerator::CreatePushButton("Copy", SAVE_HOVER_ICON_PATH, "Copy", PUSH_BUTTON_STYLE, 30, true);
-			}
-
 
 			m_downloadButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 			m_downloadButton->setFocusPolicy(Qt::StrongFocus);
 			ui_buttonLayout->insertWidget(5, m_downloadButton);
-			//ui_buttonLayout->insertSpacerItem(6, horizontalSpacer_4);
-
-			//label_3->setStyleSheet(HEADER_STYLE);
-			//noOfResultLabel->setStyleSheet(HEADER_STYLE);
-			/*label->setStyleSheet(HEADER_STYLE);
-			label_4->setStyleSheet(HEADER_STYLE);*/
-			//m_viewComboBox->setStyleSheet(VIEW_COMBOBOX_STYLE);
-			//m_perPageResultComboBox->setStyleSheet(COMBOBOX_STYLE);
 
 			previousButton->setToolTip(PREVIOUS);
 			previousButton->setStyleSheet(PREVIOUS_BUTTON_STYLE);
@@ -153,18 +131,6 @@ namespace CLOVise
 			nextButton->setToolTip(NEXT);
 			nextButton->setStyleSheet(NEXT_BUTTON_STYLE);
 			nextButton->setFocusPolicy(Qt::NoFocus);
-			//DeSelectAll->setIcon(QIcon(":/CLOVise/PLM/Images/icon_ok_none.svg"));
-
-			//m_backButton->setIcon(QIcon(":/CLOVise/PLM/Images/icon_back_over.svg"));
-
-			//m_downloadButton->setIcon(QIcon(":/CLOVise/PLM/Images/icon_down_over.svg"));
-			/*m_backButton->setStyleSheet(BUTTON_STYLE);
-			DeSelectAll->setStyleSheet(BUTTON_STYLE);
-			m_downloadButton->setStyleSheet(BUTTON_STYLE);*/
-
-			//iconView->setToolTip(ICON_VIEW);
-
-			//m_tabViewButton->setToolTip(TABULAR_VIEW);
 
 			resultTable = new MVTableWidget();
 			CVWidgetGenerator::InitializeTableView(resultTable);
@@ -220,75 +186,6 @@ namespace CLOVise
 
 	}
 
-	/*
-	* Description - SetDataFromResponse() method used to cache the configured json from rest.
-	* Parameter -  json.
-	* Exception - exception, Char *
-	* Return -
-	*/
-	/*void PLMShapeResults::setDataFromResponse(json _param)
-	{
-		Logger::Info("PLMShapeResults -> setDataFromResponse() -> Start");
-		try
-		{
-			string resultJsonString = RESTAPI::RESTMethodSubmit(RESTAPI::SEARCH_RESULTS_API, _param);
-			if (!FormatHelper::HasContent(resultJsonString))
-			{
-				throw "Unable to fetch results. Please try again or Contact your System Administrator.";
-			}
-
-			if (FormatHelper::HasError(resultJsonString))
-			{
-				Logger::Debug("SetDataFromResponse -> Constructor() -> restErrorMsg - " + string(resultJsonString));
-				throw runtime_error(resultJsonString);
-			}
-			string error = RESTAPI::CheckForErrorMsg(resultJsonString);
-			if (FormatHelper::HasContent(error))
-			{
-				throw std::logic_error(error);
-			}
-			m_shapeResults = json::parse(resultJsonString);
-			string resultsCount = Helper::GetJSONValue<string>(m_shapeResults, "resultFound", true);
-			if (FormatHelper::HasContent(resultsCount))
-			{
-				m_resultsCount = stoi(resultsCount);
-			}
-			else
-			{
-				m_resultsCount = 0;
-			}
-
-			string maxResultsLimit = Helper::GetJSONValue<string>(m_shapeResults, "maxResultsLimit", true);
-			if (FormatHelper::HasContent(maxResultsLimit))
-			{
-				m_maxResultsCount = stoi(maxResultsLimit);
-			}
-			else
-			{
-				m_maxResultsCount = 50;
-			}
-			m_typename = Helper::GetJSONValue<string>(m_shapeResults, TYPENAME_KEY, true);
-
-		}
-		catch (exception& e)
-		{
-			Logger::Error("PLMShapeResults -> SetDataFromResponse Exception :: " + string(e.what()));
-			throw e;
-		}
-		catch (const char* msg)
-		{
-			Logger::Error("PLMShapeResults -> SetDataFromResponse Exception :: " + string(msg));
-			throw msg;
-		}
-		Logger::Info("PLMShapeResults -> setDataFromResponse() -> end");
-	}*/
-
-	/*
-	* Description - AddConnectorForRadioButton() method used connect the ratio button signal and slots.
-	* Parameter -
-	* Exception -
-	* Return -
-	*/
 	void PLMShapeResults::AddConnectorForRadioButton()
 	{
 		Logger::Info("PLMShapeResults -> AddConnectorForRadioButton() -> Start");
@@ -423,32 +320,6 @@ namespace CLOVise
 		Logger::Info("PLMShapeResults -> setHeaderToolTip() -> end");
 	}
 
-	/*
-	* Description - onClickedDeselectAllButton() method is a slot for deselect all button click and deselect all the selected.
-	* Parameter -
-	* Exception -
-	* Return -
-	*/
-	void PLMShapeResults::ClickedDeselectAllButton()
-	{
-		Logger::Info("PLMShapeResults -> ClickedDeselectAllButton() -> Start");
-		CVWidgetGenerator::DeSelectAllClicked(resultTable, iconTable, m_downloadButton);
-		m_rowsSelected.clear();
-		m_iconsSelected.clear();
-		m_totalSelected.clear();
-		Logger::Info("PLMShapeResults -> ClickedDeselectAllButton() -> end");
-	}
-
-	/*
-	* Description - onClickedDeselectAllButton() method is a slot for deselect all button click and deselect all the selected.
-	* Parameter -
-	* Exception -
-	* Return -
-	*/
-	void PLMShapeResults::onClickedDeselectAllButton()
-	{
-		ClickedDeselectAllButton();
-	}
 
 	/*
 	* Description - onClickedBackButton() method is a slot for back button click and navigate to design suite.
@@ -459,33 +330,16 @@ namespace CLOVise
 	void PLMShapeResults::ClickedBackButton()
 	{
 		Logger::Info("PLMShapeResults -> ClickedBackButton() -> Start");
-		/*		switch (Configuration::GetInstance()->GetCurrentScreen())
-				{
 
-				case COPY_SHAPE_CLICKED:
-				{
-					this->close();
-					CopyShape::GetInstance()->setModal(true);
-					CopyShape::GetInstance()->show();
-				}
-				break;
-				case SEARCH_SHAPE_CLICKED:
-				{
-					*/
 		this->close();
 		UTILITY_API->CreateProgressBar();
-		RESTAPI::SetProgressBarData(10, "Loading Style Search", true);
-		//CopyShape::GetInstance()->SetCopyCreated(false);
+		RESTAPI::SetProgressBarData(10, "Loading Shape Search", true);
 		ShapeConfig::GetInstance()->GetShapeFieldsJSON();
 		UTILITY_API->SetProgress("Loading Style Search", (qrand() % 101));
 		CLOVise::PLMShapeSearch::GetInstance()->setModal(true);
 		RESTAPI::SetProgressBarData(0, "", false);
 		CLOVise::PLMShapeSearch::GetInstance()->show();
-		/*}
-		break;
-		}*/
-
-
+	
 		Logger::Info("PLMShapeResults -> ClickedBackButton() -> end");
 	}
 
@@ -495,42 +349,22 @@ namespace CLOVise
 	* Exception -
 	* Return -
 	*/
-	void PLMShapeResults::onClickedBackButton()
+    void PLMShapeResults::onClickedBackButton()
 	{
 		ClickedBackButton();
 	}
 
-	/*
-	* Description - onClickedNextButton() method is a slot for next button click and navigate to next slide.
-	* Parameter -
-	* Exception -
-	* Return -
-	*/
-	void PLMShapeResults::ClickedNextButton()
-	{
-		Logger::Info("PLMShapeResults -> ClickedNextButton() -> Start");
-		int currPage = currPageLabel->text().toInt() + 1;
-		currPageLabel->setText(QString::fromStdString(to_string(currPage)));
-		if (currPage == totalPageLabel->text().toInt())
-			nextButton->setEnabled(false);
-		if (m_isTabularView)
-			CVWidgetGenerator::UpdateTableAndIconRows(resultTable, currPageLabel, m_perPageResultComboBox, m_resultsCount, false);
-		else
-			CVWidgetGenerator::UpdateTableAndIconRows(iconTable, currPageLabel, m_perPageResultComboBox, m_resultsCount);
-		previousButton->setEnabled(true);
-		Logger::Info("PLMShapeResults -> ClickedNextButton() -> end");
-	}
 
-	/*
-	* Description - onClickedNextButton() method is a slot for next button click and navigate to next slide.
-	* Parameter -
-	* Exception -
-	* Return -
-	*/
-	void PLMShapeResults::onClickedNextButton()
-	{
-		ClickedNextButton();
-	}
+	///*
+	//* Description - onClickedNextButton() method is a slot for next button click and navigate to next slide.
+	//* Parameter -
+	//* Exception -
+	//* Return -
+	//*/
+	//void PLMShapeResults::onClickedNextButton()
+	//{
+	//	ClickedNextButton();
+	//}
 
 	/*
 	* Description - onClickedPreviousButton() method is a slot for previous button click and navigate to previous slide.
@@ -887,7 +721,7 @@ namespace CLOVise
 		if (_b)
 		{
 			QObject::connect(m_backButton, SIGNAL(clicked()), this, SLOT(onClickedBackButton()));
-			QObject::connect(nextButton, SIGNAL(clicked()), this, SLOT(onClickedNextButton()));
+			//QObject::connect(nextButton, SIGNAL(clicked()), this, SLOT(onClickedNextButton()));
 			QObject::connect(previousButton, SIGNAL(clicked()), this, SLOT(onClickedPreviousButton()));
 			QObject::connect(m_perPageResultComboBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(onResultPerPageCurrentIndexChanged(const QString&)));
 			QObject::connect(m_viewComboBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(onResultViewIndexChanged(const QString&)));
@@ -895,21 +729,19 @@ namespace CLOVise
 			QObject::connect(m_tabViewButton, SIGNAL(clicked()), this, SLOT(onTabViewClicked()));
 			QObject::connect(ui_hideButton, SIGNAL(clicked(bool)), this, SLOT(onHideButtonClicked(bool)));
 			QObject::connect(m_downloadButton, SIGNAL(clicked()), this, SLOT(onDownloadClicked()));
-			QObject::connect(m_deSelectAllButton, SIGNAL(clicked()), this, SLOT(onClickedDeselectAllButton()));
 			QObject::connect(resultTable->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(onHorizontalHeaderClicked(int)));
 			QObject::connect(aditionalResultWidget, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onListItemClicked(QListWidgetItem*)));
 		}
 		else
 		{
 			QObject::disconnect(m_backButton, SIGNAL(clicked()), this, SLOT(onClickedBackButton()));
-			QObject::disconnect(nextButton, SIGNAL(clicked()), this, SLOT(onClickedNextButton()));
+			//QObject::disconnect(nextButton, SIGNAL(clicked()), this, SLOT(onClickedNextButton()));
 			QObject::disconnect(previousButton, SIGNAL(clicked()), this, SLOT(onClickedPreviousButton()));
 			QObject::disconnect(m_perPageResultComboBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(onResultPerPageCurrentIndexChanged(const QString&)));
 			QObject::disconnect(m_viewComboBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(onResultViewIndexChanged(const QString&)));
 			QObject::disconnect(m_iconViewButton, SIGNAL(clicked()), this, SLOT(onIconViewClicked()));
 			QObject::disconnect(m_tabViewButton, SIGNAL(clicked()), this, SLOT(onTabViewClicked()));
 			QObject::disconnect(m_downloadButton, SIGNAL(clicked()), this, SLOT(onDownloadClicked()));
-			QObject::disconnect(m_deSelectAllButton, SIGNAL(clicked()), this, SLOT(onClickedDeselectAllButton()));
 			QObject::disconnect(resultTable->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(onHorizontalHeaderClicked(int)));
 		}
 	}
@@ -1449,11 +1281,6 @@ namespace CLOVise
 			m_downloadButton->setText("Download");
 			m_downloadButton->setToolTip("Download");
 			// = CVWidgetGenerator::CreatePushButton("Download", DOWNLOAD_HOVER_ICON_PATH, "Download", PUSH_BUTTON_SHAPE, 30, true);
-		}
-		else if (Configuration::GetInstance()->GetCopyShapeDownloadButton() && Configuration::GetInstance()->GetCurrentScreen() == COPY_SHAPE_CLICKED)
-		{
-			m_downloadButton->setText("Download");
-			m_downloadButton->setToolTip("Download");
 		}
 
 		else

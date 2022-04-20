@@ -84,7 +84,7 @@ const string DirectoryUtil::GetStyleAttachmentDirectory() {
 	return GetSampleStorageDirectory() + "product/";
 }
 /* 
-*Description - getStyleAttachmentDirectory() method used to get style attachment directory.
+*Description - GetShapeAttachmentDirectory() method used to get style attachment directory.
 * Parameter -
 *Exception -
 *Return - string.

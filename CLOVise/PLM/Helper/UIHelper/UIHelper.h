@@ -2291,8 +2291,8 @@ namespace UIHelper
 				attributeName = Helper::GetJSONValue<string>(attCountOfAttJson, ATTRIBUTE_NAME_KEY, true);
 				attributeAttscop = Helper::GetJSONValue<string>(attCountOfAttJson, ATTRIBUTE_ATTSCOPE_KEY, true);
 				attributeApiExposed = Helper::GetJSONValue<string>(attCountOfAttJson, ATTRIBUTE_REST_API_EXPOSED, true);
-				/*if (attributeApiExposed == "false")
-					continue;*/
+				if (attributeApiExposed == "false")
+					continue;
 
 				if ("true" == Helper::GetJSONValue<string>(attCountOfAttJson, IS_MULTISELECT_KEY, true))
 					isMultiselectable = true;

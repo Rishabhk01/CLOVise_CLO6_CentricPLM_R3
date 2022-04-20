@@ -29,7 +29,7 @@ public:
 	bool m_isDateEditPresent = false;
 	bool m_isShow3DAttWidget = false;
 	int m_sortedColumnNumber;
-	bool m_shapelLoggedOut = false;
+	bool m_shapeLoggedOut = false;
 	bool m_resultAfterLogout = false;
 	json m_shapeFieldsJson = json::object();
 
@@ -77,7 +77,7 @@ public:
 	string GetTypename();
 	int GetMaxResultCount();
 	int GetResultsCount();
-	void UpdateResultJson(json& _materialResults, json& _materialTypeValues, json& _shapemasters);
+	void UpdateResultJson(json& _shapeResults, json& _shapeTypeValues, json& _shapemasters);
 	//string GetThumbnailUrl(string _objectId);
 	void GetEnumlistJson(string _restApi, json& _attributeJson);
 	void SetIsModelExecuted(bool _isModelExecuted);

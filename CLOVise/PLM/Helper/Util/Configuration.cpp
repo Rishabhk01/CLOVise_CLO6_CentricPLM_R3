@@ -1538,15 +1538,6 @@ bool Configuration::GetIsUpdateColorClicked()
 	 return m_downloadButton;
  }
 
- void Configuration::SetCopyShapeDownloadButton(bool _downloadButton)
- {
-	 m_downloadButton = _downloadButton;
- }
- bool Configuration::GetCopyShapeDownloadButton()
- {
-	 return m_downloadButton;
- }
-
 
  void Configuration::SetSubTypeInternalName(json _clientSpecificJson)
  {

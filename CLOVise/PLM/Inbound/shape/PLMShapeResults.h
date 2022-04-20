@@ -46,8 +46,7 @@ namespace CLOVise
 		void TabViewClicked();
 		void ResultViewIndexChanged(const QString&);
 		void ResultPerPageCurrentIndexChanged(const QString&);
-		void ClickedDeselectAllButton();
-		void ClickedNextButton();
+		//void ClickedNextButton();
 		void ClickedBackButton();
 		void ClickedPreviousButton();
 		void TableRadioButtonSelected();
@@ -95,12 +94,12 @@ namespace CLOVise
 		QToolButton *m_iconViewButton;
 		QPushButton *m_backButton;
 
-		QPushButton *m_deSelectAllButton;
+		//QPushButton *m_deSelectAllButton;
 
 	private slots:
-		void onClickedDeselectAllButton();
+		//void onClickedDeselectAllButton();
 		void onClickedBackButton();
-		void onClickedNextButton();
+		//void onClickedNextButton();
 		void onClickedPreviousButton();
 		void onResultPerPageCurrentIndexChanged(const QString&);
 		void onResultViewIndexChanged(const QString&);

@@ -1048,6 +1048,14 @@ namespace CLOVise
 		}
 	}
 
+/*
+* Description - ClickedSearchShape() for execute the functionality, when the click of Color button.
+* Clear all fields items in the ShapeSearch UI.
+* Parameter -
+* Exception - exception, Char *
+* Return -
+*/
+
 	void CLOViseSuite::ExecuteShapeModule()
 	{
 		this->hide();
@@ -1055,15 +1063,12 @@ namespace CLOVise
 		{
 			if (IsModuleExecutable("Shape"))
 			{
-				//if (!Configuration::GetInstance()->GetIsStylePublished())
-				//{
-					//UpdateShape::GetInstance()->Destroy();
-				//}
+				
 				bool isFromConstructor = false;
 				Configuration::GetInstance()->SetProgressBarProgress(0);
 				UTILITY_API->CreateProgressBar();
 				Configuration::GetInstance()->SetProgressBarProgress(qrand() % 101);
-				RESTAPI::SetProgressBarData(20, "Loading " + Configuration::GetInstance()->GetLocalizedStyleClassName() + " Search", true);
+				RESTAPI::SetProgressBarData(20, "Loading " + Configuration::GetInstance()->GetLocalizedShapeClassName() + " Search", true);
 				if (!ShapeConfig::GetInstance()->GetIsModelExecuted())
 				{
 					ShapeConfig::GetInstance()->InitializeShapeData();
@@ -1072,27 +1077,19 @@ namespace CLOVise
 				else
 					PLMShapeSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
 
-				if (ShapeConfig::GetInstance()->m_shapelLoggedOut && isFromConstructor)
+				if (ShapeConfig::GetInstance()->m_shapeLoggedOut && isFromConstructor)
 				{
-					ShapeConfig::GetInstance()->m_shapelLoggedOut = false;
+					ShapeConfig::GetInstance()->m_shapeLoggedOut = false;
 					ShapeConfig::GetInstance()->m_resultAfterLogout = true;
 					PLMShapeSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
 				}
 				ShapeConfig::GetInstance()->m_isShow3DAttWidget = true;
-				/*	if (ShapeConfig::GetInstance()->isModelExecuted)
-					{*/
-					//UTILITY_API->CreateProgressBar();
-					//UTILITY_API->SetProgress("Loading Style Search", (qrand() % 101));
-					//}
+				
 				PLMShapeSearch::GetInstance()->setModal(true);
-				//PLMShapeSearch::GetInstance()->ClearAllFields();
-				//UIHelper::ClearAllFieldsForSearch(PLMShapeSearch::GetInstance()->GetTreewidget(0));
-				//UIHelper::ClearAllFieldsForSearch(PLMShapeSearch::GetInstance()->GetTreewidget(1));
+				
 				UTILITY_API->DeleteProgressBar(true);
-				//if (ShapeConfig::GetInstance()->isModelExecuted)
 				PLMShapeSearch::GetInstance()->exec();
 				ShapeConfig::GetInstance()->SetIsModelExecuted(true);
-				//ShapeConfig::GetInstance()->isModelExecuted = true;
 			}
 		}
 		catch (string msg)
@@ -1209,6 +1206,14 @@ namespace CLOVise
 		ExecuteColorModule();
 		Logger::Info("DesignSuite -> Initialize ColorSearch-> Start");
 	}
+
+	/*
+* Description - onClickedSearchShape() for execute the functionality, when the click of Shape button.
+* Clear all fields items in the ColorSearch UI.
+* Parameter -
+* Exception - exception, Char *
+* Return -
+*/
 
 	void CLOViseSuite::onClickedSearchShape()
 	{

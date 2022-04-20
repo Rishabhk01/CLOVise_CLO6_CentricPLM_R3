@@ -96,7 +96,6 @@ public:
 	json GetTechPackJson();
 	bool GetCopyStyleDownloadButton();
 	bool GetCreatColorSpecFlag();
-	bool GetCopyShapeDownloadButton();
 
 	
 	void SetPLMServerURL(string _plmServerURL);
@@ -153,7 +152,6 @@ public:
 	void ExportTechPackJson();
 	void SetCopyStyleDownloadButton(bool _downloadButton);
 	void SetCreatColorSpecFlag(bool _isCreateColorSpec);
-	void SetCopyShapeDownloadButton(bool _downloadButton);
 
 	
 

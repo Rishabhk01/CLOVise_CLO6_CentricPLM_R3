@@ -28,7 +28,6 @@
 #include "CLOVise/PLM/Helper/Util/Logger.h"
 #include "CLOVise/PLM/Helper/UIHelper/CVWidgetGenerator.h"
 #include"classes/widgets/MVDialog.h"
-//#include "CLOVise/PLM/Outbound/PublishToPLM/CopyShape.h"
 
 using namespace std;
 
@@ -762,8 +761,8 @@ namespace CLOVise
 			QStringList attScops = ShapeConfig::GetInstance()->GetAttScopes();
 			json attributesJson = json::object();
 
-			if (MaterialConfig::GetInstance()->GetIsModelExecuted())
-				Configuration::GetInstance()->SetProgressBarProgress(RESTAPI::SetProgressBarProgress(Configuration::GetInstance()->GetProgressBarProgress(), 10, "Loading S Search"));
+			if (ShapeConfig::GetInstance()->GetIsModelExecuted())
+				Configuration::GetInstance()->SetProgressBarProgress(RESTAPI::SetProgressBarProgress(Configuration::GetInstance()->GetProgressBarProgress(), 10, "Loading Search"));
 			/*if (!CVWidgetGenerator::DrawFilterAndSearchCriteriaWidget(ShapeConfig::GetInstance()->GetShapeFilterJSON(), m_filterComboBox, m_searchTreeWidget, _selectType, _selectedFilter, attScops, _drawFilter))
 			{*/
 			Logger::Info("ShapeConfig::GetInstance()->GetShapeFieldsJSON()=========== "+ to_string(ShapeConfig::GetInstance()->GetShapeFieldsJSON()));

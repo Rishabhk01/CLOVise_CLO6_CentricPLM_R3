@@ -687,37 +687,37 @@ string  ShapeConfig::GetDownloadFileName()
 	return m_downloadFileName;
 }
 
-void  ShapeConfig::UpdateResultJson(json& _materialResults, json& _materialTypeValues, json& _shapemasters)
+void  ShapeConfig::UpdateResultJson(json& _shapeResults, json& _shapeTypeValues, json& _shapemasters)
 {
-	Logger::Debug("materialResults111111 - " + to_string(_materialResults));
-	Logger::Info("shape all season values - " + to_string(_materialTypeValues));
+	Logger::Debug("ShapeConfig _shapeResults  - " + to_string(_shapeResults));
+	Logger::Info("shape all season values - " + to_string(_shapeTypeValues));
 	Logger::Info("shape all shape master - " + to_string(_shapemasters  ));
 
 	//Logger::Info("shape all shape master value - " + to_string(_shapemasters));
 	try
 	{
-		string objectName = Helper::GetJSONValue<string>(_materialResults, NODE_NAME_KEY, true);
+		string objectName = Helper::GetJSONValue<string>(_shapeResults, NODE_NAME_KEY, true);
 		Logger::Info("objectName - " + objectName);
 
-		json docIdJson = Helper::GetJSONParsedValue<string>(_materialResults, "documents", false);
+		json docIdJson = Helper::GetJSONParsedValue<string>(_shapeResults, "documents", false);
 		Logger::Info("docIdJson - " + to_string(docIdJson));
 		//loop through the results, so we can get the shape seasons for every loop 
 		 
 		//UTILITY_API->DisplayMessageBox("docIdJson" + to_string(docIdJson));
 		 string docId = Helper::GetJSONValue<int>(docIdJson, 0, true);
-		string objectId = Helper::GetJSONValue<string>(_materialResults, "id", true);
+		string objectId = Helper::GetJSONValue<string>(_shapeResults, "id", true);
 		
-		string season = Helper::GetJSONValue<string>(_materialResults, "shape_seasons", false);
+		string season = Helper::GetJSONValue<string>(_shapeResults, "shape_seasons", false);
 		Logger::Info("whats stored in season - " + season);
 		
-		string shapemaster = Helper::GetJSONValue<string>(_materialResults, "shape_master", true );	
+		string shapemaster = Helper::GetJSONValue<string>(_shapeResults, "shape_master", true );
 		Logger::Info("whats stored in shape master - " + shapemaster);
 		
 		Logger::Info("shape master--------- - " + Helper::GetJSONValue<string>(_shapemasters, shapemaster, false)); 
 		string ShapeMasterName = Helper::GetJSONValue<string>(_shapemasters, shapemaster, false);
 		Logger::Info("shape master--------- - " + Helper::GetJSONValue<string>(_shapemasters, shapemaster, true));
 		Logger::Info("shape master--------- - " + ShapeMasterName);
-		_materialResults["shape_master"] = Helper::GetJSONValue<string>(_shapemasters, shapemaster, true);
+		_shapeResults["shape_master"] = Helper::GetJSONValue<string>(_shapemasters, shapemaster, true);
 	//	Logger::Info("shape master stored in Shapemaster - " + ShapeMasterName);
 
 		
@@ -740,13 +740,13 @@ void  ShapeConfig::UpdateResultJson(json& _materialResults, json& _materialTypeV
 			sesvar = Helper::GetJSONValue<int>(seasonJson, j, true);
 
 			Logger::Info("shape season_code - " + sesvar);
-			Logger::Info("shape season--------- - " + Helper::GetJSONValue<string>(_materialTypeValues, sesvar, true));
-			QString seasonName = QString::fromStdString(Helper::GetJSONValue<string>(_materialTypeValues, sesvar, true));
+			Logger::Info("shape season--------- - " + Helper::GetJSONValue<string>(_shapeTypeValues, sesvar, true));
+			QString seasonName = QString::fromStdString(Helper::GetJSONValue<string>(_shapeTypeValues, sesvar, true));
 			Logger::Info("shape seasonName - " + seasonName.toStdString());
 			seasonNameList.push_back(seasonName);
 		}
 		Logger::Debug("seasonNameList============= " + seasonNameList.join(",").toStdString());
-		_materialResults["shape_seasons"] = seasonNameList.join(",").toStdString();
+		_shapeResults["shape_seasons"] = seasonNameList.join(",").toStdString();
 		Logger::Info("shape seasonJson - " + to_string(seasonJson));
 
 		//QStringList shapemasterNameList;
@@ -762,19 +762,19 @@ void  ShapeConfig::UpdateResultJson(json& _materialResults, json& _materialTypeV
 		//	shapemasterNameList.push_back(shpemasterName);
 		//}
 		////Logger::Debug("shapemasterNameList============= " + shapemasterNameList.join(",").toStdString());
-		////_materialResults["shape_master"] = shapemasterNameList.join(",").toStdString();
+		////_shapeResults["shape_master"] = shapemasterNameList.join(",").toStdString();
 		//Logger::Info("shape seasonJson - " + to_string(shapemasterJson));
 
 
 
 	
 
-		//_materialResults["parent_season_Id"] = season;
-		_materialResults[OBJECT_NAME_KEY] = objectName;
-		_materialResults[OBJECT_ID_KEY] = objectId;
-		_materialResults[DFAULT_ASSET_KEY] = docId;
-		Logger::Info("shape details  - " + to_string(_materialResults));
-		GetAttributeDisplayNames(_materialResults);
+		//_shapeResults["parent_season_Id"] = season;
+		_shapeResults[OBJECT_NAME_KEY] = objectName;
+		_shapeResults[OBJECT_ID_KEY] = objectId;
+		_shapeResults[DFAULT_ASSET_KEY] = docId;
+		Logger::Info("shape details  - " + to_string(_shapeResults));
+		GetAttributeDisplayNames(_shapeResults);
 			
 	}
 	catch (string msg)
@@ -825,12 +825,12 @@ void  ShapeConfig::CachePLMAttributes()
 
 }
 
-void ShapeConfig::GetAttributeDisplayNames(json& _materialResults)
+void ShapeConfig::GetAttributeDisplayNames(json& _shapeResults)
 {
 	Logger::Debug("ShapeConfig -> GetAttributeDisplayNames Start");
 	string attvalue;
 	string displayName;
-	//UTILITY_API->DisplayMessageBox("Initial json" + to_string(_materialResults));
+	//UTILITY_API->DisplayMessageBox("Initial json" + to_string(_shapeResults));
 	try
 	{
 		if (!m_seasonIdAndDisplayMap.size())
@@ -838,43 +838,18 @@ void ShapeConfig::GetAttributeDisplayNames(json& _materialResults)
 			CachePLMAttributes();
 		}
 
-		attvalue = Helper::GetJSONValue<string>(_materialResults, "parent_season_Id", true);
+		attvalue = Helper::GetJSONValue<string>(_shapeResults, "parent_season_Id", true);
 		displayName = GetDisplayName(m_seasonIdAndDisplayMap, attvalue);
-		_materialResults["parent_season_name"] = displayName;
+		_shapeResults["parent_season_name"] = displayName;
 
-		/*attvalue = Helper::GetJSONValue<string>(_materialResults, "shape_type", true);
-		displayName = GetDisplayName(m_shapeTypeIdAndDisplayMap, attvalue);
-		_materialResults["shape_type_name"] = displayName;
-*/
-		attvalue = Helper::GetJSONValue<string>(_materialResults, "shape", true);
+		attvalue = Helper::GetJSONValue<string>(_shapeResults, "shape", true);
 		displayName = GetDisplayName(m_shapeIdAndDisplayMap, attvalue);
-		_materialResults["shape_name"] = displayName;
+		_shapeResults["shape_name"] = displayName;
 
-		attvalue = Helper::GetJSONValue<string>(_materialResults, "shape_master", true);
+		attvalue = Helper::GetJSONValue<string>(_shapeResults, "shape_master", true);
 		displayName = GetDisplayName(m_shapemasterAndDisplayMap, attvalue);
-		_materialResults["shape_master_name"] = displayName;
+		_shapeResults["shape_master_name"] = displayName;
 
-		/*attvalue = Helper::GetJSONValue<string>(_materialResults, "theme", true);
-		displayName = GetDisplayName(m_themeIdAndDisplayMap, attvalue);
-		_materialResults["theme_name"] = displayName;*/
-
-		attvalue = Helper::GetJSONValue<string>(_materialResults, "uni_sleeve", true);
-		displayName = GetDisplayName(m_sleeveIdAndDisplayMap, attvalue);
-		_materialResults["uni_sleeve_name"] = displayName;
-
-		attvalue = Helper::GetJSONValue<string>(_materialResults, "uni_length", true);
-		displayName = GetDisplayName(m_lengthIdAndDisplayMap, attvalue);
-		_materialResults["uni_length_name"] = displayName;
-
-		attvalue = Helper::GetJSONValue<string>(_materialResults, "uni_silhouette", true);
-		displayName = GetDisplayName(m_silhouetteIdAndDisplayMap, attvalue);
-		_materialResults["uni_silhouette_name"] = displayName;
-
-		attvalue = Helper::GetJSONValue<string>(_materialResults, "uni_fabric", true);
-		displayName = GetDisplayName(m_fabricIdAndDisplayMap, attvalue);
-		_materialResults["uni_fabric_name"] = displayName;
-
-		//UTILITY_API->DisplayMessageBox("Final json" + to_string(_materialResults));
 	}
 	catch (string msg)
 	{
@@ -891,6 +866,13 @@ void ShapeConfig::GetAttributeDisplayNames(json& _materialResults)
 	}
 	Logger::Debug("ShapeConfig -> GetAttributeDisplayNames End");
 }
+
+/*
+* Description - GetDisplayName() method used to set display name of the attributs .
+* Parameter -  string.
+* Exception -
+* Return - displayName(string)
+*/
 string ShapeConfig::GetDisplayName(map<string, string> _map, string _Id)
 {
 	Logger::Debug("ShapeConfig -> GetDisplayName Start");
@@ -1159,88 +1141,6 @@ void ShapeConfig::createFieldsJson(string& _fieldsJsonStringResponse, json& _def
 	//UTILITY_API->DisplayMessageBox("m_shapeFieldsJson:: " + to_string(m_shapeFieldsJson));
 }
 
-//void ShapeConfig::SetCopyShapeResult(string _copyResult)
-//{
-//	auto mTypestartTime = std::chrono::high_resolution_clock::now();
-//	string seasonResponse;
-//	m_shapeResults.clear();
-//	try
-//	{
-//
-//		if (m_seasonValuesJson.empty())
-//		{
-//			seasonResponse = RESTAPI::CentricRestCallGet(Configuration::GetInstance()->GetPLMServerURL() + RESTAPI::SEASON_SEARCH_API + "?", APPLICATION_JSON_TYPE, "&decode=true&limit=" + Configuration::GetInstance()->GetMaximumLimitForRefAttValue() + "&sort=node_name");
-//			auto mTypefinishTime = std::chrono::high_resolution_clock::now();
-//			std::chrono::duration<double> mTypetotalDuration = mTypefinishTime - mTypestartTime;
-//			Logger::perfomance(PERFOMANCE_KEY + "Shape seasons API :: " + to_string(mTypetotalDuration.count()));
-//			Logger::RestAPIDebug("seasonResponse::" + seasonResponse);
-//			if (FormatHelper::HasError(seasonResponse) || !FormatHelper::HasContent(seasonResponse))
-//			{
-//				//throw runtime_error(shapeTypeResponse);
-//				m_seasonValuesJson.clear();
-//			}
-//			else
-//			{
-//				json seasonResponseJson = json::parse(seasonResponse);
-//				for (auto count = 0; count < seasonResponseJson.size(); count++)
-//				{
-//					string seaonName = Helper::GetJSONValue<string>(seasonResponseJson[count], NODE_NAME_KEY, true);
-//					string seasonId = Helper::GetJSONValue<string>(seasonResponseJson[count], "id", true);
-//					m_seasonValuesJson[seasonId] = seaonName;
-//				}
-//			}
-//		}
-//
-//
-//		//UTILITY_API->DisplayMessageBox("In side COPY_SHAPE_CLICKED");
-//		json resultListJson = json::parse(_copyResult);
-//		//UTILITY_API->DisplayMessageBox(_copyResult);
-//		ShapeConfig::GetInstance()->UpdateResultJson(resultListJson, m_seasonValuesJson);
-//		m_shapeResults.push_back(resultListJson);
-//
-//		string resultsCount = to_string(m_shapeResults.size());
-//		Logger::Logger("updated result count::" + resultsCount);
-//
-//		if (stoi(resultsCount) > 0)
-//		{
-//			m_resultsCount = stoi(resultsCount);
-//			//UTILITY_API->DisplayMessageBox("m_typename::" + m_typename);
-//		}
-//		else
-//		{
-//			m_resultsCount = 0;
-//		}
-//		m_typename = "Shape";
-//		string maxResultsLimit = resultsCount;//= Helper::GetJSONValue<string>(m_shapeResults, "maxResultsLimit", true);
-//		if (FormatHelper::HasContent(maxResultsLimit))
-//		{
-//			m_maxResultsCount = stoi(maxResultsLimit);
-//		}
-//		else
-//		{
-//			m_maxResultsCount = 500;
-//		}
-//		if (m_resultsCount > m_maxResultsCount)
-//			throw "Maximum results limit exceeded. Please refine your search.";
-//	}
-//	catch (string msg)
-//	{
-//		Logger::Error("PLMShapeResult -> SetDataFromResponse Exception :: " + msg);
-//		throw msg;
-//	}
-//	catch (exception& e)
-//	{
-//		Logger::Error("PLMShapeResult -> SetDataFromResponse Exception :: " + string(e.what()));
-//		//UTILITY_API->DisplayMessageBox(e.what());
-//		throw e;
-//	}
-//	catch (const char* msg)
-//	{
-//		Logger::Error("PLMShapeResult -> SetDataFromResponse Exception :: " + string(msg));
-//		throw msg;
-//	}
-//
-//}
 void ShapeConfig::SetDataFromResponse(json _param)
 {
 	//for now...
@@ -1341,9 +1241,9 @@ void ShapeConfig::SetDataFromResponse(json _param)
 			json seasonResponseJson = json::parse(seasonResponse);
 			for (auto count = 0; count < seasonResponseJson.size(); count++)
 			{
-				string seaonName = Helper::GetJSONValue<string>(seasonResponseJson[count], NODE_NAME_KEY, true);
+				string seasonName = Helper::GetJSONValue<string>(seasonResponseJson[count], NODE_NAME_KEY, true);
 				string seasonId = Helper::GetJSONValue<string>(seasonResponseJson[count], "id", true);
-				m_seasonValuesJson[seasonId] = seaonName;
+				m_seasonValuesJson[seasonId] = seasonName;
 			}
 		}
 
@@ -1526,7 +1426,7 @@ void ShapeConfig::ResetShapeConfig()
 	m_isModelExecuted = false;
 	m_sortedColumnNumber = 0;
 	SetIsModelExecuted(m_isModelExecuted);
-	m_shapelLoggedOut = true;
+	m_shapeLoggedOut = true;
 	PublishToPLMData::GetInstance()->m_createShapeLoggedOut = true;
 	json configJson = nullptr;
 	PublishToPLMData::GetInstance()->SetActive3DModelMetaData(configJson);

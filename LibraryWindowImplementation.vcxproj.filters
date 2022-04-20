@@ -449,6 +449,9 @@
     <ClCompile Include="CLOVise\PLM\Inbound\Shape\ShapeConfig.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="CLOVise\PLM\Inbound\Shape\ShapeConfig.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LibraryWindowImplPlugin.h" />
@@ -679,9 +682,6 @@
     </ClInclude>
     <ClInclude Include="CLOVise\PLM\Inbound\shape\ShapeConfig.h">
       <Filter>CLOVise\PLM\Inbound\Shape</Filter>
-    </ClInclude>
-    <ClInclude Include="CLOVise\PLM\Inbound\Shape\PLMShapeResults.h">
-      <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="CLOVise\PLM\Inbound\Shape\PLMShapeSearch.h">
       <Filter>Generated Files</Filter>
@@ -972,6 +972,16 @@
       <Filter>Generated Files</Filter>
     </CustomBuild>
     <CustomBuild Include="CLOVise\PLM\Inbound\shape\PLMShapeSearch.ui" />
+    <CustomBuild Include="CLOVise\PLM\CLOViseSuite\CLOViseSuite.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Outbound\PublishToPLM\CopyProduct.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CLOVise\PLM\Inbound\shape\PLMShapeSearch.ui" />
+    <CustomBuild Include="CLOVise\PLM\Inbound\shape\PLMShapeResults.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Ui_SignInDialog">
