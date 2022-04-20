@@ -100,7 +100,7 @@ const QString PRINT_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_print_over.svg"
 const QString DOCUMENT_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_3d_over.svg";
 const QString PRODUCT_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_product_over.svg";
 const QString PUBLISH_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_goto_over.svg";
-const QString SHAPE_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_block.svg";
+const QString SHAPE_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_block_over.svg";
 
 const QString SAMPLE_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_sample_over.svg";
 const QString SUBMIT_HOVER_ICON_PATH = ":/CLOVise/PLM/Images/icon_submit_over.svg";
@@ -122,7 +122,7 @@ const QString FABRIC_NONE_ICON_PATH = ":/CLOVise/PLM/Images/icon_fabric_none.svg
 const QString COLOR_NONE_ICON_PATH = ":/CLOVise/PLM/Images/icon_color_none.svg";
 const QString DOCUMENT_NONE_ICON_PATH = ":/CLOVise/PLM/Images/icon_3d_none.svg";
 const QString PRODUCT_NONE_ICON_PATH = ":/CLOVise/PLM/Images/icon_product_none.svg";
-const QString SHAPE_NONE_ICON_PATH = ":/CLOVise/PLM/Images/icon_block.svg";
+const QString SHAPE_NONE_ICON_PATH = ":/CLOVise/PLM/Images/icon_block_none.svg";
 
 const QString PUBLISH_NONE_ICON_PATH = ":/CLOVise/PLM/Images/icon_goto_none.svg";
 const QString SAMPLE_NONE_ICON_PATH = ":/CLOVise/PLM/Images/Sample_none.svg";
