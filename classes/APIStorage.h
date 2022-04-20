@@ -23,6 +23,8 @@ namespace CLOAPISample
 		vector<LibraryAPIItem*> m_MaterialAPIItemList;
 		vector<LibraryAPIItem*> m_TrimAPIItemList;
 		vector<LibraryAPIItem*> m_ProductAPIItemList;
+		vector<LibraryAPIItem*> m_ShapeAPIItemList;
+		vector<LibraryAPIItem*> m_PatternAPIItemList;
 		vector<LibraryAPIItem*> m_PrintAPIItemList;
 
 	private:
@@ -69,6 +71,9 @@ namespace CLOAPISample
 		void generateAPIItemListForPLMColor(string _directoryPath, QString _itemDataType);
 		void generateAPIItemListForPLMTrims(string _directoryPath, QString _itemDataType);
 		void generateAPIItemListForPLMPrints(string _directoryPath, QString _itemDataType);
+		void generateAPIItemListForPLMShape(string _directoryPath, QString _itemDataType);
+		void generateAPIItemListForPLMPattern(string _directoryPath, QString _itemDataType);
+
 		//End.
 
 		LibraryAPIItem* newLibraryAPIItemWithRandomizedDate(); // constructing an instance for LibraryAPIItem with radomly set in 'Date' and return the pointer

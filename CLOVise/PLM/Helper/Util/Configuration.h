@@ -84,6 +84,8 @@ public:
 	bool GetIsPrintSearchClicked();
 	bool GetIsNewStyleDownloaded();
 	string GetLocalizedStyleClassName();
+	string GetLocalizedShapeClassName();
+
 	string GetLocalizedMaterialClassName();
 	string GetLocalizedColorClassName();
 	bool GetNotFirstLogin();
@@ -94,6 +96,7 @@ public:
 	json GetTechPackJson();
 	bool GetCopyStyleDownloadButton();
 	bool GetCreatColorSpecFlag();
+
 	
 	void SetPLMServerURL(string _plmServerURL);
 	void SetLogFileName(string _logFileName);
@@ -136,7 +139,9 @@ public:
 	void SetIsUpdateColorClicked(bool _flag);
 	void SetIsPrintSearchClicked(bool _flag);
 	void SetIsNewStyleDownloaded(bool _flag);
+	void SetIsNewShapeDownloaded(bool _flag);
 	void SetLocalizedStyleClassName(string _styleClassName);
+	void SetLocalizedShapeClassName(string _shapeClassName);
 	void SetLocalizedMaterialClassName(string _materialClassName);
 	void SetLocalizedColorClassName(string _colorClassName);
 	void SetNotFirstLogin(bool _login = false);
@@ -147,6 +152,7 @@ public:
 	void ExportTechPackJson();
 	void SetCopyStyleDownloadButton(bool _downloadButton);
 	void SetCreatColorSpecFlag(bool _isCreateColorSpec);
+
 	
 
 private:
@@ -192,7 +198,11 @@ private:
 	bool m_UpdateColorClicked = false;
 	bool m_isPrintSearchClicked = false;
 	bool m_StyleDownloaded = false;
+	bool m_ShapeDownloaded = false;
+
 	string m_styleClassName = "";
+	string m_shapeClassName = "";
+
 	string m_materialClassName = "";
 	string m_colorClassName = "";
 	bool m_notFirstLogin = false;

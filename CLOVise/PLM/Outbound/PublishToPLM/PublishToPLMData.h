@@ -28,12 +28,18 @@ class PublishToPLMData
 		bool m_isModelExecuted = false;
 		bool m_isDateEditPresent = false;
 		bool m_createProductLoggedOut = false;
+		bool m_createShapeLoggedOut = false;
 		bool m_isSaveClicked = false;
 
 		static PublishToPLMData* GetInstance();
 		
 		void SetActiveProductMetaData(json _resultJson);
 		void SetActiveProductId(string _objectIdKey);
+		void SetActiveShapeId(string _objectIdKey);
+		void SetActiveShapeName(string _objectNameKey);
+		void SetActiveShapeStatus(string _objectStatusKey);
+		void SetActiveShapeObjectId(string _shapeObjectId);
+
 		void SetActiveProductName(string _objectNameKey);
 		void SetActiveProductStatus(string _objectStatusKey);
 		void SetIsProductOverridden(bool _flag);
@@ -57,6 +63,11 @@ class PublishToPLMData
 		json GetActiveProductMetaData();
 		string GetActiveProductId();
 		string GetActiveProductName();
+		string GetActiveShapeId();
+		string GetActiveShapeName();
+		string GetActiveShapeStatus();
+		string GetActiveShapeObjectId();
+
 		string GetActiveProductStatus();
 		bool GetIsProductOverridden();
 		QStringList GetAvailableResolutions();
@@ -64,6 +75,8 @@ class PublishToPLMData
 		json GetDocumentConfigJSON();
 		string Get3DModelType();
 		json GetDocumentFieldsJSON();
+		json GetUpdateShapeCacheData();
+
 		string GetTurnTableImageResolution();
 		string GetTurnTableNoOfImages();
 		string GetTurnTableImageHeight();
@@ -79,6 +92,8 @@ class PublishToPLMData
 		void SetIsModelExecuted(bool _isModelExecuted);
 		bool GetIsModelExecuted();
 		json GetUpdateStyleCacheData();
+		void SetUpdateShapeCacheData(json _upsateShapeJson);
+
 		 void SetUpdateStyleCacheData(json _upsateStyleJson);
 		 string GetLatestRevision();
 		 void  SetLatestRevision(string _latestRevisionId);
@@ -95,6 +110,10 @@ class PublishToPLMData
 		static PublishToPLMData* _instance; // zero initialized by default
 		json m_ActiveProductJson;
 		string m_ActiveProductId = BLANK;
+		string m_ActiveShapeId = BLANK;
+		string m_ActiveShapeObjectId = BLANK;
+		string m_ActiveShapeName = BLANK;
+		string m_ActiveShapeStatus = BLANK;
 		string m_ActiveProductObjectId = BLANK;
 		string m_3DModelObjectId = BLANK;
 		string m_ActiveProductName = BLANK;
@@ -110,6 +129,7 @@ class PublishToPLMData
 		string m_turnTableImageHeight = BLANK;
 		string m_turnTableImageWidth = BLANK;
 		json m_Active3DModeJson;
+		json m_updateShapeData;
 		string m_selectedNoOfImagePage = BLANK;
 		json m_updateStyleData;
 		bool m_productIdKeyExists = false;

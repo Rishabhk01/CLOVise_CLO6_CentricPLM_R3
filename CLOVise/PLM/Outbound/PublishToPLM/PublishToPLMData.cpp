@@ -265,6 +265,31 @@ string PublishToPLMData::GetActiveProductId()
 	return m_ActiveProductId;
 }
 
+/*Description - SetActiveProductId() method used to set active product id.
+* Parameter - string.
+* Exception -
+*Return -
+*/
+void PublishToPLMData::SetActiveShapeId(string _ShapeId)
+{
+	if (!FormatHelper::HasContent(_ShapeId))
+	{
+		_ShapeId = "";
+	}
+	m_ActiveShapeId = _ShapeId;
+}
+
+/*
+* Description - GetActiveProductId() method used to get active product id.
+* Parameter -
+* Exception -
+* Return - string.
+*/
+string PublishToPLMData::GetActiveShapeId()
+{
+	return m_ActiveShapeId;
+}
+
 /*
 * Description - SetActiveProductObjectId() method used to set active product object id.
 * Parameter -  string.
@@ -290,6 +315,34 @@ string PublishToPLMData::GetActiveProductObjectId()
 {
 	return m_ActiveProductObjectId;
 }
+
+/*
+* Description - SetActiveProductObjectId() method used to set active product object id.
+* Parameter -  string.
+* Exception -
+* Return -
+*/
+void PublishToPLMData::SetActiveShapeObjectId(string _shapeObjectId)
+{
+	if (!FormatHelper::HasContent(_shapeObjectId))
+	{
+		_shapeObjectId = "";
+	}
+	m_ActiveShapeObjectId = _shapeObjectId;
+}
+
+/*
+* Description - GetActiveProductObjectId() method used to get active product object id.
+* Parameter -
+* Exception -
+* Return - string.
+*/
+string PublishToPLMData::GetActiveShapeObjectId()
+{
+	return m_ActiveShapeObjectId;
+}
+
+
 
 /*
 * Description - Set3DModelObjectId() method used to set 3d model object id.
@@ -344,6 +397,33 @@ string PublishToPLMData::GetActiveProductName()
 }
 
 /*
+* Description - SetActiveProductName() method used to set active product name.
+* Parameter -
+* Exception -
+* Return -
+*/
+void PublishToPLMData::SetActiveShapeName(string _shapeName)
+{
+	if (!FormatHelper::HasContent(_shapeName))
+	{
+		_shapeName = "";
+	}
+	m_ActiveShapeName = _shapeName;
+}
+
+/*
+* Description - GetActiveProductName() method used to get active product name.
+* Parameter -
+* Exception -
+* Return - string.
+*/
+string PublishToPLMData::GetActiveShapeName()
+{
+	return m_ActiveShapeName;
+}
+
+
+/*
 * Description - SetActiveProductStatus() method used to set active product status.
 * Parameter -  string.
 * Exception -
@@ -368,6 +448,33 @@ string PublishToPLMData::GetActiveProductStatus()
 {
 	return m_ActiveProductStatus;
 }
+
+/*
+* Description - SetActiveProductStatus() method used to set active product status.
+* Parameter -  string.
+* Exception -
+* Return -
+*/
+void PublishToPLMData::SetActiveShapeStatus(string _shapeStatus)
+{
+	if (!FormatHelper::HasContent(_shapeStatus))
+	{
+		_shapeStatus = "";
+	}
+	m_ActiveShapeStatus = _shapeStatus;
+}
+
+/*
+* Description - GetActiveProductStatus() method used to get active product status.
+* Parameter -
+* Exception -
+* Return - string.
+*/
+string PublishToPLMData::GetActiveShapeStatus()
+{
+	return m_ActiveShapeStatus;
+}
+
 
 /*
 * Description - SetIsProductOverridden() method used to set is product overridden.
@@ -768,6 +875,15 @@ json PublishToPLMData::GetUpdateStyleCacheData()
 void PublishToPLMData::SetUpdateStyleCacheData(json _upsateStyleJson)
 {
 	m_updateStyleData = _upsateStyleJson;
+}
+
+json PublishToPLMData::GetUpdateShapeCacheData()
+{
+	return m_updateShapeData;
+}
+void PublishToPLMData::SetUpdateShapeCacheData(json _upsateShapeJson)
+{
+	m_updateShapeData = _upsateShapeJson;
 }
 
 string PublishToPLMData::GetLatestRevision()

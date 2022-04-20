@@ -49,6 +49,10 @@
 #include "CLOVise/PLM/Inbound/Product/PLMProductResults.h"
 #include "CLOVise/PLM/Inbound/Product/ProductConfig.h"
 
+#include "CLOVise/PLM/Inbound/Shape/PLMShapeSearch.h"
+#include "CLOVise/PLM/Inbound/Shape/PLMShapeResults.h"
+#include "CLOVise/PLM/Inbound/Shape/ShapeConfig.h"
+
 #include "CLOVise/PLM/Inbound/Sample/PLMSampleSearch.h"
 #include "CLOVise/PLM/Inbound/Sample/PLMSampleResult.h"
 #include "CLOVise/PLM/Inbound/Sample/SampleConfig.h"
@@ -132,6 +136,8 @@ namespace CLOVise
 		SetImageOnLabel(ui_PoweredByLabel, "ui_PoweredByLabel", POWERED_BY_IMAGE_PATH, "140px", "35px");
 		
 		ui_searchProduct->setText(QString::fromStdString(Configuration::GetInstance()->GetLocalizedStyleClassName()));
+		Logger::Info("Configuration::GetInstance()->GetLocalizedShapeClassName() " + Configuration::GetInstance()->GetLocalizedShapeClassName());
+		ui_searchShape->setText(QString::fromStdString(Configuration::GetInstance()->GetLocalizedShapeClassName()));
 		ui_searchMaterial->setText(QString::fromStdString(Configuration::GetInstance()->GetLocalizedMaterialClassName()));
 		ui_searchColor->setText(QString::fromStdString(Configuration::GetInstance()->GetLocalizedColorClassName()));
 		ui_searchPrint->setText("Print");
@@ -143,10 +149,14 @@ namespace CLOVise
 		CVWidgetGenerator::SetButtonProperty(ui_searchProduct, PRODUCT_HOVER_ICON_PATH, SEARCH_TOOLTIP, CLOVISESUITE_BUTTON_STYLE);
 		CVWidgetGenerator::SetButtonProperty(ui_createProductButton, ADD_HOVER_ICON_PATH, CREATE_TOOLTIP, CLOVISESUITE_BUTTON_STYLE);
 		CVWidgetGenerator::SetButtonProperty(ui_createMaterialButton, ADD_HOVER_ICON_PATH, CREATE_TOOLTIP, CLOVISESUITE_BUTTON_STYLE);
+		CVWidgetGenerator::SetButtonProperty(ui_searchShape, SHAPE_HOVER_ICON_PATH, SEARCH_TOOLTIP, CLOVISESUITE_BUTTON_STYLE);
 		Logger::Logger("Before CLOVise suit ....");
 		CVWidgetGenerator::SetButtonProperty(ui_updateMaterialButton, UPDATE_HOVER_ICON_PATH, UPDATE_TOOLTIP, CLOVISESUITE_BUTTON_STYLE);
+		CVWidgetGenerator::SetButtonProperty(ui_createShapeButton, ADD_HOVER_ICON_PATH, CREATE_TOOLTIP, CLOVISESUITE_BUTTON_STYLE);
+
 		Logger::Logger("After CLOVise suit ....");
 		CVWidgetGenerator::SetButtonProperty(ui_updateProductButton, UPDATE_HOVER_ICON_PATH, UPDATE_TOOLTIP, CLOVISESUITE_BUTTON_STYLE);
+		CVWidgetGenerator::SetButtonProperty(ui_updateShapeButton, UPDATE_HOVER_ICON_PATH, UPDATE_TOOLTIP, CLOVISESUITE_BUTTON_STYLE);
 		//CVWidgetGenerator::SetButtonProperty(ui_searchSampleButton, SAMPLE_HOVER_ICON_PATH, SEARCH_TOOLTIP, CLOVISESUITE_BUTTON_STYLE);
 		CVWidgetGenerator::SetButtonProperty(ui_copyProductButton, COPY_HOVER_ICON_PATH, COPY_TOOLTIP, CLOVISESUITE_BUTTON_STYLE);
 		ui_copyProductButton->setIconSize(QSize(12, 12));
@@ -205,6 +215,12 @@ namespace CLOVise
 		ui_createProductButton->setEnabled(false);
 		ui_createProductButton->setIcon(QIcon(ADD_NONE_ICON_PATH));
 		ui_createMaterialButton->setEnabled(false);
+		ui_searchShape->setEnabled(false);
+		ui_searchShape->setIcon(QIcon(SHAPE_NONE_ICON_PATH));
+		ui_createShapeButton->setEnabled(false);
+		ui_createShapeButton->setIcon(QIcon(ADD_NONE_ICON_PATH));
+		ui_updateShapeButton->setEnabled(false);
+		ui_updateShapeButton->setIcon(QIcon(UPDATE_NONE_ICON_PATH));
 		ui_updateMaterialButton->setEnabled(false);
 		ui_createMaterialButton->setIcon(QIcon(ADD_NONE_ICON_PATH));
 		ui_updateMaterialButton->setIcon(QIcon(ADD_NONE_ICON_PATH));
@@ -315,6 +331,22 @@ namespace CLOVise
 		}
 		return isUpadteProductValid;
 	}
+	bool CLOViseSuite::ValidateShapeSearch()
+	{
+		bool isShapeValidated = false;
+
+		/*if (!FormatHelper::HasContent(UTILITY_API->GetProjectName()))
+		{
+			throw logic_error(NO_ACTIVE_3D_GARMENT_Shape_MSG);
+		}
+		else if (DEFAULT_3DMODEL_NAME.find(UTILITY_API->GetProjectName()) != string::npos)
+		{
+			throw logic_error(NO_ACTIVE_3D_GARMENT_Shape_MSG);
+		}*/
+
+		isShapeValidated = true;
+		return isShapeValidated;
+	}
 
 	bool CLOViseSuite::ValidateCreateProduct()
 	{
@@ -412,6 +444,10 @@ namespace CLOVise
 
 		if (_module == "UpdateProduct")
 			validate = ValidateUpdateProduct();
+
+		if (_module == "Shape")
+			validate = ValidateShapeSearch();
+
 
 		if (_module == "CreateMaterial")
 			validate = ValidateCreateMaterial();
@@ -1011,6 +1047,77 @@ namespace CLOVise
 			this->show();
 		}
 	}
+
+/*
+* Description - ClickedSearchShape() for execute the functionality, when the click of Color button.
+* Clear all fields items in the ShapeSearch UI.
+* Parameter -
+* Exception - exception, Char *
+* Return -
+*/
+
+	void CLOViseSuite::ExecuteShapeModule()
+	{
+		this->hide();
+		try
+		{
+			if (IsModuleExecutable("Shape"))
+			{
+				
+				bool isFromConstructor = false;
+				Configuration::GetInstance()->SetProgressBarProgress(0);
+				UTILITY_API->CreateProgressBar();
+				Configuration::GetInstance()->SetProgressBarProgress(qrand() % 101);
+				RESTAPI::SetProgressBarData(20, "Loading " + Configuration::GetInstance()->GetLocalizedShapeClassName() + " Search", true);
+				if (!ShapeConfig::GetInstance()->GetIsModelExecuted())
+				{
+					ShapeConfig::GetInstance()->InitializeShapeData();
+					isFromConstructor = true;
+				}
+				else
+					PLMShapeSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
+
+				if (ShapeConfig::GetInstance()->m_shapeLoggedOut && isFromConstructor)
+				{
+					ShapeConfig::GetInstance()->m_shapeLoggedOut = false;
+					ShapeConfig::GetInstance()->m_resultAfterLogout = true;
+					PLMShapeSearch::GetInstance()->DrawSearchWidget(isFromConstructor);
+				}
+				ShapeConfig::GetInstance()->m_isShow3DAttWidget = true;
+				
+				PLMShapeSearch::GetInstance()->setModal(true);
+				
+				UTILITY_API->DeleteProgressBar(true);
+				PLMShapeSearch::GetInstance()->exec();
+				ShapeConfig::GetInstance()->SetIsModelExecuted(true);
+			}
+		}
+		catch (string msg)
+		{
+			UTILITY_API->DeleteProgressBar(true);
+			Logger::Error("DesignSuite -> Shape Exception - " + msg);
+			UTILITY_API->DisplayMessageBox(msg);
+			this->show();
+		}
+		catch (exception & e)
+		{
+			UTILITY_API->DeleteProgressBar(true);
+			Logger::Error("DesignSuite -> Shape Exception - " + string(e.what()));
+			UTILITY_API->DisplayMessageBox(string(e.what()));
+			this->show();
+		}
+		catch (const char* msg)
+		{
+			UTILITY_API->DeleteProgressBar(true);
+			wstring wstr(msg, msg + strlen(msg));
+			UTILITY_API->DisplayMessageBoxW(wstr);
+			Logger::Error("DesignSuite -> Shape Exception - " + string(msg));
+			this->show();
+		}
+		Logger::Info("DesignSuite -> ExecuteUpdateShapeModule -> End");
+	}
+
+
 	void CLOViseSuite::ExecuteProductModule()
 	{
 		this->hide();
@@ -1099,6 +1206,24 @@ namespace CLOVise
 		ExecuteColorModule();
 		Logger::Info("DesignSuite -> Initialize ColorSearch-> Start");
 	}
+
+	/*
+* Description - onClickedSearchShape() for execute the functionality, when the click of Shape button.
+* Clear all fields items in the ColorSearch UI.
+* Parameter -
+* Exception - exception, Char *
+* Return -
+*/
+
+	void CLOViseSuite::onClickedSearchShape()
+	{
+		Logger::Info("DesignSuite -> Initialize ShapeSearch -> Start");
+		Configuration::GetInstance()->SetCurrentScreen(SEARCH_SHAPE_CLICKED);
+
+		ExecuteShapeModule();
+		Logger::Info("DesignSuite -> Initialize ShapeSearch -> End");
+	}
+
 
 	/*
 	* Description - ClickedSearchPrints() for execute the functionality, when the click of Color button.
@@ -1365,6 +1490,7 @@ namespace CLOVise
 		{
 			QObject::connect(ui_searchMaterial, SIGNAL(clicked()), this, SLOT(onMaterialSearch()));
 			QObject::connect(ui_searchProduct, SIGNAL(clicked()), this, SLOT(onClickedSearchProd()));
+			QObject::connect(ui_searchShape, SIGNAL(clicked()), this, SLOT(onClickedSearchShape()));
 			QObject::connect(ui_searchColor, SIGNAL(clicked()), this, SLOT(onClickedSearchColors()));
 			QObject::connect(ui_searchPrint, SIGNAL(clicked()), this, SLOT(onClickedSearchPrints()));
 			//QObject::connect(ui_searchDocument, SIGNAL(clicked()), this, SLOT(onClickedSearchDocument()));
@@ -1382,6 +1508,7 @@ namespace CLOVise
 		{
 			QObject::disconnect(ui_searchMaterial, SIGNAL(clicked()), this, SLOT(onMaterialSearch()));
 			QObject::disconnect(ui_searchProduct, SIGNAL(clicked()), this, SLOT(onClickedSearchProd()));
+			QObject::disconnect(ui_searchShape, SIGNAL(clicked()), this, SLOT(onClickedSearchShape()));
 			QObject::disconnect(ui_searchColor, SIGNAL(clicked()), this, SLOT(onClickedSearchColors()));
 			QObject::disconnect(ui_searchPrint, SIGNAL(clicked()), this, SLOT(onClickedSearchPrints()));
 			//QObject::disconnect(ui_searchDocument, SIGNAL(clicked()), this, SLOT(onClickedSearchDocument()));

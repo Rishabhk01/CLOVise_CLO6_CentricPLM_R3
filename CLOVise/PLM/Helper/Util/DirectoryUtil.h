@@ -26,6 +26,8 @@ public:
 	static const string GetMaterialAssetsDirectory();
 	static const string GetStyleAttachmentDirectory();
 	static const string GetTrimAssetsDirectory();
+	static const string GetShapeAttachmentDirectory();
+
 	static const string GetColorsAssetsDirectory();
 	static const string GetPrintAssetsDirectory();
 	static const string GetPLMPluginDirectory();

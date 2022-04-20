@@ -1459,6 +1459,12 @@ bool Configuration::GetIsUpdateColorClicked()
 	 m_StyleDownloaded = _isClicked;
  }
 
+
+ void Configuration::SetIsNewShapeDownloaded(bool _isClicked)
+ {
+	 m_ShapeDownloaded = _isClicked;
+ }
+
  string Configuration::GetLocalizedStyleClassName()
  {
 	 return m_styleClassName;
@@ -1467,6 +1473,16 @@ bool Configuration::GetIsUpdateColorClicked()
  void Configuration::SetLocalizedStyleClassName(string _styleClassName)
  {
 	 m_styleClassName = _styleClassName;
+ }
+
+ string Configuration::GetLocalizedShapeClassName()
+ {
+	 return m_shapeClassName;
+ }
+
+ void Configuration::SetLocalizedShapeClassName(string _shapeClassName)
+ {
+	 m_shapeClassName = _shapeClassName;
  }
 
  string Configuration::GetLocalizedMaterialClassName()

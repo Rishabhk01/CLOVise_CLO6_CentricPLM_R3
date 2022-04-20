@@ -59,7 +59,8 @@ namespace RESTAPI
 	const string SEARCH_ATT_DEFINITION_API = "/csi-requesthandler/api/v2/create_form_definitions/";
 	const string SEARCH_ATT_DEFINITION_ADDITIONAL_API = "/configurable_attributes?skip=0&limit=1000&decode=true";
 	const string SEASON_SEARCH_API = "/csi-requesthandler/api/v2/seasons";
-	const string SHAPE_API = "/csi-requesthandler/api/v2/shapes";
+	
+
 	const string THEME_API = "/csi-requesthandler/api/v2/themes";
 	
 	const string ATTACHMENTS_RESULTS_API = "/csi-requesthandler/api/v2/documents/";
@@ -89,7 +90,15 @@ namespace RESTAPI
 	const string IMAGE_LABELS_ENUMLIST_API = "/csi-requesthandler/api/v2/enum_lists";
 	//const string MATERIAL_TYPE_SEARCH_API = "/csi-requesthandler/api/v2/material_types";
 	/*Centric material rest calls end	*/
-	
+
+	/*Centric Shape rest calls Start	*/
+	const string SEARCH_SHAPE_API = "/csi-requesthandler/api/v2/shape";
+	const string SHAPE_API = "/csi-requesthandler/api/v2/shapes";
+	const string SHAPE_MASTER_SEARCH_API = "/csi-requesthandler/api/v2/shape_masters";
+	const string STYLE_SHAPE_API = "/csi-requesthandler/api/v2/shapes?sort=node_name";
+	/*Centric Shape rest calls end	*/
+
+
 	/*Centric color specification rest calls start	*/
 	const string SEARCH_COLOR_API = "/csi-requesthandler/api/v2/color_specifications";
 	const string CREATE_COLOR_API = "/csi-requesthandler/api/v2/color_specifications";
@@ -114,7 +123,6 @@ namespace RESTAPI
 	//const string SEASON_SEARCH_API = "/csi-requesthandler/api/v2/seasons";
 	const string STYLE_TYPE_API = "/csi-requesthandler/api/v2/style_types";
 	const string STYLE_THEME_API = "/csi-requesthandler/api/v2/themes?sort=node_name";
-	const string STYLE_SHAPE_API = "/csi-requesthandler/api/v2/shapes?sort=node_name";
 	const string ENUM_LIST_API = "/csi-requesthandler/api/v2/enum_lists/";
 	const string LOCALIZATION_LIST_API = "/csi-requesthandler/api/v2/localization/enum_lists";
 	const string DEPARTMENT_DETAIL_API = "/csi-requesthandler/api/v2/category1s";

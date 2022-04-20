@@ -32,6 +32,8 @@ void DirectoryUtil::CreateDirectories()
 	dir.mkpath(QString::fromStdString(logs));
 	string product_dir = plm_folder + "product/";
 	dir.mkpath(QString::fromStdString(product_dir));
+	string shape_dir = plm_folder + "shape/";
+	dir.mkpath(QString::fromStdString(shape_dir));
 	string material_dir = plm_folder + + "material/";
 	dir.mkpath(QString::fromStdString(material_dir));
 	string trim_dir = plm_folder + + "trim/";
@@ -81,7 +83,15 @@ const string DirectoryUtil::GetMaterialAssetsDirectory() {
 const string DirectoryUtil::GetStyleAttachmentDirectory() {
 	return GetSampleStorageDirectory() + "product/";
 }
-
+/* 
+*Description - GetShapeAttachmentDirectory() method used to get style attachment directory.
+* Parameter -
+*Exception -
+*Return - string.
+*/
+const string DirectoryUtil::GetShapeAttachmentDirectory() {
+	return GetSampleStorageDirectory() + "shape/";
+}
 /*
 * Description - getTrimAssetsDirectory() method used to get trim assets directory.
 * Parameter - 
